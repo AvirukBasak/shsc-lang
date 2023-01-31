@@ -1,7 +1,16 @@
+/**
+ * Implementation of an ordered map using a self balancing BST.
+ * Implemented using libavl.
+ * @author Aviruk Basak
+ * @date 10.12.2022
+ */
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "libavl.h"
 
 #undef new
 #undef delete
@@ -36,17 +45,15 @@
  */
 #define BstMapDeclarePrototypes(vtype)                                                \
                                                                                       \
-typedef struct bst_map_##vtype {                                                      \
+typedef AVL *bst_map_##vtype;                                                         \
+                                                                                      \
+typedef struct bst_map_data_##vtype {                                                 \
     unsigned long int key;                                                            \
     vtype value;                                                                      \
-    struct bst_map_##vtype *parent;                                                   \
-    struct bst_map_##vtype *left;                                                     \
-    struct bst_map_##vtype *right;                                                    \
-} *bst_map_##vtype;                                                                   \
+} *bst_map_data_##vtype;                                                              \
                                                                                       \
 bst_map_##vtype bst_map_##vtype##_newmap();                                           \
 unsigned long int bst_map_##vtype##_hashString(const char *strkey);                   \
-bst_map_##vtype bst_map_##vtype##_findKey(bst_map_##vtype m, unsigned long int key);  \
 vtype bst_map_##vtype##_get(bst_map_##vtype m, unsigned long int key, bool *found);   \
 bool bst_map_##vtype##_set(bst_map_##vtype m, unsigned long int key, vtype val);      \
 bool bst_map_##vtype##_del(bst_map_##vtype m, unsigned long int key);                 \
@@ -61,15 +68,15 @@ void bst_map_##vtype##_free(bst_map_##vtype *m);
  */
 #define BstMapDefine(vtype, func_print)                                               \
                                                                                       \
+/* helper functions */                                                                \
+void bst_map_##vtype##__map_print(avlnode_t *node);                                   \
+void bst_map_##vtype##__map_free(avlnode_t *node);                                    \
+int bst_map_##vtype##__map_ncomp(void *d1, void *d2);                                 \
+int bst_map_##vtype##__map_nkcomp(void *id, void *d);                                 \
+                                                                                      \
 bst_map_##vtype bst_map_##vtype##_newmap()                                            \
 {                                                                                     \
-    bst_map_##vtype m = new(bst_map_##vtype);                                         \
-    m->key = 0;                                                                       \
-    m->value = (vtype) 0;                                                             \
-    m->parent = NULL;                                                                 \
-    m->left = NULL;                                                                   \
-    m->right = NULL;                                                                  \
-    return m;                                                                         \
+    return malloc(sizeof(AVL));                                                       \
 }                                                                                     \
                                                                                       \
 unsigned long int bst_map_##vtype##_hashString(const char *strkey)                    \
@@ -82,117 +89,88 @@ unsigned long int bst_map_##vtype##_hashString(const char *strkey)              
     return hash;                                                                      \
 }                                                                                     \
                                                                                       \
-bst_map_##vtype bst_map_##vtype##_findKey(bst_map_##vtype m, unsigned long int key)   \
-{                                                                                     \
-    if (!m) abort();                                                                  \
-    bst_map_##vtype p = m;                                                            \
-    while (p != NULL)                                                                 \
-        if (key == p->key) return p;                                                  \
-        else if (key < p->key) p = p->left;                                           \
-        else p = p->right;                                                            \
-    return NULL;                                                                      \
-}                                                                                     \
-                                                                                      \
 vtype bst_map_##vtype##_get(bst_map_##vtype m, unsigned long int key, bool *found)    \
 {                                                                                     \
     if (!m) abort();                                                                  \
-    bst_map_##vtype node = bst_map_##vtype##_findKey(m, key);                         \
-    if (!node) {                                                                      \
-        *found = false;                                                               \
-        return (vtype) 0;                                                             \
+    bst_map_data_##vtype data = avl_search(m, &key, bst_map_##vtype##__map_nkcomp);   \
+    if (data) {                                                                       \
+        if (found) *found = true;                                                     \
+        return data->value;                                                           \
     }                                                                                 \
-    *found = true;                                                                    \
-    return node->value;                                                               \
+    if (found) *found = false;                                                        \
+    return (vtype) 0;                                                                 \
 }                                                                                     \
                                                                                       \
 bool bst_map_##vtype##_set(bst_map_##vtype m, unsigned long int key, vtype val)       \
 {                                                                                     \
     if (!m) abort();                                                                  \
-    bst_map_##vtype node;                                                             \
-    if (!m->key && !m->left && !m->right) node = m;                                   \
-    else node = bst_map_##vtype##_findKey(m, key);                                    \
-    if (node) {                                                                       \
-        node->key = key;                                                              \
-        node->value = val;                                                            \
-    } else {                                                                          \
-        node = new(bst_map_##vtype);                                                  \
-        node->key = key;                                                              \
-        node->value = val;                                                            \
-        bst_map_##vtype p = m;                                                        \
-        while (p->left != NULL && p->right != NULL)                                   \
-            if (key < p->key) p = p->left;                                            \
-            else p = p->right;                                                        \
-        if (key < p->key) p->left = node;                                             \
-        else p->right = node;                                                         \
-        node->parent = p;                                                             \
+    bst_map_data_##vtype data = avl_search(m, &key, bst_map_##vtype##__map_nkcomp);   \
+    if (data) {                                                                       \
+        data->value = val;                                                            \
+        return true;                                                                  \
     }                                                                                 \
-    return true;                                                                      \
+    data = malloc(sizeof(struct bst_map_data_##vtype));                                      \
+    avlnode_t *node = malloc(sizeof(avlnode_t));                                      \
+    node->data = data;                                                                \
+    data->key = key;                                                                  \
+    data->value = val;                                                                \
+    return avl_attach(m, node, bst_map_##vtype##__map_ncomp);                         \
 }                                                                                     \
                                                                                       \
 bool bst_map_##vtype##_del(bst_map_##vtype m, unsigned long int key)                  \
 {                                                                                     \
     if (!m) abort();                                                                  \
-    if (m->key == key && !m->left && !m->right) {                                     \
-        free(m);                                                                      \
-        return true;                                                                  \
-    }                                                                                 \
-    bst_map_##vtype p = bst_map_##vtype##_findKey(m, key);                            \
-    if (!p) return false;                                                             \
-    if (p->right) {                                                                   \
-        bst_map_##vtype tmp = p->right;                                               \
-        while (tmp->left)                                                             \
-            tmp = tmp->left;                                                          \
-        p->key = tmp->key;                                                            \
-        p->value = tmp->value;                                                        \
-        if (tmp->parent == p) tmp->parent->right = tmp->right;                        \
-        else tmp->parent->left = tmp->right;                                          \
-        delete(tmp);                                                                  \
-    } else if (p->parent) {                                                           \
-        bst_map_##vtype tmp;                                                          \
-        if (p->parent->left == p) {                                                   \
-            tmp = p->parent->left;                                                    \
-            p->parent->left = p->left;                                                \
-        } else {                                                                      \
-            tmp = p->parent->right;                                                   \
-            p->parent->right = p->left;                                               \
-        }                                                                             \
-        delete(tmp);                                                                  \
-    } else {                                                                          \
-        bst_map_##vtype tmp = p;                                                      \
-        p = p->left;                                                                  \
-        delete(tmp);                                                                  \
-    }                                                                                 \
+    avlnode_t *node = avl_detach(m, &key, bst_map_##vtype##__map_nkcomp);             \
+    if (!node) return false;                                                          \
+    free(node);                                                                       \
+    if (node->data) free(node->data);                                                 \
     return true;                                                                      \
 }                                                                                     \
                                                                                       \
 void bst_map_##vtype##_print(bst_map_##vtype m)                                       \
 {                                                                                     \
-    if (!m) abort();                                                                  \
-    bool isroot = m->parent == NULL;                                                  \
-    bst_map_##vtype p = m;                                                            \
-    if (isroot) printf("{\n");                                                        \
-    if (p->left) bst_map_##vtype##_print(p->left);                                    \
-    printf("    %lu -> ", p->key);                                                    \
-    const vtype value = p->value;                                                     \
-    {                                                                                 \
-        const bst_map_##vtype m = NULL;                                               \
-        const bst_map_##vtype p = NULL;                                               \
-        const bool isroot = false;                                                    \
-        (m, p, isroot);                                                               \
-        func_print;                                                                   \
-    }                                                                                 \
-    printf("\n");                                                                     \
-    if (p->right) bst_map_##vtype##_print(p->right);                                  \
-    if (isroot) printf("}\n");                                                        \
+    if (!m) return;                                                                  \
+    printf("{\n");                                                                    \
+    avl_traverse(m, bst_map_##vtype##__map_print);                                   \
+    printf("}\n");                                                                    \
 }                                                                                     \
                                                                                       \
 void bst_map_##vtype##_free(bst_map_##vtype *m)                                       \
 {                                                                                     \
     if (!m || !(*m)) return;                                                          \
-    bst_map_##vtype p = *m;                                                           \
-    bool isroot = p->parent == NULL;                                                  \
-    bst_map_##vtype##_free(&p->left);                                                 \
-    bst_map_##vtype##_free(&p->right);                                                \
-    delete(p);                                                                        \
-    if (isroot) *m = NULL;                                                            \
-}
+    avl_traverse(*m, bst_map_##vtype##__map_free);                                    \
+    delete(m);                                                                        \
+    *m = NULL;                                                                        \
+}                                                                                     \
+                                                                                      \
+/* helper function definitions */                                                     \
+void bst_map_##vtype##__map_free(avlnode_t *node) {                                   \
+    free(node->data);                                                                 \
+    free(node);                                                                       \
+}                                                                                     \
+                                                                                      \
+void bst_map_##vtype##__map_print(avlnode_t *node) {                                  \
+    bst_map_data_##vtype data = node->data;                                           \
+    if (!data) return;                                                                \
+    printf("    %lu -> ", data->key);                                                 \
+    const vtype value = data->value;                                                  \
+    {                                                                                 \
+        const bst_map_##vtype m = NULL;                                               \
+        const bst_map_##vtype data = NULL;                                            \
+        (m, data);                                                                    \
+        func_print;                                                                   \
+    }                                                                                 \
+    printf("\n");                                                                     \
+}                                                                                     \
+                                                                                      \
+int bst_map_##vtype##__map_ncomp(void *d1, void *d2) {                                \
+    return ((bst_map_data_##vtype) d1)->key - ((bst_map_data_##vtype) d2)->key;     \
+}                                                                                     \
+                                                                                      \
+int bst_map_##vtype##__map_nkcomp(void *key, void *d) {                               \
+    /* if id < data, -ve or decrease data, i.e. go to left subtree                    \
+     * if id > data, +ve or increase data, i.e. go to right subtree                   \
+     * if equal 0, match found                                                        \
+     */                                                                               \
+    return *(unsigned long int*) key - ((bst_map_data_##vtype) d)->key;              \
+}                                                                                     \
