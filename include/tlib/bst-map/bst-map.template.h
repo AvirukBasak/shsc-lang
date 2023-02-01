@@ -76,7 +76,7 @@ int bst_map_##vtype##__map_nkcomp(void *id, void *d);                           
                                                                                       \
 bst_map_##vtype bst_map_##vtype##_newmap()                                            \
 {                                                                                     \
-    return malloc(sizeof(AVL));                                                       \
+    return calloc(1, sizeof(AVL));                                                    \
 }                                                                                     \
                                                                                       \
 unsigned long int bst_map_##vtype##_hashString(const char *strkey)                    \
@@ -139,8 +139,7 @@ void bst_map_##vtype##_free(bst_map_##vtype *m)                                 
 {                                                                                     \
     if (!m || !(*m)) return;                                                          \
     avl_traverse(*m, bst_map_##vtype##__map_free);                                    \
-    delete(m);                                                                        \
-    *m = NULL;                                                                        \
+    delete(*m);                                                                       \
 }                                                                                     \
                                                                                       \
 /* helper function definitions */                                                     \
