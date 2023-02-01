@@ -1,38 +1,57 @@
-SRCEXT      := c
-OBJEXT      := o
-HEADEREXT   := h
+SRCEXT         := c
+OBJEXT         := o
+HEADEREXT      := h
 
-# directories
+## directories
 
-SRC_DIR     := ../src
-BUILD_DIR   := ../build
-TARGET_DIR  := ../target
-LIB_DIR     := ../lib
-TEST_DIR    := ../tests
-INCLUDE_DIR := ../include
+SRC_DIR        := src
+BUILD_DIR      := build
+TARGET_DIR     := target
+LIB_DIR        := lib
+TEST_DIR       := tests
+INCLUDE_DIR    := include
 
-# compiler options
+## compiler options
 
-LIB_NAME    := mylib
+EXEC_NAME      := scsh
 
-CC          := gcc
-CFLAGS      := -Wall -Ofast
-CDBGFLAGS   := -Wall -g -D DEBUG
-DBG         := gdb -q
+CC             := gcc
+CFLAGS         := -Wall -Ofast
+CDBGFLAGS      := -Wall -g -fsanitize=address -D DEBUG
+DBG            := gdb -q
 
-INCLUDE     := -I $(INCLUDE_DIR) -I $(LIB_DIR)
-LIB         := -L$(LIB_DIR) -lm
+## targets
+
+TARGET_NAME    := $(EXEC_NAME)
+TARGET         := $(TARGET_DIR)/$(TARGET_NAME)-rel
+DBG_TARGET     := $(TARGET_DIR)/$(TARGET_NAME)-dbg
 
 ## go on listing your libraries below for compilation
 
-all:
+## libdummy
+
+$(LIB_DIR)/libdummy.a:
 	@cd libdummy && $(MAKE)
-	@cd libavl && $(MAKE)
+
+$(LIB_DIR)/libdummy-dbg.a:
+	@cd libdummy && $(MAKE) dbg
 
 clean:
 	@cd libdummy && $(MAKE) clean
-	@cd libavl && $(MAKE) clean
 
 cleaner:
 	@cd libdummy && $(MAKE) cleaner
+
+## libavl
+
+$(LIB_DIR)/libavl.a:
+	@cd libavl && $(MAKE)
+
+$(LIB_DIR)/libavl-dbg.a:
+	@cd libavl && $(MAKE) dbg
+
+clean:
+	@cd libavl && $(MAKE) clean
+
+cleaner:
 	@cd libavl && $(MAKE) cleaner

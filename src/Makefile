@@ -1,36 +1,37 @@
-SRCEXT      := c
-OBJEXT      := o
-HEADEREXT   := h
+SRCEXT         := c
+OBJEXT         := o
+HEADEREXT      := h
 
-# directories
+## directories
 
-SRC_DIR     := ../src
-BUILD_DIR   := ../build
-TARGET_DIR  := ../target
-LIB_DIR     := ../lib
-TEST_DIR    := ../tests
-INCLUDE_DIR := ../include
+SRC_DIR        := ../src
+BUILD_DIR      := ../build
+TARGET_DIR     := ../target
+LIB_DIR        := ../lib
+TEST_DIR       := ../tests
+INCLUDE_DIR    := ../include
 
-# compiler options
+## compiler options
 
-EXE_NAME    := sch
+EXEC_NAME      := scsh
 
-CC          := gcc
-CFLAGS      := -Wall -Ofast
-CDBGFLAGS   := -Wall -g -D DEBUG
-DBG         := gdb -q
+CC             := gcc
+CFLAGS         := -Wall -Ofast
+CDBGFLAGS      := -Wall -g -fsanitize=address -D DEBUG
+DBG            := gdb -q
 
-INCLUDE     := -I $(INCLUDE_DIR) -I $(LIB_DIR)
-LIB         := -L$(LIB_DIR) -lm
+INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR)
+LIB            := -L$(LIB_DIR) -lm -lavl
+DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg
 
-HEADERS     := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
+HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
 
-SUB_DIRS    := $(shell find -type f -name Makefile | sed 's/Makefile//g')
-SUB_DIR_DBG := $(SUB_DIRS)
+SUB_DIRS       := $(shell find -type f -name Makefile | sed 's/Makefile//g')
+SUB_DIR_DBG    := $(SUB_DIRS)
 
 ## release build
 
-OBJECTS     := $(patsubst %.$(SRCEXT), %-rel.$(OBJEXT), $(wildcard *.$(SRCEXT)))
+OBJECTS        := $(patsubst %.$(SRCEXT), %-rel.$(OBJEXT), $(wildcard *.$(SRCEXT)))
 
 rel: mkdirp $(OBJECTS) cpobj
 
@@ -43,7 +44,7 @@ rel: mkdirp $(OBJECTS) cpobj
 
 ## debug build
 
-DBG_OBJECTS := $(patsubst %.$(SRCEXT), %-dbg.$(OBJEXT), $(wildcard *.$(SRCEXT)))
+DBG_OBJECTS    := $(patsubst %.$(SRCEXT), %-dbg.$(OBJEXT), $(wildcard *.$(SRCEXT)))
 
 dbg: mkdirp $(DBG_OBJECTS) cpobj
 
@@ -66,4 +67,4 @@ clean:
 cleaner: clean
 	@rm -f $(BUILD_DIR)/*.$(OBJEXT)
 
-# FORCE:
+## FORCE:

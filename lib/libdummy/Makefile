@@ -22,9 +22,15 @@ DBG         := gdb -q
 
 all: $(LIB_DIR)/libdummy.a
 
+dbg: $(LIB_DIR)/libdummy-dbg.a
+
 $(LIB_DIR)/libdummy.a: dummy.$(SRCEXT)
 	$(CC) $(CFLAGS) -c -o dummy.$(OBJEXT) dummy.$(SRCEXT)
 	ar rcs $(LIB_DIR)/libdummy.a dummy.$(OBJEXT)
+
+$(LIB_DIR)/libdummy-dbg.a: dummy.$(SRCEXT)
+	$(CC) $(CDBGFLAGS) -c -o dummy.$(OBJEXT) dummy.$(SRCEXT)
+	ar rcs $(LIB_DIR)/libdummy-dbg.a dummy.$(OBJEXT)
 
 clean:
 	@rm -f $(LIB_DIR)/libdummy.a
