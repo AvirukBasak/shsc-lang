@@ -109,7 +109,7 @@ bool bst_map_##vtype##_set(bst_map_##vtype m, unsigned long int key, vtype val) 
         data->value = val;                                                            \
         return true;                                                                  \
     }                                                                                 \
-    data = malloc(sizeof(struct bst_map_data_##vtype));                                      \
+    data = malloc(sizeof(struct bst_map_data_##vtype));                               \
     avlnode_t *node = malloc(sizeof(avlnode_t));                                      \
     node->data = data;                                                                \
     data->key = key;                                                                  \
@@ -129,9 +129,9 @@ bool bst_map_##vtype##_del(bst_map_##vtype m, unsigned long int key)            
                                                                                       \
 void bst_map_##vtype##_print(bst_map_##vtype m)                                       \
 {                                                                                     \
-    if (!m) return;                                                                  \
+    if (!m) return;                                                                   \
     printf("{\n");                                                                    \
-    avl_traverse(m, bst_map_##vtype##__map_print);                                   \
+    avl_traverse(m, bst_map_##vtype##__map_print);                                    \
     printf("}\n");                                                                    \
 }                                                                                     \
                                                                                       \
@@ -163,7 +163,7 @@ void bst_map_##vtype##__map_print(avlnode_t *node) {                            
 }                                                                                     \
                                                                                       \
 int bst_map_##vtype##__map_ncomp(void *d1, void *d2) {                                \
-    return ((bst_map_data_##vtype) d1)->key - ((bst_map_data_##vtype) d2)->key;     \
+    return ((bst_map_data_##vtype) d1)->key - ((bst_map_data_##vtype) d2)->key;       \
 }                                                                                     \
                                                                                       \
 int bst_map_##vtype##__map_nkcomp(void *key, void *d) {                               \
@@ -171,5 +171,5 @@ int bst_map_##vtype##__map_nkcomp(void *key, void *d) {                         
      * if id > data, +ve or increase data, i.e. go to right subtree                   \
      * if equal 0, match found                                                        \
      */                                                                               \
-    return *(unsigned long int*) key - ((bst_map_data_##vtype) d)->key;              \
+    return *(unsigned long int*) key - ((bst_map_data_##vtype) d)->key;               \
 }                                                                                     \
