@@ -58,7 +58,7 @@ dbg: $(DBG_TARGET)
 
 DBG_OBJECTS    := $(patsubst $(SRC_DIR)/%.$(SRCEXT), $(BUILD_DIR)/%-dbg.$(OBJEXT), $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)))
 
-$(DBG_OBJECTS): $(REQ_DIRS) $(SOURCES) $(HEADERS)
+$(DBG_OBJECTS): $(SOURCES) $(HEADERS)
 	@cd $(SRC_DIR) && $(MAKE) dbg
 
 ## target for debug executable

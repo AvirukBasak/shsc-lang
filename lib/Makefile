@@ -36,12 +36,6 @@ $(LIB_DIR)/libdummy.a:
 $(LIB_DIR)/libdummy-dbg.a:
 	@cd libdummy && $(MAKE) dbg
 
-clean:
-	@cd libdummy && $(MAKE) clean
-
-cleaner:
-	@cd libdummy && $(MAKE) cleaner
-
 ## libavl
 
 $(LIB_DIR)/libavl.a:
@@ -50,8 +44,12 @@ $(LIB_DIR)/libavl.a:
 $(LIB_DIR)/libavl-dbg.a:
 	@cd libavl && $(MAKE) dbg
 
+## cleanup
+
 clean:
+	@cd libdummy && $(MAKE) clean
 	@cd libavl && $(MAKE) clean
 
 cleaner:
+	@cd libdummy && $(MAKE) cleaner
 	@cd libavl && $(MAKE) cleaner
