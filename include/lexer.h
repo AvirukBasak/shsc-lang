@@ -13,7 +13,7 @@
 typedef enum LexToken LexToken;
 typedef struct LexBuffer LexBuffer;
 
-LexToken lex_get_nexttok(const FILE *f);
+LexToken lex_get_nexttok(FILE *f);
 char *lex_get_tokstr();
 
 #endif

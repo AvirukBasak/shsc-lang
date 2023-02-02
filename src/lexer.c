@@ -59,7 +59,8 @@ enum LexToken {
     LEX_LITERAL_INT,
     LEX_LITERAL_FLOAT,
     LEX_LITERAL_STR,
-    LEX_IDENTIFIER
+    LEX_IDENTIFIER,
+    LEX_INVALID
 };
 
 struct LexBuffer {
@@ -68,7 +69,7 @@ struct LexBuffer {
     size_t size;
 };
 
-char lex_getchar(const FILE *f);
+char lex_getchar(FILE *f);
 void lex_buffpush(char ch);
 bool lex_buffmatch(const char* tok);
 bool lex_is_char_literal();
@@ -77,19 +78,21 @@ bool lex_is_float_literal();
 bool lex_is_str_literal();
 bool lex_is_identifier();
 
+void lex_throw(const char *msg);
+
 LexBuffer *lex_buffer = NULL;
 
-char lex_getchar(const FILE *f)
+char lex_getchar(FILE *f)
 {
-    char c = fgetch(f);
+    char c = fgetc(f);
     if (!c || c == (char) EOF) return 0;
     if ((c > 0 && c <= 32 && c != '\t' && c != '\n' && c != '\r' && c != ' ') || c == 127)
         lex_throw("un-printable character found");
     if (c > 127) lex_throw("non-ascii symbol not recognized");
     // ignore single line comments and delimiters
     while ((c > 0 && c <= 32) || c == '#') {
-        if (c == '#') while (c != '\n') c = fgetch(f);
-        c = fgetch(f);
+        if (c == '#') while (c != '\n') c = fgetc(f);
+        c = fgetc(f);
     }
     return c;
 }
@@ -142,7 +145,7 @@ bool lex_is_identifier()
     return true;
 }
 
-LexToken lex_get_nexttok(const FILE *f)
+LexToken lex_get_nexttok(FILE *f)
 {
     char curr = lex_getchar(f);
     while (curr) {
@@ -197,15 +200,24 @@ LexToken lex_get_nexttok(const FILE *f)
         else if (lex_buffmatch("$"))     return LEX_KWD_SET;
         else if (lex_is_char_literal())  return LEX_LITERAL_CHAR;
         else if (lex_is_int_literal())   return LEX_LITERAL_INT;
-        else if (lex_is_float_literal()  return LEX_LITERAL_FLOAT;
+        else if (lex_is_float_literal()) return LEX_LITERAL_FLOAT;
         else if (lex_is_str_literal())   return LEX_LITERAL_STR;
         else if (lex_is_identifier())    return LEX_IDENTIFIER;
         else lex_throw("syntax error");
         curr = lex_getchar(f);
     }
+    return LEX_INVALID;
 }
 
 char *lex_get_tokstr()
 {
     return lex_buffer->buffer;
+}
+
+void lex_throw(const char *msg)
+{
+    if (msg) {
+        fprintf(stderr, "scsh: lexer error: %s\n", msg);
+        exit(1);
+    } else abort();
 }
