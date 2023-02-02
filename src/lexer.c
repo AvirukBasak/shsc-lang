@@ -6,69 +6,16 @@
 
 #include "lexer.h"
 
-enum LexToken {
-    LEX_KWD_START,
-    LEX_KWD_WHILE,
-    LEX_KWD_CALC,
-    LEX_LOGICAL_IDENTICAL,
-    LEX_LOGICAL_UNINDENTICAL,
-    LEX_KWD_IF,
-    LEX_LOGICAL_AND,
-    LEX_LOGICAL_OR,
-    LEX_LOGICAL_EQUALITY,
-    LEX_LOGICAL_UNEQUALITY,
-    LEX_LOGICAL_GREATER_EQUAL,
-    LEX_LOGICAL_LESSER_EQUAL,
-    LEX_BITWISE_LSHIFT,
-    LEX_BITWISE_RSHIFT,
-    LEX_EXPONENT,
-    LEX_SARROW,
-    LEX_DARROW,
-    LEX_PIPEOUT,
-    LEX_LOGICAL_NOT,
-    LEX_BITWISE_AND,
-    LEX_BITWISE_OR,
-    LEX_BITWISE_NOT,
-    LEX_BITWISE_XOR,
-    LEX_RBRACE_ANGULAR,
-    LEX_LBRACE_ANGULAR,
-    LEX_RBRACE_PAREN,
-    LEX_LBRACE_PAREN,
-    LEX_RBRACE_CURLY,
-    LEX_LBRACE_CURLY,
-    LEX_RBRACE_SQUARE,
-    LEX_LBRACE_SQUARE,
-    LEX_ASSIGN,
-    LEX_PLUS,
-    LEX_MINUS,
-    LEX_ASTERIX,
-    LEX_FSLASH,
-    LEX_BSLASH,
-    LEX_PERCENT,
-    LEX_COMMA,
-    LEX_COLON,
-    LEX_SEMICOLON,
-    LEX_DOT,
-    LEX_SQUOTE,
-    LEX_DQUOTE,
-    LEX_BACKTICK,
-    LEX_QUESTION,
-    LEX_ATRATE,
-    LEX_KWD_SET,
-    LEX_LITERAL_CHAR,
-    LEX_LITERAL_INT,
-    LEX_LITERAL_FLOAT,
-    LEX_LITERAL_STR,
-    LEX_IDENTIFIER,
-    LEX_INVALID
-};
-
 struct LexBuffer {
     char *buffer;
     size_t push_i;
     size_t size;
 };
 
+LexBuffer *lex_buffer = NULL;
+int line_no = 1;
+
+char lex_fgetc(FILE *f);
 char lex_getchar(FILE *f);
 void lex_buffpush(char ch);
 bool lex_buffmatch(const char* tok);
@@ -80,19 +27,24 @@ bool lex_is_identifier();
 
 void lex_throw(const char *msg);
 
-LexBuffer *lex_buffer = NULL;
+char lex_fgetc(FILE *f)
+{
+    char c = fgetc(f);
+    if (c == '\n') line_no++;
+    return c;
+}
 
 char lex_getchar(FILE *f)
 {
-    char c = fgetc(f);
+    char c = lex_fgetc(f);
     if (!c || c == (char) EOF) return 0;
     if ((c > 0 && c <= 32 && c != '\t' && c != '\n' && c != '\r' && c != ' ') || c == 127)
         lex_throw("un-printable character found");
     if (c > 127) lex_throw("non-ascii symbol not recognized");
     // ignore single line comments and delimiters
     while ((c > 0 && c <= 32) || c == '#') {
-        if (c == '#') while (c != '\n') c = fgetc(f);
-        c = fgetc(f);
+        if (c == '#') while (c != '\n') c = lex_fgetc(f);
+        c = lex_fgetc(f);
     }
     return c;
 }
@@ -167,6 +119,7 @@ LexToken lex_get_nexttok(FILE *f)
         else if (lex_buffmatch("**"))    return LEX_EXPONENT;
         else if (lex_buffmatch("->"))    return LEX_SARROW;
         else if (lex_buffmatch("=>"))    return LEX_DARROW;
+        else if (lex_buffmatch("::"))    return LEX_DCOLON;
         else if (lex_buffmatch("|>"))    return LEX_PIPEOUT;
         else if (lex_buffmatch("!"))     return LEX_LOGICAL_NOT;
         else if (lex_buffmatch("&"))     return LEX_BITWISE_AND;
@@ -209,6 +162,68 @@ LexToken lex_get_nexttok(FILE *f)
     return LEX_INVALID;
 }
 
+char *lex_get_tokcode(LexToken code)
+{
+    switch(code) {
+        case LEX_KWD_START:              return "LEX_KWD_START";
+        case LEX_KWD_WHILE:              return "LEX_KWD_WHILE";
+        case LEX_KWD_CALC:               return "LEX_KWD_CALC";
+        case LEX_LOGICAL_IDENTICAL:      return "LEX_LOGICAL_IDENTICAL";
+        case LEX_LOGICAL_UNINDENTICAL:   return "LEX_LOGICAL_UNINDENTICAL";
+        case LEX_KWD_IF:                 return "LEX_KWD_IF";
+        case LEX_LOGICAL_AND:            return "LEX_LOGICAL_AND";
+        case LEX_LOGICAL_OR:             return "LEX_LOGICAL_OR";
+        case LEX_LOGICAL_EQUALITY:       return "LEX_LOGICAL_EQUALITY";
+        case LEX_LOGICAL_UNEQUALITY:     return "LEX_LOGICAL_UNEQUALITY";
+        case LEX_LOGICAL_GREATER_EQUAL:  return "LEX_LOGICAL_GREATER_EQUAL";
+        case LEX_LOGICAL_LESSER_EQUAL:   return "LEX_LOGICAL_LESSER_EQUAL";
+        case LEX_BITWISE_LSHIFT:         return "LEX_BITWISE_LSHIFT";
+        case LEX_BITWISE_RSHIFT:         return "LEX_BITWISE_RSHIFT";
+        case LEX_EXPONENT:               return "LEX_EXPONENT";
+        case LEX_SARROW:                 return "LEX_SARROW";
+        case LEX_DARROW:                 return "LEX_DARROW";
+        case LEX_DCOLON:                 return "LEX_DCOLON";
+        case LEX_PIPEOUT:                return "LEX_PIPEOUT";
+        case LEX_LOGICAL_NOT:            return "LEX_LOGICAL_NOT";
+        case LEX_BITWISE_AND:            return "LEX_BITWISE_AND";
+        case LEX_BITWISE_OR:             return "LEX_BITWISE_OR";
+        case LEX_BITWISE_NOT:            return "LEX_BITWISE_NOT";
+        case LEX_BITWISE_XOR:            return "LEX_BITWISE_XOR";
+        case LEX_RBRACE_ANGULAR:         return "LEX_RBRACE_ANGULAR";
+        case LEX_LBRACE_ANGULAR:         return "LEX_LBRACE_ANGULAR";
+        case LEX_RBRACE_PAREN:           return "LEX_RBRACE_PAREN";
+        case LEX_LBRACE_PAREN:           return "LEX_LBRACE_PAREN";
+        case LEX_RBRACE_CURLY:           return "LEX_RBRACE_CURLY";
+        case LEX_LBRACE_CURLY:           return "LEX_LBRACE_CURLY";
+        case LEX_RBRACE_SQUARE:          return "LEX_RBRACE_SQUARE";
+        case LEX_LBRACE_SQUARE:          return "LEX_LBRACE_SQUARE";
+        case LEX_ASSIGN:                 return "LEX_ASSIGN";
+        case LEX_PLUS:                   return "LEX_PLUS";
+        case LEX_MINUS:                  return "LEX_MINUS";
+        case LEX_ASTERIX:                return "LEX_ASTERIX";
+        case LEX_FSLASH:                 return "LEX_FSLASH";
+        case LEX_BSLASH:                 return "LEX_BSLASH";
+        case LEX_PERCENT:                return "LEX_PERCENT";
+        case LEX_COMMA:                  return "LEX_COMMA";
+        case LEX_COLON:                  return "LEX_COLON";
+        case LEX_SEMICOLON:              return "LEX_SEMICOLON";
+        case LEX_DOT:                    return "LEX_DOT";
+        case LEX_SQUOTE:                 return "LEX_SQUOTE";
+        case LEX_DQUOTE:                 return "LEX_DQUOTE";
+        case LEX_BACKTICK:               return "LEX_BACKTICK";
+        case LEX_QUESTION:               return "LEX_QUESTION";
+        case LEX_ATRATE:                 return "LEX_ATRATE";
+        case LEX_KWD_SET:                return "LEX_KWD_SET";
+        case LEX_LITERAL_CHAR:           return "LEX_LITERAL_CHAR";
+        case LEX_LITERAL_INT:            return "LEX_LITERAL_INT";
+        case LEX_LITERAL_FLOAT:          return "LEX_LITERAL_FLOAT";
+        case LEX_LITERAL_STR:            return "LEX_LITERAL_STR";
+        case LEX_IDENTIFIER:             return "LEX_IDENTIFIER";
+        case LEX_INVALID:                return "LEX_INVALID";
+        default:                         return "UNKNOWN";
+    }
+}
+
 char *lex_get_tokstr()
 {
     return lex_buffer->buffer;
@@ -217,7 +232,7 @@ char *lex_get_tokstr()
 void lex_throw(const char *msg)
 {
     if (msg) {
-        fprintf(stderr, "scsh: lexer error: %s\n", msg);
+        fprintf(stderr, "scsh: line %d: char 0x%02x: %s\n", line_no, lex_buffer->buffer[lex_buffer->push_i -1], msg);
         exit(1);
     } else abort();
 }
