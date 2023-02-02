@@ -1,39 +1,35 @@
-SRCEXT      := c
-OBJEXT      := o
-HEADEREXT   := h
+SRCEXT         := c
+OBJEXT         := o
+HEADEREXT      := h
 
 # directories
 
-SRC_DIR     := ../../src
-BUILD_DIR   := ../../build
-BIN_DIR     := ../../bin
-LIB_DIR     := ../../lib
-TEST_DIR    := ../../tests
-INCLUDE_DIR := ../../include
+TARGET_DIR        := ../../lib
 
 # compiler options
 
-LIB_NAME    := libdummy
+LIB_NAME       := libdummy
 
-CC          := gcc
-CFLAGS      := -Wall -Ofast
-CDBGFLAGS   := -Wall -g -D DEBUG
-DBG         := gdb -q
+CC             := gcc
+CFLAGS         := -Wall -Ofast
+CDBGFLAGS      := -Wall -g -D DEBUG
+DBG            := gdb -q
 
-all: $(LIB_DIR)/libdummy.a
+all: $(TARGET_DIR)/libdummy.a
 
-dbg: $(LIB_DIR)/libdummy-dbg.a
+dbg: $(TARGET_DIR)/libdummy-dbg.a
 
-$(LIB_DIR)/libdummy.a: dummy.$(SRCEXT)
+$(TARGET_DIR)/libdummy.a: dummy.$(SRCEXT)
 	$(CC) $(CFLAGS) -c -o dummy.$(OBJEXT) dummy.$(SRCEXT)
-	ar rcs $(LIB_DIR)/libdummy.a dummy.$(OBJEXT)
+	ar rcs $(TARGET_DIR)/libdummy.a dummy.$(OBJEXT)
 
-$(LIB_DIR)/libdummy-dbg.a: dummy.$(SRCEXT)
+$(TARGET_DIR)/libdummy-dbg.a: dummy.$(SRCEXT)
 	$(CC) $(CDBGFLAGS) -c -o dummy.$(OBJEXT) dummy.$(SRCEXT)
-	ar rcs $(LIB_DIR)/libdummy-dbg.a dummy.$(OBJEXT)
+	ar rcs $(TARGET_DIR)/libdummy-dbg.a dummy.$(OBJEXT)
 
 clean:
-	@rm -f $(LIB_DIR)/libdummy.a
+	@rm -f $(TARGET_DIR)/libdummy.a
+	@rm -f $(TARGET_DIR)/libdummy-dbg.a
 	@rm -f dummy.o
 
 cleaner: clean
