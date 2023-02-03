@@ -36,6 +36,12 @@ char lex_getc(FILE *f)
     return c;
 }
 
+int lex_ungetc(char c, FILE *f)
+{
+    if (c == '\n') line_no--;
+    return ungetc(c, f);
+}
+
 char lex_getchar(FILE *f)
 {
     char c = lex_getc(f);
