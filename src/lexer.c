@@ -18,6 +18,15 @@ LexBuffer *lex_buffer = NULL;
 int lex_line_no = 1;
 int lex_char_no = 0;
 
+const char lex_symbols[][4] = {
+   "===",  "!==",  "if",  "&&",  "||",  "==",  "!=",  ">=",
+   "<=",   "<<",   ">>",  "**",  "->",  "=>",  "::",  "|>",
+   "!",    "&",    "|",   "~",   "^",   ">",   "<",   ")",
+   "(",    "{",    "}",   "[",   "]",   "=",   "+",   "-",
+   "*",    "/",    "\\",  "%",   ",",   ":",   ";",   ".",
+   "'",    "\"",   "`",   "?",   "@",   "$"
+};
+
 char lex_getc(FILE *f);
 int lex_ungetc(char c, FILE *f);
 char lex_getchar(FILE *f);
@@ -125,54 +134,7 @@ LexToken lex_get_nexttok(FILE *f)
 {
     char curr = lex_getchar(f);
     while (curr) {
-        lex_buffpush(curr);
-        if (lex_buffmatch("==="))   return LEX_LOGICAL_IDENTICAL;
-        if (lex_buffmatch("!=="))   return LEX_LOGICAL_UNINDENTICAL;
-        if (lex_buffmatch("if"))    return LEX_KWD_IF;
-        if (lex_buffmatch("&&"))    return LEX_LOGICAL_AND;
-        if (lex_buffmatch("||"))    return LEX_LOGICAL_OR;
-        if (lex_buffmatch("=="))    return LEX_LOGICAL_EQUALITY;
-        if (lex_buffmatch("!="))    return LEX_LOGICAL_UNEQUALITY;
-        if (lex_buffmatch(">="))    return LEX_LOGICAL_GREATER_EQUAL;
-        if (lex_buffmatch("<="))    return LEX_LOGICAL_LESSER_EQUAL;
-        if (lex_buffmatch("<<"))    return LEX_BITWISE_LSHIFT;
-        if (lex_buffmatch(">>"))    return LEX_BITWISE_RSHIFT;
-        if (lex_buffmatch("**"))    return LEX_EXPONENT;
-        if (lex_buffmatch("->"))    return LEX_SARROW;
-        if (lex_buffmatch("=>"))    return LEX_DARROW;
-        if (lex_buffmatch("::"))    return LEX_DCOLON;
-        if (lex_buffmatch("|>"))    return LEX_PIPEOUT;
-        if (lex_buffmatch("!"))     return LEX_LOGICAL_NOT;
-        if (lex_buffmatch("&"))     return LEX_BITWISE_AND;
-        if (lex_buffmatch("|"))     return LEX_BITWISE_OR;
-        if (lex_buffmatch("~"))     return LEX_BITWISE_NOT;
-        if (lex_buffmatch("^"))     return LEX_BITWISE_XOR;
-        if (lex_buffmatch(">"))     return LEX_RBRACE_ANGULAR;
-        if (lex_buffmatch("<"))     return LEX_LBRACE_ANGULAR;
-        if (lex_buffmatch(")"))     return LEX_RBRACE_PAREN;
-        if (lex_buffmatch("("))     return LEX_LBRACE_PAREN;
-        if (lex_buffmatch("{"))     return LEX_RBRACE_CURLY;
-        if (lex_buffmatch("}"))     return LEX_LBRACE_CURLY;
-        if (lex_buffmatch("["))     return LEX_RBRACE_SQUARE;
-        if (lex_buffmatch("]"))     return LEX_LBRACE_SQUARE;
-        if (lex_buffmatch("="))     return LEX_ASSIGN;
-        if (lex_buffmatch("+"))     return LEX_PLUS;
-        if (lex_buffmatch("-"))     return LEX_MINUS;
-        if (lex_buffmatch("*"))     return LEX_ASTERIX;
-        if (lex_buffmatch("/"))     return LEX_FSLASH;
-        if (lex_buffmatch("\\"))    return LEX_BSLASH;
-        if (lex_buffmatch("%"))     return LEX_PERCENT;
-        if (lex_buffmatch(","))     return LEX_COMMA;
-        if (lex_buffmatch(":"))     return LEX_COLON;
-        if (lex_buffmatch(";"))     return LEX_SEMICOLON;
-        if (lex_buffmatch("."))     return LEX_DOT;
-        if (lex_buffmatch("'"))     return LEX_SQUOTE;
-        if (lex_buffmatch("\""))    return LEX_DQUOTE;
-        if (lex_buffmatch("`"))     return LEX_BACKTICK;
-        if (lex_buffmatch("?"))     return LEX_QUESTION;
-        if (lex_buffmatch("@"))     return LEX_ATRATE;
-        if (lex_buffmatch("$"))     return LEX_KWD_SET;
-        else lex_throw("syntax error");
+        lex_throw("not implemented");
         curr = lex_getchar(f);
     }
     return LEX_INVALID;
