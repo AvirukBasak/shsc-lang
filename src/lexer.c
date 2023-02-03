@@ -15,8 +15,10 @@ struct LexBuffer {
 LexBuffer *lex_buffer = NULL;
 int line_no = 1;
 
-char lex_fgetc(FILE *f);
+char lex_getc(FILE *f);
+int lex_ungetc(char c, FILE *f);
 char lex_getchar(FILE *f);
+bool lex_isalmun_undr(char c);
 void lex_buffpush(char ch);
 bool lex_buffmatch(const char* tok);
 bool lex_is_char_literal();
