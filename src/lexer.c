@@ -29,24 +29,24 @@ bool lex_is_identifier();
 
 void lex_throw(const char *msg);
 
-char lex_fgetc(FILE *f)
+char lex_getc(FILE *f)
 {
-    char c = fgetc(f);
+    char c = getc(f);
     if (c == '\n') line_no++;
     return c;
 }
 
 char lex_getchar(FILE *f)
 {
-    char c = lex_fgetc(f);
+    char c = lex_getc(f);
     if (!c || c == (char) EOF) return 0;
     if ((c > 0 && c <= 32 && c != '\t' && c != '\n' && c != '\r' && c != ' ') || c == 127)
         lex_throw("un-printable character found");
     if (c > 127) lex_throw("non-ascii symbol not recognized");
     // ignore single line comments and delimiters
     while ((c > 0 && c <= 32) || c == '#') {
-        if (c == '#') while (c != '\n') c = lex_fgetc(f);
-        c = lex_fgetc(f);
+        if (c == '#') while (c != '\n') c = lex_getc(f);
+        c = lex_getc(f);
     }
     return c;
 }
