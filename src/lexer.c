@@ -220,6 +220,7 @@ char *lex_get_tokcode(LexToken code)
         case LEX_LITERAL_STR:            return "LEX_LITERAL_STR";
         case LEX_IDENTIFIER:             return "LEX_IDENTIFIER";
         case LEX_INVALID:                return "LEX_INVALID";
+        case LEX_EOF:                    return "LEX_EOF";
         default:                         return "UNKNOWN";
     }
 }

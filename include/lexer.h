@@ -68,7 +68,8 @@ enum LexToken {
     LEX_LITERAL_FLOAT,
     LEX_LITERAL_STR,
     LEX_IDENTIFIER,
-    LEX_INVALID
+    LEX_INVALID,
+    LEX_EOF
 };
 
 LexToken lex_get_nexttok(FILE *f);
