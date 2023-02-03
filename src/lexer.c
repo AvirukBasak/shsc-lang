@@ -13,7 +13,9 @@ struct LexBuffer {
 };
 
 LexBuffer *lex_buffer = NULL;
-int line_no = 1;
+
+int lex_line_no = 1;
+int lex_char_no = 0;
 
 char lex_getc(FILE *f);
 int lex_ungetc(char c, FILE *f);
@@ -32,13 +34,15 @@ void lex_throw(const char *msg);
 char lex_getc(FILE *f)
 {
     char c = getc(f);
-    if (c == '\n') line_no++;
+    if (c == '\n') lex_line_no++;
+    lex_char_no++;
     return c;
 }
 
 int lex_ungetc(char c, FILE *f)
 {
-    if (c == '\n') line_no--;
+    if (c == '\n') lex_line_no--;
+    lex_char_no--;
     return ungetc(c, f);
 }
 
@@ -238,7 +242,7 @@ char *lex_get_tokstr()
 void lex_throw(const char *msg)
 {
     if (msg) {
-        fprintf(stderr, "scsh: line %d: char 0x%02x: %s\n", line_no, lex_buffer->buffer[lex_buffer->push_i -1], msg);
+        fprintf(stderr, "scsh: line %d: char %d: %s\n", lex_line_no, lex_char_no, msg);
         exit(1);
     } else abort();
 }

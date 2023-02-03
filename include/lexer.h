@@ -72,6 +72,9 @@ enum LexToken {
     LEX_EOF
 };
 
+extern int lex_line_no;
+extern int lex_char_no;
+
 LexToken lex_get_nexttok(FILE *f);
 char *lex_get_tokcode(LexToken code);
 char *lex_get_tokstr();
