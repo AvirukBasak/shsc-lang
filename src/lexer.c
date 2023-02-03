@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "io.h"
 #include "lexer.h"
 
 struct LexBuffer {
@@ -20,6 +21,7 @@ int lex_char_no = 0;
 char lex_getc(FILE *f);
 int lex_ungetc(char c, FILE *f);
 char lex_getchar(FILE *f);
+bool lex_is_printable(char c);
 bool lex_isalmun_undr(char c);
 void lex_buffpush(char ch);
 bool lex_buffmatch(const char* tok);
@@ -34,15 +36,15 @@ void lex_throw(const char *msg);
 char lex_getc(FILE *f)
 {
     char c = getc(f);
-    if (c == '\n') lex_line_no++;
-    lex_char_no++;
+    if (c == '\n') { lex_line_no++; lex_char_no = 0; }
+    else if (lex_is_printable(c)) lex_char_no++;
     return c;
 }
 
 int lex_ungetc(char c, FILE *f)
 {
-    if (c == '\n') lex_line_no--;
-    lex_char_no--;
+    if (c == '\n') { lex_line_no--; lex_char_no = -1; }
+    else if (lex_is_printable(c)) lex_char_no--;
     return ungetc(c, f);
 }
 
@@ -50,7 +52,7 @@ char lex_getchar(FILE *f)
 {
     char c = lex_getc(f);
     if (!c || c == (char) EOF) return 0;
-    if ((c > 0 && c <= 32 && c != '\t' && c != '\n' && c != '\r' && c != ' ') || c == 127)
+    if (!lex_is_printable(c))
         lex_throw("un-printable character found");
     if (c > 127) lex_throw("non-ascii symbol not recognized");
     // ignore single line comments and delimiters
@@ -59,6 +61,11 @@ char lex_getchar(FILE *f)
         c = lex_getc(f);
     }
     return c;
+}
+
+bool lex_is_printable(char c)
+{
+    return (c >= 32 && c < 127) || c != '\t' || c != '\n' || c != '\r';
 }
 
 bool lex_isalmun_undr(char c)
@@ -242,7 +249,7 @@ char *lex_get_tokstr()
 void lex_throw(const char *msg)
 {
     if (msg) {
-        fprintf(stderr, "scsh: line %d: char %d: %s\n", lex_line_no, lex_char_no, msg);
+        io_print_srcerr(lex_line_no, lex_char_no, "lexer error: %s", msg);
         exit(1);
     } else abort();
 }
