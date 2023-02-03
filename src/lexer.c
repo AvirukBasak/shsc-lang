@@ -57,6 +57,11 @@ char lex_getchar(FILE *f)
     return c;
 }
 
+bool lex_isalmun_undr(char c)
+{
+    return isalnum(c) || c == '_';
+}
+
 void lex_buffpush(char ch)
 {
     if (!lex_buffer) lex_buffer = calloc(1, sizeof(LexBuffer));
