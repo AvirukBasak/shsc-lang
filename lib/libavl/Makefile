@@ -84,7 +84,7 @@ testdbg: dbg $(TESTSRC)
 
 mkdirp:
 	@mkdir -p $(BUILD_DIR)
-	# @mkdir -p $(TARGET_DIR)
+	@#mkdir -p $(TARGET_DIR)
 
 ## cleanup
 
