@@ -17,7 +17,7 @@ int main(int argc, char **argv)
         if (!f) io_errndie("couldn't read file: '%s'", argv[i]);
         LexToken tok = lex_get_nexttok(f);
         while (tok != LEX_EOF) {
-            printf("%s: %s\n", lex_get_tokcode(tok), lex_get_tokstr());
+            printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
             tok = lex_get_nexttok(f);
         }
         printf("%s\n", lex_get_tokcode(tok));

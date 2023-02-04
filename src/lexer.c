@@ -125,6 +125,12 @@ void lex_buffreset()
     lex_buffer->buffer[lex_buffer->push_i = 0] = 0;
 }
 
+char *lex_get_buffstr()
+{
+    if (!lex_buffer->push_i) return "NULL";
+    return lex_buffer->buffer;
+}
+
 char lex_getc(FILE *f)
 {
     char c = getc(f);
@@ -338,12 +344,6 @@ char *lex_get_tokcode(LexToken code)
         case LEX_INVALID:               return "LEX_INVALID";
         default:                        return "UNKNOWN";
     }
-}
-
-char *lex_get_tokstr()
-{
-    if (!lex_buffer->push_i) return "NULL";
-    return lex_buffer->buffer;
 }
 
 void lex_throw(const char *msg)
