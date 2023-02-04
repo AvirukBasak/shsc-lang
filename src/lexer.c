@@ -201,8 +201,7 @@ LexToken lex_get_nexttok(FILE *f)
 {
     lex_buffreset();
     char c0 = lex_getc(f);
-    while (c0 == '\t' || c0 == '\n' || c0 == '\r' || c0 == ' ')
-        c0 = lex_getc(f);
+    while (lex_is_delimiter(c0)) c0 = lex_getc(f);
     switch (c0) {
         case '!': {
             char c1 = lex_getc(f);
@@ -350,8 +349,7 @@ char *lex_get_tokstr()
 
 void lex_throw(const char *msg)
 {
-    if (msg) {
-        io_print_srcerr(lex_line_no, lex_char_no, "lexer error: %s", msg);
-        exit(1);
-    } else abort();
+    if (!msg) abort();
+    io_print_srcerr(lex_line_no, lex_char_no, "lexer error: %s", msg);
+    exit(1);
 }
