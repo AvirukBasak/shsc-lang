@@ -45,13 +45,13 @@ void lex_throw(const char *msg);
 // contributor's warning: ensure tokens are alphabetically sorted
 void lex_init()
 {
-    lex_tokens[LEX_LOGICAL_NOT]           = "!";
+    lex_tokens[LEX_BANG]                  = "!";
     lex_tokens[LEX_LOGICAL_UNEQUAL]       = "!=";
     lex_tokens[LEX_LOGICAL_UNIDENTICAL]   = "!==";
     lex_tokens[LEX_DQUOTE]                = "\"";
     lex_tokens[LEX_DOLLAR]                = "$";
     lex_tokens[LEX_PERCENT]               = "%";
-    lex_tokens[LEX_BITWISE_AND]           = "&";
+    lex_tokens[LEX_AMPERSAND]             = "&";
     lex_tokens[LEX_LOGICAL_AND]           = "&&";
     lex_tokens[LEX_SQUOTE]                = "'";
     lex_tokens[LEX_LBRACE_PAREN]          = "(";
@@ -80,14 +80,14 @@ void lex_init()
     lex_tokens[LEX_LOGICAL_GREATER_EQUAL] = ">=";
     lex_tokens[LEX_BITWISE_RSHIFT]        = ">>";
     lex_tokens[LEX_QUESTION]              = "?";
-    lex_tokens[LEX_ATRATE]                = "@";
+    lex_tokens[LEX_AT]                    = "@";
     lex_tokens[LEX_LBRACE_SQUARE]         = "[";
     lex_tokens[LEX_BSLASH]                = "\\";
     lex_tokens[LEX_RBRACE_SQUARE]         = "]";
     lex_tokens[LEX_CARET]                 = "^";
     lex_tokens[LEX_BACKTICK]              = "`";
     lex_tokens[LEX_LBRACE_CURLY]          = "{";
-    lex_tokens[LEX_BITWISE_OR]            = "|";
+    lex_tokens[LEX_PIPE]                  = "|";
     lex_tokens[LEX_PIPEOUT]               = "|>";
     lex_tokens[LEX_LOGICAL_OR]            = "||";
     lex_tokens[LEX_RBRACE_CURLY]          = "}";
@@ -216,7 +216,7 @@ LexToken lex_get_nexttok(FILE *f)
                 }
                 default: lex_ungetc(c1, f);
             }
-            return LEX_LOGICAL_NOT;
+            return LEX_BANG;
         }
         case '"':         return LEX_DQUOTE;
         case '$':         return LEX_DOLLAR;
@@ -266,7 +266,7 @@ LexToken lex_get_nexttok(FILE *f)
             return LEX_INVALID;
         }
         case '?':         return LEX_QUESTION;
-        case '@':         return LEX_ATRATE;
+        case '@':         return LEX_AT;
         case '[':         return LEX_LBRACE_SQUARE;
         case '\\':        return LEX_BSLASH;
         case ']':         return LEX_RBRACE_SQUARE;
@@ -288,13 +288,13 @@ char *lex_get_tokcode(LexToken code)
 {
     // contributor's warning: ensure tokens are sorted according to the order in lex_init()
     switch(code) {
-        case LEX_LOGICAL_NOT:           return "LEX_LOGICAL_NOT";
+        case LEX_BANG:                  return "LEX_BANG";
         case LEX_LOGICAL_UNEQUAL:       return "LEX_LOGICAL_UNEQUAL";
         case LEX_LOGICAL_UNIDENTICAL:   return "LEX_LOGICAL_UNIDENTICAL";
         case LEX_DQUOTE:                return "LEX_DQUOTE";
         case LEX_DOLLAR:                return "LEX_DOLLAR";
         case LEX_PERCENT:               return "LEX_PERCENT";
-        case LEX_BITWISE_AND:           return "LEX_BITWISE_AND";
+        case LEX_AMPERSAND:             return "LEX_AMPERSAND";
         case LEX_LOGICAL_AND:           return "LEX_LOGICAL_AND";
         case LEX_SQUOTE:                return "LEX_SQUOTE";
         case LEX_LBRACE_PAREN:          return "LEX_LBRACE_PAREN";
@@ -323,14 +323,14 @@ char *lex_get_tokcode(LexToken code)
         case LEX_LOGICAL_GREATER_EQUAL: return "LEX_LOGICAL_GREATER_EQUAL";
         case LEX_BITWISE_RSHIFT:        return "LEX_BITWISE_RSHIFT";
         case LEX_QUESTION:              return "LEX_QUESTION";
-        case LEX_ATRATE:                return "LEX_ATRATE";
+        case LEX_AT:                    return "LEX_AT";
         case LEX_LBRACE_SQUARE:         return "LEX_LBRACE_SQUARE";
         case LEX_BSLASH:                return "LEX_BSLASH";
         case LEX_RBRACE_SQUARE:         return "LEX_RBRACE_SQUARE";
         case LEX_CARET:                 return "LEX_CARET";
         case LEX_BACKTICK:              return "LEX_BACKTICK";
         case LEX_LBRACE_CURLY:          return "LEX_LBRACE_CURLY";
-        case LEX_BITWISE_OR:            return "LEX_BITWISE_OR";
+        case LEX_PIPE:                  return "LEX_PIPE";
         case LEX_PIPEOUT:               return "LEX_PIPEOUT";
         case LEX_LOGICAL_OR:            return "LEX_LOGICAL_OR";
         case LEX_RBRACE_CURLY:          return "LEX_RBRACE_CURLY";
