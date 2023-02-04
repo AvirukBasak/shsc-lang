@@ -10,6 +10,9 @@
 #define LEX_MAX_BUFFALLOC_SZ   (64)
 #define LEX_MAX_IDENTIFIER_LEN (64)
 
+#define LEX_TOTAL_TOKENS       (46)
+#define LEX_TOKEN_SIZE         (32)
+
 typedef enum LexToken LexToken;
 typedef struct LexBuffer LexBuffer;
 
