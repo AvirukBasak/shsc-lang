@@ -56,8 +56,10 @@ void lex_init()
     lex_tokens[LEX_ASTERIX]               = "*";
     lex_tokens[LEX_EXPONENT]              = "**";
     lex_tokens[LEX_PLUS]                  = "+";
+    lex_tokens[LEX_INCREMENT]             = "++";
     lex_tokens[LEX_COMMA]                 = ",";
     lex_tokens[LEX_MINUS]                 = "-";
+    lex_tokens[LEX_DECREMENT]             = "--";
     lex_tokens[LEX_SARROW]                = "->";
     lex_tokens[LEX_DOT]                   = ".";
     lex_tokens[LEX_FSLASH]                = "/";
@@ -326,8 +328,10 @@ char *lex_get_tokcode(LexToken code)
         case LEX_ASTERIX:               return "LEX_ASTERIX";
         case LEX_EXPONENT:              return "LEX_EXPONENT";
         case LEX_PLUS:                  return "LEX_PLUS";
+        case LEX_INCREMENT:             return "LEX_INCREMENT";
         case LEX_COMMA:                 return "LEX_COMMA";
         case LEX_MINUS:                 return "LEX_MINUS";
+        case LEX_DECREMENT:             return "LEX_DECREMENT";
         case LEX_SARROW:                return "LEX_SARROW";
         case LEX_DOT:                   return "LEX_DOT";
         case LEX_FSLASH:                return "LEX_FSLASH";
