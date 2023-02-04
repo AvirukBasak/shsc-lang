@@ -65,11 +65,11 @@ bool lex_is_identifier()
 }
 
 // the lexer state machine
-#include "lex_match.c.h"
+#include "lex_match_symbols.c.h"
 
 LexToken lex_get_nexttok(FILE *f)
 {
-    return lex_match(f);
+    return lex_match_symbols(f);
 }
 
 #include "lex_tokens.c.h"
