@@ -16,6 +16,7 @@
 typedef enum LexToken LexToken;
 typedef struct LexBuffer LexBuffer;
 
+// contributor's warning: ensure tokens are sorted according to the order in lex_init()
 enum LexToken {
     LEX_LOGICAL_NOT,           // "!"
     LEX_LOGICAL_UNEQUAL,       // "!="

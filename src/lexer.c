@@ -40,6 +40,7 @@ bool lex_is_identifier();
 
 void lex_throw(const char *msg);
 
+// contributor's warning: ensure tokens are alphabetically sorted
 void lex_init()
 {
     lex_tokens[LEX_LOGICAL_NOT]           = "!";
@@ -269,6 +270,7 @@ LexToken lex_get_nexttok(FILE *f)
 
 char *lex_get_tokcode(LexToken code)
 {
+    // contributor's warning: ensure tokens are sorted according to the order in lex_init()
     switch(code) {
         case LEX_LOGICAL_NOT:           return "LEX_LOGICAL_NOT";
         case LEX_LOGICAL_UNEQUAL:       return "LEX_LOGICAL_UNEQUAL";
