@@ -146,7 +146,7 @@ char lex_getc(FILE *f)
     }
     else if (c == '\n') { lex_line_no++; lex_char_no = 0; }
     else if (lex_is_printable(c)) lex_char_no++;
-    lex_buffpush(c);
+    if (!lex_is_delimiter(c)) lex_buffpush(c);
     return c;
 }
 
@@ -199,10 +199,10 @@ bool lex_is_identifier()
 // the lexer state machine
 LexToken lex_get_nexttok(FILE *f)
 {
+    lex_buffreset();
     char c0 = lex_getc(f);
     while (c0 == '\t' || c0 == '\n' || c0 == '\r' || c0 == ' ')
         c0 = lex_getc(f);
-    lex_buffreset();
     switch (c0) {
         case '!': {
             char c1 = lex_getc(f);
