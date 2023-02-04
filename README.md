@@ -6,4 +6,6 @@ World's most sh*tty scripting language.
 - copy the executable from `taget/`.
 
 #### Todo
-- Switch to AVL BST map.
+- Finish the lexer
+- Add short-hand assignment operators
+- Add support for keywords to the lexer
