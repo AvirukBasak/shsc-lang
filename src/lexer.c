@@ -113,14 +113,23 @@ void lex_buffreset()
 char lex_getc(FILE *f)
 {
     char c = getc(f);
-    if (c == '\n') { lex_line_no++; lex_char_no = 0; }
-    else if (lex_is_printable(c)) lex_char_no++;
+    if (!c) return 0;
+    if (c == (char) EOF) return (char) EOF;
     if (!lex_is_printable(c))
         lex_throw("un-printable character found");
-    if (c > 127) lex_throw("non-ascii symbol not recognized");
+    if (c > 127) lex_throw("non-ascii symbol found");
     // ignore single line comments
-    if (c == '#')
-        while (c != '\n') c = lex_getc(f);
+    if (c == '#') while (c != '\n') {
+        c = getc(f);
+        if (!c) return 0;
+        if (c == (char) EOF) return (char) EOF;
+        if (!lex_is_printable(c))
+            lex_throw("un-printable character found");
+        if (c == '\n') { lex_line_no++; lex_char_no = 0; }
+        else if (lex_is_printable(c)) lex_char_no++;
+    }
+    else if (c == '\n') { lex_line_no++; lex_char_no = 0; }
+    else if (lex_is_printable(c)) lex_char_no++;
     lex_buffpush(c);
     return c;
 }
@@ -136,7 +145,7 @@ int lex_ungetc(char c, FILE *f)
 
 bool lex_is_printable(char c)
 {
-    return (c >= 32 && c < 127) || c != '\t' || c != '\n' || c != '\r';
+    return (c >= 32 && c < 127) || c == '\t' || c == '\n' || c == '\r';
 }
 
 bool lex_isalmun_undr(char c)
@@ -343,7 +352,8 @@ char *lex_get_tokcode(LexToken code)
 
 char *lex_get_tokstr()
 {
-    return lex_buffer ? lex_buffer->buffer : "NULL";
+    if (!lex_buffer->push_i) return "NULL";
+    return lex_buffer->buffer;
 }
 
 void lex_throw(const char *msg)
