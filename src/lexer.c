@@ -31,6 +31,7 @@ bool lex_is_printable(char c);
 bool lex_isalmun_undr(char c);
 
 void lex_buffpush(char ch);
+char lex_buffpop();
 void lex_buffreset();
 
 bool lex_is_char_literal();
@@ -108,6 +109,17 @@ void lex_buffpush(char ch)
     lex_buffer->buffer[lex_buffer->push_i] = 0;
 }
 
+char lex_buffpop()
+{
+    if (!lex_buffer) abort();
+    char tmp = 0;
+    if (lex_buffer->push_i > 0) {
+        tmp = lex_buffer->buffer[lex_buffer->push_i -1];
+        lex_buffer->buffer[--lex_buffer->push_i] = 0;
+    }
+    return tmp;
+}
+
 void lex_buffreset()
 {
     if (!lex_buffer) return;
@@ -142,14 +154,13 @@ int lex_ungetc(char c, FILE *f)
 {
     if (c == '\n') { lex_line_no--; lex_char_no = -1; }
     else if (lex_is_printable(c)) lex_char_no--;
-    if (lex_buffer->push_i >= 0)
-        lex_buffer->buffer[--lex_buffer->push_i] = 0;
+    if (!lex_is_delimiter(c)) lex_buffpop();
     return ungetc(c, f);
 }
 
 bool lex_is_delimiter(char c)
 {
-    return c == '\t' || c == '\n' || c == '\r';
+    return c == '\t' || c == '\n' || c == '\r' || c == ' ';
 }
 
 bool lex_is_printable(char c)
