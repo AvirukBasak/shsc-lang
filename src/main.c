@@ -16,10 +16,11 @@ int main(int argc, char **argv)
             fopen(argv[i], "r");
         if (!f) io_errndie("couldn't read file: '%s'", argv[i]);
         LexToken tok = lex_get_nexttok(f);
-        do {
+        while (tok != LEX_EOF) {
             printf("%s: %s\n", lex_get_tokcode(tok), lex_get_tokstr());
             tok = lex_get_nexttok(f);
-        } while (tok != LEX_INVALID);
+        }
+        printf("%s\n", lex_get_tokcode(tok));
         if (f != stdin) fclose(f);
     }
     return 0;

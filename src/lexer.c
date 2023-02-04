@@ -71,11 +71,9 @@ char lex_getchar(FILE *f)
     if (!lex_is_printable(c))
         lex_throw("un-printable character found");
     if (c > 127) lex_throw("non-ascii symbol not recognized");
-    // ignore single line comments and delimiters
-    while ((c > 0 && c <= 32) || c == '#') {
-        if (c == '#') while (c != '\n') c = lex_getc(f);
-        c = lex_getc(f);
-    }
+    // ignore single line comments
+    if (c == '#')
+        while (c != '\n') c = lex_getc(f);
     return c;
 }
 
@@ -141,6 +139,9 @@ bool lex_is_identifier()
 LexToken lex_get_nexttok(FILE *f)
 {
     char c0 = lex_getchar(f);
+    while (c0 == '\t' || c0 == '\n' || c0 == '\r' || c0 == ' ')
+        c0 = lex_getchar(f);
+    if (lex_buffer) lex_buffer->push_i = 0;
     switch (c0) {
         case '=': {
             char c1 = lex_getchar(f);
@@ -257,7 +258,7 @@ LexToken lex_get_nexttok(FILE *f)
             break;
         }
         case (char) EOF: {
-            break;
+            return LEX_EOF;
         }
         default: {
             return LEX_INVALID;
