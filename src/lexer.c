@@ -26,6 +26,7 @@ void lex_init();
 char lex_getc(FILE *f);
 int lex_ungetc(char c, FILE *f);
 
+bool lex_is_delimiter(char c);
 bool lex_is_printable(char c);
 bool lex_isalmun_undr(char c);
 
@@ -146,9 +147,14 @@ int lex_ungetc(char c, FILE *f)
     return ungetc(c, f);
 }
 
+bool lex_is_delimiter(char c)
+{
+    return c == '\t' || c == '\n' || c == '\r';
+}
+
 bool lex_is_printable(char c)
 {
-    return (c >= 32 && c < 127) || c == '\t' || c == '\n' || c == '\r';
+    return (c >= 32 && c < 127) || lex_is_delimiter(c);
 }
 
 bool lex_isalmun_undr(char c)
