@@ -201,51 +201,31 @@ LexToken lex_get_nexttok(FILE *f)
             }
             return LEX_LOGICAL_NOT;
         }
-        case '"': {
-            return LEX_INVALID;
-        }
-        case '$': {
-            return LEX_INVALID;
-        }
-        case '%': {
-            return LEX_INVALID;
-        }
+        case '"':         return LEX_DQUOTE;
+        case '$':         return LEX_DOLLAR;
+        case '%':         return LEX_PERCENT;
         case '&': {
             return LEX_INVALID;
         }
-        case '\'': {
-            return LEX_INVALID;
-        }
-        case '(': {
-            return LEX_INVALID;
-        }
-        case ')': {
-            return LEX_INVALID;
-        }
+        case '\'':        return LEX_SQUOTE;
+        case '(':         return LEX_LBRACE_PAREN;
+        case ')':         return LEX_RBRACE_PAREN;
         case '*': {
             return LEX_INVALID;
         }
         case '+': {
             return LEX_INVALID;
         }
-        case ',': {
-            return LEX_INVALID;
-        }
+        case ',':         return LEX_COMMA;
         case '-': {
             return LEX_INVALID;
         }
-        case '.': {
-            return LEX_INVALID;
-        }
-        case '/': {
-            return LEX_INVALID;
-        }
+        case '.':         return LEX_DOT;
+        case '/':         return LEX_FSLASH;
         case ':': {
             return LEX_INVALID;
         }
-        case ';': {
-            return LEX_INVALID;
-        }
+        case ';':         return LEX_SEMICOLON;
         case '<': {
             return LEX_INVALID;
         }
@@ -268,45 +248,21 @@ LexToken lex_get_nexttok(FILE *f)
         case '>': {
             return LEX_INVALID;
         }
-        case '?': {
-            return LEX_INVALID;
-        }
-        case '@': {
-            return LEX_INVALID;
-        }
-        case '[': {
-            return LEX_INVALID;
-        }
-        case '\\': {
-            return LEX_INVALID;
-        }
-        case ']': {
-            return LEX_INVALID;
-        }
-        case '^': {
-            return LEX_INVALID;
-        }
-        case '`': {
-            return LEX_INVALID;
-        }
-        case '{': {
-            return LEX_INVALID;
-        }
+        case '?':         return LEX_QUESTION;
+        case '@':         return LEX_ATRATE;
+        case '[':         return LEX_LBRACE_SQUARE;
+        case '\\':        return LEX_BSLASH;
+        case ']':         return LEX_RBRACE_SQUARE;
+        case '^':         return LEX_CARET;
+        case '`':         return LEX_BACKTICK;
+        case '{':         return LEX_LBRACE_CURLY;
         case '|': {
             return LEX_INVALID;
         }
-        case '}': {
-            return LEX_INVALID;
-        }
-        case '~': {
-            return LEX_INVALID;
-        }
-        case (char) EOF: {
-            return LEX_EOF;
-        }
-        default: {
-            return LEX_INVALID;
-        }
+        case '}':         return LEX_INVALID;
+        case '~':         return LEX_BITWISE_NOT;
+        case (char) EOF:  return LEX_EOF;
+        default:          return LEX_INVALID;
     }
     return LEX_INVALID;
 }
