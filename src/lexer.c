@@ -19,10 +19,6 @@ LexBuffer *lex_buffer = NULL;
 int lex_line_no = 1;
 int lex_char_no = 0;
 
-char *lex_tokens[LEX_TOTAL_TOKENS];
-
-void lex_init();
-
 char lex_getc(FILE *f);
 int lex_ungetc(char c, FILE *f);
 
@@ -42,58 +38,61 @@ bool lex_is_identifier();
 
 void lex_throw(const char *msg);
 
-// contributor's warning: ensure tokens are alphabetically sorted
-void lex_init()
+char *lex_get_symbol(LexToken code)
 {
-    lex_tokens[LEX_BANG]                  = "!";
-    lex_tokens[LEX_LOGICAL_UNEQUAL]       = "!=";
-    lex_tokens[LEX_LOGICAL_UNIDENTICAL]   = "!==";
-    lex_tokens[LEX_DQUOTE]                = "\"";
-    lex_tokens[LEX_DOLLAR]                = "$";
-    lex_tokens[LEX_PERCENT]               = "%";
-    lex_tokens[LEX_AMPERSAND]             = "&";
-    lex_tokens[LEX_LOGICAL_AND]           = "&&";
-    lex_tokens[LEX_SQUOTE]                = "'";
-    lex_tokens[LEX_LBRACE_PAREN]          = "(";
-    lex_tokens[LEX_RBRACE_PAREN]          = ")";
-    lex_tokens[LEX_ASTERIX]               = "*";
-    lex_tokens[LEX_EXPONENT]              = "**";
-    lex_tokens[LEX_PLUS]                  = "+";
-    lex_tokens[LEX_INCREMENT]             = "++";
-    lex_tokens[LEX_COMMA]                 = ",";
-    lex_tokens[LEX_MINUS]                 = "-";
-    lex_tokens[LEX_DECREMENT]             = "--";
-    lex_tokens[LEX_SARROW]                = "->";
-    lex_tokens[LEX_DOT]                   = ".";
-    lex_tokens[LEX_FSLASH]                = "/";
-    lex_tokens[LEX_COLON]                 = ":";
-    lex_tokens[LEX_DCOLON]                = "::";
-    lex_tokens[LEX_SEMICOLON]             = ";";
-    lex_tokens[LEX_LBRACE_ANGULAR]        = "<";
-    lex_tokens[LEX_BITWISE_LSHIFT]        = "<<";
-    lex_tokens[LEX_LOGICAL_LESSER_EQUAL]  = "<=";
-    lex_tokens[LEX_ASSIGN]                = "=";
-    lex_tokens[LEX_LOGICAL_EQUAL]         = "==";
-    lex_tokens[LEX_LOGICAL_IDENTICAL]     = "===";
-    lex_tokens[LEX_DARROW]                = "=>";
-    lex_tokens[LEX_RBRACE_ANGULAR]        = ">";
-    lex_tokens[LEX_LOGICAL_GREATER_EQUAL] = ">=";
-    lex_tokens[LEX_BITWISE_RSHIFT]        = ">>";
-    lex_tokens[LEX_QUESTION]              = "?";
-    lex_tokens[LEX_AT]                    = "@";
-    lex_tokens[LEX_LBRACE_SQUARE]         = "[";
-    lex_tokens[LEX_BSLASH]                = "\\";
-    lex_tokens[LEX_RBRACE_SQUARE]         = "]";
-    lex_tokens[LEX_CARET]                 = "^";
-    lex_tokens[LEX_BACKTICK]              = "`";
-    lex_tokens[LEX_LBRACE_CURLY]          = "{";
-    lex_tokens[LEX_PIPE]                  = "|";
-    lex_tokens[LEX_PIPEOUT]               = "|>";
-    lex_tokens[LEX_LOGICAL_OR]            = "||";
-    lex_tokens[LEX_RBRACE_CURLY]          = "}";
-    lex_tokens[LEX_BITWISE_NOT]           = "~";
-    lex_tokens[LEX_EOF]                   = "<eof>";
-    lex_tokens[LEX_INVALID]               = "<invalid>";
+    // contributor's warning: ensure tokens are alphabetically sorted
+    switch (code) {
+        case LEX_BANG:                  return "!";
+        case LEX_LOGICAL_UNEQUAL:       return "!=";
+        case LEX_LOGICAL_UNIDENTICAL:   return "!==";
+        case LEX_DQUOTE:                return "\"";
+        case LEX_DOLLAR:                return "$";
+        case LEX_PERCENT:               return "%";
+        case LEX_AMPERSAND:             return "&";
+        case LEX_LOGICAL_AND:           return "&&";
+        case LEX_SQUOTE:                return "'";
+        case LEX_LBRACE_PAREN:          return "(";
+        case LEX_RBRACE_PAREN:          return ")";
+        case LEX_ASTERIX:               return "*";
+        case LEX_EXPONENT:              return "**";
+        case LEX_PLUS:                  return "+";
+        case LEX_INCREMENT:             return "++";
+        case LEX_COMMA:                 return ",";
+        case LEX_MINUS:                 return "-";
+        case LEX_DECREMENT:             return "--";
+        case LEX_SARROW:                return "->";
+        case LEX_DOT:                   return ".";
+        case LEX_FSLASH:                return "/";
+        case LEX_COLON:                 return ":";
+        case LEX_DCOLON:                return "::";
+        case LEX_SEMICOLON:             return ";";
+        case LEX_LBRACE_ANGULAR:        return "<";
+        case LEX_BITWISE_LSHIFT:        return "<<";
+        case LEX_LOGICAL_LESSER_EQUAL:  return "<=";
+        case LEX_ASSIGN:                return "=";
+        case LEX_LOGICAL_EQUAL:         return "==";
+        case LEX_LOGICAL_IDENTICAL:     return "===";
+        case LEX_DARROW:                return "=>";
+        case LEX_RBRACE_ANGULAR:        return ">";
+        case LEX_LOGICAL_GREATER_EQUAL: return ">=";
+        case LEX_BITWISE_RSHIFT:        return ">>";
+        case LEX_QUESTION:              return "?";
+        case LEX_AT:                    return "@";
+        case LEX_LBRACE_SQUARE:         return "[";
+        case LEX_BSLASH:                return "\\";
+        case LEX_RBRACE_SQUARE:         return "]";
+        case LEX_CARET:                 return "^";
+        case LEX_BACKTICK:              return "`";
+        case LEX_LBRACE_CURLY:          return "{";
+        case LEX_PIPE:                  return "|";
+        case LEX_PIPEOUT:               return "|>";
+        case LEX_LOGICAL_OR:            return "||";
+        case LEX_RBRACE_CURLY:          return "}";
+        case LEX_BITWISE_NOT:           return "~";
+        case LEX_EOF:                   return "<eof>";
+        case LEX_INVALID:               return "<invalid>";
+        default:                        return "<unknown>";
+    }
 }
 
 void lex_buffpush(char ch)
@@ -284,10 +283,10 @@ LexToken lex_get_nexttok(FILE *f)
     return LEX_INVALID;
 }
 
+// contributor's warning: ensure tokens are sorted according to the order in lex_get_symbol()
 char *lex_get_tokcode(LexToken code)
 {
-    // contributor's warning: ensure tokens are sorted according to the order in lex_init()
-    switch(code) {
+    switch (code) {
         case LEX_BANG:                  return "LEX_BANG";
         case LEX_LOGICAL_UNEQUAL:       return "LEX_LOGICAL_UNEQUAL";
         case LEX_LOGICAL_UNIDENTICAL:   return "LEX_LOGICAL_UNIDENTICAL";
