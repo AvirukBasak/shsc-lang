@@ -6,6 +6,7 @@
 
 #include "io.h"
 #include "lexer.h"
+#include "stack-int.h"
 
 struct LexBuffer {
     char *buffer;
@@ -18,22 +19,25 @@ LexBuffer *lex_buffer = NULL;
 int lex_line_no = 1;
 int lex_char_no = 0;
 
-const char lex_symbols[][4] = {
-   "===",  "!==",  "if",  "&&",  "||",  "==",  "!=",  ">=",
-   "<=",   "<<",   ">>",  "**",  "->",  "=>",  "::",  "|>",
-   "!",    "&",    "|",   "~",   "^",   ">",   "<",   ")",
-   "(",    "{",    "}",   "[",   "]",   "=",   "+",   "-",
-   "*",    "/",    "\\",  "%",   ",",   ":",   ";",   ".",
-   "'",    "\"",   "`",   "?",   "@",   "$"
+const char lex_symbols[LEX_TOTAL_TOKENS][LEX_TOKEN_SIZE] = {
+   "===",  "!==",  "&&",  "||",  "==",  "!=",  ">=",  "<=",
+   "<<",   ">>",   "**",  "->",  "=>",  "::",  "|>",  "!",
+   "&",    "|",    "~",   "^",   ">",   "<",   ")",   "(",
+   "}",    "{",    "]",   "[",   "=",   "+",   "-",   "*",
+   "/",    "\\",   "%",   ",",   ":",   ";",   ".",   "'",
+   "\"",   "`",    "?",   "@",   "$"
 };
 
 char lex_getc(FILE *f);
 int lex_ungetc(char c, FILE *f);
 char lex_getchar(FILE *f);
+
 bool lex_is_printable(char c);
 bool lex_isalmun_undr(char c);
+
 void lex_buffpush(char ch);
 bool lex_buffmatch(const char* tok);
+
 bool lex_is_char_literal();
 bool lex_is_int_literal();
 bool lex_is_float_literal();
@@ -130,12 +134,122 @@ bool lex_is_identifier()
     return true;
 }
 
+// the lexer state machine
 LexToken lex_get_nexttok(FILE *f)
 {
-    char curr = lex_getchar(f);
-    while (curr) {
-        lex_throw("not implemented");
-        curr = lex_getchar(f);
+    char c0 = lex_getc(f);
+    if (lex_isalmun_undr(c)) return false;
+    switch (c0) {
+        case '=':
+            char c1 = lex_getc(f);
+            switch (c1) {
+                case '=':
+                    char c2 = lex_getc(f);
+                    switch (c2) {
+                        case '=': return LEX_LOGICAL_INDENTICAL;
+                        default: lex_ugetc(c2, f);
+                    }
+                    return LEX_LOGICAL_EQUALITY;
+                default: lex_ugetc(c1, f);
+            }
+            return LEX_ASSIGN;
+        case '!': {
+            break;
+        }
+        case '&': {
+            break;
+        }
+        case '|': {
+            break;
+        }
+        case '>': {
+            break;
+        }
+        case '<': {
+            break;
+        }
+        case '*': {
+            break;
+        }
+        case '-': {
+            break;
+        }
+        case ':': {
+            break;
+        }
+        case '&': {
+            break;
+        }
+        case '~': {
+            break;
+        }
+        case '^': {
+            break;
+        }
+        case ')': {
+            break;
+        }
+        case '(': {
+            break;
+        }
+        case '}': {
+            break;
+        }
+        case '{': {
+            break;
+        }
+        case ']': {
+            break;
+        }
+        case '[': {
+            break;
+        }
+        case '+': {
+            break;
+        }
+        case '/': {
+            break;
+        }
+        case '\\': {
+            break;
+        }
+        case '%': {
+            break;
+        }
+        case ',': {
+            break;
+        }
+        case ';': {
+            break;
+        }
+        case '.': {
+            break;
+        }
+        case '\'': {
+            break;
+        }
+        case '"': {
+            break;
+        }
+        case '`': {
+            break;
+        }
+        case '?': {
+            break;
+        }
+        case '@': {
+            break;
+        }
+        case '$': {
+            break;
+        }
+        case (char) EOF: {
+            break;
+        }
+        default: {
+            default: lex_ugetc(c0, f);
+            return LEX_INVALID;
+        }
     }
     return LEX_INVALID;
 }
