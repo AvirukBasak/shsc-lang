@@ -51,6 +51,7 @@ char lex_getc(FILE *f)
     char c = getc(f);
     if (c == '\n') { lex_line_no++; lex_char_no = 0; }
     else if (lex_is_printable(c)) lex_char_no++;
+    lex_buffpush(c);
     return c;
 }
 
@@ -58,6 +59,8 @@ int lex_ungetc(char c, FILE *f)
 {
     if (c == '\n') { lex_line_no--; lex_char_no = -1; }
     else if (lex_is_printable(c)) lex_char_no--;
+    if (lex_buffer->push_i >= 0)
+        lex_buffer->buffer[--lex_buffer->push_i] = 0;
     return ungetc(c, f);
 }
 
@@ -137,36 +140,49 @@ bool lex_is_identifier()
 // the lexer state machine
 LexToken lex_get_nexttok(FILE *f)
 {
-    char c0 = lex_getc(f);
-    if (lex_isalmun_undr(c)) return false;
+    char c0 = lex_getchar(f);
     switch (c0) {
-        case '=':
-            char c1 = lex_getc(f);
+        case '=': {
+            char c1 = lex_getchar(f);
             switch (c1) {
-                case '=':
-                    char c2 = lex_getc(f);
+                case '=': {
+                    char c2 = lex_getchar(f);
                     switch (c2) {
-                        case '=': return LEX_LOGICAL_INDENTICAL;
-                        default: lex_ugetc(c2, f);
+                        case '=': return LEX_LOGICAL_IDENTICAL;
+                        default: lex_ungetc(c2, f);
                     }
                     return LEX_LOGICAL_EQUALITY;
-                default: lex_ugetc(c1, f);
+                }
+                default: lex_ungetc(c1, f);
             }
             return LEX_ASSIGN;
+        }
         case '!': {
-            break;
+            char c1 = lex_getchar(f);
+            switch (c1) {
+                case '=': {
+                    char c2 = lex_getchar(f);
+                    switch (c2) {
+                        case '=': return LEX_LOGICAL_UNIDENTICAL;
+                        default: lex_ungetc(c2, f);
+                    }
+                    return LEX_LOGICAL_UNEQUALITY;
+                }
+                default: lex_ungetc(c1, f);
+            }
+            return LEX_LOGICAL_NOT;
         }
         case '&': {
-            break;
+            return LEX_BITWISE_AND;
         }
         case '|': {
-            break;
+            return LEX_BITWISE_OR;
         }
         case '>': {
-            break;
+            return LEX_RBRACE_ANGULAR;
         }
         case '<': {
-            break;
+            return LEX_LBRACE_ANGULAR;
         }
         case '*': {
             break;
@@ -175,9 +191,6 @@ LexToken lex_get_nexttok(FILE *f)
             break;
         }
         case ':': {
-            break;
-        }
-        case '&': {
             break;
         }
         case '~': {
@@ -247,7 +260,6 @@ LexToken lex_get_nexttok(FILE *f)
             break;
         }
         default: {
-            default: lex_ugetc(c0, f);
             return LEX_INVALID;
         }
     }
@@ -261,7 +273,7 @@ char *lex_get_tokcode(LexToken code)
         case LEX_KWD_WHILE:              return "LEX_KWD_WHILE";
         case LEX_KWD_CALC:               return "LEX_KWD_CALC";
         case LEX_LOGICAL_IDENTICAL:      return "LEX_LOGICAL_IDENTICAL";
-        case LEX_LOGICAL_UNINDENTICAL:   return "LEX_LOGICAL_UNINDENTICAL";
+        case LEX_LOGICAL_UNIDENTICAL:    return "LEX_LOGICAL_UNIDENTICAL";
         case LEX_KWD_IF:                 return "LEX_KWD_IF";
         case LEX_LOGICAL_AND:            return "LEX_LOGICAL_AND";
         case LEX_LOGICAL_OR:             return "LEX_LOGICAL_OR";
@@ -319,7 +331,7 @@ char *lex_get_tokcode(LexToken code)
 
 char *lex_get_tokstr()
 {
-    return lex_buffer->buffer;
+    return lex_buffer ? lex_buffer->buffer : "<null>";
 }
 
 void lex_throw(const char *msg)
