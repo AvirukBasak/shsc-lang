@@ -248,7 +248,20 @@ LexToken lex_get_nexttok(FILE *f)
             return LEX_INVALID;
         }
         case '=': {
-            return LEX_INVALID;
+            char c1 = lex_getc(f);
+            switch (c1) {
+                case '=': {
+                    char c2 = lex_getc(f);
+                    switch (c2) {
+                        case '=': return LEX_LOGICAL_IDENTICAL;
+                        default: lex_ungetc(c2, f);
+                    }
+                    return LEX_LOGICAL_EQUAL;
+                }
+                case '>': return LEX_DARROW;
+                default: lex_ungetc(c1, f);
+            }
+            return LEX_ASSIGN;
         }
         case '>': {
             return LEX_INVALID;
