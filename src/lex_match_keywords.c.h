@@ -10,7 +10,7 @@ LexToken lex_match_keywords(FILE *f, char ch)
         ch = lex_getc(f);
         if (!isalpha(ch)) {
             // unget last non alpha char
-            lex_ungetc(ch, f);
+            ch = lex_ungetc(ch, f);
             break;
         }
         kwdlen++;
