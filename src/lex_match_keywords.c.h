@@ -10,7 +10,7 @@ LexToken lex_match_keywords(FILE *f, char ch)
         ch = lex_getc(f);
         if (!isalpha(ch)) {
             // unget last non alpha char
-            ch = lex_ungetc(ch, f);
+            lex_ungetc(&ch, f);
             break;
         }
         kwdlen++;
@@ -22,7 +22,7 @@ LexToken lex_match_keywords(FILE *f, char ch)
     if (!strcmp(lex_get_buffstr(), "while")) return LEX_KWD_WHILE;
     // unget all characters except the first if all matches failed
     while (kwdlen > 1) {
-        ch = lex_ungetc(ch, f);
+        lex_ungetc(&ch, f);
         kwdlen--;
     }
     return LEX_INVALID;

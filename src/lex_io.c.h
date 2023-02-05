@@ -25,13 +25,13 @@ char lex_getc(FILE *f)
     return c;
 }
 
-int lex_ungetc(char c, FILE *f)
+char lex_ungetc(char *c, FILE *f)
 {
-    if (c == '\n') { lex_line_no--; lex_char_no = -1; }
-    else if (lex_is_printable(c)) lex_char_no--;
-    if (!lex_is_delimiter(c)) lex_buffpop();
-    ungetc(c, f);
-    return lex_get_buffstr()[lex_buffer->push_i -1];
+    if (*c == '\n') { lex_line_no--; lex_char_no = -1; }
+    else if (lex_is_printable(*c)) lex_char_no--;
+    if (!lex_is_delimiter(*c)) lex_buffpop();
+    ungetc(*c, f);
+    return *c = lex_get_buffstr()[lex_buffer->push_i -1];
 }
 
 bool lex_is_delimiter(char c)

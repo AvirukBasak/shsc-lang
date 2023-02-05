@@ -20,7 +20,7 @@ int lex_line_no = 1;
 int lex_char_no = 0;
 
 char lex_getc(FILE *f);
-int lex_ungetc(char c, FILE *f);
+char lex_ungetc(char *c, FILE *f);
 
 bool lex_is_delimiter(char c);
 bool lex_is_printable(char c);

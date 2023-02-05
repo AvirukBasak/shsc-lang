@@ -8,7 +8,7 @@ LexToken lex_match_identifiers(FILE *f, char ch)
         ch = lex_getc(f);
         if (!lex_isalmun_undr(ch)) {
             // unget last non identifier char
-            lex_ungetc(ch, f);
+            lex_ungetc(&ch, f);
             break;
         }
     }
