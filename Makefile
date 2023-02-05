@@ -35,7 +35,7 @@ TARGET_NAME    := $(EXEC_NAME)
 TARGET         := $(TARGET_DIR)/$(TARGET_NAME)-rel
 DBG_TARGET     := $(TARGET_DIR)/$(TARGET_NAME)-dbg
 
-SOURCES        := $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT))
+SOURCES        := $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)) $(shell find $(SRC_DIR)/ -name "*".$(SRCEXT).$(HEADEREXT))
 HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
 TESTSRC        := $(shell find $(TEST_DIR)/ -name "*."$(SRCEXT))
 
