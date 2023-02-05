@@ -66,7 +66,7 @@ LexToken lex_get_nexttok(FILE *f)
         return littok;
     }
     if (isdigit(ch)) return lex_match_literals(f, ch);
-    return LEX_INVALID;
+    return lex_match_symbols(f, ch);
 }
 
 #include "lex_tokens.c.h"
