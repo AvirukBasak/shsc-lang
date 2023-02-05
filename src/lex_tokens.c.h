@@ -1,10 +1,11 @@
 #ifndef LEX_TOKENS_CH
 #define LEX_TOKENS_CH
 
-// contributor's warning: ensure tokens are sorted according to the order in lex_get_symbol()
+// contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 char *lex_get_tokcode(LexToken code)
 {
     switch (code) {
+        // operators and seperators
         case LEX_BANG:                  return "LEX_BANG";
         case LEX_LOGICAL_UNEQUAL:       return "LEX_LOGICAL_UNEQUAL";
         case LEX_LOGICAL_UNIDENTICAL:   return "LEX_LOGICAL_UNIDENTICAL";
@@ -70,16 +71,24 @@ char *lex_get_tokcode(LexToken code)
         case LEX_LOGICAL_OR_ASSIGN:     return "LEX_LOGICAL_OR_ASSIGN";
         case LEX_RBRACE_CURLY:          return "LEX_RBRACE_CURLY";
         case LEX_TILDE:                 return "LEX_TILDE";
+        // keywords
+        case LEX_KWD_CALC:              return "LEX_KWD_CALC";
+        case LEX_KWD_END:               return "LEX_KWD_END";
+        case LEX_KWD_IF:                return "LEX_KWD_IF";
+        case LEX_KWD_START:             return "LEX_KWD_START";
+        case LEX_KWD_WHILE:             return "LEX_KWD_WHILE";
+        // default cases
         case LEX_EOF:                   return "LEX_EOF";
         case LEX_INVALID:               return "LEX_INVALID";
         default:                        return "UNKNOWN";
     }
 }
 
+// contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 char *lex_get_symbol(LexToken code)
 {
-    // contributor's warning: ensure tokens are alphabetically sorted
     switch (code) {
+        // operators and seperators
         case LEX_BANG:                  return "!";
         case LEX_LOGICAL_UNEQUAL:       return "!=";
         case LEX_LOGICAL_UNIDENTICAL:   return "!==";
@@ -145,6 +154,13 @@ char *lex_get_symbol(LexToken code)
         case LEX_LOGICAL_OR_ASSIGN:     return "||=";
         case LEX_RBRACE_CURLY:          return "}";
         case LEX_TILDE:                 return "~";
+        // keywords
+        case LEX_KWD_CALC:              return "calc";
+        case LEX_KWD_END:               return "end";
+        case LEX_KWD_IF:                return "if";
+        case LEX_KWD_START:             return "start";
+        case LEX_KWD_WHILE:             return "while";
+        // default cases
         case LEX_EOF:                   return "<eof>";
         case LEX_INVALID:               return "<invalid>";
         default:                        return "<unknown>";

@@ -16,8 +16,9 @@
 typedef enum LexToken LexToken;
 typedef struct LexBuffer LexBuffer;
 
-// contributor's warning: ensure tokens are sorted according to the order in lex_init()
+// contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 enum LexToken {
+    // operators and seperators
     LEX_BANG,                   // "!"
     LEX_LOGICAL_UNEQUAL,        // "!="
     LEX_LOGICAL_UNIDENTICAL,    // "!=="
@@ -83,6 +84,13 @@ enum LexToken {
     LEX_LOGICAL_OR_ASSIGN,      // "||="
     LEX_RBRACE_CURLY,           // "}"
     LEX_TILDE,                  // "~"
+    // keywords
+    LEX_KWD_CALC,               // "calc"
+    LEX_KWD_END,                // "end"
+    LEX_KWD_IF,                 // "if"
+    LEX_KWD_START,              // "start"
+    LEX_KWD_WHILE,              // "while"
+    // default cases
     LEX_EOF,                    // "<eof>"
     LEX_INVALID,                // "<invalid>"
 };
