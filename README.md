@@ -7,5 +7,4 @@ World's most sh*tty scripting language.
 
 #### Todo
 - Finish the lexer
-- Add short-hand assignment operators
-- Add support for keywords to the lexer
+- Add support for literals to lexer
