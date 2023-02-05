@@ -1,11 +1,8 @@
-#ifndef LEX_MATCH_CH
-#define LEX_MATCH_CH
+#ifndef LEX_MATCH_SYMBOLS_CH
+#define LEX_MATCH_SYMBOLS_CH
 
-LexToken lex_match_symbols(FILE *f)
+LexToken lex_match_symbols(FILE *f, char ch)
 {
-    lex_buffreset();
-    char ch = lex_getc(f);
-    while (lex_is_delimiter(ch)) ch = lex_getc(f);
     switch (ch) {
         case '!': {
             char ch = lex_getc(f);
