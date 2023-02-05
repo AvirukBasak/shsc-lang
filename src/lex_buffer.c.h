@@ -9,6 +9,7 @@ void lex_buffpush(char ch)
         lex_buffer->buffer = realloc(lex_buffer->buffer, lex_buffer->size + LEX_MAX_BUFFALLOC_SZ);
         if (!lex_buffer->buffer) lex_throw("memory allocation failed");
         lex_buffer->size += LEX_MAX_BUFFALLOC_SZ;
+        lex_buffer->buffer[lex_buffer->size -1] = 0;
     }
     lex_buffer->buffer[lex_buffer->push_i++] = ch;
     lex_buffer->buffer[lex_buffer->push_i] = 0;

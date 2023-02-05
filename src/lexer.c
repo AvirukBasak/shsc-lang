@@ -30,12 +30,6 @@ void lex_buffpush(char ch);
 char lex_buffpop();
 void lex_buffreset();
 
-bool lex_is_char_literal();
-bool lex_is_int_literal();
-bool lex_is_float_literal();
-bool lex_is_str_literal();
-bool lex_is_identifier();
-
 void lex_throw(const char *msg);
 
 #include "lex_buffer.c.h"
