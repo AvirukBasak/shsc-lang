@@ -77,6 +77,13 @@ char *lex_get_tokcode(LexToken code)
         case LEX_KWD_IF:                return "LEX_KWD_IF";
         case LEX_KWD_START:             return "LEX_KWD_START";
         case LEX_KWD_WHILE:             return "LEX_KWD_WHILE";
+        // identifier
+        case LEX_IDENTIFIER:            return "LEX_IDENTIFIER";
+        // literals
+        case LEX_CHAR_LITERAL:          return "LEX_CHAR_LITERAL";
+        case LEX_FLOAT_LITERAL:         return "LEX_FLOAT_LITERAL";
+        case LEX_INT_LITERAL:           return "LEX_INT_LITERAL";
+        case LEX_STR_LITERAL:           return "LEX_STR_LITERAL";
         // default cases
         case LEX_EOF:                   return "LEX_EOF";
         case LEX_INVALID:               return "LEX_INVALID";
@@ -160,6 +167,13 @@ char *lex_get_symbol(LexToken code)
         case LEX_KWD_IF:                return "if";
         case LEX_KWD_START:             return "start";
         case LEX_KWD_WHILE:             return "while";
+        // identifier
+        case LEX_IDENTIFIER:            return "<identifier>";
+        // literals
+        case LEX_CHAR_LITERAL:          return "<charlit>";
+        case LEX_FLOAT_LITERAL:         return "<floattlit>";
+        case LEX_INT_LITERAL:           return "<intlit>";
+        case LEX_STR_LITERAL:           return "<strlit>";
         // default cases
         case LEX_EOF:                   return "<eof>";
         case LEX_INVALID:               return "<invalid>";
