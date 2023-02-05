@@ -29,11 +29,18 @@ HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
 SUB_DIRS       := $(shell find -type f -name Makefile | sed 's/Makefile//g')
 SUB_DIR_DBG    := $(SUB_DIRS)
 
+## source code headers
+
+LEXER_SRC_CH   := $(shell find $(SRC_DIR)/ -name "lex_*.c.h"$(HEADEREXT))
+
 ## release build
 
 OBJECTS        := $(patsubst %.$(SRCEXT), %-rel.$(OBJEXT), $(wildcard *.$(SRCEXT)))
 
 rel: mkdirp $(OBJECTS) cpobj
+
+lexer-rel.$(OBJEXT): lexer.$(SRCEXT) $(LEXER_SRC_CH) $(HEADERS)
+	$(CC) $(CFLAGS) $(INCLUDE) -c -o lexer-rel.$(OBJEXT) lexer.$(SRCEXT)
 
 %-rel.$(OBJEXT): %.$(SRCEXT) $(HEADERS)
 	$(CC) $(CFLAGS) $(INCLUDE) -c -o $@ $<
@@ -47,6 +54,9 @@ rel: mkdirp $(OBJECTS) cpobj
 DBG_OBJECTS    := $(patsubst %.$(SRCEXT), %-dbg.$(OBJEXT), $(wildcard *.$(SRCEXT)))
 
 dbg: mkdirp $(DBG_OBJECTS) cpobj
+
+lexer-dbg.$(OBJEXT): lexer.$(SRCEXT) $(LEXER_SRC_CH) $(HEADERS)
+	$(CC) $(CDBGFLAGS) $(INCLUDE) -c -o lexer-dbg.$(OBJEXT) lexer.$(SRCEXT)
 
 %-dbg.$(OBJEXT): %.$(SRCEXT) $(HEADERS)
 	$(CC) $(CDBGFLAGS) $(INCLUDE) -c -o $@ $<

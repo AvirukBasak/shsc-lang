@@ -21,9 +21,9 @@ LexToken lex_match_keywords(FILE *f, char ch)
     if (!strcmp(lex_get_buffstr(), "start")) return LEX_KWD_START;
     if (!strcmp(lex_get_buffstr(), "while")) return LEX_KWD_WHILE;
     // unget all characters except the first if all matches failed
-    while (kwdken > 1) {
+    while (kwdlen > 1) {
         ch = lex_ungetc(ch, f);
-        kwdken--;
+        kwdlen--;
     }
     return LEX_INVALID;
 }
