@@ -41,35 +41,32 @@ void lex_throw(const char *msg);
 #include "lex_buffer.c.h"
 #include "lex_io.c.h"
 
-bool lex_is_char_literal()
-{ return false; }
-
-bool lex_is_int_literal()
-{ return false; }
-
-bool lex_is_float_literal()
-{ return false; }
-
-bool lex_is_str_literal()
-{ return false; }
-
-bool lex_is_identifier()
-{
-    if (lex_buffer->push_i > LEX_MAX_IDENTIFIER_LEN) return false;
-    if (!isalpha(lex_buffer->buffer[0]) && lex_buffer->buffer[0] != '_')
-        return false;
-    for (int i = 0; i < lex_buffer->push_i; i++)
-        if (!isalnum(lex_buffer->buffer[i]) && lex_buffer->buffer[i] != '_')
-            return false;
-    return true;
-}
-
 // the lexer state machine
 #include "lex_match_symbols.c.h"
+#include "lex_match_keywords.c.h"
+#include "lex_match_identifiers.c.h"
+#include "lex_match_literals.c.h"
 
 LexToken lex_get_nexttok(FILE *f)
 {
-    return lex_match_symbols(f);
+    lex_buffreset();
+    char ch = lex_getc(f);
+    while (lex_is_delimiter(ch)) ch = lex_getc(f);
+    if (ch == '_') return lex_match_identifiers(f, ch);
+    if (isalpha(ch)) {
+        LexToken kwdtok = lex_match_keywords(f, ch);
+        if (kwdtok == LEX_INVALID)
+            return lex_match_identifiers(f, ch);
+        return kwdtok;
+    }
+    if (ch == '\'' || ch == '"' || ch == '+' || ch == '-') {
+        LexToken littok = lex_match_literals(f, ch);
+        if (littok == LEX_INVALID && (ch == '+' || ch == '-'))
+            return lex_match_symbols(f, ch);
+        return littok;
+    }
+    if (isdigit(ch)) return lex_match_literals(f, ch);
+    return LEX_INVALID;
 }
 
 #include "lex_tokens.c.h"
