@@ -3,7 +3,7 @@
 
 LexToken lex_match_identifiers(FILE *f, char ch)
 {
-    if (!isalpha(ch) || ch != '_') return LEX_INVALID;
+    if (!isalpha(ch) && ch != '_') return LEX_INVALID;
     while (true) {
         ch = lex_getc(f);
         if (!lex_isalmun_undr(ch)) {
