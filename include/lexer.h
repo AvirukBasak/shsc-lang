@@ -90,6 +90,13 @@ enum LexToken {
     LEX_KWD_IF,                 // "if"
     LEX_KWD_START,              // "start"
     LEX_KWD_WHILE,              // "while"
+    // identifier
+    LEX_IDENTIFIER,             // "<identifier>"
+    // literals
+    LEX_CHAR_LITERAL,           // "<charlit>"
+    LEX_FLOAT_LITERAL,          // "<floattlit>"
+    LEX_INT_LITERAL,            // "<intlit>"
+    LEX_STR_LITERAL,            // "<strlit>"
     // default cases
     LEX_EOF,                    // "<eof>"
     LEX_INVALID,                // "<invalid>"
