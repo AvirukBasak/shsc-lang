@@ -6,7 +6,7 @@ void lex_buffpush(char ch)
     if (!lex_buffer) lex_buffer = calloc(1, sizeof(LexBuffer));
     if (!lex_buffer) lex_throw("memory allocation failed");
     if (lex_buffer->push_i >= lex_buffer->size) {
-        lex_buffer->buffer = realloc(lex_buffer->buffer, lex_buffer->size + LEX_MAX_BUFFALLOC_SZ);
+        lex_buffer->buffer = realloc(lex_buffer->buffer, lex_buffer->size + LEX_MAX_BUFFALLOC_SZ +1);
         if (!lex_buffer->buffer) lex_throw("memory allocation failed");
         lex_buffer->size += LEX_MAX_BUFFALLOC_SZ;
         lex_buffer->buffer[lex_buffer->size -1] = 0;
