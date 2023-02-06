@@ -49,13 +49,13 @@ LexToken lex_get_nexttok(FILE *f)
     if (ch == '_') return lex_match_identifiers(f, ch);
     if (isalpha(ch)) {
         LexToken kwdtok = lex_match_keywords(f, ch);
-        if (kwdtok == LEX_INVALID)
+        if (kwdtok == LEXTOK_INVALID)
             return lex_match_identifiers(f, ch);
         return kwdtok;
     }
     if (ch == '\'' || ch == '"' || ch == '+' || ch == '-' || isdigit(ch)) {
         LexToken littok = lex_match_literals(f, ch);
-        if (littok == LEX_INVALID && (ch == '+' || ch == '-'))
+        if (littok == LEXTOK_INVALID && (ch == '+' || ch == '-'))
             return lex_match_symbols(f, ch);
         return littok;
     }

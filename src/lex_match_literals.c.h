@@ -15,7 +15,7 @@ LexToken lex_match_literals(FILE *f, char ch)
             if (ch == (char) EOF) lex_throw("unexpected end of file");
             lex_buffpush(ch);
         } while (true);
-        return LEX_CHAR_LITERAL;
+        return LEXTOK_CHAR_LITERAL;
     } else if (ch == '"') {
         lex_buffreset();
         do {
@@ -28,7 +28,7 @@ LexToken lex_match_literals(FILE *f, char ch)
             if (ch == (char) EOF) lex_throw("unexpected end of file");
             lex_buffpush(ch);
         } while (true);
-        return LEX_STR_LITERAL;
+        return LEXTOK_STR_LITERAL;
     } else if (isdigit(ch) || ch == '+' || ch == '-') {
         bool neg = false;
         if (ch == '+' || ch == '-') {
@@ -36,7 +36,7 @@ LexToken lex_match_literals(FILE *f, char ch)
             ch = lex_getc(f);
             if (!isdigit(ch)) {
                 lex_ungetc(&ch, f);
-                return LEX_INVALID;
+                return LEXTOK_INVALID;
             } else lex_ungetc(&ch, f);
         }
         bool isfloat = false;
@@ -47,14 +47,14 @@ LexToken lex_match_literals(FILE *f, char ch)
                 ch = lex_getc(f);
             } else if (ch == '.' && isfloat) {
                 lex_ungetc(&ch, f);
-                return LEX_FLOAT_LITERAL;
+                return LEXTOK_FLOAT_LITERAL;
             }
         } while (isdigit(ch));
         lex_ungetc(&ch, f);
-        if (isfloat) return LEX_FLOAT_LITERAL;
-        else return LEX_INT_LITERAL;
+        if (isfloat) return LEXTOK_FLOAT_LITERAL;
+        else return LEXTOK_INT_LITERAL;
     }
-    return LEX_INVALID;
+    return LEXTOK_INVALID;
 }
 
 #endif
