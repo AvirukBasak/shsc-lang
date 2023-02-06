@@ -53,7 +53,7 @@ LexToken lex_get_nexttok(FILE *f)
             return lex_match_identifiers(f, ch);
         return kwdtok;
     }
-    if (ch == '\'' || ch == '"' || ch == '+' || ch == '-') {
+    if (ch == '\'' || ch == '"' || ch == '+' || ch == '-' || isdigit(ch)) {
         LexToken littok = lex_match_literals(f, ch);
         if (littok == LEX_INVALID && (ch == '+' || ch == '-'))
             return lex_match_symbols(f, ch);
