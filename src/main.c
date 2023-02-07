@@ -13,7 +13,7 @@ int main(int argc, char **argv)
         global_currfile = argv[i];
         FILE *f = (argv[i][0] == '-' && !argv[i][1]) ?
             stdin :
-            fopen(argv[i], "r");
+            fopen(argv[i], "rb");
         if (!f) io_errndie("couldn't read file: '%s'", argv[i]);
         LexToken tok = lex_get_nexttok(f);
         while (tok != LEXTOK_EOF) {

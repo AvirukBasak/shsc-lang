@@ -95,7 +95,10 @@ enum LexToken {
     // literals
     LEXTOK_CHAR_LITERAL,           // "<charlit>"
     LEXTOK_FLOAT_LITERAL,          // "<floattlit>"
-    LEXTOK_INT_LITERAL,            // "<intlit>"
+    LEXTOK_OCTINT_LITERAL,         // "<octintlit>"
+    LEXTOK_BININT_LITERAL,         // "<binintlit>"
+    LEXTOK_DECINT_LITERAL,         // "<decintlit>"
+    LEXTOK_HEXINT_LITERAL,         // "<hexintlit>"
     LEXTOK_STR_LITERAL,            // "<strlit>"
     // default cases
     LEXTOK_EOF,                    // "<eof>"
