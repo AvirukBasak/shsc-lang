@@ -5,6 +5,8 @@ World's most sh*tty scripting language.
 - build with `make`
 - copy the executable from `taget/`.
 
-#### Todo
-- Finish the lexer
-- Add support for literals to lexer
+### Tests
+Visit [docs/TestResult.md](docs/TestResult.md).
+
+### Todo
+- Start work on parser
