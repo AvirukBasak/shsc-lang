@@ -81,7 +81,6 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_IDENTIFIER:            return "LEXTOK_IDENTIFIER";
         // literals
         case LEXTOK_CHAR_LITERAL:          return "LEXTOK_CHAR_LITERAL";
-        case LEXTOK_CHAR_LITERAL:          return "<charlit>";
         case LEXTOK_BINFLOAT_LITERAL:      return "LEXTOK_BINFLOAT_LITERAL";
         case LEXTOK_OCTFLOAT_LITERAL:      return "LEXTOK_OCTFLOAT_LITERAL";
         case LEXTOK_DECFLOAT_LITERAL:      return "LEXTOK_DECFLOAT_LITERAL";
@@ -94,7 +93,7 @@ char *lex_get_tokcode(LexToken code)
         // default cases
         case LEXTOK_EOF:                   return "LEXTOK_EOF";
         case LEXTOK_INVALID:               return "LEXTOK_INVALID";
-        default:                           return "UNKNOWN";
+        // default:                        return "UNKNOWN";
     }
 }
 
@@ -190,7 +189,7 @@ char *lex_get_symbol(LexToken code)
         // default cases
         case LEXTOK_EOF:                   return "<eof>";
         case LEXTOK_INVALID:               return "<invalid>";
-        default:                           return "<unknown>";
+        // default:                        return "<unknown>";
     }
 }
 
