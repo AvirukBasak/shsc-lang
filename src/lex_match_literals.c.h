@@ -66,6 +66,12 @@ LexToken lex_match_number(FILE *f, char ch, LexBase base)
     while (true) {
         ch = lex_getc(f);
         if (ch == '.') {
+            ch = lex_getc(f);
+            if (!lex_isdigit(ch)) {
+                lex_ungetc(&ch, f);      // unget ch
+                lex_ungetc(&ch, f);      // unget .
+                return found_point ? floattok : inttok;
+            } else lex_ungetc(&ch, f);   // unget ch
             if (!found_point) {
                 found_point = true;
                 continue;
@@ -76,6 +82,12 @@ LexToken lex_match_number(FILE *f, char ch, LexBase base)
         // for scientific representation of numbers, 0x0Ap2C implies 0A * (10 ** 2C) in base 16
         // lexes numbers like 12e+34 or 0x0e2p-2d
         } else if ((ch == 'e' && base != LEXBASE_16) || ch == 'p') {
+            ch = lex_getc(f);
+            if (ch != '+' && ch != '-' && !lex_isdigit(ch)) {
+                lex_ungetc(&ch, f);      // unget ch
+                lex_ungetc(&ch, f);      // unget e or p
+                return found_point ? floattok : inttok;
+            } else lex_ungetc(&ch, f);   // unget ch
             if (!found_exp) {
                 // replace 'p' with small 'e'
                 char *bc = &(lex_get_buffstr()[lex_buffer->push_i -1]);
@@ -97,7 +109,15 @@ LexToken lex_match_number(FILE *f, char ch, LexBase base)
             continue;
         }
         // sometimes _ is used for readability, ignore it
-        else if (ch == '_') lex_buffpop();
+        else if (ch == '_') {
+            ch = lex_getc(f);
+            if (!lex_isdigit(ch)) {
+                lex_ungetc(&ch, f);      // unget ch
+                lex_ungetc(&ch, f);      // unget _
+                return found_point ? floattok : inttok;
+            } else lex_ungetc(&ch, f);   // unget ch
+            lex_buffpop();
+        }
         else {
             lex_ungetc(&ch, f);
             if (found_point) return floattok;

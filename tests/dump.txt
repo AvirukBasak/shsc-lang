@@ -70,6 +70,7 @@ if
 end
 start
 while
+
 # identifier check
 a b
 alpha
@@ -77,15 +78,29 @@ hello
 else
 break
 ox_11
+
 # number check
-1234
-123e46
--12.34e56
-0x1122
-0xBEe4A
-0xbee4a
-0b0110e11011
--0b011.011e11011
-0b0110e113011
-034e23
+
+# decimals
+0
+0_0
+10
+13
+12_000_000_000
+-12_000_000
+0.12_000_000
+0.4e5
+12.34e-6
+3e8
+31.4e-1
+6.023e23
+6.626e-34
+-1.602e-19
+
+# invalid decimals
+
+# octals
+
+# hexes
+
 # eof check
