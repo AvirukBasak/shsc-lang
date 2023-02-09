@@ -156,11 +156,27 @@ LexToken lex_match_literals(FILE *f, char ch)
     if (ch == '0') {
         ch = lex_getc(f);
         switch (ch) {
-            case 'b': return lex_match_number(f, ch, LEXBASE_2);
-            case 'x': return lex_match_number(f, ch, LEXBASE_16);
+            case 'b': {
+                // pop "0b"
+                lex_buffpop();
+                lex_buffpop();
+                return lex_match_number(f, ch, LEXBASE_2);
+            }
+            case 'x': {
+                // pop "0x"
+                lex_buffpop();
+                lex_buffpop();
+                return lex_match_number(f, ch, LEXBASE_16);
+            }
             default: {
                 // for values like 023... and 00.12... and many others
-                if (isdigit(ch)) return lex_match_number(f, ch, LEXBASE_8);
+                if (isdigit(ch)) {
+                    // pop leading 0
+                    lex_ungetc(&ch, f);
+                    lex_buffpop();
+                    ch = lex_getc(f);
+                    return lex_match_number(f, ch, LEXBASE_8);
+                }
                 // for numbers like 0.12...
                 else if (ch == '.' || ch == '_') lex_match_number(f, ch, LEXBASE_10);
                 // just 0
