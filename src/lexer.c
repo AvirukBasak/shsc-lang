@@ -47,20 +47,16 @@ LexToken lex_get_nexttok(FILE *f)
     char ch = lex_getc(f);
     while (lex_is_delimiter(ch)) ch = lex_getc(f);
     if (ch == '_') return lex_match_identifiers(f, ch);
-    if (isalpha(ch)) {
+    else if (isalpha(ch)) {
         LexToken kwdtok = lex_match_keywords(f, ch);
         if (kwdtok == LEXTOK_INVALID)
             return lex_match_identifiers(f, ch);
         return kwdtok;
     }
-    if (ch == '\'' || ch == '"' || ch == '+' || ch == '-' || ch == '.' || isdigit(ch)) {
-        LexToken littok = lex_match_literals(f, ch);
-        if (littok == LEXTOK_INVALID && (ch == '+' || ch == '-'))
-            return lex_match_symbols(f, ch);
-        return littok;
-    }
-    if (isdigit(ch)) return lex_match_literals(f, ch);
-    return lex_match_symbols(f, ch);
+    else if (ch == '\'') return lex_match_char(f, ch);
+    else if (ch == '"') return lex_match_string(f, ch);
+    else if (isdigit(ch)) return lex_match_numeric(f, ch);
+    else return lex_match_symbols(f, ch);
 }
 
 #include "lex_tokens.c.h"
