@@ -65,13 +65,12 @@ LexToken lex_match_number(FILE *f, char ch, LexBase base)
     bool found_exp = false;
     while (true) {
         ch = lex_getc(f);
-        if (ch == '.') {
+        if (ch == '.' && !found_exp) {
+            // '.' should be followed by digit
             ch = lex_getc(f);
-            if (!lex_isdigit(ch)) {
-                lex_ungetc(&ch, f);      // unget ch
-                lex_ungetc(&ch, f);      // unget .
-                return found_point ? floattok : inttok;
-            } else lex_ungetc(&ch, f);   // unget ch
+            if (!lex_isdigit(ch))
+                return LEXTOK_INVALID;
+            else lex_ungetc(&ch, f);
             if (!found_point) {
                 found_point = true;
                 continue;
@@ -82,17 +81,17 @@ LexToken lex_match_number(FILE *f, char ch, LexBase base)
         // for scientific representation of numbers, 0x0Ap2C implies 0A * (10 ** 2C) in base 16
         // lexes numbers like 12e+34 or 0x0e2p-2d
         } else if ((ch == 'e' && base != LEXBASE_16) || ch == 'p') {
+            // 'e' or 'p' should be followed by digit or sign
             ch = lex_getc(f);
-            if (ch != '+' && ch != '-' && !lex_isdigit(ch)) {
-                lex_ungetc(&ch, f);      // unget ch
-                lex_ungetc(&ch, f);      // unget e or p
-                return found_point ? floattok : inttok;
-            } else lex_ungetc(&ch, f);   // unget ch
+            if (ch != '+' && ch != '-' && !lex_isdigit(ch))
+                return LEXTOK_INVALID;
+            else lex_ungetc(&ch, f);
             if (!found_exp) {
                 // replace 'p' with small 'e'
                 char *bc = &(lex_get_buffstr()[lex_buffer->push_i -1]);
                 if (*bc == 'p') *bc = 'e';
                 found_exp = true;
+                // consume following sign if present
                 ch = lex_getc(f);
                 if (ch != '+' && ch != '-') lex_ungetc(&ch, f);
                 continue;
@@ -110,6 +109,7 @@ LexToken lex_match_number(FILE *f, char ch, LexBase base)
         }
         // sometimes _ is used for readability, ignore it
         else if (ch == '_') {
+            // ensure _ is followed by valid digits
             ch = lex_getc(f);
             if (!lex_isdigit(ch)) {
                 lex_ungetc(&ch, f);      // unget ch
@@ -197,8 +197,17 @@ LexToken lex_match_literals(FILE *f, char ch)
                     ch = lex_getc(f);
                     return lex_match_number(f, ch, LEXBASE_8);
                 }
-                // for numbers like 0.12...
-                else if (ch == '.' || ch == '_') lex_match_number(f, ch, LEXBASE_10);
+                // for numbers like 0.12... or 0_34...
+                else if (ch == '.' || ch == '_') {
+                    if (ch == '_') {
+                        lex_buffpop();
+                        ch = lex_getc(f);
+                        return lex_match_number(f, ch, LEXBASE_10);
+                    }
+                    // if '.' unget the '.'
+                    lex_ungetc(&ch, f);
+                    return lex_match_number(f, ch, LEXBASE_10);
+                }
                 // just 0
                 else {
                     lex_ungetc(&ch, f);
@@ -207,7 +216,7 @@ LexToken lex_match_literals(FILE *f, char ch)
             }
         }
     }
-    // any other number or a '.'
+    // starts with any other number or a '.'
     return lex_match_number(f, ch, LEXBASE_10);
 }
 

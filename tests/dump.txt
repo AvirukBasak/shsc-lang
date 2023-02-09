@@ -98,6 +98,10 @@ ox_11
 -1.602e-19
 
 # invalid decimals
+12e
+0.
+.2e4.5
+2e4.5
 
 # octals
 
