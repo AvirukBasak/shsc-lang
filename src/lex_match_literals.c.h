@@ -126,6 +126,13 @@ LexToken lex_match_literals(FILE *f, char ch)
     }
     if (ch != '+' && ch != '-' && ch != '.' && !isdigit(ch))
         return LEXTOK_INVALID;
+    if (ch == '+' || ch == '-') {
+        ch = lex_getc(f);
+        if (ch != '.' && !isdigit(ch)) {
+            lex_ungetc(&ch, f);
+            return LEXTOK_INVALID;
+        }
+    }
     if (ch == '0') {
         ch = lex_getc(f);
         switch (ch) {
