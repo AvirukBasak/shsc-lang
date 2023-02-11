@@ -103,70 +103,60 @@ LexToken lex_match_unum(FILE *f, char ch, LexBase base)
             floattok = LEXTOK_DECFLOAT_LITERAL;
             break;
     }
-    bool found_point = false;
-    bool found_exp = false;
-    while (true) {
+    LexToken retok = LEXTOK_INVALID;
+    // match \d+
+    if (!lex_isdigit(ch)) return LEXTOK_INVALID;
+    while (lex_isdigit(ch)) {
         ch = lex_getc(f);
-        if (ch == '.' && !found_exp) {
-            // '.' should be followed by digit
-            ch = lex_getc(f);
-            if (!lex_isdigit(ch))
-                return LEXTOK_INVALID;
-            else lex_ungetc(&ch, f);
-            if (!found_point) {
-                found_point = true;
-                continue;
-            } else {
-                lex_ungetc(&ch, f);
-                return floattok;
-            }
-        // for scientific representation of numbers, 0x0Ap2C implies 0A * (10 ** 2C) in base 16
-        // lexes numbers like 12e+34 or 0x0e2p-2d
-        } else if ((ch == 'e' && base != LEXBASE_16) || ch == 'p') {
-            // 'e' or 'p' should be followed by digit or sign
-            ch = lex_getc(f);
-            if (ch != '+' && ch != '-' && !lex_isdigit(ch))
-                return LEXTOK_INVALID;
-            else lex_ungetc(&ch, f);
-            if (!found_exp) {
-                // replace 'p' with small 'e'
-                char *bc = &(lex_get_buffstr()[lex_buffer->push_i -1]);
-                if (*bc == 'p') *bc = 'e';
-                found_exp = true;
-                // consume following sign if present
-                ch = lex_getc(f);
-                if (ch != '+' && ch != '-') lex_ungetc(&ch, f);
-                continue;
-            } else {
-                lex_ungetc(&ch, f);
-                if (found_point) return floattok;
-                else return inttok;
-            }
-        }
-        else if (lex_isdigit(ch)) {
-            // uppercase all hex digits
-            char *bc = &(lex_get_buffstr()[lex_buffer->push_i -1]);
-            if (*bc >= 'a' && *bc <= 'f') (*bc) -= ('a' - 'A');
-            continue;
-        }
-        // sometimes _ is used for readability, ignore it
-        else if (ch == '_') {
-            // ensure _ is followed by valid digits
-            ch = lex_getc(f);
-            if (!lex_isdigit(ch)) {
-                lex_ungetc(&ch, f);      // unget ch
-                lex_ungetc(&ch, f);      // unget _
-                return found_point ? floattok : inttok;
-            } else lex_ungetc(&ch, f);   // unget ch
+        // if _ consume it but don't buffer it
+        if (ch == '_') {
             lex_buffpop();
-        }
-        else {
-            lex_ungetc(&ch, f);
-            if (found_point) return floattok;
-            else return inttok;
+            ch = lex_getc(f);
         }
     }
-    return LEXTOK_INVALID;
+    // integer matched
+    retok = inttok;
+    // match (\.\d+){0:1}
+    if (ch == '.') {
+        ch = lex_getc(f);
+        if (!lex_isdigit(ch)) {
+            lex_ungetc(&ch, f);    // unget ch
+            lex_ungetc(&ch, f);    // unget '.'
+            return retok;
+        }
+        while (lex_isdigit(ch)) {
+            ch = lex_getc(f);
+            // if _ consume it but don't buffer it
+            if (ch == '_') {
+                lex_buffpop();
+                ch = lex_getc(f);
+            }
+        }
+        // float matched
+        retok = floattok;
+    }
+    // match ([ep][+-]\d+){0:1}
+    if ((base != LEXBASE_16 && ch == 'e') || ch == 'p') {
+        ch = lex_getc(f);
+        // consume + or - symbol
+        if (ch == '+' || ch == '-') ch = lex_getc(f);
+        if (!lex_isdigit(ch)) {
+            lex_ungetc(&ch, f);    // unget ch
+            lex_ungetc(&ch, f);    // unget 'e' or 'p'
+            return retok;
+        }
+        while (lex_isdigit(ch)) {
+            ch = lex_getc(f);
+            // if _ consume it but don't buffer it
+            if (ch == '_') {
+                lex_buffpop();
+                ch = lex_getc(f);
+            }
+        }
+    }
+    // if last matches failed unget last char
+    lex_ungetc(&ch, f);
+    return retok;
 }
 
 LexToken lex_match_numeric(FILE *f, char ch)
@@ -179,29 +169,31 @@ LexToken lex_match_numeric(FILE *f, char ch)
                 // pop "0b"
                 lex_buffpop();
                 lex_buffpop();
-                return lex_match_unum(f, ch = '0', LEXBASE_2);
+                ch = lex_getc(f);
+                return lex_match_unum(f, ch, LEXBASE_2);
             }
             case 'x': {
                 // pop "0x"
                 lex_buffpop();
                 lex_buffpop();
-                return lex_match_unum(f, ch = '0', LEXBASE_16);
+                ch = lex_getc(f);
+                return lex_match_unum(f, ch, LEXBASE_16);
             }
             default: {
                 // for values like 023... and 00.12... and many others
                 if (isdigit(ch)) {
-                    // pop leading 0
-                    lex_ungetc(&ch, f);
-                    lex_buffpop();
-                    ch = lex_getc(f);
+                    lex_ungetc(&ch, f);  // unget curr char
+                    lex_buffpop();       // pop leading '0' from buffer
+                    ch = lex_getc(f);    // after '0'
                     return lex_match_unum(f, ch, LEXBASE_8);
                 }
                 // for numbers like 0.12... or 0_34, or just 0
-                else {
+                else if (ch == '.' || ch == '_') {
                     // unget leading 0
                     lex_ungetc(&ch, f);
                     return lex_match_unum(f, ch, LEXBASE_10);
                 }
+                else return LEXTOK_INVALID;
             }
         }
     }
@@ -211,7 +203,7 @@ LexToken lex_match_numeric(FILE *f, char ch)
     // starts with '.'
     else if (ch == '.') {
         lex_ungetc(&ch, f);      // unget '.'
-        lex_buffpush(ch = '0');  // push a 0
+        lex_buffpush(ch = '0');  // push a '0'
         return lex_match_unum(f, ch, LEXBASE_10);
     }
     else return LEXTOK_INVALID;
