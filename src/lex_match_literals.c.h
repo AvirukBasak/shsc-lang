@@ -40,6 +40,22 @@ LexToken lex_match_string(FILE *f, char ch)
         } while (true);
         return LEXTOK_STR_LITERAL;
     }
+    else if (ch == '`') {
+        // pop out backtick symbol
+        lex_buffpop();
+        do {
+            // can't use lex_getc as it doesn't buffer delimiters
+            ch = getc(f);
+            if (ch == '\\') {
+                lex_buffpush(getc(f));
+                continue;
+            }
+            if (ch == '`') break;
+            if (ch == (char) EOF) lex_throw("unexpected end of file");
+            lex_buffpush(ch);
+        } while (true);
+        return LEXTOK_STR_LITERAL;
+    }
     return LEXTOK_INVALID;
 }
 

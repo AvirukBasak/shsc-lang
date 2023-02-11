@@ -54,7 +54,7 @@ LexToken lex_get_nexttok(FILE *f)
         return kwdtok;
     }
     else if (ch == '\'') return lex_match_char(f, ch);
-    else if (ch == '"') return lex_match_string(f, ch);
+    else if (ch == '"' || ch == '`') return lex_match_string(f, ch);
     else if (isdigit(ch)) return lex_match_numeric(f, ch);
     else if (ch == '+' || ch == '-') {
         ch = lex_getc(f);
