@@ -208,7 +208,11 @@ LexToken lex_match_numeric(FILE *f, char ch)
                     lex_ungetc(&ch, f);
                     return lex_match_unum(f, ch, LEXBASE_10);
                 }
-                else return LEXTOK_INVALID;
+                else {
+                    // unget ch and return int literal for '0'
+                    lex_ungetc(&ch, f);
+                    return LEXTOK_DECINT_LITERAL;
+                }
             }
         }
     }
