@@ -83,6 +83,7 @@ ox_11
 
 # decimals
 0
+0.0
 0_0
 10
 13
@@ -105,6 +106,27 @@ ox_11
 +0.
 
 # octals
+023
+00
+00_0
+00.0
+034e+7
+02p07
++00.0
+-034e+7
++012e-5
+-02p07
+
+# invalid octals
++012e-9
+
+# hexadecimals
+0x0a5
+0x0000ffff
+0x00eebbp-0a
++0x0a5
+-0x0000ffff
++0x00eebbp-0a
 
 # hexes
 

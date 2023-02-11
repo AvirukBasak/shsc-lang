@@ -153,7 +153,15 @@ LexToken lex_match_unum(FILE *f, char ch, LexBase base)
         // next char
         ch = lex_getc(f);
         // consume + or - symbol
-        if (ch == '+' || ch == '-') ch = lex_getc(f);
+        if (ch == '+' || ch == '-') {
+            ch = lex_getc(f);
+            if (!lex_isdigit(ch)) {
+                lex_ungetc(&ch, f);    // unget ch
+                lex_ungetc(&ch, f);    // unget '+' or '-'
+                lex_ungetc(&ch, f);    // unget 'e' or 'p'
+                return retok;
+            }
+        }
         if (!lex_isdigit(ch)) {
             lex_ungetc(&ch, f);    // unget ch
             lex_ungetc(&ch, f);    // unget 'e' or 'p'
