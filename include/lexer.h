@@ -103,6 +103,7 @@ enum LexToken {
     LEXTOK_DECINT_LITERAL,         // "<decintlit>"
     LEXTOK_HEXINT_LITERAL,         // "<hexintlit>"
     LEXTOK_STR_LITERAL,            // "<strlit>"
+    LEXTOK_INTERP_STR_LITERAL,     // "<interpstrlit>"
     // default cases
     LEXTOK_EOF,                    // "<eof>"
     LEXTOK_INVALID,                // "<invalid>"

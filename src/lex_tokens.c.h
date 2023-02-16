@@ -90,6 +90,7 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_DECINT_LITERAL:        return "LEXTOK_DECINT_LITERAL";
         case LEXTOK_HEXINT_LITERAL:        return "LEXTOK_HEXINT_LITERAL";
         case LEXTOK_STR_LITERAL:           return "LEXTOK_STR_LITERAL";
+        case LEXTOK_INTERP_STR_LITERAL:    return "LEXTOK_INTERP_STR_LITERAL";
         // default cases
         case LEXTOK_EOF:                   return "LEXTOK_EOF";
         case LEXTOK_INVALID:               return "LEXTOK_INVALID";
@@ -186,6 +187,7 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_DECINT_LITERAL:        return "<decintlit>";
         case LEXTOK_HEXINT_LITERAL:        return "<hexintlit>";
         case LEXTOK_STR_LITERAL:           return "<strlit>";
+        case LEXTOK_INTERP_STR_LITERAL:    return "<interpstrlit>";
         // default cases
         case LEXTOK_EOF:                   return "<eof>";
         case LEXTOK_INVALID:               return "<invalid>";

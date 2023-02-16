@@ -54,7 +54,7 @@ LexToken lex_match_string(FILE *f, char ch)
             if (ch == (char) EOF) lex_throw("unexpected end of file");
             lex_buffpush(ch);
         } while (true);
-        return LEXTOK_STR_LITERAL;
+        return LEXTOK_INTERP_STR_LITERAL;
     }
     return LEXTOK_INVALID;
 }
