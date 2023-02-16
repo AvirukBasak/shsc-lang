@@ -56,12 +56,6 @@ LexToken lex_get_nexttok(FILE *f)
     else if (ch == '\'') return lex_match_char(f, ch);
     else if (ch == '"' || ch == '`') return lex_match_string(f, ch);
     else if (isdigit(ch)) return lex_match_numeric(f, ch);
-    else if (ch == '+' || ch == '-') {
-        ch = lex_getc(f);
-        if (isdigit(ch)) return lex_match_numeric(f, ch);
-        lex_ungetc(&ch, f);
-        return lex_match_symbols(f, ch);
-    }
     else if (ch == '.') {
         ch = lex_getc(f);
         if (isdigit(ch)) {
