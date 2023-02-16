@@ -3,60 +3,57 @@
 
 LexToken lex_match_char(FILE *f, char ch)
 {
-    if (ch == '\'') {
-        // pop out quote symbol
-        lex_buffpop();
-        do {
-            // can't use lex_getc as it doesn't buffer delimiters
-            ch = getc(f);
-            if (ch == '\\') {
-                lex_buffpush(getc(f));
-                continue;
-            }
-            if (ch == '\'') break;
-            if (ch == (char) EOF) lex_throw("unexpected end of file");
+    if (ch != '\'') return LEXTOK_INVALID;
+    // pop out quote symbol
+    lex_buffpop();
+    char prev = 0;
+    while (true) {
+        // can't use lex_getc as it doesn't buffer delimiters
+        prev = ch;
+        ch = getc(f);
+        if (prev == '\\' && ch == '\'') {
             lex_buffpush(ch);
-        } while (true);
-        return LEXTOK_CHAR_LITERAL;
+            continue;
+        }
+        if (ch == '\'') break;
+        if (ch == (char) EOF) lex_throw("unexpected end of file");
+        lex_buffpush(ch);
     }
-    return LEXTOK_INVALID;
+    return LEXTOK_CHAR_LITERAL;
 }
 
 LexToken lex_match_string(FILE *f, char ch)
 {
-    if (ch == '"') {
-        // pop out quote symbol
-        lex_buffpop();
-        do {
-            // can't use lex_getc as it doesn't buffer delimiters
-            ch = getc(f);
-            if (ch == '\\') {
-                lex_buffpush(getc(f));
-                continue;
-            }
-            if (ch == '"') break;
-            if (ch == (char) EOF) lex_throw("unexpected end of file");
+    if (ch != '"' && ch != '`') return LEXTOK_INVALID;
+    LexToken tok = ch == '"' ? LEXTOK_STR_LITERAL : LEXTOK_INTERP_STR_LITERAL;
+    // pop out quote/backtick symbol
+    lex_buffpop();
+    char prev = 0;
+    if (tok == LEXTOK_STR_LITERAL) while (true) {
+        // can't use lex_getc as it doesn't buffer delimiters
+        prev = ch;
+        ch = getc(f);
+        if (prev == '\\' && ch == '"') {
             lex_buffpush(ch);
-        } while (true);
-        return LEXTOK_STR_LITERAL;
+            continue;
+        }
+        if (ch == '"') break;
+        if (ch == (char) EOF) lex_throw("unexpected end of file");
+        lex_buffpush(ch);
     }
-    else if (ch == '`') {
-        // pop out backtick symbol
-        lex_buffpop();
-        do {
-            // can't use lex_getc as it doesn't buffer delimiters
-            ch = getc(f);
-            if (ch == '\\') {
-                lex_buffpush(getc(f));
-                continue;
-            }
-            if (ch == '`') break;
-            if (ch == (char) EOF) lex_throw("unexpected end of file");
+    else if (tok == LEXTOK_INTERP_STR_LITERAL) while (true) {
+        // can't use lex_getc as it doesn't buffer delimiters
+        prev = ch;
+        ch = getc(f);
+        if (prev == '\\' && ch == '`') {
             lex_buffpush(ch);
-        } while (true);
-        return LEXTOK_INTERP_STR_LITERAL;
+            continue;
+        }
+        if (ch == '`') break;
+        if (ch == (char) EOF) lex_throw("unexpected end of file");
+        lex_buffpush(ch);
     }
-    return LEXTOK_INVALID;
+    return tok;
 }
 
 typedef enum {
