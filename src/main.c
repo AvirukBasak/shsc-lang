@@ -4,7 +4,7 @@
 
 #include "globals.h"
 #include "io.h"
-#include "lexer.h"
+#include "parser.h"
 
 int main(int argc, char **argv)
 {
@@ -15,12 +15,7 @@ int main(int argc, char **argv)
             stdin :
             fopen(argv[i], "rb");
         if (!f) io_errndie("couldn't read file: '%s'", argv[i]);
-        LexToken tok = lex_get_nexttok(f);
-        while (tok != LEXTOK_EOF) {
-            printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
-            tok = lex_get_nexttok(f);
-        }
-        printf("%s\n", lex_get_tokcode(tok));
+        parser_interpret(f);
         if (f != stdin) fclose(f);
     }
     return 0;
