@@ -15,7 +15,7 @@ int main(int argc, char **argv)
             stdin :
             fopen(argv[i], "rb");
         if (!f) io_errndie("couldn't read file: '%s'", argv[i]);
-        parser_interpret(f);
+        parse_interpret(f);
         if (f != stdin) fclose(f);
     }
     return 0;

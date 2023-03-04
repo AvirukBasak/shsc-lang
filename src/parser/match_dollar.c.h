@@ -52,16 +52,16 @@ void parse_dollar(FILE *f, LexToken tok)
                                 case LEXTOK_KWD_CALC: {
                                     break;
                                 }
-                                default: parser_throw("unexpected symbol, expected literal or identifier");
+                                default: parse_throw("unexpected symbol, expected literal or identifier");
                             }
                         }
-                        default: parser_throw("unexpected symbol, expected '='");
+                        default: parse_throw("unexpected symbol, expected '='");
                     }
                 }
-                default: parser_throw("unexpected symbol, expected identifier");
+                default: parse_throw("unexpected symbol, expected identifier");
             }
         }
-        default: parser_throw("unexpected symbol, expected '$'");
+        default: parse_throw("unexpected symbol, expected '$'");
     }
 }
 
