@@ -32,14 +32,14 @@ void lex_buffreset();
 
 void lex_throw(const char *msg);
 
-#include "lex_buffer.c.h"
-#include "lex_io.c.h"
+#include "lexer/buffer.c.h"
+#include "lexer/io.c.h"
 
 // the lexer state machine
-#include "lex_match_symbols.c.h"
-#include "lex_match_keywords.c.h"
-#include "lex_match_identifiers.c.h"
-#include "lex_match_literals.c.h"
+#include "lexer/match_symbols.c.h"
+#include "lexer/match_keywords.c.h"
+#include "lexer/match_identifiers.c.h"
+#include "lexer/match_literals.c.h"
 
 LexToken lex_get_nexttok(FILE *f)
 {
@@ -68,7 +68,7 @@ LexToken lex_get_nexttok(FILE *f)
     else return lex_match_symbols(f, ch);
 }
 
-#include "lex_tokens.c.h"
+#include "lexer/tokens.c.h"
 
 void lex_throw(const char *msg)
 {

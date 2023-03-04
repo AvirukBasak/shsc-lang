@@ -2,9 +2,9 @@
 #include "parser.h"
 #include "io.h"
 
-#include "parse_dollar.c.h"
+#include "parser/match_dollar.c.h"
 
-void parser_interpret(FILE *f)
+void parse_interpret(FILE *f)
 {
     LexToken tok = lex_get_nexttok(f);
     while (tok != LEXTOK_EOF) {
@@ -21,7 +21,7 @@ void parser_interpret(FILE *f)
     }
 }
 
-void parser_throw(const char *msg)
+void parse_throw(const char *msg)
 {
     if (!msg) abort();
     io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s", msg);
