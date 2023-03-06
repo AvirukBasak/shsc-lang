@@ -2,7 +2,9 @@
 #define PARSE_DOLLAR_CH
 
 #include <stdio.h>
+
 #include "lexer.h"
+#include "parser.h"
 
 void parse_dollar(FILE *f, LexToken tok)
 {
