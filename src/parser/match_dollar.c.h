@@ -1,6 +1,9 @@
 #ifndef PARSE_DOLLAR_CH
 #define PARSE_DOLLAR_CH
 
+#include <stdio.h>
+#include "lexer.h"
+
 void parse_dollar(FILE *f, LexToken tok)
 {
     switch (tok) {
@@ -78,7 +81,7 @@ void parse_dollar(FILE *f, LexToken tok)
                                      * regardless of datatype
                                      */
                                     if (vartable_clone(idf, idf2)) break;
-                                    char* err_ = "no such identifier: '"
+                                    char* err_ = "no such identifier: '";
                                     char* errmsg = malloc(strlen(err_) + strlen(idf2) + 2);
                                     strcat(errmsg, err_);
                                     strcat(errmsg, idf2);

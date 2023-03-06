@@ -1,6 +1,8 @@
 #ifndef LEX_MATCH_IDENTIFIERS_CH
 #define LEX_MATCH_IDENTIFIERS_CH
 
+#include "lexer.h"
+
 LexToken lex_match_identifiers(FILE *f, char ch)
 {
     if (!isalpha(ch) && ch != '_') return LEXTOK_INVALID;

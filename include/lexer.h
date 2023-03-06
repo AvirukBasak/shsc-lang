@@ -16,6 +16,14 @@
 typedef enum LexToken LexToken;
 typedef struct LexBuffer LexBuffer;
 
+struct LexBuffer {
+    char *buffer;
+    size_t push_i;
+    size_t size;
+};
+
+extern LexBuffer *lex_buffer;
+
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 enum LexToken {
     // operators and seperators
@@ -117,5 +125,18 @@ char *lex_get_buffstr();
 LexToken lex_get_nexttok(FILE *f);
 char *lex_get_tokcode(LexToken code);
 char *lex_get_symbol(LexToken code);
+
+char lex_getc(FILE *f);
+char lex_ungetc(char *c, FILE *f);
+
+bool lex_is_delimiter(char c);
+bool lex_is_printable(char c);
+bool lex_isalmun_undr(char c);
+
+void lex_buffpush(char ch);
+char lex_buffpop();
+void lex_buffreset();
+
+void lex_throw(const char *msg);
 
 #endif

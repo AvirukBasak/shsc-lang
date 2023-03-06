@@ -1,6 +1,8 @@
 #ifndef LEX_IO_CH
 #define LEX_IO_CH
 
+#include "lexer.h"
+
 char lex_getc(FILE *f)
 {
     char c = getc(f);
