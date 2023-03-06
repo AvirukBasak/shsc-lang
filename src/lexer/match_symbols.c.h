@@ -1,6 +1,8 @@
 #ifndef LEX_MATCH_SYMBOLS_CH
 #define LEX_MATCH_SYMBOLS_CH
 
+#include "lexer.h"
+
 LexToken lex_match_symbols(FILE *f, char ch)
 {
     switch (ch) {

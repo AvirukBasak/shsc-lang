@@ -8,27 +8,10 @@
 #include "lexer.h"
 #include "stack-int.h"
 
-struct LexBuffer {
-    char *buffer;
-    size_t push_i;
-    size_t size;
-};
-
 LexBuffer *lex_buffer = NULL;
 
 int lex_line_no = 1;
 int lex_char_no = 0;
-
-char lex_getc(FILE *f);
-char lex_ungetc(char *c, FILE *f);
-
-bool lex_is_delimiter(char c);
-bool lex_is_printable(char c);
-bool lex_isalmun_undr(char c);
-
-void lex_buffpush(char ch);
-char lex_buffpop();
-void lex_buffreset();
 
 void lex_throw(const char *msg);
 

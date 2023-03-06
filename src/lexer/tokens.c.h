@@ -1,6 +1,8 @@
 #ifndef LEX_TOKENS_CH
 #define LEX_TOKENS_CH
 
+#include "lexer.h"
+
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 char *lex_get_tokcode(LexToken code)
 {
