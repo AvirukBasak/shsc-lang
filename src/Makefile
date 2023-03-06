@@ -20,7 +20,7 @@ CFLAGS         := -Wall -Ofast
 CDBGFLAGS      := -Wall -g -fsanitize=address -D DEBUG
 DBG            := gdb -q
 
-INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR)
+INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
 LIB            := -L$(LIB_DIR) -lm -lavl
 DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg
 

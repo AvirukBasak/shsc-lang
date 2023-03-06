@@ -6,6 +6,11 @@
 #include "lexer.h"
 #include "parser.h"
 
+#include "functions/calc.c.h"
+
+#include "parse.c.h"
+#include "vartable.c.h"
+
 void parse_dollar(FILE *f, LexToken tok)
 {
     switch (tok) {
@@ -20,58 +25,58 @@ void parse_dollar(FILE *f, LexToken tok)
                             tok = lex_get_nexttok(f);
                             switch (tok) {
                                 case LEXTOK_CHAR_LITERAL: {
-                                    char data = parse_charlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.CHAR, data));
+                                    VarData data; data.chr = (char) parse_charlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_CHR, data));
                                     break;
                                 }
                                 case LEXTOK_BININT_LITERAL: {
-                                    int64_t data = parse_binintlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.INT64, data));
+                                    VarData data; data.i64 = (int64_t) parse_binintlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_I64, data));
                                     break;
                                 }
                                 case LEXTOK_OCTINT_LITERAL: {
-                                    int64_t data = parse_octintlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.INT64, data));
+                                    VarData data; data.i64 = (int64_t) parse_octintlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_I64, data));
                                     break;
                                 }
                                 case LEXTOK_DECINT_LITERAL: {
-                                    int64_t data = parse_decintlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.INT64, data));
+                                    VarData data; data.i64 = (int64_t) parse_decintlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_I64, data));
                                     break;
                                 }
                                 case LEXTOK_HEXINT_LITERAL: {
-                                    int64_t data = parse_hexintlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.INT64, data));
+                                    VarData data; data.i64 = (int64_t) parse_hexintlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_I64, data));
                                     break;
                                 }
                                 case LEXTOK_BINFLOAT_LITERAL: {
-                                    double data = parse_binfloatlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.FLOAT64, data));
+                                    VarData data; data.f64 = (double) parse_binfloatlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_F64, data));
                                     break;
                                 }
                                 case LEXTOK_OCTFLOAT_LITERAL: {
-                                    double data = parse_octfloatlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.FLOAT64, data));
+                                    VarData data; data.f64 = (double) parse_octfloatlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_F64, data));
                                     break;
                                 }
                                 case LEXTOK_DECFLOAT_LITERAL: {
-                                    double data = parse_decfloatlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.FLOAT64, data));
+                                    VarData data; data.f64 = (double) parse_decfloatlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_F64, data));
                                     break;
                                 }
                                 case LEXTOK_HEXFLOAT_LITERAL: {
-                                    double data = parse_hexfloatlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.FLOAT64, data));
+                                    VarData data; data.f64 = (double) parse_hexfloatlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_F64, data));
                                     break;
                                 }
                                 case LEXTOK_STR_LITERAL: {
-                                    const char* const data = parse_strlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.STRING, data));
+                                    VarData data; data.str = (char*) parse_strlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_STR, data));
                                     break;
                                 }
                                 case LEXTOK_INTERP_STR_LITERAL: {
-                                    const char* const data = parse_interpstrlit(lex_get_buffstr());
-                                    vartable_insert(idf, vartable_newdata(VarTable.STRING, data));
+                                    VarData data; data.str = (char*) parse_interpstrlit(lex_get_buffstr());
+                                    vartable_insert(idf, vartable_newdata(VT_STR, data));
                                     break;
                                 }
                                 case LEXTOK_IDENTIFIER: {
@@ -93,20 +98,20 @@ void parse_dollar(FILE *f, LexToken tok)
                                     break;
                                 }
                                 case LEXTOK_KWD_CALC: {
-                                    const char** const arglist = parse_mkarglist(f);
-                                    CalcResult res = func_calc(arglist);
+                                    char** arglist = parse_mkarglist(f);
+                                    VarEntry res = func_calc(arglist);
                                     switch (res.type) {
-                                        case CHAR:
-                                            vartable_insert(idf, vartable_newdata(VarTable.CHAR, (char) res.data));
+                                        case VT_CHR:
+                                            vartable_insert(idf, vartable_newdata(VT_CHR, res.data));
                                             break;
-                                        case INT64:
-                                            vartable_insert(idf, vartable_newdata(VarTable.INT64, (int64_t) res.data));
+                                        case VT_I64:
+                                            vartable_insert(idf, vartable_newdata(VT_I64, res.data));
                                             break;
-                                        case FLOAT64:
-                                            vartable_insert(idf, vartable_newdata(VarTable.FLOAT64, (double) res.data));
+                                        case VT_F64:
+                                            vartable_insert(idf, vartable_newdata(VT_F64, res.data));
                                             break;
-                                        case STRING:
-                                            vartable_insert(idf, vartable_newdata(VarTable.STRING, (char*) res.data));
+                                        case VT_STR:
+                                            vartable_insert(idf, vartable_newdata(VT_STR, res.data));
                                             break;
                                         default: parse_throw("calc returned unexpected result type");
                                     }
