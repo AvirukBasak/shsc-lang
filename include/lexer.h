@@ -136,6 +136,7 @@ bool lex_isalmun_undr(char c);
 void lex_buffpush(char ch);
 char lex_buffpop();
 void lex_buffreset();
+void lex_buffree();
 
 void lex_throw(const char *msg);
 
