@@ -30,9 +30,9 @@ struct VarEntry {
   VarData data;
 };
 
-VarEntry* vartable_newdata(VarTypes vt, VarData data);
+VarEntry *vartable_newdata(VarTypes vt, VarData data);
 
-void vartable_insert(const char* idf, VarEntry* ve);
-bool vartable_clone(const char* dest, const char* src);
+void vartable_insert(const char *idf, VarEntry *ve);
+bool vartable_clone(const char *dest, const char *src);
 
 #endif

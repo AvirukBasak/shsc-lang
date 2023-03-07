@@ -3,6 +3,6 @@
 
 #include "parser/vartable.c.h"
 
-VarEntry func_calc(char** argslist);
+VarEntry func_calc(char **argslist);
 
 #endif
