@@ -13,16 +13,30 @@
 #define LEX_TOTAL_TOKENS       (128)
 #define LEX_TOKEN_SIZE         (32)
 
+// The following form the EXTERNAL INTERFACE
+
 typedef enum LexToken LexToken;
+
+LexToken lex_get_nexttok(FILE *f);
+char *lex_get_tokcode(LexToken code);
+char *lex_get_symbol(LexToken code);
+
+char *lex_get_buffstr();
+
+extern int lex_line_no;
+extern int lex_char_no;
+
+// The following are for INTERNAL USE
+
 typedef struct LexBuffer LexBuffer;
+
+extern LexBuffer *lex_buffer;
 
 struct LexBuffer {
     char *buffer;
     size_t push_i;
     size_t size;
 };
-
-extern LexBuffer *lex_buffer;
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 enum LexToken {
@@ -117,15 +131,7 @@ enum LexToken {
     LEXTOK_INVALID,                // "<invalid>"
 };
 
-extern int lex_line_no;
-extern int lex_char_no;
-
-char *lex_get_buffstr();
-
-LexToken lex_get_nexttok(FILE *f);
-char *lex_get_tokcode(LexToken code);
-char *lex_get_symbol(LexToken code);
-
+// lexer/io
 char lex_getc(FILE *f);
 char lex_ungetc(char *c, FILE *f);
 
@@ -133,11 +139,13 @@ bool lex_is_delimiter(char c);
 bool lex_is_printable(char c);
 bool lex_isalmun_undr(char c);
 
+// lexer/buffer
 void lex_buffpush(char ch);
 char lex_buffpop();
 void lex_buffreset();
 void lex_buffree();
 
+// lexer
 void lex_throw(const char *msg);
 
 #endif
