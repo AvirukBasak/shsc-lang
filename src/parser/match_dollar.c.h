@@ -20,7 +20,7 @@ void parse_dollar(FILE *f, LexToken tok)
                 case LEXTOK_IDENTIFIER: {
                     tok = lex_get_nexttok(f);
                     // strdup is not used to copy the identifier name
-                    const char* const idf = lex_get_buffstr();
+                    const char *const idf = lex_get_buffstr();
                     switch (tok) {
                         case LEXTOK_ASSIGN: {
                             tok = lex_get_nexttok(f);
@@ -81,7 +81,7 @@ void parse_dollar(FILE *f, LexToken tok)
                                     break;
                                 }
                                 case LEXTOK_IDENTIFIER: {
-                                    const char* const idf2 = lex_get_buffstr();
+                                    const char *const idf2 = lex_get_buffstr();
                                     /* Copies idf2 over to idf, frees all recourse held by idf
                                      * this means, even if idf2 holds a seperate object, it'll be cloned
                                      * and idf gets its own copy
@@ -89,8 +89,8 @@ void parse_dollar(FILE *f, LexToken tok)
                                      * regardless of datatype
                                      */
                                     if (vartable_clone(idf, idf2)) break;
-                                    char* err_ = "no such identifier: '";
-                                    char* errmsg = malloc(strlen(err_) + strlen(idf2) + 2);
+                                    char *err_ = "no such identifier: '";
+                                    char *errmsg = malloc(strlen(err_) + strlen(idf2) + 2);
                                     strcat(errmsg, err_);
                                     strcat(errmsg, idf2);
                                     strcat(errmsg, "'");
@@ -99,7 +99,7 @@ void parse_dollar(FILE *f, LexToken tok)
                                     break;
                                 }
                                 case LEXTOK_KWD_CALC: {
-                                    char** arglist = parse_mkarglist(f);
+                                    char **arglist = parse_mkarglist(f);
                                     VarEntry res = func_calc(arglist);
                                     parse_delarglist(arglist);
                                     switch (res.type) {
