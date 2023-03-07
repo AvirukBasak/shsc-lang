@@ -19,7 +19,8 @@ void parse_dollar(FILE *f, LexToken tok)
             switch (tok) {
                 case LEXTOK_IDENTIFIER: {
                     tok = lex_get_nexttok(f);
-                    const char* const idf = strdup(lex_get_buffstr());
+                    // strdup is not used to copy the identifier name
+                    const char* const idf = lex_get_buffstr();
                     switch (tok) {
                         case LEXTOK_ASSIGN: {
                             tok = lex_get_nexttok(f);
