@@ -40,4 +40,11 @@ char *lex_get_buffstr()
     return lex_buffer->buffer;
 }
 
+void lex_buffree()
+{
+    if (!lex_buffer) return;
+    free(lex_buffer->buffer);
+    free(lex_buffer);
+}
+
 #endif
