@@ -13,8 +13,6 @@ LexBuffer *lex_buffer = NULL;
 int lex_line_no = 1;
 int lex_char_no = 0;
 
-void lex_throw(const char *msg);
-
 #include "lexer/buffer.c.h"
 #include "lexer/io.c.h"
 
