@@ -99,9 +99,9 @@ void parse_dollar(FILE *f, LexToken tok)
                                     break;
                                 }
                                 case LEXTOK_KWD_CALC: {
-                                    char **arglist = parse_mkarglist(f);
+                                    ParserArgList arglist = parse_mkarglist(f, LEXTOK_SEMICOLON);
                                     VarEntry res = func_calc(arglist);
-                                    parse_delarglist(arglist);
+                                    parse_delarglist(&arglist);
                                     switch (res.type) {
                                         case VT_CHR:
                                             vartable_insert(idf, vartable_newdata(VT_CHR, res.data));
