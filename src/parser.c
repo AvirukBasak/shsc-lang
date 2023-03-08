@@ -2,7 +2,7 @@
 #include "parser.h"
 #include "io.h"
 
-#include "parser/match_dollar.c.h"
+// #include "parser/match_dollar.c.h"
 
 void parse_interpret(FILE *f)
 {
@@ -16,7 +16,7 @@ void parse_interpret(FILE *f)
     // new code
     tok = lex_get_nexttok(f);
     while (tok != LEXTOK_EOF) {
-        parse_dollar(f, tok);
+        // parse_dollar(f, tok);
         tok = lex_get_nexttok(f);
     }
 }
