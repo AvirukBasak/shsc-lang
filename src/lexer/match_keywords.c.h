@@ -1,6 +1,8 @@
 #ifndef LEX_MATCH_KEYWORDS_CH
 #define LEX_MATCH_KEYWORDS_CH
 
+#include "lexer.h"
+
 LexToken lex_match_keywords(FILE *f, char ch)
 {
     if (!isalpha(ch)) return LEXTOK_INVALID;

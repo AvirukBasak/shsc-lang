@@ -1,0 +1,135 @@
+[
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../src",
+            "-I",
+            "../lib",
+            "-o",
+            "balancer-rel.o",
+            "balancer.c"
+        ],
+        "directory": "/home/aviruk/git/scheisse-script/lib/libavl/src",
+        "file": "balancer.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../src",
+            "-I",
+            "../lib",
+            "-o",
+            "stack-int-rel.o",
+            "stack-int.c"
+        ],
+        "directory": "/home/aviruk/git/scheisse-script/src",
+        "file": "stack-int.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../src",
+            "-I",
+            "../lib",
+            "-o",
+            "parser-rel.o",
+            "parser.c"
+        ],
+        "directory": "/home/aviruk/git/scheisse-script/src",
+        "file": "parser.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../src",
+            "-I",
+            "../lib",
+            "-o",
+            "lexer-rel.o",
+            "lexer.c"
+        ],
+        "directory": "/home/aviruk/git/scheisse-script/src",
+        "file": "lexer.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../src",
+            "-I",
+            "../lib",
+            "-o",
+            "helperfn-rel.o",
+            "helperfn.c"
+        ],
+        "directory": "/home/aviruk/git/scheisse-script/lib/libavl/src",
+        "file": "helperfn.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../src",
+            "-I",
+            "../lib",
+            "-o",
+            "io-rel.o",
+            "io.c"
+        ],
+        "directory": "/home/aviruk/git/scheisse-script/src",
+        "file": "io.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../src",
+            "-I",
+            "../lib",
+            "-o",
+            "avl-rel.o",
+            "avl.c"
+        ],
+        "directory": "/home/aviruk/git/scheisse-script/lib/libavl/src",
+        "file": "avl.c"
+    }
+]

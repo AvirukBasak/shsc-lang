@@ -1,6 +1,8 @@
 #ifndef LEX_BUFFER_CH
 #define LEX_BUFFER_CH
 
+#include "lexer.h"
+
 void lex_buffpush(char ch)
 {
     if (!lex_buffer) lex_buffer = calloc(1, sizeof(LexBuffer));
@@ -36,6 +38,13 @@ char *lex_get_buffstr()
 {
     if (!lex_buffer->push_i) return "NULL";
     return lex_buffer->buffer;
+}
+
+void lex_buffree()
+{
+    if (!lex_buffer) return;
+    free(lex_buffer->buffer);
+    free(lex_buffer);
 }
 
 #endif

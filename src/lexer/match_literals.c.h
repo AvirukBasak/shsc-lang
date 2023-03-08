@@ -1,6 +1,8 @@
 #ifndef LEX_MATCH_LITERALS_CH
 #define LEX_MATCH_LITERALS_CH
 
+#include "lexer.h"
+
 LexToken lex_match_char(FILE *f, char ch)
 {
     if (ch != '\'') return LEXTOK_INVALID;

@@ -1,6 +1,8 @@
 #ifndef LEX_MATCH_SYMBOLS_CH
 #define LEX_MATCH_SYMBOLS_CH
 
+#include "lexer.h"
+
 LexToken lex_match_symbols(FILE *f, char ch)
 {
     switch (ch) {
@@ -213,7 +215,10 @@ LexToken lex_match_symbols(FILE *f, char ch)
         }
         case '}': return LEXTOK_RBRACE_CURLY;
         case '~': return LEXTOK_TILDE;
-        case (char) EOF: return LEXTOK_EOF;
+        case (char) EOF: {
+            lex_buffree();
+            return LEXTOK_EOF;
+        }
         default: return LEXTOK_INVALID;
     }
     return LEXTOK_INVALID;
