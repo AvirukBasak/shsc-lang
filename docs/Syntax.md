@@ -1,125 +1,97 @@
-## Procedures
-#### Un-parameterized function
-```
-start myFunction
-  $a = 45;
-  $b = 27;
-  return a + b;
-end
+## Syntax
 
-myFunction;
-```
+Syntax is inspired partly by Python, JS and Go.
+However, unlike them, this language has a very few datatypes.
 
-#### Parameterized function
-```
-start myFunction
-  $a = $0;    # 1st arg
-  $b = $1;    # 2nd arg
-  return a + b;
-end
-
-myFunction 23 67;
-```
+Composite data types will be implemented as classes when OOP is introduced.
 
 #### Policies
-- A function always returns 0 unless return provided
-- Error occurrs if less arguments are provided
-- Excess arguments are ignored
-- `$0` to `$n` are variables to collect function args
-- Theoretically, a function can take unlimited arguments
-- Return data type is automatically handled
+- Dynamically typed (type inferred at runtime).
+- Weakly typed (sensible type coercion).
+- Error if type coercion is impossible.
+- Objects are objects, everything is not.
+- Support for libc functions.
+- Apart from primitive datatypes, everything else is an object.
+- Syntax should be sensible.
+- Should not become JS.
 
-## Datatypes
-#### Numbers
-```
-$a = 44;      # integral decimal
-$b = 17.28;   # floating decimal
-$c = -12e4;   # scientific decimal
-$d = 09;      # integral octal
-$e = 0x09;    # integral hexadecimal
-$d = 0b1011;  # integral binary
-$p = $PI;     # floating pi
-$q = $E;      # floating Euler's constant
-$z = '0';     # integral character
-```
+#### Coercion rules
+- Any primitive can be coerced to str.
+- An str to primitive coercion may fail and cause error.
+- Any other conversion must be explicitly done using functions.
+- If magic functions are introduced, one may specify their own coercion rules.
 
-#### Strings
+#### Expressions
 ```
-$a = "Hello, World!";
+r * (cos(a) + sin(b)) - pow(E, sin(ab))
 ```
 
-#### Interpolation in strings
+#### Assignment
 ```
-$name = "Joe";
-$age = 23;
-print `$name is $age years old`;
+x = r * (cos(a) + sin(b)) - pow(E, sin(ab));
 ```
 
-#### Arrays
+#### Functions
 ```
-$a = [1, 5, 7, 'e', PI, "hello", 0x3a];
-$a = [
-  [1, 5, 7, 'e', PI, "hello", 0x3a],
-  [1, 5, 7, 'e', PI, "hello", 0x3a],
-  [1, 5, 7, 'e', PI, "hello", 0x3a],
-];
-
-# prints hello
-print a[0][5];
+fn cos(x) {
+    return sin(PI/2 + x);
+}
 ```
 
-#### Maps
-Maps use JSON syntax.
+#### Conditional statements
 ```
-$person = {
-  name: "Joe",
-  age: 23,
-  uid: 12345,
-  address: [
-    "address 1",
-    "address 2",
-  ],
-};
-
-print person.name;
-print person["age"];
+if x == 5 {
+    x = x + 7;
+} else {
+    x = x + 8; 
+}
 ```
 
-## Constants
+#### Loops
 ```
-# global scoped
-const MY_CONSTANT 45;
+while x < 10 {
+    x = x + 1;
+}
 
-start foo
-  # constant and scoped in foo
-  const ePow2 E**2;
-  return ePow2;
-end
+# for loop will be added when iterables are introduced
 ```
 
-## If-else
-```
-if condition then
-  # code;
-end
+#### Data memory model
+- Primitives: pseudo stack, auto managed
+- Objects: heap, reference counted
 
-if condition then
-  # code;
-elif condition then
-  # code;
-end
-```
+A pseudo stack is a contiguous (array type) stack maintained in the heap.
 
-## Loops
-```
-loop
-  # forever;
-end
+#### Datatypes
+The following are the 3 of the primitive types:
+- char  (char)
+- int   (int64_t)
+- float (float64_t)
 
-while condition do
-  # code;
-end
-```
+#### Unsafe types (might be added)
+The following are the rest primitive types:
+- pointers
+  - charp
+  - intp
+  - floatp
 
-## Scopes
-A variable has either global scope or local scope.
+#### Currently primitive
+**`str (i.e. const char*)`**: will be replaced by the str class when that is introduced.
+When that happens, it should no longer be considered a primitive type.
+
+#### OOP to be added
+- Class str will replace str
+- Class array will be added for arrays
+- Basic data structure classes will be added
+
+Objects will always be passed as reference and ref counted.
+
+#### Agenda
+1. WAP that supports some basic functions and evaluates an expression
+2. Implement assignment to variables
+3. Develop a syntax to create functions
+4. Develop syntax for loops and conditions
+5. Develop an interface with libc
+6. Develop modules system
+7. Introduce magic functions
+8. Add whatever the f*ck you want
