@@ -1,18 +1,19 @@
-print "Hello world!";
+print("Hello world!");
 
-$x = input int;
-if x == 1 then
-    print "entered 1" lf;
-elif x == 2 then
-    print `entered 2` lf;
-else
-    print `entered $x` lf;
-end
+x = input(int);
 
-while x >= 0 do
+if x == 1 {
+    print("entered 1", lf);
+} elif x == 2 {
+    print(`entered 2`, lf);
+} else {
+    print(`entered ${x}`, lf);
+}
+
+while x >= 0 {
     print `x = $x`;
-    x--;
-end
+    x = x -1;
+}
 
-$x = input "prompt: " str;
-print `entered $x` lf;
+x = input("prompt: ", str);
+print(`entered ${x}`, lf);

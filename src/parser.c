@@ -2,8 +2,6 @@
 #include "parser.h"
 #include "io.h"
 
-// #include "parser/match_dollar.c.h"
-
 void parse_interpret(FILE *f)
 {
     LexToken tok = lex_get_nexttok(f);
@@ -14,11 +12,6 @@ void parse_interpret(FILE *f)
     printf("%s\n", lex_get_tokcode(tok));
     return;
     // new code
-    tok = lex_get_nexttok(f);
-    while (tok != LEXTOK_EOF) {
-        // parse_dollar(f, tok);
-        tok = lex_get_nexttok(f);
-    }
 }
 
 void parse_throw(const char *msg)
