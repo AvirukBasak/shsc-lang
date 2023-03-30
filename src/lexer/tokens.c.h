@@ -96,7 +96,7 @@ char *lex_get_tokcode(LexToken code)
         // default cases
         case LEXTOK_EOF:                   return "LEXTOK_EOF";
         case LEXTOK_INVALID:               return "LEXTOK_INVALID";
-        // default:                        return "UNKNOWN";
+        default:                           return "INTERNAL";
     }
 }
 
@@ -193,7 +193,7 @@ char *lex_get_symbol(LexToken code)
         // default cases
         case LEXTOK_EOF:                   return "<eof>";
         case LEXTOK_INVALID:               return "<invalid>";
-        // default:                        return "<unknown>";
+        default:                           return "<internal>";
     }
 }
 

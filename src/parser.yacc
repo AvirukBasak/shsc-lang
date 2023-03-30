@@ -6,12 +6,9 @@
 
 #include "io.h"
 #include "lexer.h"
+#include "parser.h"
 
-void parse_interpret(FILE *f);
-void parse_throw(const char *msg);
-
-int yyerror(const char* s);
-int yylex(void);
+FILE *yyin = NULL;
 
 %}
 
@@ -108,7 +105,6 @@ int yylex(void);
 %token         LEXTOK_EOF                      "<eof>"
 %token         LEXTOK_INVALID                  "<invalid>"
 
-
 %union {
     char chr;
     int64_t i64;
@@ -126,6 +122,12 @@ program: /* Add rules here */ ;
 
 %%
 
+int yyerror(const char* s)
+{
+    parse_throw(s);
+    return 1;
+}
+
 void parse_interpret(FILE *f)
 {
     yyin = f;
@@ -137,49 +139,4 @@ void parse_throw(const char *msg)
     if (!msg) abort();
     io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s", msg);
     exit(2);
-}
-
-int yylex(void)
-{
-    int token = lex_get_nexttok(yyin);
-    switch (token) {
-        case YYTOK_IDENTIFIER:
-            yylval.idf = strdup(lex_get_buffstr());
-            break;
-        case YYTOK_CHAR_LITERAL:
-            yylval.chr = parse_char(lex_get_buffstr());
-            break;
-        case YYTOK_STR_LITERAL:
-            yylval.str = parse_str(lex_get_buffstr());
-            break;
-        case YYTOK_INTERP_STR_LITERAL:
-            yylval.str = parse_interpstr(lex_get_buffstr());
-            break;
-        case YYTOK_BINFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 2);
-            break;
-        case YYTOK_OCTFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 8);
-            break;
-        case YYTOK_DECFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 10);
-            break;
-        case YYTOK_HEXFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 16);
-            break;
-        case YYTOK_BININT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 2);
-            break;
-        case YYTOK_OCTINT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 8);
-            break;
-        case YYTOK_DECINT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 10);
-            break;
-        case YYTOK_HEXINT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 16);
-            break;
-        default: break;
-    }
-    return token;
 }
