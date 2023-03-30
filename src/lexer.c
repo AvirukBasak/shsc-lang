@@ -6,7 +6,6 @@
 
 #include "io.h"
 #include "lexer.h"
-#include "stack-int.h"
 
 LexBuffer *lex_buffer = NULL;
 
