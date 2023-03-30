@@ -50,6 +50,7 @@ $(OBJECTS): $(SOURCES) $(HEADERS)
 
 ## target for executable
 $(TARGET): $(REQ_DIRS) $(LIBRARIES) $(OBJECTS)
+	bison -Hinclude/tokens.yac.h -o src/parser.c src/parser.yacc
 	$(CC) $(CFLAGS) -o $(TARGET) $(BUILD_DIR)/*-rel.$(OBJEXT) $(LIB)
 
 ## debug build
@@ -63,6 +64,7 @@ $(DBG_OBJECTS): $(SOURCES) $(HEADERS)
 
 ## target for debug executable
 $(DBG_TARGET): $(REQ_DIRS) $(DBG_LIBRARIES) $(DBG_OBJECTS)
+	bison -Hinclude/tokens.yac.h -o src/parser.c src/parser.yacc
 	$(CC) $(CDBGFLAGS) -o $(DBG_TARGET) $(BUILD_DIR)/*-dbg.$(OBJEXT) $(DBG_LIB)
 
 ## build libraries
