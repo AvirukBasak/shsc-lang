@@ -33,7 +33,8 @@ char lex_ungetc(char *c, FILE *f)
     else if (lex_is_printable(*c)) lex_char_no--;
     if (!lex_is_delimiter(*c)) lex_buffpop();
     ungetc(*c, f);
-    return *c = lex_get_buffstr()[lex_buffer->push_i -1];
+    const char *tmp = lex_get_buffstr();
+    return tmp[lex_buffer->push_i -1];
 }
 
 bool lex_is_delimiter(char c)

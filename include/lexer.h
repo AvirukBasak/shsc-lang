@@ -41,7 +41,7 @@ struct LexBuffer {
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 enum LexToken {
     // operators and seperators
-    LEXTOK_BANG,                   // "!"
+    LEXTOK_BANG = 10000,           // "!"
     LEXTOK_LOGICAL_UNEQUAL,        // "!="
     LEXTOK_LOGICAL_UNIDENTICAL,    // "!=="
     LEXTOK_DQUOTE,                 // "\""
