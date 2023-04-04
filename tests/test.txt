@@ -8,12 +8,12 @@ elif x == 2 then
     print("entered 2", lf)
 else
     print(f"entered {d:x}", lf)
-the 
+end
 
 while x >= 0 do
     print(f"x = {d:x}")
     x = x -1
-done
+end
 
 x = input("prompt: ", str)
 print(f"entered {s:x}", lf)
