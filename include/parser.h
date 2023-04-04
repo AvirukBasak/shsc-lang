@@ -7,7 +7,7 @@
 /*
 #include "ctl/hashmap.h"
 */
-#include "tokens.yac.h"
+#include "parser.yac.h"
 
 extern FILE *yyin;
 
