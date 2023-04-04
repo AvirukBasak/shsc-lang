@@ -86,11 +86,16 @@ FILE *yyin = NULL;
 %token         LEXTOK_NEWLINE                  "\n"
 
 // keywords
-%token         LEXTOK_KWD_CALC                 "calc"
+%token         LEXTOK_KWD_FN                   "fn"
+%token         LEXTOK_KWD_START                "start"
 %token         LEXTOK_KWD_END                  "end"
 %token         LEXTOK_KWD_IF                   "if"
-%token         LEXTOK_KWD_START                "start"
+%token         LEXTOK_KWD_THEN                 "then"
+%token         LEXTOK_KWD_ELIF                 "elif"
+%token         LEXTOK_KWD_ELSE                 "else"
 %token         LEXTOK_KWD_WHILE                "while"
+%token         LEXTOK_KWD_FOR                  "for"
+%token         LEXTOK_KWD_DO                   "do"
 
 // identifier
 %token <idf>   LEXTOK_IDENTIFIER               "<identifier>"
