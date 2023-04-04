@@ -26,9 +26,20 @@ LexToken lex_match_char(FILE *f, char ch)
 
 LexToken lex_match_string(FILE *f, char ch)
 {
-    if (ch != '"' && ch != '`') return LEXTOK_INVALID;
+    if (ch != '"') {
+        if (ch != 'f') return LEXTOK_INVALID;
+        else {
+            char ch = getc(f);
+            if (ch != '"') {
+                ungetc(ch, f);
+                ungetc('f', f);
+                return LEXTOK_INVALID;
+            }
+        }
+    }
+    // if (ch != '"' && ch != '`') return LEXTOK_INVALID;
     LexToken tok = ch == '"' ? LEXTOK_STR_LITERAL : LEXTOK_INTERP_STR_LITERAL;
-    // pop out quote/backtick symbol
+    // pop out quote/'f' symbol
     lex_buffpop();
     char prev = 0;
     if (tok == LEXTOK_STR_LITERAL) while (true) {
@@ -47,11 +58,11 @@ LexToken lex_match_string(FILE *f, char ch)
         // can't use lex_getc as it doesn't buffer delimiters
         prev = ch;
         ch = getc(f);
-        if (prev == '\\' && ch == '`') {
+        if (prev == '\\' && ch == '"') {
             lex_buffpush(ch);
             continue;
         }
-        if (ch == '`') break;
+        if (ch == '"') break;
         if (ch == (char) EOF) lex_throw("unexpected end of file");
         lex_buffpush(ch);
     }
