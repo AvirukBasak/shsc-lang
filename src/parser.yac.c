@@ -67,7 +67,7 @@
 
 
 /* First part of user prologue.  */
-#line 1 "src/parser.yacc"
+#line 1 "src/parser.yy"
 
 
 #include <stdio.h>
@@ -86,7 +86,7 @@
 FILE *yyin = NULL;
 
 
-#line 90 "src/parser.c"
+#line 90 "src/parser.yac.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -109,7 +109,7 @@ FILE *yyin = NULL;
 #  endif
 # endif
 
-#include "tokens.yac.h"
+#include "parser.yac.h"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -1169,7 +1169,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1173 "src/parser.c"
+#line 1173 "src/parser.yac.c"
 
       default: break;
     }
@@ -1362,7 +1362,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 130 "src/parser.yacc"
+#line 130 "src/parser.yy"
 
 
 int yyerror(const char* s)
