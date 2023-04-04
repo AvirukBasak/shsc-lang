@@ -78,6 +78,8 @@ FILE *yyin = NULL;
 %token         LEXTOK_RBRACE_CURLY             "}"
 %token         LEXTOK_TILDE                    "~"
 
+%token         LEXTOK_NEWLINE                  "\n"
+
 // keywords
 %token         LEXTOK_KWD_CALC                 "calc"
 %token         LEXTOK_KWD_END                  "end"

@@ -71,6 +71,7 @@ LexToken lex_get_nexttok(FILE *f)
 {
     lex_buffreset();
     char ch = lex_getc(f);
+    if (ch == '\n') return LEXTOK_NEWLINE;
     while (lex_is_delimiter(ch)) ch = lex_getc(f);
     if (ch == '_') return lex_match_identifiers(f, ch);
     else if (isalpha(ch)) {
