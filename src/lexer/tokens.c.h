@@ -73,12 +73,18 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_LOGICAL_OR_ASSIGN:     return "LEXTOK_LOGICAL_OR_ASSIGN";
         case LEXTOK_RBRACE_CURLY:          return "LEXTOK_RBRACE_CURLY";
         case LEXTOK_TILDE:                 return "LEXTOK_TILDE";
+        case LEXTOK_NEWLINE:               return "LEXTOK_NEWLINE";
         // keywords
-        case LEXTOK_KWD_CALC:              return "LEXTOK_KWD_CALC";
+        case LEXTOK_KWD_FN:                return "LEXTOK_KWD_FN";
+        case LEXTOK_KWD_START:             return "LEXTOK_KWD_START";
         case LEXTOK_KWD_END:               return "LEXTOK_KWD_END";
         case LEXTOK_KWD_IF:                return "LEXTOK_KWD_IF";
-        case LEXTOK_KWD_START:             return "LEXTOK_KWD_START";
+        case LEXTOK_KWD_THEN:              return "LEXTOK_KWD_THEN";
+        case LEXTOK_KWD_ELIF:              return "LEXTOK_KWD_ELIF";
+        case LEXTOK_KWD_ELSE:              return "LEXTOK_KWD_ELSE";
         case LEXTOK_KWD_WHILE:             return "LEXTOK_KWD_WHILE";
+        case LEXTOK_KWD_FOR:               return "LEXTOK_KWD_FOR";
+        case LEXTOK_KWD_DO:                return "LEXTOK_KWD_DO";
         // identifier
         case LEXTOK_IDENTIFIER:            return "LEXTOK_IDENTIFIER";
         // literals
@@ -170,12 +176,18 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_LOGICAL_OR_ASSIGN:     return "||=";
         case LEXTOK_RBRACE_CURLY:          return "}";
         case LEXTOK_TILDE:                 return "~";
+        case LEXTOK_NEWLINE:               return "\n";
         // keywords
-        case LEXTOK_KWD_CALC:              return "calc";
+        case LEXTOK_KWD_FN:                return "fn";
+        case LEXTOK_KWD_START:             return "start";
         case LEXTOK_KWD_END:               return "end";
         case LEXTOK_KWD_IF:                return "if";
-        case LEXTOK_KWD_START:             return "start";
+        case LEXTOK_KWD_THEN:              return "then";
+        case LEXTOK_KWD_ELIF:              return "elif";
+        case LEXTOK_KWD_ELSE:              return "else";
         case LEXTOK_KWD_WHILE:             return "while";
+        case LEXTOK_KWD_FOR:               return "for";
+        case LEXTOK_KWD_DO:                return "do";
         // identifier
         case LEXTOK_IDENTIFIER:            return "<identifier>";
         // literals

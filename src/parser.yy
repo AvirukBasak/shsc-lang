@@ -8,6 +8,11 @@
 #include "lexer.h"
 #include "parser.h"
 
+#include "parser/parse_chr.c.h"
+#include "parser/parse_i64.c.h"
+#include "parser/parse_f64.c.h"
+#include "parser/parse_str.c.h"
+
 FILE *yyin = NULL;
 
 %}
@@ -78,12 +83,19 @@ FILE *yyin = NULL;
 %token         LEXTOK_RBRACE_CURLY             "}"
 %token         LEXTOK_TILDE                    "~"
 
+%token         LEXTOK_NEWLINE                  "\n"
+
 // keywords
-%token         LEXTOK_KWD_CALC                 "calc"
+%token         LEXTOK_KWD_FN                   "fn"
+%token         LEXTOK_KWD_START                "start"
 %token         LEXTOK_KWD_END                  "end"
 %token         LEXTOK_KWD_IF                   "if"
-%token         LEXTOK_KWD_START                "start"
+%token         LEXTOK_KWD_THEN                 "then"
+%token         LEXTOK_KWD_ELIF                 "elif"
+%token         LEXTOK_KWD_ELSE                 "else"
 %token         LEXTOK_KWD_WHILE                "while"
+%token         LEXTOK_KWD_FOR                  "for"
+%token         LEXTOK_KWD_DO                   "do"
 
 // identifier
 %token <idf>   LEXTOK_IDENTIFIER               "<identifier>"
@@ -131,6 +143,13 @@ int yyerror(const char* s)
 void parse_interpret(FILE *f)
 {
     yyin = f;
+    LexToken tok = lex_get_nexttok(yyin);
+    while (tok != LEXTOK_EOF) {
+        printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
+        tok = lex_get_nexttok(f);
+    }
+    printf("%s\n", lex_get_tokcode(tok));
+    return;
     yyparse();
 }
 

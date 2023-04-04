@@ -7,7 +7,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "tokens.yac.h"
+#include "parser.yac.h"
 
 #define LEX_MAX_BUFFALLOC_SZ   (64)
 #define LEX_MAX_IDENTIFIER_LEN (64)

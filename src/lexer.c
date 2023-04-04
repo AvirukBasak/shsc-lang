@@ -71,8 +71,19 @@ LexToken lex_get_nexttok(FILE *f)
 {
     lex_buffreset();
     char ch = lex_getc(f);
+    if (ch == '\n') return LEXTOK_NEWLINE;
     while (lex_is_delimiter(ch)) ch = lex_getc(f);
     if (ch == '_') return lex_match_identifiers(f, ch);
+    if (ch == 'f') {
+        char ch = lex_getc(f);
+        if (ch == '"') {
+            lex_ungetc(&ch, f);
+            return lex_match_string(f, ch);
+        } else {
+            lex_ungetc(&ch, f);
+            return lex_match_identifiers(f, ch);
+        }
+    }
     else if (isalpha(ch)) {
         LexToken kwdtok = lex_match_keywords(f, ch);
         if (kwdtok == LEXTOK_INVALID)
@@ -80,7 +91,7 @@ LexToken lex_get_nexttok(FILE *f)
         return kwdtok;
     }
     else if (ch == '\'') return lex_match_char(f, ch);
-    else if (ch == '"' || ch == '`') return lex_match_string(f, ch);
+    else if (ch == '"') return lex_match_string(f, ch);
     else if (isdigit(ch)) return lex_match_numeric(f, ch);
     else if (ch == '.') {
         ch = lex_getc(f);

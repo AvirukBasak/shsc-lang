@@ -4,8 +4,10 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+/*
 #include "ctl/hashmap.h"
-#include "tokens.yac.h"
+*/
+#include "parser.yac.h"
 
 extern FILE *yyin;
 
@@ -35,8 +37,10 @@ typedef struct {
     VarType type;
 } VarData;
 
+/*
 HASHMAP_DECLARE(str_t, VarData);
 
 HashMap(str_t, VarData) var_table;
+*/
 
 #endif
