@@ -78,10 +78,15 @@
 #include "lexer.h"
 #include "parser.h"
 
+#include "parser/parse_chr.c.h"
+#include "parser/parse_i64.c.h"
+#include "parser/parse_f64.c.h"
+#include "parser/parse_str.c.h"
+
 FILE *yyin = NULL;
 
 
-#line 85 "src/parser.c"
+#line 90 "src/parser.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -177,27 +182,28 @@ enum yysymbol_kind_t
   YYSYMBOL_LEXTOK_LOGICAL_OR_ASSIGN = 65,  /* "||="  */
   YYSYMBOL_LEXTOK_RBRACE_CURLY = 66,       /* "}"  */
   YYSYMBOL_LEXTOK_TILDE = 67,              /* "~"  */
-  YYSYMBOL_LEXTOK_KWD_CALC = 68,           /* "calc"  */
-  YYSYMBOL_LEXTOK_KWD_END = 69,            /* "end"  */
-  YYSYMBOL_LEXTOK_KWD_IF = 70,             /* "if"  */
-  YYSYMBOL_LEXTOK_KWD_START = 71,          /* "start"  */
-  YYSYMBOL_LEXTOK_KWD_WHILE = 72,          /* "while"  */
-  YYSYMBOL_LEXTOK_IDENTIFIER = 73,         /* "<identifier>"  */
-  YYSYMBOL_LEXTOK_CHAR_LITERAL = 74,       /* "<charlit>"  */
-  YYSYMBOL_LEXTOK_BINFLOAT_LITERAL = 75,   /* "<binfloattlit>"  */
-  YYSYMBOL_LEXTOK_OCTFLOAT_LITERAL = 76,   /* "<octfloattlit>"  */
-  YYSYMBOL_LEXTOK_DECFLOAT_LITERAL = 77,   /* "<decfloattlit>"  */
-  YYSYMBOL_LEXTOK_HEXFLOAT_LITERAL = 78,   /* "<hexfloattlit>"  */
-  YYSYMBOL_LEXTOK_BININT_LITERAL = 79,     /* "<binintlit>"  */
-  YYSYMBOL_LEXTOK_OCTINT_LITERAL = 80,     /* "<octintlit>"  */
-  YYSYMBOL_LEXTOK_DECINT_LITERAL = 81,     /* "<decintlit>"  */
-  YYSYMBOL_LEXTOK_HEXINT_LITERAL = 82,     /* "<hexintlit>"  */
-  YYSYMBOL_LEXTOK_STR_LITERAL = 83,        /* "<strlit>"  */
-  YYSYMBOL_LEXTOK_INTERP_STR_LITERAL = 84, /* "<interpstrlit>"  */
-  YYSYMBOL_LEXTOK_EOF = 85,                /* "<eof>"  */
-  YYSYMBOL_LEXTOK_INVALID = 86,            /* "<invalid>"  */
-  YYSYMBOL_YYACCEPT = 87,                  /* $accept  */
-  YYSYMBOL_program = 88                    /* program  */
+  YYSYMBOL_LEXTOK_NEWLINE = 68,            /* "\n"  */
+  YYSYMBOL_LEXTOK_KWD_CALC = 69,           /* "calc"  */
+  YYSYMBOL_LEXTOK_KWD_END = 70,            /* "end"  */
+  YYSYMBOL_LEXTOK_KWD_IF = 71,             /* "if"  */
+  YYSYMBOL_LEXTOK_KWD_START = 72,          /* "start"  */
+  YYSYMBOL_LEXTOK_KWD_WHILE = 73,          /* "while"  */
+  YYSYMBOL_LEXTOK_IDENTIFIER = 74,         /* "<identifier>"  */
+  YYSYMBOL_LEXTOK_CHAR_LITERAL = 75,       /* "<charlit>"  */
+  YYSYMBOL_LEXTOK_BINFLOAT_LITERAL = 76,   /* "<binfloattlit>"  */
+  YYSYMBOL_LEXTOK_OCTFLOAT_LITERAL = 77,   /* "<octfloattlit>"  */
+  YYSYMBOL_LEXTOK_DECFLOAT_LITERAL = 78,   /* "<decfloattlit>"  */
+  YYSYMBOL_LEXTOK_HEXFLOAT_LITERAL = 79,   /* "<hexfloattlit>"  */
+  YYSYMBOL_LEXTOK_BININT_LITERAL = 80,     /* "<binintlit>"  */
+  YYSYMBOL_LEXTOK_OCTINT_LITERAL = 81,     /* "<octintlit>"  */
+  YYSYMBOL_LEXTOK_DECINT_LITERAL = 82,     /* "<decintlit>"  */
+  YYSYMBOL_LEXTOK_HEXINT_LITERAL = 83,     /* "<hexintlit>"  */
+  YYSYMBOL_LEXTOK_STR_LITERAL = 84,        /* "<strlit>"  */
+  YYSYMBOL_LEXTOK_INTERP_STR_LITERAL = 85, /* "<interpstrlit>"  */
+  YYSYMBOL_LEXTOK_EOF = 86,                /* "<eof>"  */
+  YYSYMBOL_LEXTOK_INVALID = 87,            /* "<invalid>"  */
+  YYSYMBOL_YYACCEPT = 88,                  /* $accept  */
+  YYSYMBOL_program = 89                    /* program  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -528,7 +534,7 @@ union yyalloc
 #define YYLAST   0
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  87
+#define YYNTOKENS  88
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
@@ -537,7 +543,7 @@ union yyalloc
 #define YYNSTATES  3
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   341
+#define YYMAXUTOK   342
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -585,14 +591,14 @@ static const yytype_int8 yytranslate[] =
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86
+      85,    86,    87
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,   121,   121
+       0,   128,   128
 };
 #endif
 
@@ -618,7 +624,7 @@ static const char *const yytname[] =
   "\">=\"", "\">>\"", "\">>=\"", "\">>>\"", "\">>>=\"", "\"?\"", "\"@\"",
   "\"[\"", "\"\\\\\"", "\"]\"", "\"^\"", "\"^=\"", "\"`\"", "\"{\"",
   "\"|\"", "\"|=\"", "\"|>\"", "\"||\"", "\"||=\"", "\"}\"", "\"~\"",
-  "\"calc\"", "\"end\"", "\"if\"", "\"start\"", "\"while\"",
+  "\"\\n\"", "\"calc\"", "\"end\"", "\"if\"", "\"start\"", "\"while\"",
   "\"<identifier>\"", "\"<charlit>\"", "\"<binfloattlit>\"",
   "\"<octfloattlit>\"", "\"<decfloattlit>\"", "\"<hexfloattlit>\"",
   "\"<binintlit>\"", "\"<octintlit>\"", "\"<decintlit>\"",
@@ -687,13 +693,13 @@ static const yytype_int8 yycheck[] =
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    88,     0
+       0,    89,     0
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    87,    88
+       0,    88,    89
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -1163,7 +1169,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1167 "src/parser.c"
+#line 1173 "src/parser.c"
 
       default: break;
     }
@@ -1356,7 +1362,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 123 "src/parser.yacc"
+#line 130 "src/parser.yacc"
 
 
 int yyerror(const char* s)
@@ -1368,6 +1374,13 @@ int yyerror(const char* s)
 void parse_interpret(FILE *f)
 {
     yyin = f;
+    LexToken tok = lex_get_nexttok(yyin);
+    while (tok != LEXTOK_EOF) {
+        printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
+        tok = lex_get_nexttok(f);
+    }
+    printf("%s\n", lex_get_tokcode(tok));
+    return;
     yyparse();
 }
 

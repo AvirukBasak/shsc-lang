@@ -119,25 +119,26 @@ extern int yydebug;
     LEXTOK_LOGICAL_OR_ASSIGN = 320, /* "||="  */
     LEXTOK_RBRACE_CURLY = 321,     /* "}"  */
     LEXTOK_TILDE = 322,            /* "~"  */
-    LEXTOK_KWD_CALC = 323,         /* "calc"  */
-    LEXTOK_KWD_END = 324,          /* "end"  */
-    LEXTOK_KWD_IF = 325,           /* "if"  */
-    LEXTOK_KWD_START = 326,        /* "start"  */
-    LEXTOK_KWD_WHILE = 327,        /* "while"  */
-    LEXTOK_IDENTIFIER = 328,       /* "<identifier>"  */
-    LEXTOK_CHAR_LITERAL = 329,     /* "<charlit>"  */
-    LEXTOK_BINFLOAT_LITERAL = 330, /* "<binfloattlit>"  */
-    LEXTOK_OCTFLOAT_LITERAL = 331, /* "<octfloattlit>"  */
-    LEXTOK_DECFLOAT_LITERAL = 332, /* "<decfloattlit>"  */
-    LEXTOK_HEXFLOAT_LITERAL = 333, /* "<hexfloattlit>"  */
-    LEXTOK_BININT_LITERAL = 334,   /* "<binintlit>"  */
-    LEXTOK_OCTINT_LITERAL = 335,   /* "<octintlit>"  */
-    LEXTOK_DECINT_LITERAL = 336,   /* "<decintlit>"  */
-    LEXTOK_HEXINT_LITERAL = 337,   /* "<hexintlit>"  */
-    LEXTOK_STR_LITERAL = 338,      /* "<strlit>"  */
-    LEXTOK_INTERP_STR_LITERAL = 339, /* "<interpstrlit>"  */
-    LEXTOK_EOF = 340,              /* "<eof>"  */
-    LEXTOK_INVALID = 341           /* "<invalid>"  */
+    LEXTOK_NEWLINE = 323,          /* "\n"  */
+    LEXTOK_KWD_CALC = 324,         /* "calc"  */
+    LEXTOK_KWD_END = 325,          /* "end"  */
+    LEXTOK_KWD_IF = 326,           /* "if"  */
+    LEXTOK_KWD_START = 327,        /* "start"  */
+    LEXTOK_KWD_WHILE = 328,        /* "while"  */
+    LEXTOK_IDENTIFIER = 329,       /* "<identifier>"  */
+    LEXTOK_CHAR_LITERAL = 330,     /* "<charlit>"  */
+    LEXTOK_BINFLOAT_LITERAL = 331, /* "<binfloattlit>"  */
+    LEXTOK_OCTFLOAT_LITERAL = 332, /* "<octfloattlit>"  */
+    LEXTOK_DECFLOAT_LITERAL = 333, /* "<decfloattlit>"  */
+    LEXTOK_HEXFLOAT_LITERAL = 334, /* "<hexfloattlit>"  */
+    LEXTOK_BININT_LITERAL = 335,   /* "<binintlit>"  */
+    LEXTOK_OCTINT_LITERAL = 336,   /* "<octintlit>"  */
+    LEXTOK_DECINT_LITERAL = 337,   /* "<decintlit>"  */
+    LEXTOK_HEXINT_LITERAL = 338,   /* "<hexintlit>"  */
+    LEXTOK_STR_LITERAL = 339,      /* "<strlit>"  */
+    LEXTOK_INTERP_STR_LITERAL = 340, /* "<interpstrlit>"  */
+    LEXTOK_EOF = 341,              /* "<eof>"  */
+    LEXTOK_INVALID = 342           /* "<invalid>"  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -146,7 +147,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 108 "src/parser.yacc"
+#line 115 "src/parser.yacc"
 
     char chr;
     int64_t i64;
@@ -155,7 +156,7 @@ union YYSTYPE
     void *any;
     char *idf;
 
-#line 159 "include/tokens.yac.h"
+#line 160 "include/tokens.yac.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
