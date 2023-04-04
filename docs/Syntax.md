@@ -28,30 +28,30 @@ r * (cos(a) + sin(b)) - pow(E, sin(ab))
 
 #### Assignment
 ```
-x = r * (cos(a) + sin(b)) - pow(E, sin(ab));
+x = r * (cos(a) + sin(b)) - pow(E, sin(ab))
 ```
 
 #### Functions
 ```
-fn cos(x) {
-    return sin(PI/2 + x);
-}
+fn cos(x) start
+    return sin(PI/2 + x)
+end
 ```
 
 #### Conditional statements
 ```
-if x == 5 {
-    x = x + 7;
-} else {
-    x = x + 8; 
-}
+if x == 5 then
+    x = x + 7
+else
+    x = x + 8
+end
 ```
 
 #### Loops
 ```
-while x < 10 {
-    x = x + 1;
-}
+while x < 10 do
+    x = x + 1
+end
 
 # for loop will be added when iterables are introduced
 ```
