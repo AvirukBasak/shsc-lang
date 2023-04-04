@@ -8,6 +8,11 @@
 #include "lexer.h"
 #include "parser.h"
 
+#include "parser/parse_chr.c.h"
+#include "parser/parse_i64.c.h"
+#include "parser/parse_f64.c.h"
+#include "parser/parse_str.c.h"
+
 FILE *yyin = NULL;
 
 %}
@@ -133,6 +138,13 @@ int yyerror(const char* s)
 void parse_interpret(FILE *f)
 {
     yyin = f;
+    LexToken tok = lex_get_nexttok(yyin);
+    while (tok != LEXTOK_EOF) {
+        printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
+        tok = lex_get_nexttok(f);
+    }
+    printf("%s\n", lex_get_tokcode(tok));
+    return;
     yyparse();
 }
 
