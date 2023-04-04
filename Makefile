@@ -39,13 +39,15 @@ SOURCES        := $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)) $(shell find $(S
 HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
 TESTSRC        := $(shell find $(TEST_DIR)/ -name "*."$(SRCEXT))
 
+PARSER         := $(INCLUDE_DIR)/parser.yac.h $(SRC_DIR)/parser.yac.c
+
 ## release build
 
 rel: $(TARGET)
 
 OBJECTS        := $(patsubst $(SRC_DIR)/%.$(SRCEXT), $(BUILD_DIR)/%-rel.$(OBJEXT), $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)))
 
-$(OBJECTS): $(SOURCES) $(HEADERS)
+$(OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 	@cd $(SRC_DIR) && $(MAKE)
 
 ## target for executable
@@ -58,8 +60,12 @@ dbg: $(DBG_TARGET)
 
 DBG_OBJECTS    := $(patsubst $(SRC_DIR)/%.$(SRCEXT), $(BUILD_DIR)/%-dbg.$(OBJEXT), $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)))
 
-$(DBG_OBJECTS): $(SOURCES) $(HEADERS)
+$(DBG_OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 	@cd $(SRC_DIR) && $(MAKE) dbg
+
+## parser source
+$(PARSER): $(SRC_DIR)/parser.yy
+	bison -H$(INCLUDE_DIR)/parser.yac.h -o $(SRC_DIR)/parser.yac.c $(SRC_DIR)/parser.yy
 
 ## target for debug executable
 $(DBG_TARGET): $(REQ_DIRS) $(DBG_LIBRARIES) $(DBG_OBJECTS)
