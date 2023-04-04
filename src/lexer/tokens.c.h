@@ -73,6 +73,7 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_LOGICAL_OR_ASSIGN:     return "LEXTOK_LOGICAL_OR_ASSIGN";
         case LEXTOK_RBRACE_CURLY:          return "LEXTOK_RBRACE_CURLY";
         case LEXTOK_TILDE:                 return "LEXTOK_TILDE";
+        case LEXTOK_NEWLINE:               return "LEXTOK_NEWLINE";
         // keywords
         case LEXTOK_KWD_CALC:              return "LEXTOK_KWD_CALC";
         case LEXTOK_KWD_END:               return "LEXTOK_KWD_END";
@@ -170,6 +171,7 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_LOGICAL_OR_ASSIGN:     return "||=";
         case LEXTOK_RBRACE_CURLY:          return "}";
         case LEXTOK_TILDE:                 return "~";
+        case LEXTOK_NEWLINE:               return "\n";
         // keywords
         case LEXTOK_KWD_CALC:              return "calc";
         case LEXTOK_KWD_END:               return "end";
