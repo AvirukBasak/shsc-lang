@@ -39,7 +39,7 @@ SOURCES        := $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)) $(shell find $(S
 HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
 TESTSRC        := $(shell find $(TEST_DIR)/ -name "*."$(SRCEXT))
 
-PARSER         := $(INCLUDE_DIR)/tokens.yac.h $(SRC_DIR)/parser.c
+PARSER         := $(INCLUDE_DIR)/parser.yac.h $(SRC_DIR)/parser.yac.c
 
 ## release build
 
@@ -64,7 +64,7 @@ $(DBG_OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 	@cd $(SRC_DIR) && $(MAKE) dbg
 
 ## parser source
-$(PARSER): $(SRC_DIR)/parser.yacc
+$(PARSER): $(SRC_DIR)/parser.yy
 	bison -H$(INCLUDE_DIR)/parser.yac.h -o $(SRC_DIR)/parser.yac.c $(SRC_DIR)/parser.yy
 
 ## target for debug executable
