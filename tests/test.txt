@@ -1,19 +1,19 @@
-print("Hello world!");
+print("Hello world!", lf)
 
-x = input(int);
+x = input(int)
 
-if x == 1 {
-    print("entered 1", lf);
-} elif x == 2 {
-    print(`entered 2`, lf);
-} else {
-    print(`entered ${x}`, lf);
-}
+if x == 1 then
+    print("entered 1", lf)
+elif x == 2 then
+    print("entered 2", lf)
+else
+    print(f"entered {d:x}", lf)
+the 
 
-while x >= 0 {
-    print `x = $x`;
-    x = x -1;
-}
+while x >= 0 do
+    print(f"x = {d:x}")
+    x = x -1
+done
 
-x = input("prompt: ", str);
-print(`entered ${x}`, lf);
+x = input("prompt: ", str)
+print(f"entered {s:x}", lf)
