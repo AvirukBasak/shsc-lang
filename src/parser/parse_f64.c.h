@@ -14,7 +14,7 @@
     free(error_message); \
 } while(1)
 
-int64_t parse_float(const char *str, int base) {
+double parse_float(const char *str, int base) {
     const int MAX_EXP_LEN = 4;
     const int BUF_SIZE = 128;
 
