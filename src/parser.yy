@@ -119,10 +119,6 @@ FILE *yyin = NULL;
 %token <str>   LEXTOK_STR_LITERAL              "<strlit>"
 %token <str>   LEXTOK_INTERP_STR_LITERAL       "<interpstrlit>"
 
-// other types of expression
-%token <var_data> expression
-%token <bul>      condition
-
 // default cases
 %token         LEXTOK_EOF                      "<eof>"
 %token         LEXTOK_INVALID                  "<invalid>"
@@ -137,6 +133,18 @@ FILE *yyin = NULL;
     char *idf;
     VarData var_data;
 }
+
+%type <>         procedure
+%type <>         statements
+%type <>         statement
+%type <>         if_block
+%type <>         else_if_ladder
+%type <>         loop_block
+%type <>         block
+
+%type <bul>      condition
+%type <var_data> expression
+%type <var_data> expression_endpt
 
 %start program
 
@@ -217,7 +225,7 @@ loop_block:
 block:
     "block" statements "end" {
         scoping_pushscope(itoa(lex_line_no));
-        { $5; }
+        { $2; }
         scoping_popscope();
     }
 ;
@@ -234,9 +242,7 @@ condition: expression {
     }
 };
 
-expression:
-| sum | prodcut | boolean | bitwise | combo
-| expression_endpt { $$ = $1; }
+expression: expression_endpt { $$ = $1; }
 ;
 
 expression_endpt:
