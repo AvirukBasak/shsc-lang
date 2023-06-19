@@ -86,9 +86,10 @@ FILE *yyin = NULL;
 %token         LEXTOK_NEWLINE                  "\n"
 
 // keywords
-%token         LEXTOK_KWD_FN                   "fn"
+%token         LEXTOK_KWD_PROC                 "proc"
 %token         LEXTOK_KWD_START                "start"
 %token         LEXTOK_KWD_END                  "end"
+%token         LEXTOK_KWD_BLOCK                "block"
 %token         LEXTOK_KWD_IF                   "if"
 %token         LEXTOK_KWD_THEN                 "then"
 %token         LEXTOK_KWD_ELIF                 "elif"
@@ -101,6 +102,7 @@ FILE *yyin = NULL;
 %token <idf>   LEXTOK_IDENTIFIER               "<identifier>"
 
 // literals
+%token <bul>   LEXTOK_BOOL_LITERAL             "<boollit>"
 %token <chr>   LEXTOK_CHAR_LITERAL             "<charlit>"
 %token <f64>   LEXTOK_BINFLOAT_LITERAL         "<binfloattlit>"
 %token <f64>   LEXTOK_OCTFLOAT_LITERAL         "<octfloattlit>"
@@ -113,24 +115,98 @@ FILE *yyin = NULL;
 %token <str>   LEXTOK_STR_LITERAL              "<strlit>"
 %token <str>   LEXTOK_INTERP_STR_LITERAL       "<interpstrlit>"
 
+// other types of expression
+%token <var_data> expression
+%token <bul>      condition
+
 // default cases
 %token         LEXTOK_EOF                      "<eof>"
 %token         LEXTOK_INVALID                  "<invalid>"
 
 %union {
+    bool bul;
     char chr;
     int64_t i64;
     double f64;
     char *str;
     void *any;
     char *idf;
+    VarData var_data;
 }
 
 %start program
 
 %%
 
-program: /* Add rules here */ ;
+program: procedure "\n" program ;
+
+procedure:
+    "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end" {
+        scoping_pushscope($2);
+        { $5; }
+        scoping_popscope();
+    }
+;
+
+statements:
+    statement
+|   statement statements
+;
+
+statement: "\n"
+|   LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($1, $3); }
+|   compound_statement "\n"
+|   expression "\n"
+;
+
+compound_statement:
+    if_block
+|   loop_block
+|   block
+;
+
+if_block:
+    "if" condition "then" "\n" statements "end" {
+        scoping_pushscope(itoa(lex_line_no));
+        if ($2) { $5; }
+        scoping_popscope();
+    }
+|   "if" condition "then" "\n" statements "else" statements "end" {
+        scoping_pushscope(itoa(lex_line_no));
+        if ($2) { $5; } else { $7; }
+        scoping_popscope();
+    }
+;
+
+loop_block:
+    "while" condition "do" "\n" statements "end" {
+        scoping_pushscope(itoa(lex_line_no));
+        while ($2) { $5; }
+        scoping_popscope();
+    }
+;
+
+block:
+    "block" statements "end" {
+        scoping_pushscope(itoa(lex_line_no));
+        { $5; }
+        scoping_popscope();
+    }
+;
+
+condition: expression {
+    switch ($1.type) {
+        case VT_BUL: $$ = $1.var.bul; break;
+        case VT_CHR: $$ = (bool) $1.var.chr; break;
+        case VT_I64: $$ = (bool) $1.var.i64; break;
+        case VT_F64: $$ = (bool) $1.var.f64; break;
+        case VT_STR: $$ = (bool) ($1.var.str ? strlen($1.var.str) : $1.var.str); break;
+        case VT_ANY: $$ = (bool) $1.var.any; break;
+        default: $$ = false;
+    }
+};
+
+expression:;
 
 %%
 

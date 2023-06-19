@@ -88,6 +88,7 @@ char *lex_get_tokcode(LexToken code)
         // identifier
         case LEXTOK_IDENTIFIER:            return "LEXTOK_IDENTIFIER";
         // literals
+        case LEXTOK_BOOL_LITERAL:          return "LEXTOK_BOOL_LITERAL";
         case LEXTOK_CHAR_LITERAL:          return "LEXTOK_CHAR_LITERAL";
         case LEXTOK_BINFLOAT_LITERAL:      return "LEXTOK_BINFLOAT_LITERAL";
         case LEXTOK_OCTFLOAT_LITERAL:      return "LEXTOK_OCTFLOAT_LITERAL";
@@ -191,6 +192,7 @@ char *lex_get_symbol(LexToken code)
         // identifier
         case LEXTOK_IDENTIFIER:            return "<identifier>";
         // literals
+        case LEXTOK_BOOL_LITERAL:          return "<boollit>";
         case LEXTOK_CHAR_LITERAL:          return "<charlit>";
         case LEXTOK_BINFLOAT_LITERAL:      return "<binfloattlit>";
         case LEXTOK_OCTFLOAT_LITERAL:      return "<octfloattlit>";

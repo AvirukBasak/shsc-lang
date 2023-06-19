@@ -25,6 +25,7 @@ char *parse_interpstr(const char *str);
 typedef const char *str_t;
 
 typedef enum {
+    VT_BUL,
     VT_CHR,
     VT_I64,
     VT_F64,
