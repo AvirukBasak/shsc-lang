@@ -96,7 +96,11 @@ FILE *yyin = NULL;
 %token         LEXTOK_KWD_ELSE                 "else"
 %token         LEXTOK_KWD_WHILE                "while"
 %token         LEXTOK_KWD_FOR                  "for"
+%token         LEXTOK_KWD_FROM                 "from"
+%token         LEXTOK_KWD_TO                   "to"
 %token         LEXTOK_KWD_DO                   "do"
+%token         LEXTOK_KWD_VAR                  "var"
+%token         LEXTOK_KWD_PASS                 "pass"
 
 // identifier
 %token <idf>   LEXTOK_IDENTIFIER               "<identifier>"
@@ -138,7 +142,11 @@ FILE *yyin = NULL;
 
 %%
 
-program: procedure "\n" program ;
+/* A program is a single procedure or multiple procedures */
+program:
+    procedure "\n"
+|   procedure "\n" program
+;
 
 procedure:
     "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end" {
@@ -153,8 +161,11 @@ statements:
 |   statement statements
 ;
 
-statement: "\n"
-|   LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($1, $3); }
+statement:
+    "\n"
+|   "pass" "\n"
+|   "var" LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($1, $3, true); } /* shadow or create new var */
+|   LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($1, $3, false); }      /* access existing var */
 |   compound_statement "\n"
 |   expression "\n"
 ;
@@ -176,12 +187,29 @@ if_block:
         if ($2) { $5; } else { $7; }
         scoping_popscope();
     }
+|   "if" condition "then" "\n" statements else_if_ladder {
+        scoping_pushscope(itoa(lex_line_no));
+        if ($2) { $5; } else { $6; }
+        scoping_popscope();
+    }
+;
+
+else_if_ladder:
+    "else" if_block
 ;
 
 loop_block:
     "while" condition "do" "\n" statements "end" {
         scoping_pushscope(itoa(lex_line_no));
         while ($2) { $5; }
+        scoping_popscope();
+    }
+|   "for" LEXTOK_IDENTIFIER "from" LEXTOK_DECINT_LITERAL "to" LEXTOK_DECINT_LITERAL "do" statements "end" {
+        scoping_pushscope(itoa(lex_line_no));
+        for (int64_t i = $4; i < $6; ($4 <= $6) ? ++i : --i) {
+            vartable_setvar($2, (VarData) { .var.i64 = i, .type = VT_I64 }, true);
+            $8;
+        }
         scoping_popscope();
     }
 ;
@@ -206,7 +234,25 @@ condition: expression {
     }
 };
 
-expression:;
+expression:
+| sum | prodcut | boolean | bitwise | combo
+| expression_endpt { $$ = $1; }
+;
+
+expression_endpt:
+    LEXTOK_BOOL_LITERAL         { $$ = (VarData) { .var.bul = $1.bul, .type = VT_BUL }; }
+|   LEXTOK_CHAR_LITERAL         { $$ = (VarData) { .var.chr = $1.chr, .type = VT_CHR }; }
+|   LEXTOK_BINFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.bul, .type = VT_BUL }; }
+|   LEXTOK_OCTFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.f64, .type = VT_F64 }; }
+|   LEXTOK_DECFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.f64, .type = VT_F64 }; }
+|   LEXTOK_HEXFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.f64, .type = VT_F64 }; }
+|   LEXTOK_BININT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
+|   LEXTOK_OCTINT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
+|   LEXTOK_DECINT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
+|   LEXTOK_HEXINT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
+|   LEXTOK_STR_LITERAL          { $$ = (VarData) { .var.str = $1.str, .type = VT_STR }; }
+|   LEXTOK_INTERP_STR_LITERAL   { $$ = (VarData) { .var.str = $1.str, .type = VT_STR }; }
+|   LEXTOK_IDENTIFIER           { $$ = (VarData) { .var.idf = $1.idf, .type = VT_ANY }; };
 
 %%
 
