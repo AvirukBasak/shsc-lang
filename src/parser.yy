@@ -124,28 +124,17 @@ FILE *yyin = NULL;
 %token         LEXTOK_EOF                      "<eof>"
 %token         LEXTOK_INVALID                  "<invalid>"
 
-%union {
-    bool bul;
-    char chr;
-    int64_t i64;
-    double f64;
-    char *str;
-    void *any;
-    char *idf;
-    VarData var_data;
-}
+%union {}
 
-%type <any>      procedure
-%type <any>      statements
-%type <any>      statement
-%type <any>      if_block
-%type <any>      else_if_ladder
-%type <any>      loop_block
-%type <any>      block
+/* associativity: logical */
 
-%type <bul>      condition
-%type <var_data> expression
-%type <var_data> expression_endpt
+%left LEXTOK_LOGICAL_OR
+%left LEXTOK_LOGICAL_AND
+%nonassoc LEXTOK_BANG
+%nonassoc LEXTOK_LOGICAL_EQUAL
+%nonassoc LEXTOK_LOGICAL_UNEQUAL
+%nonassoc LEXTOK_LOGICAL_IDENTICAL
+%nonassoc LEXTOK_LOGICAL_UNIDENTICAL
 
 %start program
 
@@ -154,112 +143,71 @@ FILE *yyin = NULL;
 /* A program is a single procedure or multiple procedures */
 program:
     procedure "\n"
-|   procedure "\n" program
-;
+    | procedure "\n" program
+    ;
 
-procedure:
-    "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end" {
-        scoping_pushscope($2);
-        { $$ = $5; }
-        scoping_popscope();
-    }
-;
+procedure: "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end";
 
 statements:
     statement
-|   statement statements
-;
+    | statement statements
+    ;
 
 statement:
     "\n"
-|   "pass" "\n"
-|   "var" LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($2, $4, true); } /* shadow or create new var */
-|   LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($1, $3, false); }      /* access existing var */
-|   compound_statement "\n"
-|   expression "\n"
-;
+    | "pass" "\n"
+    | "var" LEXTOK_IDENTIFIER "=" expression "\n" /* shadow or create new var */
+    | LEXTOK_IDENTIFIER "=" expression "\n"       /* access existing var */
+    | compound_statement "\n"
+    | expression "\n"
+    ;
 
 compound_statement:
     if_block
-|   loop_block
-|   block
-;
+    | loop_block
+    | block
+    ;
 
 if_block:
-    "if" condition "then" "\n" statements "end" {
-        scoping_pushscope(itoa(lex_line_no));
-        if ($2) { $$ = $5; }
-        scoping_popscope();
-    }
-|   "if" condition "then" "\n" statements "else" statements "end" {
-        scoping_pushscope(itoa(lex_line_no));
-        if ($2) { $5; } else { $$ = $7; }
-        scoping_popscope();
-    }
-|   "if" condition "then" "\n" statements else_if_ladder {
-        scoping_pushscope(itoa(lex_line_no));
-        if ($2) { $5; } else { $$ = $6; }
-        scoping_popscope();
-    }
-;
+    "if" condition "then" "\n" statements "end"
+    | "if" condition "then" "\n" statements "else" statements "end"
+    | "if" condition "then" "\n" statements else_if_ladder
+    ;
 
-else_if_ladder:
-    "else" if_block
-;
+else_if_ladder: "else" if_block;
 
 loop_block:
-    "while" condition "do" "\n" statements "end" {
-        scoping_pushscope(itoa(lex_line_no));
-        while ($2) { $$ = $5; }
-        scoping_popscope();
-    }
-|   "for" LEXTOK_IDENTIFIER "from" LEXTOK_DECINT_LITERAL "to" LEXTOK_DECINT_LITERAL "do" statements "end" {
-        scoping_pushscope(itoa(lex_line_no));
-        for (int64_t i = $4; i < $6; ($4 <= $6) ? ++i : --i) {
-            vartable_setvar($2, (VarData) { .var.i64 = i, .type = VT_I64 }, true);
-            $$ = $8;
-        }
-        scoping_popscope();
-    }
-;
+    "while" condition "do" "\n" statements "end"
+    | "for" LEXTOK_IDENTIFIER "from" LEXTOK_DECINT_LITERAL "to" LEXTOK_DECINT_LITERAL "do" statements "end"
+    ;
 
-block:
-    "block" statements "end" {
-        scoping_pushscope(itoa(lex_line_no));
-        { $$ = $2; }
-        scoping_popscope();
-    }
-;
+block: "block" statements "end";
 
-condition: expression {
-    switch ($1.type) {
-        case VT_BUL: $$ = $1.var.bul; break;
-        case VT_CHR: $$ = (bool) $1.var.chr; break;
-        case VT_I64: $$ = (bool) $1.var.i64; break;
-        case VT_F64: $$ = (bool) $1.var.f64; break;
-        case VT_STR: $$ = (bool) ($1.var.str ? strlen($1.var.str) : $1.var.str); break;
-        case VT_ANY: $$ = (bool) $1.var.any; break;
-        default: $$ = false;
-    }
-};
+condition: bool_expression;
 
-expression: expression_endpt { $$ = $1; }
-;
+expression:
+    bool_expression
+    | arith_expression
+    | relational_expression
+    ;
 
-expression_endpt:
-    LEXTOK_BOOL_LITERAL         { $$ = (VarData) { .var.bul = $1, .type = VT_BUL }; }
-|   LEXTOK_CHAR_LITERAL         { $$ = (VarData) { .var.chr = $1, .type = VT_CHR }; }
-|   LEXTOK_BINFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_BUL }; }
-|   LEXTOK_OCTFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_F64 }; }
-|   LEXTOK_DECFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_F64 }; }
-|   LEXTOK_HEXFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_F64 }; }
-|   LEXTOK_BININT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
-|   LEXTOK_OCTINT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
-|   LEXTOK_DECINT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
-|   LEXTOK_HEXINT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
-|   LEXTOK_STR_LITERAL          { $$ = (VarData) { .var.str = $1, .type = VT_STR }; }
-|   LEXTOK_INTERP_STR_LITERAL   { $$ = (VarData) { .var.str = $1, .type = VT_STR }; }
-|   LEXTOK_IDENTIFIER           { $$ = (VarData) { .var.idf = $1, .type = VT_ANY }; };
+bool_expression:
+    LEXTOK_BANG bool_expression %prec LEXTOK_BANG
+    | bool_expression "&&" relational_expression %prec LEXTOK_LOGICAL_AND
+    | bool_expression "||" relational_expression %prec LEXTOK_LOGICAL_OR
+    | bool_expression "==" relational_expression %prec LEXTOK_LOGICAL_EQUAL
+    | bool_expression "!=" relational_expression %prec LEXTOK_LOGICAL_UNEQUAL
+    | bool_expression "===" relational_expression %prec LEXTOK_LOGICAL_IDENTICAL
+    | bool_expression "!==" relational_expression %prec LEXTOK_LOGICAL_UNIDENTICAL
+    | relational_expression
+    | LEXTOK_BOOL_LITERAL
+    | LEXTOK_IDENTIFIER
+    ;
+
+
+arith_expression:
+    /* Add more operators and expressions as needed */
+    ;
 
 %%
 
