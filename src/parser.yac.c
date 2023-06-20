@@ -68,6 +68,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 #include "io.h"
 #include "lexer.h"
@@ -80,8 +81,22 @@
 
 FILE *yyin = NULL;
 
+typedef enum {
+    VT_BUL,
+    VT_CHR,
+    VT_I64,
+    VT_F64,
+    VT_STR,
+    VT_ANY,
+} VarType;
 
-#line 85 "src/parser.yac.c" /* yacc.c:339  */
+typedef struct {
+    YYSTYPE var;
+    VarType type;
+} VarData;
+
+
+#line 100 "src/parser.yac.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -220,7 +235,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 126 "src/parser.yy" /* yacc.c:355  */
+#line 141 "src/parser.yy" /* yacc.c:355  */
 
     bool bul;
     char chr;
@@ -231,7 +246,7 @@ union YYSTYPE
     char *idf;
     VarData var_data;
 
-#line 235 "src/parser.yac.c" /* yacc.c:355  */
+#line 250 "src/parser.yac.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -248,7 +263,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 252 "src/parser.yac.c" /* yacc.c:358  */
+#line 267 "src/parser.yac.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -555,10 +570,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   155,   155,   156,   160,   168,   169,   173,   174,   175,
-     176,   177,   178,   182,   183,   184,   188,   193,   198,   206,
-     210,   215,   226,   233,   245,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   260,   261
+       0,   170,   170,   171,   175,   183,   184,   188,   189,   190,
+     191,   192,   193,   197,   198,   199,   203,   208,   213,   221,
+     225,   230,   241,   248,   260,   264,   265,   266,   267,   268,
+     269,   270,   271,   272,   273,   274,   275,   276
 };
 #endif
 
@@ -1394,69 +1409,69 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 160 "src/parser.yy" /* yacc.c:1646  */
+#line 175 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope((yyvsp[-4].idf));
         { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1404 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1419 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 175 "src/parser.yy" /* yacc.c:1646  */
+#line 190 "src/parser.yy" /* yacc.c:1646  */
     { vartable_setvar((yyvsp[-3].idf), (yyvsp[-1].var_data), true); }
-#line 1410 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1425 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 176 "src/parser.yy" /* yacc.c:1646  */
+#line 191 "src/parser.yy" /* yacc.c:1646  */
     { vartable_setvar((yyvsp[-3].idf), (yyvsp[-1].var_data), false); }
-#line 1416 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1431 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 188 "src/parser.yy" /* yacc.c:1646  */
+#line 203 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         if ((yyvsp[-4].bul)) { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1426 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1441 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 193 "src/parser.yy" /* yacc.c:1646  */
+#line 208 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         if ((yyvsp[-6].bul)) { (yyvsp[-3].any); } else { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1436 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1451 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 198 "src/parser.yy" /* yacc.c:1646  */
+#line 213 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         if ((yyvsp[-4].bul)) { (yyvsp[-1].any); } else { (yyval.any) = (yyvsp[0].any); }
         scoping_popscope();
     }
-#line 1446 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1461 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 210 "src/parser.yy" /* yacc.c:1646  */
+#line 225 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         while ((yyvsp[-4].bul)) { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1456 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1471 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 215 "src/parser.yy" /* yacc.c:1646  */
+#line 230 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         for (int64_t i = (yyvsp[-5].i64); i < (yyvsp[-3].i64); ((yyvsp[-5].i64) <= (yyvsp[-3].i64)) ? ++i : --i) {
@@ -1465,21 +1480,21 @@ yyreduce:
         }
         scoping_popscope();
     }
-#line 1469 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1484 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 226 "src/parser.yy" /* yacc.c:1646  */
+#line 241 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1479 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1494 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 233 "src/parser.yy" /* yacc.c:1646  */
+#line 248 "src/parser.yy" /* yacc.c:1646  */
     {
     switch ((yyvsp[0].var_data).type) {
         case VT_BUL: (yyval.bul) = (yyvsp[0].var_data).var.bul; break;
@@ -1491,95 +1506,95 @@ yyreduce:
         default: (yyval.bul) = false;
     }
 }
-#line 1495 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1510 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 245 "src/parser.yy" /* yacc.c:1646  */
+#line 260 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (yyvsp[0].var_data); }
-#line 1501 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1516 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 249 "src/parser.yy" /* yacc.c:1646  */
+#line 264 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.bul = (yyvsp[0].bul).bul, .type = VT_BUL }; }
-#line 1507 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1522 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 250 "src/parser.yy" /* yacc.c:1646  */
+#line 265 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.chr = (yyvsp[0].chr).chr, .type = VT_CHR }; }
-#line 1513 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1528 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 251 "src/parser.yy" /* yacc.c:1646  */
+#line 266 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).bul, .type = VT_BUL }; }
-#line 1519 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1534 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 252 "src/parser.yy" /* yacc.c:1646  */
+#line 267 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).f64, .type = VT_F64 }; }
-#line 1525 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1540 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 253 "src/parser.yy" /* yacc.c:1646  */
+#line 268 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).f64, .type = VT_F64 }; }
-#line 1531 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1546 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 254 "src/parser.yy" /* yacc.c:1646  */
+#line 269 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).f64, .type = VT_F64 }; }
-#line 1537 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1552 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 255 "src/parser.yy" /* yacc.c:1646  */
+#line 270 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1543 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1558 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 256 "src/parser.yy" /* yacc.c:1646  */
+#line 271 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1549 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1564 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 257 "src/parser.yy" /* yacc.c:1646  */
+#line 272 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1555 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1570 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 258 "src/parser.yy" /* yacc.c:1646  */
+#line 273 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1561 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1576 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 259 "src/parser.yy" /* yacc.c:1646  */
+#line 274 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.str = (yyvsp[0].str).str, .type = VT_STR }; }
-#line 1567 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1582 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 260 "src/parser.yy" /* yacc.c:1646  */
+#line 275 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.str = (yyvsp[0].str).str, .type = VT_STR }; }
-#line 1573 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1588 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 261 "src/parser.yy" /* yacc.c:1646  */
+#line 276 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.idf = (yyvsp[0].idf).idf, .type = VT_ANY }; }
-#line 1579 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1594 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
 
-#line 1583 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1598 "src/parser.yac.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1807,7 +1822,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 263 "src/parser.yy" /* yacc.c:1906  */
+#line 278 "src/parser.yy" /* yacc.c:1906  */
 
 
 int yyerror(const char* s)

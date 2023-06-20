@@ -24,20 +24,6 @@ char *parse_interpstr(const char *str);
 
 typedef const char *str_t;
 
-typedef enum {
-    VT_BUL,
-    VT_CHR,
-    VT_I64,
-    VT_F64,
-    VT_STR,
-    VT_ANY,
-} VarType;
-
-typedef struct {
-    YYSTYPE var;
-    VarType type;
-} VarData;
-
 /*
 HASHMAP_DECLARE(str_t, VarData);
 

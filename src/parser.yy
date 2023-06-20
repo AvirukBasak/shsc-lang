@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 #include "io.h"
 #include "lexer.h"
@@ -14,6 +15,20 @@
 #include "parser/parse_str.c.h"
 
 FILE *yyin = NULL;
+
+typedef enum {
+    VT_BUL,
+    VT_CHR,
+    VT_I64,
+    VT_F64,
+    VT_STR,
+    VT_ANY,
+} VarType;
+
+typedef struct {
+    YYSTYPE var;
+    VarType type;
+} VarData;
 
 %}
 

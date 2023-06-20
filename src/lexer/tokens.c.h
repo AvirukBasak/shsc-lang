@@ -110,6 +110,7 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_EOF:                   return "LEXTOK_EOF";
         case LEXTOK_INVALID:               return "LEXTOK_INVALID";
     }
+    return "INTERNAL";
 }
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
@@ -218,6 +219,7 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_EOF:                   return "<eof>";
         case LEXTOK_INVALID:               return "<invalid>";
     }
+    return "<internal>";
 }
 
 #endif
