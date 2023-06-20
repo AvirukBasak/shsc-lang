@@ -152,6 +152,16 @@ extern int yydebug;
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
+typedef union {
+    bool bul;
+    char chr;
+    int64_t i64;
+    double f64;
+    char *str;
+    void *any;
+    char *idf;
+} DataType;
+
 typedef enum {
     VT_BUL,
     VT_CHR,
@@ -161,10 +171,8 @@ typedef enum {
     VT_ANY,
 } VarType;
 
-typedef union YYSTYPE YYSTYPE;
-
 typedef struct {
-    YYSTYPE *var;
+    DataType var;
     VarType type;
 } VarData;
 
