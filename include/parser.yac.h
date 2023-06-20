@@ -192,6 +192,7 @@ union YYSTYPE
 #line 164 "include/parser.yac.h" /* yacc.c:1909  */
 };
 
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
