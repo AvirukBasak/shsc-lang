@@ -21,7 +21,7 @@ FILE *yyin = NULL;
 %token         LEXTOK_BANG                     "!"
 %token         LEXTOK_LOGICAL_UNEQUAL          "!="
 %token         LEXTOK_LOGICAL_UNIDENTICAL      "!=="
-%token         LEXTOK_DQUOTE                   "\""
+%token         LEXTOK_DQUOTE                   '"'
 %token         LEXTOK_DOLLAR                   "$"
 %token         LEXTOK_PERCENT                  "%"
 %token         LEXTOK_MODULO_ASSIGN            "%="
