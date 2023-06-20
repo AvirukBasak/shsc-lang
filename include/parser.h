@@ -24,6 +24,24 @@ char *parse_interpstr(const char *str);
 
 typedef const char *str_t;
 
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+
+typedef enum {
+    VT_BUL,
+    VT_CHR,
+    VT_I64,
+    VT_F64,
+    VT_STR,
+    VT_ANY,
+} VarType;
+
+typedef struct {
+    YYSTYPE *var;
+    VarType type;
+} VarData;
+
+#endif
+
 /*
 HASHMAP_DECLARE(str_t, VarData);
 

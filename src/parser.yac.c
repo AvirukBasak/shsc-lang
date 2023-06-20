@@ -81,22 +81,8 @@
 
 FILE *yyin = NULL;
 
-typedef enum {
-    VT_BUL,
-    VT_CHR,
-    VT_I64,
-    VT_F64,
-    VT_STR,
-    VT_ANY,
-} VarType;
 
-typedef struct {
-    YYSTYPE var;
-    VarType type;
-} VarData;
-
-
-#line 100 "src/parser.yac.c" /* yacc.c:339  */
+#line 86 "src/parser.yac.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -235,7 +221,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 141 "src/parser.yy" /* yacc.c:355  */
+#line 127 "src/parser.yy" /* yacc.c:355  */
 
     bool bul;
     char chr;
@@ -246,7 +232,7 @@ union YYSTYPE
     char *idf;
     VarData var_data;
 
-#line 250 "src/parser.yac.c" /* yacc.c:355  */
+#line 236 "src/parser.yac.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -263,7 +249,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 267 "src/parser.yac.c" /* yacc.c:358  */
+#line 253 "src/parser.yac.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -570,10 +556,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   170,   170,   171,   175,   183,   184,   188,   189,   190,
-     191,   192,   193,   197,   198,   199,   203,   208,   213,   221,
-     225,   230,   241,   248,   260,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276
+       0,   156,   156,   157,   161,   169,   170,   174,   175,   176,
+     177,   178,   179,   183,   184,   185,   189,   194,   199,   207,
+     211,   216,   227,   234,   246,   250,   251,   252,   253,   254,
+     255,   256,   257,   258,   259,   260,   261,   262
 };
 #endif
 
@@ -1409,69 +1395,69 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 175 "src/parser.yy" /* yacc.c:1646  */
+#line 161 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope((yyvsp[-4].idf));
         { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1419 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1405 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 190 "src/parser.yy" /* yacc.c:1646  */
+#line 176 "src/parser.yy" /* yacc.c:1646  */
     { vartable_setvar((yyvsp[-3].idf), (yyvsp[-1].var_data), true); }
-#line 1425 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1411 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 191 "src/parser.yy" /* yacc.c:1646  */
+#line 177 "src/parser.yy" /* yacc.c:1646  */
     { vartable_setvar((yyvsp[-3].idf), (yyvsp[-1].var_data), false); }
-#line 1431 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1417 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 203 "src/parser.yy" /* yacc.c:1646  */
+#line 189 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         if ((yyvsp[-4].bul)) { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1441 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1427 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 208 "src/parser.yy" /* yacc.c:1646  */
+#line 194 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         if ((yyvsp[-6].bul)) { (yyvsp[-3].any); } else { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1451 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1437 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 213 "src/parser.yy" /* yacc.c:1646  */
+#line 199 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         if ((yyvsp[-4].bul)) { (yyvsp[-1].any); } else { (yyval.any) = (yyvsp[0].any); }
         scoping_popscope();
     }
-#line 1461 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1447 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 225 "src/parser.yy" /* yacc.c:1646  */
+#line 211 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         while ((yyvsp[-4].bul)) { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1471 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1457 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 230 "src/parser.yy" /* yacc.c:1646  */
+#line 216 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         for (int64_t i = (yyvsp[-5].i64); i < (yyvsp[-3].i64); ((yyvsp[-5].i64) <= (yyvsp[-3].i64)) ? ++i : --i) {
@@ -1480,21 +1466,21 @@ yyreduce:
         }
         scoping_popscope();
     }
-#line 1484 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1470 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 241 "src/parser.yy" /* yacc.c:1646  */
+#line 227 "src/parser.yy" /* yacc.c:1646  */
     {
         scoping_pushscope(itoa(lex_line_no));
         { (yyval.any) = (yyvsp[-1].any); }
         scoping_popscope();
     }
-#line 1494 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1480 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 248 "src/parser.yy" /* yacc.c:1646  */
+#line 234 "src/parser.yy" /* yacc.c:1646  */
     {
     switch ((yyvsp[0].var_data).type) {
         case VT_BUL: (yyval.bul) = (yyvsp[0].var_data).var.bul; break;
@@ -1506,95 +1492,95 @@ yyreduce:
         default: (yyval.bul) = false;
     }
 }
-#line 1510 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1496 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 260 "src/parser.yy" /* yacc.c:1646  */
+#line 246 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (yyvsp[0].var_data); }
-#line 1516 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1502 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 264 "src/parser.yy" /* yacc.c:1646  */
+#line 250 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.bul = (yyvsp[0].bul).bul, .type = VT_BUL }; }
-#line 1522 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1508 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 265 "src/parser.yy" /* yacc.c:1646  */
+#line 251 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.chr = (yyvsp[0].chr).chr, .type = VT_CHR }; }
-#line 1528 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1514 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 266 "src/parser.yy" /* yacc.c:1646  */
+#line 252 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).bul, .type = VT_BUL }; }
-#line 1534 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1520 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 267 "src/parser.yy" /* yacc.c:1646  */
+#line 253 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).f64, .type = VT_F64 }; }
-#line 1540 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1526 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 268 "src/parser.yy" /* yacc.c:1646  */
+#line 254 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).f64, .type = VT_F64 }; }
-#line 1546 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1532 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 269 "src/parser.yy" /* yacc.c:1646  */
+#line 255 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.f64 = (yyvsp[0].f64).f64, .type = VT_F64 }; }
-#line 1552 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1538 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 270 "src/parser.yy" /* yacc.c:1646  */
+#line 256 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1558 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1544 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 271 "src/parser.yy" /* yacc.c:1646  */
+#line 257 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1564 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1550 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 272 "src/parser.yy" /* yacc.c:1646  */
+#line 258 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1570 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1556 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 273 "src/parser.yy" /* yacc.c:1646  */
+#line 259 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.i64 = (yyvsp[0].i64).i64, .type = VT_I64 }; }
-#line 1576 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1562 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 274 "src/parser.yy" /* yacc.c:1646  */
+#line 260 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.str = (yyvsp[0].str).str, .type = VT_STR }; }
-#line 1582 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1568 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 275 "src/parser.yy" /* yacc.c:1646  */
+#line 261 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.str = (yyvsp[0].str).str, .type = VT_STR }; }
-#line 1588 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1574 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 276 "src/parser.yy" /* yacc.c:1646  */
+#line 262 "src/parser.yy" /* yacc.c:1646  */
     { (yyval.var_data) = (VarData) { .var.idf = (yyvsp[0].idf).idf, .type = VT_ANY }; }
-#line 1594 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1580 "src/parser.yac.c" /* yacc.c:1646  */
     break;
 
 
-#line 1598 "src/parser.yac.c" /* yacc.c:1646  */
+#line 1584 "src/parser.yac.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1822,7 +1808,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 278 "src/parser.yy" /* yacc.c:1906  */
+#line 264 "src/parser.yy" /* yacc.c:1906  */
 
 
 int yyerror(const char* s)
