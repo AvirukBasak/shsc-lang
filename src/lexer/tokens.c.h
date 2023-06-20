@@ -2,6 +2,7 @@
 #define LEX_TOKENS_CH
 
 #include "lexer.h"
+#include "parser.yac.h"
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 char *lex_get_tokcode(LexToken code)
@@ -75,16 +76,21 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_TILDE:                 return "LEXTOK_TILDE";
         case LEXTOK_NEWLINE:               return "LEXTOK_NEWLINE";
         // keywords
-        case LEXTOK_KWD_FN:                return "LEXTOK_KWD_FN";
+        case LEXTOK_KWD_PROC:              return "LEXTOK_KWD_PROC";
         case LEXTOK_KWD_START:             return "LEXTOK_KWD_START";
         case LEXTOK_KWD_END:               return "LEXTOK_KWD_END";
+        case LEXTOK_KWD_BLOCK:             return "LEXTOK_KWD_BLOCK";
         case LEXTOK_KWD_IF:                return "LEXTOK_KWD_IF";
         case LEXTOK_KWD_THEN:              return "LEXTOK_KWD_THEN";
         case LEXTOK_KWD_ELIF:              return "LEXTOK_KWD_ELIF";
         case LEXTOK_KWD_ELSE:              return "LEXTOK_KWD_ELSE";
         case LEXTOK_KWD_WHILE:             return "LEXTOK_KWD_WHILE";
         case LEXTOK_KWD_FOR:               return "LEXTOK_KWD_FOR";
+        case LEXTOK_KWD_FROM:              return "LEXTOK_KWD_FROM";
+        case LEXTOK_KWD_TO:                return "LEXTOK_KWD_TO";
         case LEXTOK_KWD_DO:                return "LEXTOK_KWD_DO";
+        case LEXTOK_KWD_VAR:               return "LEXTOK_KWD_VAR";
+        case LEXTOK_KWD_PASS:              return "LEXTOK_KWD_PASS";
         // identifier
         case LEXTOK_IDENTIFIER:            return "LEXTOK_IDENTIFIER";
         // literals
@@ -103,7 +109,6 @@ char *lex_get_tokcode(LexToken code)
         // default cases
         case LEXTOK_EOF:                   return "LEXTOK_EOF";
         case LEXTOK_INVALID:               return "LEXTOK_INVALID";
-        default:                           return "INTERNAL";
     }
 }
 
@@ -179,16 +184,21 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_TILDE:                 return "~";
         case LEXTOK_NEWLINE:               return "\n";
         // keywords
-        case LEXTOK_KWD_FN:                return "fn";
+        case LEXTOK_KWD_PROC:              return "proc";
         case LEXTOK_KWD_START:             return "start";
         case LEXTOK_KWD_END:               return "end";
+        case LEXTOK_KWD_BLOCK:             return "block";
         case LEXTOK_KWD_IF:                return "if";
         case LEXTOK_KWD_THEN:              return "then";
         case LEXTOK_KWD_ELIF:              return "elif";
         case LEXTOK_KWD_ELSE:              return "else";
         case LEXTOK_KWD_WHILE:             return "while";
         case LEXTOK_KWD_FOR:               return "for";
+        case LEXTOK_KWD_FROM:              return "from";
+        case LEXTOK_KWD_TO:                return "to";
         case LEXTOK_KWD_DO:                return "do";
+        case LEXTOK_KWD_VAR:               return "var";
+        case LEXTOK_KWD_PASS:              return "pass";
         // identifier
         case LEXTOK_IDENTIFIER:            return "<identifier>";
         // literals
@@ -207,7 +217,6 @@ char *lex_get_symbol(LexToken code)
         // default cases
         case LEXTOK_EOF:                   return "<eof>";
         case LEXTOK_INVALID:               return "<invalid>";
-        default:                           return "<internal>";
     }
 }
 

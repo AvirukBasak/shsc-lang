@@ -17,7 +17,7 @@ LexToken lex_match_keywords(FILE *f, char ch)
         }
         kwdlen++;
     }
-    if (!strcmp(lex_get_buffstr(), "fn"))    return LEXTOK_KWD_FN;
+    if (!strcmp(lex_get_buffstr(), "proc"))  return LEXTOK_KWD_PROC;
     if (!strcmp(lex_get_buffstr(), "start")) return LEXTOK_KWD_START;
     if (!strcmp(lex_get_buffstr(), "end"))   return LEXTOK_KWD_END;
     if (!strcmp(lex_get_buffstr(), "block")) return LEXTOK_KWD_BLOCK;

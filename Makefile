@@ -65,7 +65,7 @@ $(DBG_OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 
 ## parser source
 $(PARSER): $(SRC_DIR)/parser.yy
-	bison -H$(INCLUDE_DIR)/parser.yac.h -o $(SRC_DIR)/parser.yac.c $(SRC_DIR)/parser.yy
+	bison --defines=$(INCLUDE_DIR)/parser.yac.h -o $(SRC_DIR)/parser.yac.c $(SRC_DIR)/parser.yy
 
 ## target for debug executable
 $(DBG_TARGET): $(REQ_DIRS) $(DBG_LIBRARIES) $(DBG_OBJECTS)

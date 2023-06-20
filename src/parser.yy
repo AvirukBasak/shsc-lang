@@ -134,13 +134,13 @@ FILE *yyin = NULL;
     VarData var_data;
 }
 
-%type <>         procedure
-%type <>         statements
-%type <>         statement
-%type <>         if_block
-%type <>         else_if_ladder
-%type <>         loop_block
-%type <>         block
+%type <any>      procedure
+%type <any>      statements
+%type <any>      statement
+%type <any>      if_block
+%type <any>      else_if_ladder
+%type <any>      loop_block
+%type <any>      block
 
 %type <bul>      condition
 %type <var_data> expression
@@ -159,7 +159,7 @@ program:
 procedure:
     "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end" {
         scoping_pushscope($2);
-        { $5; }
+        { $$ = $5; }
         scoping_popscope();
     }
 ;
@@ -172,7 +172,7 @@ statements:
 statement:
     "\n"
 |   "pass" "\n"
-|   "var" LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($1, $3, true); } /* shadow or create new var */
+|   "var" LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($2, $4, true); } /* shadow or create new var */
 |   LEXTOK_IDENTIFIER "=" expression "\n" { vartable_setvar($1, $3, false); }      /* access existing var */
 |   compound_statement "\n"
 |   expression "\n"
@@ -187,17 +187,17 @@ compound_statement:
 if_block:
     "if" condition "then" "\n" statements "end" {
         scoping_pushscope(itoa(lex_line_no));
-        if ($2) { $5; }
+        if ($2) { $$ = $5; }
         scoping_popscope();
     }
 |   "if" condition "then" "\n" statements "else" statements "end" {
         scoping_pushscope(itoa(lex_line_no));
-        if ($2) { $5; } else { $7; }
+        if ($2) { $5; } else { $$ = $7; }
         scoping_popscope();
     }
 |   "if" condition "then" "\n" statements else_if_ladder {
         scoping_pushscope(itoa(lex_line_no));
-        if ($2) { $5; } else { $6; }
+        if ($2) { $5; } else { $$ = $6; }
         scoping_popscope();
     }
 ;
@@ -209,14 +209,14 @@ else_if_ladder:
 loop_block:
     "while" condition "do" "\n" statements "end" {
         scoping_pushscope(itoa(lex_line_no));
-        while ($2) { $5; }
+        while ($2) { $$ = $5; }
         scoping_popscope();
     }
 |   "for" LEXTOK_IDENTIFIER "from" LEXTOK_DECINT_LITERAL "to" LEXTOK_DECINT_LITERAL "do" statements "end" {
         scoping_pushscope(itoa(lex_line_no));
         for (int64_t i = $4; i < $6; ($4 <= $6) ? ++i : --i) {
             vartable_setvar($2, (VarData) { .var.i64 = i, .type = VT_I64 }, true);
-            $8;
+            $$ = $8;
         }
         scoping_popscope();
     }
@@ -225,7 +225,7 @@ loop_block:
 block:
     "block" statements "end" {
         scoping_pushscope(itoa(lex_line_no));
-        { $2; }
+        { $$ = $2; }
         scoping_popscope();
     }
 ;
