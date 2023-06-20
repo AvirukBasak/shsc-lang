@@ -247,19 +247,19 @@ expression: expression_endpt { $$ = $1; }
 ;
 
 expression_endpt:
-    LEXTOK_BOOL_LITERAL         { $$ = (VarData) { .var.bul = $1.bul, .type = VT_BUL }; }
-|   LEXTOK_CHAR_LITERAL         { $$ = (VarData) { .var.chr = $1.chr, .type = VT_CHR }; }
-|   LEXTOK_BINFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.bul, .type = VT_BUL }; }
-|   LEXTOK_OCTFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.f64, .type = VT_F64 }; }
-|   LEXTOK_DECFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.f64, .type = VT_F64 }; }
-|   LEXTOK_HEXFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1.f64, .type = VT_F64 }; }
-|   LEXTOK_BININT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
-|   LEXTOK_OCTINT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
-|   LEXTOK_DECINT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
-|   LEXTOK_HEXINT_LITERAL       { $$ = (VarData) { .var.i64 = $1.i64, .type = VT_I64 }; }
-|   LEXTOK_STR_LITERAL          { $$ = (VarData) { .var.str = $1.str, .type = VT_STR }; }
-|   LEXTOK_INTERP_STR_LITERAL   { $$ = (VarData) { .var.str = $1.str, .type = VT_STR }; }
-|   LEXTOK_IDENTIFIER           { $$ = (VarData) { .var.idf = $1.idf, .type = VT_ANY }; };
+    LEXTOK_BOOL_LITERAL         { $$ = (VarData) { .var.bul = $1, .type = VT_BUL }; }
+|   LEXTOK_CHAR_LITERAL         { $$ = (VarData) { .var.chr = $1, .type = VT_CHR }; }
+|   LEXTOK_BINFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_BUL }; }
+|   LEXTOK_OCTFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_F64 }; }
+|   LEXTOK_DECFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_F64 }; }
+|   LEXTOK_HEXFLOAT_LITERAL     { $$ = (VarData) { .var.f64 = $1, .type = VT_F64 }; }
+|   LEXTOK_BININT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
+|   LEXTOK_OCTINT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
+|   LEXTOK_DECINT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
+|   LEXTOK_HEXINT_LITERAL       { $$ = (VarData) { .var.i64 = $1, .type = VT_I64 }; }
+|   LEXTOK_STR_LITERAL          { $$ = (VarData) { .var.str = $1, .type = VT_STR }; }
+|   LEXTOK_INTERP_STR_LITERAL   { $$ = (VarData) { .var.str = $1, .type = VT_STR }; }
+|   LEXTOK_IDENTIFIER           { $$ = (VarData) { .var.idf = $1, .type = VT_ANY }; };
 
 %%
 
