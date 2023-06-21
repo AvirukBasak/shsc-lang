@@ -22,10 +22,6 @@ double parse_float(const char *str, int base);
 char *parse_str(const char *str);
 char *parse_interpstr(const char *str);
 
-typedef const char *str_t;
-
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 typedef union {
     bool bul;
     char chr;
@@ -49,13 +45,5 @@ typedef struct {
     DataType var;
     VarType type;
 } VarData;
-
-#endif
-
-/*
-HASHMAP_DECLARE(str_t, VarData);
-
-HashMap(str_t, VarData) var_table;
-*/
 
 #endif

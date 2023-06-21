@@ -8,11 +8,7 @@
 #include "io.h"
 #include "lexer.h"
 #include "parser.h"
-
-#include "parser/parse_chr.c.h"
-#include "parser/parse_i64.c.h"
-#include "parser/parse_f64.c.h"
-#include "parser/parse_str.c.h"
+#include "ast.h"
 
 FILE *yyin = NULL;
 
@@ -86,7 +82,7 @@ FILE *yyin = NULL;
 
 %token         LEXTOK_NEWLINE                  "\n"
 
-// keywords
+/* keywords */
 %token         LEXTOK_KWD_PROC                 "proc"
 %token         LEXTOK_KWD_START                "start"
 %token         LEXTOK_KWD_END                  "end"
@@ -103,31 +99,88 @@ FILE *yyin = NULL;
 %token         LEXTOK_KWD_VAR                  "var"
 %token         LEXTOK_KWD_PASS                 "pass"
 
-// identifier
-%token <idf>   LEXTOK_IDENTIFIER               "<identifier>"
 
-// literals
-%token <bul>   LEXTOK_BOOL_LITERAL             "<boollit>"
-%token <chr>   LEXTOK_CHAR_LITERAL             "<charlit>"
-%token <f64>   LEXTOK_BINFLOAT_LITERAL         "<binfloattlit>"
-%token <f64>   LEXTOK_OCTFLOAT_LITERAL         "<octfloattlit>"
-%token <f64>   LEXTOK_DECFLOAT_LITERAL         "<decfloattlit>"
-%token <f64>   LEXTOK_HEXFLOAT_LITERAL         "<hexfloattlit>"
-%token <i64>   LEXTOK_BININT_LITERAL           "<binintlit>"
-%token <i64>   LEXTOK_OCTINT_LITERAL           "<octintlit>"
-%token <i64>   LEXTOK_DECINT_LITERAL           "<decintlit>"
-%token <i64>   LEXTOK_HEXINT_LITERAL           "<hexintlit>"
-%token <str>   LEXTOK_STR_LITERAL              "<strlit>"
-%token <str>   LEXTOK_INTERP_STR_LITERAL       "<interpstrlit>"
-
-// default cases
+/* default cases */
 %token         LEXTOK_EOF                      "<eof>"
 %token         LEXTOK_INVALID                  "<invalid>"
 
-%union {}
 
-/* associativity: logical */
+/* literals */
+%token <literal_bool>      LEXTOK_BOOL_LITERAL             "<boollit>"
+%token <literal_char>      LEXTOK_CHAR_LITERAL             "<charlit>"
+%token <literal_f64>       LEXTOK_BINFLOAT_LITERAL         "<binfloattlit>"
+%token <literal_f64>       LEXTOK_OCTFLOAT_LITERAL         "<octfloattlit>"
+%token <literal_f64>       LEXTOK_DECFLOAT_LITERAL         "<decfloattlit>"
+%token <literal_f64>       LEXTOK_HEXFLOAT_LITERAL         "<hexfloattlit>"
+%token <literal_i64>       LEXTOK_BININT_LITERAL           "<binintlit>"
+%token <literal_i64>       LEXTOK_OCTINT_LITERAL           "<octintlit>"
+%token <literal_i64>       LEXTOK_DECINT_LITERAL           "<decintlit>"
+%token <literal_i64>       LEXTOK_HEXINT_LITERAL           "<hexintlit>"
+%token <literal_str>       LEXTOK_STR_LITERAL              "<strlit>"
+%token <literal_str>       LEXTOK_INTERP_STR_LITERAL       "<interpstrlit>"
 
+
+/* identifier */
+%token <identifier_name>   LEXTOK_IDENTIFIER               "<identifier>"
+
+
+%union
+{
+    /* base literals */
+    bool     literal_bool;
+    char     literal_char;
+    double   literal_f64;
+    int64_t  literal_i64;
+    char    *literal_str;
+    void    *literal_any;
+
+    /* identifier name */
+    char    *identifier_name;
+
+    /* ast nodes */
+    AST_Root                *astnode_program,              /* program */
+    AST_Procedure           *astnode_procedure,            /* procedure */
+    AST_Statements          *astnode_statements,           /* statements */
+    AST_Statement           *astnode_statement,            /* statement */
+    AST_Assignment          *astnode_assignment,           /* assignment */
+    AST_CompoundStatement   *astnode_compound_statement,   /* compound_statement */
+    AST_IfBlock             *astnode_if_block,             /* if_block */
+    AST_IfElseBlock         *astnode_if_else_block,        /* if_else_block */
+    AST_IfElseIfBlock       *astnode_if_else_if_block,     /* if_else_if_block */
+    AST_ElseIfBlock         *astnode_else_if_block,        /* else_if_block */
+    AST_WhileBlock          *astnode_while_block,          /* while_block */
+    AST_ForBlock            *astnode_for_block,            /* for_block */
+    AST_Block               *astnode_block,                /* block */
+    AST_Condition           *astnode_condition,            /* condition */
+    AST_Expression          *astnode_expression,           /* expression */
+    AST_Operand             *astnode_operand,              /* operand */
+    AST_Literal             *astnode_literal,              /* literal */
+    AST_Identifier          *astnode_identifier            /* identifier */
+}
+
+
+/* semantic types of each parser rule */
+%type <astnode_program>               program
+%type <astnode_procedure>             procedure
+%type <astnode_statements>            statements
+%type <astnode_statement>             statement
+%type <astnode_assignment>            assignment
+%type <astnode_compound_statement>    compound_statement
+%type <astnode_if_block>              if_block
+%type <astnode_if_else_block>         if_else_block
+%type <astnode_if_else_if_block>      if_else_if_block
+%type <astnode_else_if_block>         else_if_block
+%type <astnode_while_block>           while_block
+%type <astnode_for_block>             for_block
+%type <astnode_block>                 block
+%type <astnode_condition>             condition
+%type <astnode_expression>            expression
+%type <astnode_operand>               operand
+%type <astnode_literal>               literal
+%type <astnode_identifier>            identifier
+
+
+/* associativity: logical operators */
 %left LEXTOK_LOGICAL_OR
 %left LEXTOK_LOGICAL_AND
 %nonassoc LEXTOK_BANG
@@ -136,13 +189,16 @@ FILE *yyin = NULL;
 %nonassoc LEXTOK_LOGICAL_IDENTICAL
 %nonassoc LEXTOK_LOGICAL_UNIDENTICAL
 
+
+/* parser entry point? */
 %start program
+
 
 %%
 
 /* A program is a single procedure or multiple procedures */
 program:
-    procedure "\n"
+    | procedure "\n"
     | procedure "\n" program
     ;
 
@@ -156,58 +212,54 @@ statements:
 statement:
     "\n"
     | "pass" "\n"
-    | "var" LEXTOK_IDENTIFIER "=" expression "\n" /* shadow or create new var */
-    | LEXTOK_IDENTIFIER "=" expression "\n"       /* access existing var */
+    | assignment "\n"
     | compound_statement "\n"
-    | expression "\n"
+    ;
+
+assignment:
+    "var" LEXTOK_IDENTIFIER "=" expression   /* shadow or create new var */
+    | LEXTOK_IDENTIFIER "=" expression       /* access existing var */
+    | expression                             /* assignment to void */
     ;
 
 compound_statement:
     if_block
-    | loop_block
+    | if_else_block
+    | if_else_if_block
+    | while_block
+    | for_block
     | block
     ;
 
-if_block:
-    "if" condition "then" "\n" statements "end"
-    | "if" condition "then" "\n" statements "else" statements "end"
-    | "if" condition "then" "\n" statements else_if_ladder
+if_block: "if" condition "then" "\n" statements "end";
+
+if_else_block: "if" condition "then" "\n" statements "else" statements "end"
+
+if_else_if_block: "if" condition "then" "\n" statements else_if_block;
+
+else_if_block:
+    "else" if_else_if_block
+    | "end"
     ;
 
-else_if_ladder: "else" if_block;
+while_block: "while" condition "do" "\n" statements "end";
 
-loop_block:
-    "while" condition "do" "\n" statements "end"
-    | "for" LEXTOK_IDENTIFIER "from" LEXTOK_DECINT_LITERAL "to" LEXTOK_DECINT_LITERAL "do" statements "end"
-    ;
+for_block: "for" identifier "from" operand "to" operand "do" statements "end";
 
 block: "block" statements "end";
 
-condition: bool_expression;
+condition: expression;
 
-expression:
-    bool_expression
-    | arith_expression
-    | relational_expression
+expression: operand;
+
+operand:
+    literal
+    | identifier
     ;
 
-bool_expression:
-    LEXTOK_BANG bool_expression %prec LEXTOK_BANG
-    | bool_expression "&&" relational_expression %prec LEXTOK_LOGICAL_AND
-    | bool_expression "||" relational_expression %prec LEXTOK_LOGICAL_OR
-    | bool_expression "==" relational_expression %prec LEXTOK_LOGICAL_EQUAL
-    | bool_expression "!=" relational_expression %prec LEXTOK_LOGICAL_UNEQUAL
-    | bool_expression "===" relational_expression %prec LEXTOK_LOGICAL_IDENTICAL
-    | bool_expression "!==" relational_expression %prec LEXTOK_LOGICAL_UNIDENTICAL
-    | relational_expression
-    | LEXTOK_BOOL_LITERAL
-    | LEXTOK_IDENTIFIER
-    ;
+literal: ;
 
-
-arith_expression:
-    /* Add more operators and expressions as needed */
-    ;
+identifier: ;
 
 %%
 
