@@ -30,7 +30,7 @@ typedef union {
     char *str;
     void *any;
     char *idf;
-} DataType;
+} VarData;
 
 typedef enum {
     VT_BUL,
@@ -40,10 +40,5 @@ typedef enum {
     VT_STR,
     VT_ANY,
 } VarType;
-
-typedef struct {
-    DataType var;
-    VarType type;
-} VarData;
 
 #endif
