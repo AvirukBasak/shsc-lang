@@ -35,7 +35,7 @@ FILE *yyin = NULL;
 %token         LEXTOK_PLUS                     "+"
 %token         LEXTOK_INCREMENT                "++"
 %token         LEXTOK_ADD_ASSIGN               "+="
-%token         LEXTOK_COMMA                    ""
+%token         LEXTOK_COMMA                    ","
 %token         LEXTOK_MINUS                    "-"
 %token         LEXTOK_DECREMENT                "--"
 %token         LEXTOK_SUBSTRACT_ASSIGN         "-="
