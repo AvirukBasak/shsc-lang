@@ -33,12 +33,12 @@ typedef union {
 } VarData;
 
 typedef enum {
-    VT_BUL,
-    VT_CHR,
-    VT_I64,
-    VT_F64,
-    VT_STR,
-    VT_ANY,
+    VARTYPE_BUL,
+    VARTYPE_CHR,
+    VARTYPE_I64,
+    VARTYPE_F64,
+    VARTYPE_STR,
+    VARTYPE_ANY,
 } VarType;
 
 #endif
