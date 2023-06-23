@@ -198,57 +198,73 @@ FILE *yyin = NULL;
 
 /* A program is a single procedure or multiple procedures */
 program:
-    | procedure "\n"
-    | procedure "\n" program
+    | procedure "\n" { $$ = AST_program($1, NULL); }
+    | procedure "\n" program { $$ = AST_program($1, $2); }
     ;
 
-procedure: "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end";
+procedure:
+    "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end" { $$ = AST_procedure($2, $5); }
+    ;
 
 statements:
-    statement
-    | statement statements
+    statement { $$ = AST_statements($1, NULL); }
+    | statement statements { $$ = AST_statements($1, $2); }
     ;
 
 statement:
-    "\n"
-    | "pass" "\n"
-    | assignment "\n"
-    | compound_statement "\n"
+    "\n" { $$ = AST_statement_empty(); }
+    | "pass" "\n" { $$ = AST_statement_empty(); }
+    | assignment "\n" { $$ = AST_statement_assignment($1); }
+    | compound_statement "\n" { $$ = AST_statement_compound($1); }
     ;
 
 assignment:
-    "var" LEXTOK_IDENTIFIER "=" expression   /* shadow or create new var */
-    | LEXTOK_IDENTIFIER "=" expression       /* access existing var */
-    | expression                             /* assignment to void */
+    "var" LEXTOK_IDENTIFIER "=" expression { $$ = AST_assignment_create($2, $4); }  /* shadow or create new var */
+    | LEXTOK_IDENTIFIER "=" expression { $$ = AST_assignment_update($2, $4); }      /* access existing var */
+    | expression { $$ = AST_assignment_tovoid($1); }                                /* assignment to void */
     ;
 
 compound_statement:
-    if_block
-    | if_else_block
-    | if_else_if_block
-    | while_block
-    | for_block
-    | block
+    if_block { $$ = AST_compoundst_if_block($1); }
+    | if_else_block { $$ = AST_compoundst_if_else_block($1); }
+    | if_else_if_block { $$ = AST_compoundst_if_else_if_block($1); }
+    | while_block { $$ = AST_compoundst_while_block($1); }
+    | for_block { $$ = AST_compoundst_for_block($1); }
+    | block { $$ = AST_compoundst_block($1); }
     ;
 
-if_block: "if" condition "then" "\n" statements "end";
+if_block:
+    "if" condition "then" "\n" statements "end" { $$ = AST_if_block($2, $5); }
+    ;
 
-if_else_block: "if" condition "then" "\n" statements "else" statements "end"
+if_else_block:
+    "if" condition "then" "\n" statements "else" statements "end" { $$ = AST_if_else_block($2, $5, $7); }
+    ;
 
-if_else_if_block: "if" condition "then" "\n" statements else_if_block;
+if_else_if_block:
+    "if" condition "then" "\n" statements else_if_block { $$ = AST_if_else_if_block($2, $5, $6); }
+    ;
 
 else_if_block:
-    "else" if_else_if_block
-    | "end"
+    "else" if_else_if_block { $$ = AST_else_if_block($2); }
+    | "end" { $$ = AST_else_if_block(NULL); }
     ;
 
-while_block: "while" condition "do" "\n" statements "end";
+while_block:
+    "while" condition "do" "\n" statements "end" { $$ = AST_while_block($2, $5); }
+    ;
 
-for_block: "for" identifier "from" operand "to" operand "do" statements "end";
+for_block:
+    "for" identifier "from" operand "to" operand "do" statements "end" { $$ = AST_for_block($2, $4, $6, $8); }
+    ;
 
-block: "block" statements "end";
+block:
+    "block" statements "end" { $$ = AST_block($2); }
+    ;
 
-condition: expression;
+condition:
+    expression { $$ = AST_condition($1); }
+    ;
 
 expression: operand;
 
@@ -257,9 +273,24 @@ operand:
     | identifier
     ;
 
-literal: ;
+literal:
+    LEXTOK_BOOL_LITERAL             { $$ = AST_literal_bul($1); }
+    LEXTOK_CHAR_LITERAL             { $$ = AST_literal_chr($1); }
+    LEXTOK_BINFLOAT_LITERAL         { $$ = AST_literal_f64($1); }
+    LEXTOK_OCTFLOAT_LITERAL         { $$ = AST_literal_f64($1); }
+    LEXTOK_DECFLOAT_LITERAL         { $$ = AST_literal_f64($1); }
+    LEXTOK_HEXFLOAT_LITERAL         { $$ = AST_literal_f64($1); }
+    LEXTOK_BININT_LITERAL           { $$ = AST_literal_i64($1); }
+    LEXTOK_OCTINT_LITERAL           { $$ = AST_literal_i64($1); }
+    LEXTOK_DECINT_LITERAL           { $$ = AST_literal_i64($1); }
+    LEXTOK_HEXINT_LITERAL           { $$ = AST_literal_i64($1); }
+    LEXTOK_STR_LITERAL              { $$ = AST_literal_str($1); }
+    LEXTOK_INTERP_STR_LITERAL       { $$ = AST_literal_str($1); }
+    ;
 
-identifier: ;
+identifier:
+    LEXTOK_IDENTIFIER { $$ = AST_identifier($1); }
+    ;
 
 %%
 

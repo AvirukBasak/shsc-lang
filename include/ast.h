@@ -23,47 +23,56 @@ typedef struct AST_Operand             AST_Operand;
 typedef struct AST_Literal             AST_Literal;
 typedef struct AST_Identifier          AST_Identifier;
 
-/** Linked list of multiple procedures */
 struct AST_Root {
-    AST_Root *head_procedure;
+    AST_Procedure *procedure;
+    AST_Root *program;
 };
 
 struct AST_Procedure {
+    AST_Identifier *procedure_name;
     AST_Statements *statements;
-    /** Generally set to NULL. Useful in case of
-        AST_Root which is basically a linked list head */
-    AST_Procedure *next_procedure;
 };
 
-/** Linked list of multiple statements */
 struct AST_Statements {
-    AST_Statement *head_statement;
+    AST_Statement *statement;
+    AST_Statements *statements;
+};
+
+enum StatementType {
+    STATEMENT_TYPE_ASSIGNMENT,
+    STATEMENT_TYPE_COMPOUND,
 };
 
 struct AST_Statement {
-    /** If both NULL, it indicates an empty statement */
     union {
        AST_Assignment *assignment;
        AST_CompoundStatement *compound_statement;
     } statement;
-    /** Generally set to NULL. Useful in case of
-        AST_Statements which is basically a linked list head */
-    AST_Statement *next_statement;
+    enum StatementType type;
 };
 
 enum AssignmentType {
     /** Return value of RHS discarded */
-    ASSIGNMENTTYPE_TOVOID,
+    ASSIGNMENT_TYPE_TOVOID,
     /** Create or shadow existing variable */
-    ASSIGNMENTTYPE_CREATE,
+    ASSIGNMENT_TYPE_CREATE,
     /** Update existing variable */
-    ASSIGNMENTTYPE_UPDATE,
+    ASSIGNMENT_TYPE_UPDATE,
 };
 
 struct AST_Assignment {
     AST_Identifier *lhs;
     AST_Expression *rhs;
     enum AssignmentType type;
+};
+
+enum CompoundStatementType {
+    COMPOUNDST_TYPE_IF,
+    COMPOUNDST_TYPE_IF_ELSE,
+    COMPOUNDST_TYPE_IF_ELSE_IF,
+    COMPOUNDST_TYPE_WHILE,
+    COMPOUNDST_TYPE_FOR,
+    COMPOUNDST_TYPE_BLOCK,
 };
 
 struct AST_CompoundStatement {
@@ -75,6 +84,7 @@ struct AST_CompoundStatement {
         AST_ForBlock *for_block;
         AST_Block *block;
     } compound_statement;
+   enum CompoundStatementType type;
 };
 
 struct AST_IfBlock {
@@ -128,8 +138,8 @@ struct AST_Expression {
 };
 
 enum OperandType {
-    OPERANDTYPE_LITERAL,
-    OPERANDTYPE_VARIABLE,
+    OPERAND_TYPE_LITERAL,
+    OPERAND_TYPE_VARIABLE,
 };
 
 struct AST_Operand {
@@ -141,12 +151,12 @@ struct AST_Operand {
 };
 
 enum DataType {
-    DATATYPE_BUL,
-    DATATYPE_CHR,
-    DATATYPE_I64,
-    DATATYPE_F64,
-    DATATYPE_STR,
-    DATATYPE_ANY,
+    DATA_TYPE_BUL,
+    DATA_TYPE_CHR,
+    DATA_TYPE_I64,
+    DATA_TYPE_F64,
+    DATA_TYPE_STR,
+    DATA_TYPE_ANY,
 };
 
 struct AST_Literal {
@@ -163,7 +173,44 @@ struct AST_Literal {
 
 struct AST_Identifier {
     char *identifier_name;
-    enum DataType type;
 };
+
+#endif
+
+#ifndef ASTFUNCTIONS_H
+#define ASTFUNCTIONS_H
+
+AST_program($1, NULL);
+AST_program($1, $2);
+AST_procedure($2, $5);
+AST_statements($1, NULL);
+AST_statements($1, $2);
+AST_statement_empty();
+AST_statement_assignment($1);
+AST_statement_compound($1);
+AST_assignment_create($2, $4);
+AST_assignment_update($2, $4);
+AST_assignment_tovoid($1);
+AST_compoundst_if_block($1);
+AST_compoundst_if_else_block($1);
+AST_compoundst_if_else_if_block($1);
+AST_compoundst_while_block($1);
+AST_compoundst_for_block($1);
+AST_compoundst_block($1);
+AST_if_block($2, $5);
+AST_if_else_block($2, $5, $7);
+AST_if_else_if_block($2, $5, $6);
+AST_else_if_block($2);
+AST_else_if_block(NULL);
+AST_while_block($2, $5);
+AST_for_block($2, $4, $6, $8);
+AST_block($2);
+AST_condition($1);
+AST_literal_bul($1);
+AST_literal_chr($1);
+AST_literal_f64($1);
+AST_literal_i64($1);
+AST_literal_str($1);
+AST_identifier($1);
 
 #endif
