@@ -45,6 +45,7 @@ struct AST_Statements {
 };
 
 enum StatementType {
+    STATEMENT_TYPE_EMPTY,
     STATEMENT_TYPE_ASSIGNMENT,
     STATEMENT_TYPE_COMPOUND,
 };
