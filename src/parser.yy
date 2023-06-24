@@ -199,7 +199,7 @@ FILE *yyin = NULL;
 %%
 
 input:
-    "module" identifier "\n" program { AST_module($2, $4); }
+    "module" identifier "\n" program { AST_module_add($2, $4); }
     ;
 
 /* A program is a single procedure or multiple procedures */
