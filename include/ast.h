@@ -189,7 +189,7 @@ struct AST_Identifier {
 #ifndef ASTFUNCTIONS_H
 #define ASTFUNCTIONS_H
 
-AST_Root              *AST_module(AST_Identifier *module_name, AST_Program *program);
+AST_Root              *AST_module_add(AST_Identifier *module_name, AST_Program *program);
 AST_Program           *AST_program(AST_Procedure *procedure, AST_Program *program);
 AST_Procedure         *AST_procedure(AST_Identifier *name, AST_Statements *statements);
 AST_Statements        *AST_statements(AST_Statement *statement, AST_Statements *statements;);
