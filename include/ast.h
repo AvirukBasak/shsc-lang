@@ -125,6 +125,7 @@ struct AST_ForBlock {
     AST_Identifier *iter;
     AST_Operand *start;
     AST_Operand *end;
+    AST_Operand *by;
     AST_Statements *statements;
 };
 
@@ -208,7 +209,7 @@ AST_IfElseBlock       *AST_if_else_block(AST_Condition *condition, AST_Statement
 AST_IfElseIfBlock     *AST_if_else_if_block(AST_Condition *condition, AST_Statements *if_st, AST_ElseIfBlock *block);
 AST_ElseIfBlock       *AST_else_if_block(AST_IfElseIfBlock *block);
 AST_WhileBlock        *AST_while_block(AST_Condition *condition, AST_Statements *while_st);
-AST_ForBlock          *AST_for_block(AST_Identifier *iter, AST_Operand *start, AST_Operand *end, AST_Statements *for_st);
+AST_ForBlock          *AST_for_block(AST_Identifier *iter, AST_Operand *start, AST_Operand *end, AST_Operand *by, AST_Statements *for_st);
 AST_Block             *AST_block(AST_Statements *statements);
 AST_Condition         *AST_condition(AST_Expression *expression);
 AST_Operand           *AST_operand_literal(AST_Literal *literal);
