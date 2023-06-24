@@ -147,7 +147,7 @@ struct AST_Expression {
 
 enum OperandType {
     OPERAND_TYPE_LITERAL,
-    OPERAND_TYPE_VARIABLE,
+    OPERAND_TYPE_IDENTIFIER,
 };
 
 struct AST_Operand {
