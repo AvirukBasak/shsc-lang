@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
+typedef struct AST_Root                AST_Root;
 typedef struct AST_Program             AST_Program;
 typedef struct AST_Procedure           AST_Procedure;
 typedef struct AST_Statements          AST_Statements;
@@ -22,6 +23,11 @@ typedef struct AST_Expression          AST_Expression;
 typedef struct AST_Operand             AST_Operand;
 typedef struct AST_Literal             AST_Literal;
 typedef struct AST_Identifier          AST_Identifier;
+
+/** A hash map of module names mapping to their programs */
+struct AST_Root {
+    // TODO: A hash map of module names mapping to their programs
+};
 
 struct AST_Program {
     AST_Procedure *procedure;
