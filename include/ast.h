@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-typedef struct AST_Root                AST_Root;
+typedef struct AST_Program             AST_Program;
 typedef struct AST_Procedure           AST_Procedure;
 typedef struct AST_Statements          AST_Statements;
 typedef struct AST_Statement           AST_Statement;
@@ -23,9 +23,9 @@ typedef struct AST_Operand             AST_Operand;
 typedef struct AST_Literal             AST_Literal;
 typedef struct AST_Identifier          AST_Identifier;
 
-struct AST_Root {
+struct AST_Program {
     AST_Procedure *procedure;
-    AST_Root *program;
+    AST_Program *program;
 };
 
 struct AST_Procedure {
@@ -180,17 +180,16 @@ struct AST_Identifier {
 #ifndef ASTFUNCTIONS_H
 #define ASTFUNCTIONS_H
 
-AST_program($1, NULL);
-AST_program($1, $2);
-AST_procedure($2, $5);
-AST_statements($1, NULL);
-AST_statements($1, $2);
-AST_statement_empty();
-AST_statement_assignment($1);
-AST_statement_compound($1);
-AST_assignment_create($2, $4);
-AST_assignment_update($2, $4);
-AST_assignment_tovoid($1);
+AST_Root       *AST_module(AST_Identifier *module_name, AST_Program *program);
+AST_Program    *AST_program(AST_Procedure *procedure, AST_Program *program);
+AST_Procedure  *AST_procedure(AST_Identifier *name, AST_Statements *statements);
+AST_Statements *AST_statements(AST_Statement *statement, AST_Statements *statements;);
+AST_Statement  *AST_statement_empty(void);
+AST_Statement  *AST_statement_assignment(AST_Assignment *assignment);
+AST_Statement  *AST_statement_compound(AST_CompoundStatement *compund);
+AST_Assignment *AST_assignment_create(AST_Identifier *identifier, AST_Expression *expression);
+AST_Assignment *AST_assignment_update(AST_Identifier *identifier, AST_Expression *expression);
+AST_Assignment *AST_assignment_tovoid(AST_Expression *expression);
 AST_compoundst_if_block($1);
 AST_compoundst_if_else_block($1);
 AST_compoundst_if_else_if_block($1);
@@ -201,16 +200,17 @@ AST_if_block($2, $5);
 AST_if_else_block($2, $5, $7);
 AST_if_else_if_block($2, $5, $6);
 AST_else_if_block($2);
-AST_else_if_block(NULL);
 AST_while_block($2, $5);
 AST_for_block($2, $4, $6, $8);
-AST_block($2);
-AST_condition($1);
-AST_literal_bul($1);
-AST_literal_chr($1);
-AST_literal_f64($1);
-AST_literal_i64($1);
-AST_literal_str($1);
-AST_identifier($1);
+AST_Block      *AST_block(AST_Statements *statements);
+AST_Condition  *AST_condition(AST_Expression *expression);
+AST_Operand    *AST_operand_literal(AST_Literal *literal);
+AST_Operand    *AST_operand_identifier(AST_Identifier *identifier);
+AST_Literal    *AST_literal_bul(bool literal);
+AST_Literal    *AST_literal_chr(char literal);
+AST_Literal    *AST_literal_f64(double literal);
+AST_Literal    *AST_literal_i64(int64_t literal);
+AST_Literal    *AST_literal_str(char *literal);
+AST_Identifier *AST_identifier(char *identifier_name);
 
 #endif
