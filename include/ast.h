@@ -164,6 +164,7 @@ enum DataType {
     DATA_TYPE_I64,
     DATA_TYPE_F64,
     DATA_TYPE_STR,
+    DATA_TYPE_INTERP_STR,
     DATA_TYPE_ANY,
 };
 
@@ -219,6 +220,7 @@ AST_Literal           *AST_literal_chr(char literal);
 AST_Literal           *AST_literal_f64(double literal);
 AST_Literal           *AST_literal_i64(int64_t literal);
 AST_Literal           *AST_literal_str(char *literal);
+AST_Literal           *AST_literal_interp_str(char *literal);
 AST_Identifier        *AST_identifier(char *identifier_name);
 
 #endif
