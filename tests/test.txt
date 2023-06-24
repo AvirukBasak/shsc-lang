@@ -1,19 +1,23 @@
-print("Hello world!", lf)
+module main
 
-x = input(int)
+proc main start
+    print("Hello world!", lf)
 
-if x == 1 then
-    print("entered 1", lf)
-elif x == 2 then
-    print("entered 2", lf)
-else
-    print(f"entered {d:x}", lf)
+    x = input(int)
+
+    if x == 1 then
+        print("entered 1", lf)
+    elif x == 2 then
+        print("entered 2", lf)
+    else
+        print(f"entered {d:x}", lf)
+    end
+
+    while x >= 0 do
+        print(f"x = {d:x}")
+        x = x -1
+    end
+
+    x = input("prompt: ", str)
+    print(f"entered {s:x}", lf)
 end
-
-while x >= 0 do
-    print(f"x = {d:x}")
-    x = x -1
-end
-
-x = input("prompt: ", str)
-print(f"entered {s:x}", lf)

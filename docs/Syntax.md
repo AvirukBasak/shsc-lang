@@ -5,21 +5,40 @@ However, unlike them, this language has a very few datatypes.
 
 Composite data types will be implemented as classes when OOP is introduced.
 
+#### Behaviour
+- Execution starts at procedure main of the main module, i.e. `main::main()`.
+- The main procedure will carry the CLI args as function arguments.
+- Function arguments are accessible using the special `$[index]` syntax.
+
+#### Modules
+Modules don't require to be imported, only declared in the first line of the file.
+
+If not, those procedures are put automatically in a module called `main`.
+
+The runtime loads as modules the files passed as CLI arguments to the interpreter.
+
+Functions from modules can be accessed by the syntax `module_name::function_name()`.
+
+If the module was not loaded, it'll error out and exit.
+
+Printing verbose information may provide intial information on what is loaded.
+
 #### Policies
 - Dynamically typed (type inferred at runtime).
 - Weakly typed (sensible type coercion).
 - Error if type coercion is impossible.
 - Objects are objects, everything is not.
 - Support for libc functions.
-- Apart from primitive datatypes, everything else is an object.
+- Apart from primitive datatypes, everything else should be objects.
 - Syntax should be sensible.
 - Should not become JS.
 
 #### Coercion rules
-- Any primitive can be coerced to str.
-- An str to primitive coercion may fail and cause error.
-- Any other conversion must be explicitly done using functions.
-- If magic functions are introduced, one may specify their own coercion rules.
+- Any primitive can be coerced to string.
+- Certain string to primitive coercions may fail and cause error.
+- Any primitive type except float can be coerced to bool.
+- Float, int and char can be coerced among themselves
+- Bool can be coerced to any type.
 
 #### Expressions
 ```
@@ -28,13 +47,14 @@ r * (cos(a) + sin(b)) - pow(E, sin(ab))
 
 #### Assignment
 ```
-x = r * (cos(a) + sin(b)) - pow(E, sin(ab))
+var x = r * (cos(a) + sin(b)) - pow(E, sin(ab))
+x = x + 11
 ```
 
 #### Functions
 ```
-fn cos(x) start
-    return sin(PI/2 + x)
+proc cos start
+    return sin(PI/2 + $[1])
 end
 ```
 
@@ -53,45 +73,32 @@ while x < 10 do
     x = x + 1
 end
 
-# for loop will be added when iterables are introduced
+for i from 0 to 17 by 2 do
+    print(i+1)
+end
 ```
 
 #### Data memory model
 - Primitives: pseudo stack, auto managed
-- Objects: heap, reference counted
+- Objects: reference counted, auto managed
 
 A pseudo stack is a contiguous (array type) stack maintained in the heap.
 
 #### Datatypes
-The following are the 3 of the primitive types:
-- char  (char)
-- int   (int64_t)
+The following 5 arr the primitive types:
+- bool
+- char
+- int (int64_t)
 - float (float64_t)
+- string
 
-#### Unsafe types (might be added)
-The following are the rest primitive types:
-- pointers
-  - charp
-  - intp
-  - floatp
+#### Strings
+The current form of strings are purely immutable and useless.
+One may use template strings for some string functionality.
 
-#### Currently primitive
-**`str (i.e. const char*)`**: will be replaced by the str class when that is introduced.
-When that happens, it should no longer be considered a primitive type.
-
-#### OOP to be added
-- Class str will replace str
+#### OOP (if added)
+- Class string will replace primitive string type
 - Class array will be added for arrays
-- Basic data structure classes will be added
+- Basic data structure classes may be added
 
 Objects will always be passed as reference and ref counted.
-
-#### Agenda
-1. WAP that supports some basic functions and evaluates an expression
-2. Implement assignment to variables
-3. Develop a syntax to create functions
-4. Develop syntax for loops and conditions
-5. Develop an interface with libc
-6. Develop modules system
-7. Introduce magic functions
-8. Add whatever the f*ck you want

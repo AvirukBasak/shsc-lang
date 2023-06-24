@@ -200,6 +200,7 @@ FILE *yyin = NULL;
 
 input:
     "module" identifier "\n" program { AST_module_add($2, $4); }
+    program { AST_module_add(AST_identifier("main"), $4); }
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
