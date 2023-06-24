@@ -96,6 +96,7 @@ FILE *yyin = NULL;
 %token         LEXTOK_KWD_FOR                  "for"
 %token         LEXTOK_KWD_FROM                 "from"
 %token         LEXTOK_KWD_TO                   "to"
+%token         LEXTOK_KWD_BY                   "by"
 %token         LEXTOK_KWD_DO                   "do"
 %token         LEXTOK_KWD_VAR                  "var"
 %token         LEXTOK_KWD_PASS                 "pass"

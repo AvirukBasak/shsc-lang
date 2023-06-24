@@ -76,6 +76,7 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_TILDE:                 return "LEXTOK_TILDE";
         case LEXTOK_NEWLINE:               return "LEXTOK_NEWLINE";
         // keywords
+        case LEXTOK_KWD_MODULE:            return "LEXTOK_KWD_MODULE";
         case LEXTOK_KWD_PROC:              return "LEXTOK_KWD_PROC";
         case LEXTOK_KWD_START:             return "LEXTOK_KWD_START";
         case LEXTOK_KWD_END:               return "LEXTOK_KWD_END";
@@ -88,6 +89,7 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_KWD_FOR:               return "LEXTOK_KWD_FOR";
         case LEXTOK_KWD_FROM:              return "LEXTOK_KWD_FROM";
         case LEXTOK_KWD_TO:                return "LEXTOK_KWD_TO";
+        case LEXTOK_KWD_BY:                return "LEXTOK_KWD_BY";
         case LEXTOK_KWD_DO:                return "LEXTOK_KWD_DO";
         case LEXTOK_KWD_VAR:               return "LEXTOK_KWD_VAR";
         case LEXTOK_KWD_PASS:              return "LEXTOK_KWD_PASS";
@@ -186,6 +188,7 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_TILDE:                 return "~";
         case LEXTOK_NEWLINE:               return "\n";
         // keywords
+        case LEXTOK_KWD_MODULE:            return "module";
         case LEXTOK_KWD_PROC:              return "proc";
         case LEXTOK_KWD_START:             return "start";
         case LEXTOK_KWD_END:               return "end";
@@ -198,6 +201,7 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_KWD_FOR:               return "for";
         case LEXTOK_KWD_FROM:              return "from";
         case LEXTOK_KWD_TO:                return "to";
+        case LEXTOK_KWD_BY:                return "by";
         case LEXTOK_KWD_DO:                return "do";
         case LEXTOK_KWD_VAR:               return "var";
         case LEXTOK_KWD_PASS:              return "pass";
