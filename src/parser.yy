@@ -281,18 +281,18 @@ operand:
     ;
 
 literal:
-    LEXTOK_BOOL_LITERAL         { $$ = AST_literal_bul($1); }
-    LEXTOK_CHAR_LITERAL         { $$ = AST_literal_chr($1); }
-    LEXTOK_BINFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    LEXTOK_OCTFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    LEXTOK_DECFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    LEXTOK_HEXFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    LEXTOK_BININT_LITERAL       { $$ = AST_literal_i64($1); }
-    LEXTOK_OCTINT_LITERAL       { $$ = AST_literal_i64($1); }
-    LEXTOK_DECINT_LITERAL       { $$ = AST_literal_i64($1); }
-    LEXTOK_HEXINT_LITERAL       { $$ = AST_literal_i64($1); }
-    LEXTOK_STR_LITERAL          { $$ = AST_literal_str($1); }
-    LEXTOK_INTERP_STR_LITERAL   { $$ = AST_literal_str($1); }
+    LEXTOK_BOOL_LITERAL           { $$ = AST_literal_bul($1); }
+    | LEXTOK_CHAR_LITERAL         { $$ = AST_literal_chr($1); }
+    | LEXTOK_BINFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
+    | LEXTOK_OCTFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
+    | LEXTOK_DECFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
+    | LEXTOK_HEXFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
+    | LEXTOK_BININT_LITERAL       { $$ = AST_literal_i64($1); }
+    | LEXTOK_OCTINT_LITERAL       { $$ = AST_literal_i64($1); }
+    | LEXTOK_DECINT_LITERAL       { $$ = AST_literal_i64($1); }
+    | LEXTOK_HEXINT_LITERAL       { $$ = AST_literal_i64($1); }
+    | LEXTOK_STR_LITERAL          { $$ = AST_literal_str($1); }
+    | LEXTOK_INTERP_STR_LITERAL   { $$ = AST_literal_interp_str($1); }
     ;
 
 identifier:
