@@ -261,7 +261,8 @@ while_block:
     ;
 
 for_block:
-    "for" identifier "from" operand "to" operand "do" statements "end" { $$ = AST_for_block($2, $4, $6, $8); }
+    "for" identifier "from" operand "to" operand "do" statements "end" { $$ = AST_for_block($2, $4, $6, NULL, $8); }
+    | "for" identifier "from" operand "to" operand "by" operand "do" statements "end" { $$ = AST_for_block($2, $4, $6, $8, $10); }
     ;
 
 block:
