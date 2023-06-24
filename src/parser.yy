@@ -202,9 +202,8 @@ input:
     "module" identifier "\n" program { AST_module_add($2, $4); }
     ;
 
-/* A program is a single procedure or multiple procedures */
+/* A program is empty or a single procedure or multiple procedures */
 program:
-    procedure { $$ = AST_program($1, NULL); }
     | procedure "\n" { $$ = AST_program($1, NULL); }
     | procedure "\n" program { $$ = AST_program($1, $2); }
     ;
