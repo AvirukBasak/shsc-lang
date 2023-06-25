@@ -54,42 +54,8 @@ postfix_expression:
     ;
 
 primary_expression:
-    identifier
-    | constant
+    operand
     | "(" expression ")"
-    ;
-
-constant:
-    integer_constant
-    | floating_constant
-    | character_constant
-    | string_literal
-    ;
-
-integer_constant:
-    LEXTOK_DECINT_LITERAL
-    | LEXTOK_HEXINT_LITERAL
-    | LEXTOK_OCTINT_LITERAL
-    | LEXTOK_BININT_LITERAL
-    ;
-
-floating_constant:
-    LEXTOK_BINFLOAT_LITERAL
-    | LEXTOK_OCTFLOAT_LITERAL
-    | LEXTOK_DECFLOAT_LITERAL
-    | LEXTOK_HEXFLOAT_LITERAL
-    ;
-
-character_constant:
-    LEXTOK_CHAR_LITERAL
-    ;
-
-string_literal:
-    LEXTOK_STR_LITERAL
-    ;
-
-identifier:
-    LEXTOK_IDENTIFIER
     ;
 
 argument_expression_list:

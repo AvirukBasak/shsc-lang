@@ -199,35 +199,34 @@ FILE *yyin = NULL;
 %%
 
 input:
-    "module" identifier "\n" program { AST_module_add($2, $4); }
     program { AST_module_add(AST_identifier("main"), $4); }
+    | "module" identifier "\n" program { AST_module_add($2, $4); }
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
 program:
-    | procedure "\n" { $$ = AST_program($1, NULL); }
-    | procedure "\n" program { $$ = AST_program($1, $2); }
+    | procedure { $$ = AST_program($1, NULL); }
+    | program "\n" procedure { $$ = AST_program($1, $2); }
     ;
 
 procedure:
-    "proc" LEXTOK_IDENTIFIER "start" "\n" statements "end" { $$ = AST_procedure($2, $5); }
+    | "proc" identifier "start" "\n" statements "end" { $$ = AST_procedure($2, $5); }
     ;
 
 statements:
-    statement { $$ = AST_statements($1, NULL); }
-    | statement statements { $$ = AST_statements($1, $2); }
+    | statement { $$ = AST_statements($1, NULL); }
+    | statements "\n" statement { $$ = AST_statements($1, $2); }
     ;
 
 statement:
-    "\n" { $$ = AST_statement_empty(); }
-    | "pass" "\n" { $$ = AST_statement_empty(); }
-    | assignment "\n" { $$ = AST_statement_assignment($1); }
-    | compound_statement "\n" { $$ = AST_statement_compound($1); }
+    | "pass" { $$ = AST_statement_empty(); }
+    | assignment { $$ = AST_statement_assignment($1); }
+    | compound_statement { $$ = AST_statement_compound($1); }
     ;
 
 assignment:
-    "var" LEXTOK_IDENTIFIER "=" expression { $$ = AST_assignment_create($2, $4); }  /* shadow or create new var */
-    | LEXTOK_IDENTIFIER "=" expression { $$ = AST_assignment_update($2, $4); }      /* access existing var */
+    "var" identifier "=" expression { $$ = AST_assignment_create($2, $4); }  /* shadow or create new var */
+    | identifier "=" expression { $$ = AST_assignment_update($2, $4); }      /* access existing var */
     | expression { $$ = AST_assignment_tovoid($1); }                                /* assignment to void */
     ;
 

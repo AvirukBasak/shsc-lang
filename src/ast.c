@@ -9,11 +9,11 @@ AST_Root *AST_module(AST_Identifier *module_name, AST_Program *program)
     return root;
 }
 
-AST_Program *AST_program(AST_Procedure *procedure, AST_Program *program)
+AST_Program *AST_program(AST_Program *program, AST_Procedure *procedure)
 {
     AST_Program *prog = (AST_Program*) malloc(sizeof(AST_Program));
-    prog->procedure = procedure;
     prog->program = program;
+    prog->procedure = procedure;
     return prog;
 }
 
@@ -25,11 +25,11 @@ AST_Procedure *AST_procedure(AST_Identifier *name, AST_Statements *statements)
     return proc;
 }
 
-AST_Statements *AST_statements(AST_Statement *statement, AST_Statements *statements)
+AST_Statements *AST_statements(AST_Statements *statements, AST_Statement *statement)
 {
     AST_Statements *stmts = (AST_Statements*) malloc(sizeof(AST_Statements));
-    stmts->statement = statement;
     stmts->statements = statements;
+    stmts->statement = statement;
     return stmts;
 }
 

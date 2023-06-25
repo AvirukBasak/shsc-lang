@@ -30,8 +30,8 @@ struct AST_Root {
 };
 
 struct AST_Program {
-    AST_Procedure *procedure;
     AST_Program *program;
+    AST_Procedure *procedure;
 };
 
 struct AST_Procedure {
@@ -40,8 +40,8 @@ struct AST_Procedure {
 };
 
 struct AST_Statements {
-    AST_Statement *statement;
     AST_Statements *statements;
+    AST_Statement *statement;
 };
 
 enum StatementType {
@@ -190,9 +190,9 @@ struct AST_Identifier {
 #define ASTFUNCTIONS_H
 
 AST_Root              *AST_module_add(AST_Identifier *module_name, AST_Program *program);
-AST_Program           *AST_program(AST_Procedure *procedure, AST_Program *program);
+AST_Program           *AST_program(AST_Program *program, AST_Procedure *procedure);
 AST_Procedure         *AST_procedure(AST_Identifier *name, AST_Statements *statements);
-AST_Statements        *AST_statements(AST_Statement *statement, AST_Statements *statements;);
+AST_Statements        *AST_statements(AST_Statements *statements, AST_Statement *statement);
 AST_Statement         *AST_statement_empty(void);
 AST_Statement         *AST_statement_assignment(AST_Assignment *assignment);
 AST_Statement         *AST_statement_compound(AST_CompoundStatement *compund);
