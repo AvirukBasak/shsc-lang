@@ -1,7 +1,15 @@
-// this is a place to start
-
 expression:
+    assignment_expression
+    ;
+
+assignment_expression:
+    conditional_expression
+    | postfix_expression "=" assignment_expression
+    ;
+
+conditional_expression:
     logical_or_expression
+    | logical_or_expression "?" expression ":" conditional_expression
     ;
 
 logical_or_expression:
@@ -10,8 +18,23 @@ logical_or_expression:
     ;
 
 logical_and_expression:
+    bitwise_or_expression
+    | logical_and_expression "&&" bitwise_or_expression %left
+    ;
+
+bitwise_or_expression:
+    bitwise_xor_expression
+    | bitwise_or_expression "|" bitwise_xor_expression %left
+    ;
+
+bitwise_xor_expression:
+    bitwise_and_expression
+    | bitwise_xor_expression "^" bitwise_and_expression %left
+    ;
+
+bitwise_and_expression:
     equality_expression
-    | logical_and_expression "&&" equality_expression %left
+    | bitwise_and_expression "&" equality_expression %left
     ;
 
 equality_expression:
@@ -21,11 +44,18 @@ equality_expression:
     ;
 
 relational_expression:
+    shift_expression
+    | relational_expression "<" shift_expression %left
+    | relational_expression ">" shift_expression %left
+    | relational_expression "<=" shift_expression %left
+    | relational_expression ">=" shift_expression %left
+    ;
+
+shift_expression:
     additive_expression
-    | relational_expression "<" additive_expression %left
-    | relational_expression ">" additive_expression %left
-    | relational_expression "<=" additive_expression %left
-    | relational_expression ">=" additive_expression %left
+    | shift_expression ">>>" additive_expression %left
+    | shift_expression "<<" additive_expression %left
+    | shift_expression ">>" additive_expression %left
     ;
 
 additive_expression:
@@ -39,18 +69,25 @@ multiplicative_expression:
     | multiplicative_expression "*" unary_expression %left
     | multiplicative_expression "/" unary_expression %left
     | multiplicative_expression "%" unary_expression %left
+    | multiplicative_expression "**" unary_expression %right
+    | multiplicative_expression "//" unary_expression %left
     ;
 
 unary_expression:
     postfix_expression
     | "-" unary_expression %right
     | "!" unary_expression %right
+    | "~" unary_expression %right
+    | "++" unary_expression
+    | "--" unary_expression
     ;
 
 postfix_expression:
     primary_expression
     | postfix_expression "(" argument_expression_list ")" %left
     | postfix_expression "[" expression "]" %left
+    | postfix_expression "++"
+    | postfix_expression "--"
     ;
 
 primary_expression:
