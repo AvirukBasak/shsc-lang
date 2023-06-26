@@ -226,8 +226,8 @@ statement:
 
 assignment:
     "var" identifier "=" expression { $$ = AST_assignment_create($2, $4); }  /* shadow or create new var */
-    | identifier "=" expression { $$ = AST_assignment_update($2, $4); }      /* access existing var */
-    | expression { $$ = AST_assignment_tovoid($1); }                                /* assignment to void */
+    /* | identifier "=" expression { $$ = AST_assignment_update($2, $4); }   // access existing var */
+    | expression { $$ = AST_assignment_tovoid($1); }                         /* assignment to void */
     ;
 
 compound_statement:
@@ -270,7 +270,7 @@ block:
     ;
 
 condition:
-    expression { $$ = AST_condition($1); }
+    conditional_expression { $$ = AST_condition($1); }
     ;
 
 expression: operand;

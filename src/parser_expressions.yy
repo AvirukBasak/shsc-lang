@@ -4,12 +4,26 @@ expression:
 
 assignment_expression:
     conditional_expression
-    | postfix_expression "=" assignment_expression
+    | reference_list "||=" assignment_expression
+    | reference_list "&&=" assignment_expression
+    | reference_list "|=" assignment_expression
+    | reference_list "^=" assignment_expression
+    | reference_list "&=" assignment_expression
+    | reference_list ">>>=" assignment_expression
+    | reference_list "<<=" assignment_expression
+    | reference_list ">>=" assignment_expression
+    | reference_list "+=" assignment_expression
+    | reference_list "-=" assignment_expression
+    | reference_list "*=" assignment_expression
+    | reference_list "/=" assignment_expression
+    | reference_list "%=" assignment_expression
+    | reference_list "**=" assignment_expression
+    | reference_list "//=" assignment_expression
     ;
 
 conditional_expression:
     logical_or_expression
-    | logical_or_expression "?" expression ":" conditional_expression
+    | expression "if" logical_or_expression "else" conditional_expression
     ;
 
 logical_or_expression:
@@ -74,12 +88,19 @@ multiplicative_expression:
     ;
 
 unary_expression:
-    postfix_expression
+    reference_list
     | "-" unary_expression %right
     | "!" unary_expression %right
     | "~" unary_expression %right
     | "++" unary_expression
     | "--" unary_expression
+    ;
+
+reference_list:
+    postfix_expression
+    | postfix_expression "." reference_list %left
+    | postfix_expression "::" reference_list %left
+    | postfix_expression "->" reference_list %left
     ;
 
 postfix_expression:
