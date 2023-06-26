@@ -88,19 +88,14 @@ multiplicative_expression:
     ;
 
 unary_expression:
-    reference_list
+    postfix_expression
     | "-" unary_expression %right
     | "!" unary_expression %right
     | "~" unary_expression %right
     | "++" unary_expression
     | "--" unary_expression
-    ;
-
-reference_list:
-    postfix_expression
-    | postfix_expression "." reference_list %left
-    | postfix_expression "::" reference_list %left
-    | postfix_expression "->" reference_list %left
+    /* | "sizeof" unary_expression */
+    /* | "sizeof" "(" type_name ")" */
     ;
 
 postfix_expression:
@@ -109,6 +104,9 @@ postfix_expression:
     | postfix_expression "[" expression "]" %left
     | postfix_expression "++"
     | postfix_expression "--"
+    | postfix_expression "." identifier
+    | postfix_expression "::" identifier
+    | postfix_expression "->" identifier
     ;
 
 primary_expression:
