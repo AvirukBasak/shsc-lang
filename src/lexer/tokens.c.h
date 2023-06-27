@@ -86,6 +86,9 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_KWD_ELIF:              return "LEXTOK_KWD_ELIF";
         case LEXTOK_KWD_ELSE:              return "LEXTOK_KWD_ELSE";
         case LEXTOK_KWD_WHILE:             return "LEXTOK_KWD_WHILE";
+        case LEXTOK_KWD_BREAK:             return "LEXTOK_KWD_BREAK";
+        case LEXTOK_KWD_CONTINUE:          return "LEXTOK_KWD_CONTINUE";
+        case LEXTOK_KWD_RETURN:            return "LEXTOK_KWD_RETURN";
         case LEXTOK_KWD_FOR:               return "LEXTOK_KWD_FOR";
         case LEXTOK_KWD_FROM:              return "LEXTOK_KWD_FROM";
         case LEXTOK_KWD_TO:                return "LEXTOK_KWD_TO";
@@ -198,6 +201,9 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_KWD_ELIF:              return "elif";
         case LEXTOK_KWD_ELSE:              return "else";
         case LEXTOK_KWD_WHILE:             return "while";
+        case LEXTOK_KWD_BREAK:             return "break";
+        case LEXTOK_KWD_CONTINUE:          return "continue";
+        case LEXTOK_KWD_RETURN:            return "return";
         case LEXTOK_KWD_FOR:               return "for";
         case LEXTOK_KWD_FROM:              return "from";
         case LEXTOK_KWD_TO:                return "to";

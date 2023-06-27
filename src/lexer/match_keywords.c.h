@@ -27,6 +27,9 @@ LexToken lex_match_keywords(FILE *f, char ch)
     if (!strcmp(lex_get_buffstr(), "elif"))      return LEXTOK_KWD_ELIF;
     if (!strcmp(lex_get_buffstr(), "else"))      return LEXTOK_KWD_ELSE;
     if (!strcmp(lex_get_buffstr(), "while"))     return LEXTOK_KWD_WHILE;
+    if (!strcmp(lex_get_buffstr(), "break"))     return LEXTOK_KWD_BREAK;
+    if (!strcmp(lex_get_buffstr(), "continue"))  return LEXTOK_KWD_CONTINUE;
+    if (!strcmp(lex_get_buffstr(), "return"))    return LEXTOK_KWD_RETURN;
     if (!strcmp(lex_get_buffstr(), "for"))       return LEXTOK_KWD_FOR;
     if (!strcmp(lex_get_buffstr(), "from"))      return LEXTOK_KWD_FROM;
     if (!strcmp(lex_get_buffstr(), "to"))        return LEXTOK_KWD_TO;
