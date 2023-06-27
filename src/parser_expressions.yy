@@ -95,8 +95,6 @@ unary_expression:
     | "~" unary_expression %right
     | "++" unary_expression
     | "--" unary_expression
-    /* | "sizeof" unary_expression */
-    /* | "sizeof" "(" type_name ")" */
     ;
 
 postfix_expression:
