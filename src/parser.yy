@@ -140,8 +140,6 @@ FILE *yyin = NULL;
     char    *identifier_name;
 
     /* ast nodes */
-    AST_Program             *astnode_program,              /* program */
-    AST_Procedure           *astnode_procedure,            /* procedure */
     AST_Statements          *astnode_statements,           /* statements */
     AST_Statement           *astnode_statement,            /* statement */
     AST_Assignment          *astnode_assignment,           /* assignment */
@@ -162,8 +160,6 @@ FILE *yyin = NULL;
 
 
 /* semantic types of each parser rule */
-%type <astnode_program>               program
-%type <astnode_procedure>             procedure
 %type <astnode_statements>            statements
 %type <astnode_statement>             statement
 %type <astnode_assignment>            assignment
@@ -182,35 +178,27 @@ FILE *yyin = NULL;
 %type <astnode_identifier>            identifier
 
 
-/* associativity: logical operators */
-%left LEXTOK_LOGICAL_OR
-%left LEXTOK_LOGICAL_AND
-%nonassoc LEXTOK_BANG
-%nonassoc LEXTOK_LOGICAL_EQUAL
-%nonassoc LEXTOK_LOGICAL_UNEQUAL
-%nonassoc LEXTOK_LOGICAL_IDENTICAL
-%nonassoc LEXTOK_LOGICAL_UNIDENTICAL
-
-
 /* parser entry point? */
-%start input
+%start module
 
 
 %%
 
-input:
-    program { AST_module_add(AST_identifier("main"), $4); }
-    | "module" identifier "\n" program { AST_module_add($2, $4); }
+/* Push module name to a stack */
+module:
+    program { AST_module_stack_push(AST_identifier("main")); }
+    | "module" identifier "\n" program { AST_module_stack_push($2); }
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
 program:
-    | procedure { $$ = AST_program($1, NULL); }
-    | program "\n" procedure { $$ = AST_program($1, $2); }
+    | procedure
+    | program "\n" procedure
     ;
 
+/* Map each module name to a map of procedures */
 procedure:
-    | "proc" identifier "start" "\n" statements "end" { $$ = AST_procedure($2, $5); }
+    | "proc" identifier "start" "\n" statements "end" { AST_procedure_add(AST_module_stack_top(), $2, $5); }
     ;
 
 statements:

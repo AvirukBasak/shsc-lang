@@ -4,9 +4,6 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-typedef struct AST_Root                AST_Root;
-typedef struct AST_Program             AST_Program;
-typedef struct AST_Procedure           AST_Procedure;
 typedef struct AST_Statements          AST_Statements;
 typedef struct AST_Statement           AST_Statement;
 typedef struct AST_Assignment          AST_Assignment;
@@ -24,19 +21,8 @@ typedef struct AST_Operand             AST_Operand;
 typedef struct AST_Literal             AST_Literal;
 typedef struct AST_Identifier          AST_Identifier;
 
-/** A hash map of module names mapping to their programs */
 struct AST_Root {
-    // TODO: A hash map of module names mapping to their programs
-};
-
-struct AST_Program {
-    AST_Program *program;
-    AST_Procedure *procedure;
-};
-
-struct AST_Procedure {
-    AST_Identifier *procedure_name;
-    AST_Statements *statements;
+    // TODO: 2D Hash map mapping module names & procedure names to (AST_Statements*)
 };
 
 struct AST_Statements {
@@ -189,9 +175,15 @@ struct AST_Identifier {
 #ifndef ASTFUNCTIONS_H
 #define ASTFUNCTIONS_H
 
-AST_Root              *AST_module_add(AST_Identifier *module_name, AST_Program *program);
-AST_Program           *AST_program(AST_Program *program, AST_Procedure *procedure);
-AST_Procedure         *AST_procedure(AST_Identifier *name, AST_Statements *statements);
+/* Modules stack, top stores name of currently parsing module (file) */
+void AST_module_stack_push(AST_Identifier *module_name);
+AST_Identifier *AST_module_stack_top(void);
+AST_Identifier *AST_module_stack_pop(void);
+void AST_module_stack_clear(void);
+
+/** Adds currently parsing procedure to currently parsing module (map data structure) */
+void AST_procedure_add(AST_Identifier *module_name, AST_Identifier *procedure_name, AST_Statements *statements);
+
 AST_Statements        *AST_statements(AST_Statements *statements, AST_Statement *statement);
 AST_Statement         *AST_statement_empty(void);
 AST_Statement         *AST_statement_assignment(AST_Assignment *assignment);

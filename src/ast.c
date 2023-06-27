@@ -2,27 +2,29 @@
 
 #include "ast.h"
 
-AST_Root *AST_module(AST_Identifier *module_name, AST_Program *program)
+void AST_module_stack_push(AST_Identifier *module_name)
 {
-    AST_Root *root = (AST_Root*) malloc(sizeof(AST_Root));
-    // implementation of root
-    return root;
+    // TODO: add implementation
 }
 
-AST_Program *AST_program(AST_Program *program, AST_Procedure *procedure)
+AST_Identifier *AST_module_stack_top(void)
 {
-    AST_Program *prog = (AST_Program*) malloc(sizeof(AST_Program));
-    prog->program = program;
-    prog->procedure = procedure;
-    return prog;
+    // TODO: add implementation
 }
 
-AST_Procedure *AST_procedure(AST_Identifier *name, AST_Statements *statements)
+AST_Identifier *AST_module_stack_pop(void)
 {
-    AST_Procedure *proc = (AST_Procedure*) malloc(sizeof(AST_Procedure));
-    proc->procedure_name = name;
-    proc->statements = statements;
-    return proc;
+    // TODO: add implementation
+}
+
+void AST_module_stack_clear(void)
+{
+    // TODO: add implementation
+}
+
+void AST_procedure_add(AST_Identifier *module_name, AST_Identifier *procedure_name, AST_Statements *statements)
+{
+    // TODO: add implementation
 }
 
 AST_Statements *AST_statements(AST_Statements *statements, AST_Statement *statement)
@@ -192,9 +194,7 @@ AST_Block *AST_block(AST_Statements *statements)
 
 AST_Condition *AST_condition(AST_Expression *expression)
 {
-    AST_Condition *condition = (AST_Condition*) malloc(sizeof(AST_Condition));
-    condition->expression = expression;
-    return condition;
+    // TODO: add implementation
 }
 
 AST_Operand *AST_operand_literal(AST_Literal *literal)

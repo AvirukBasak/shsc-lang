@@ -4,21 +4,22 @@ expression:
 
 assignment_expression:
     conditional_expression
-    | reference_list "||=" assignment_expression
-    | reference_list "&&=" assignment_expression
-    | reference_list "|=" assignment_expression
-    | reference_list "^=" assignment_expression
-    | reference_list "&=" assignment_expression
-    | reference_list ">>>=" assignment_expression
-    | reference_list "<<=" assignment_expression
-    | reference_list ">>=" assignment_expression
-    | reference_list "+=" assignment_expression
-    | reference_list "-=" assignment_expression
-    | reference_list "*=" assignment_expression
-    | reference_list "/=" assignment_expression
-    | reference_list "%=" assignment_expression
-    | reference_list "**=" assignment_expression
-    | reference_list "//=" assignment_expression
+    | postfix_expression "=" assignment_expression
+    | postfix_expression "||=" assignment_expression
+    | postfix_expression "&&=" assignment_expression
+    | postfix_expression "|=" assignment_expression
+    | postfix_expression "^=" assignment_expression
+    | postfix_expression "&=" assignment_expression
+    | postfix_expression ">>>=" assignment_expression
+    | postfix_expression "<<=" assignment_expression
+    | postfix_expression ">>=" assignment_expression
+    | postfix_expression "+=" assignment_expression
+    | postfix_expression "-=" assignment_expression
+    | postfix_expression "*=" assignment_expression
+    | postfix_expression "/=" assignment_expression
+    | postfix_expression "%=" assignment_expression
+    | postfix_expression "**=" assignment_expression
+    | postfix_expression "//=" assignment_expression
     ;
 
 conditional_expression:
@@ -100,13 +101,12 @@ unary_expression:
 
 postfix_expression:
     primary_expression
-    | postfix_expression "(" argument_expression_list ")" %left
+    | postfix_expression "(" arguments_list ")" %left
     | postfix_expression "[" expression "]" %left
     | postfix_expression "++"
     | postfix_expression "--"
-    | postfix_expression "." identifier
-    | postfix_expression "::" identifier
-    | postfix_expression "->" identifier
+    | postfix_expression "." identifier %left
+    | postfix_expression "::" identifier %left
     ;
 
 primary_expression:
@@ -114,7 +114,7 @@ primary_expression:
     | "(" expression ")"
     ;
 
-argument_expression_list:
+arguments_list:
     expression
-    | argument_expression_list "," expression
+    | arguments_list "," expression
     ;
