@@ -21,10 +21,6 @@ typedef struct AST_Operand_t        AST_Operand_t;
 typedef struct AST_Literal_t        AST_Literal_t;
 typedef struct AST_Identifier_t     AST_Identifier_t;
 
-struct AST_Root_t {
-    // TODO: 2D Hash map mapping module names & procedure names to (AST_Statements_t*)
-};
-
 struct AST_Statements_t {
     AST_Statements_t *statements;
     AST_Statement_t *statement;
