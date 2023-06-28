@@ -143,22 +143,22 @@ FILE *yyin = NULL;
     char    *identifier_name;
 
     /* ast nodes */
-    AST_Statements          *astnode_statements,           /* statements */
-    AST_Statement           *astnode_statement,            /* statement */
-    AST_Assignment          *astnode_assignment,           /* assignment */
-    AST_CompoundStatement   *astnode_compound_statement,   /* compound_statement */
-    AST_IfBlock             *astnode_if_block,             /* if_block */
-    AST_IfElseBlock         *astnode_if_else_block,        /* if_else_block */
-    AST_IfElseIfBlock       *astnode_if_else_if_block,     /* if_else_if_block */
-    AST_ElseIfBlock         *astnode_else_if_block,        /* else_if_block */
-    AST_WhileBlock          *astnode_while_block,          /* while_block */
-    AST_ForBlock            *astnode_for_block,            /* for_block */
-    AST_Block               *astnode_block,                /* block */
-    AST_Condition           *astnode_condition,            /* condition */
-    AST_Expression          *astnode_expression,           /* expression */
-    AST_Operand             *astnode_operand,              /* operand */
-    AST_Literal             *astnode_literal,              /* literal */
-    AST_Identifier          *astnode_identifier            /* identifier */
+    AST_Statements_t    *astnode_statements,           /* statements */
+    AST_Statement_t     *astnode_statement,            /* statement */
+    AST_Assignment_t    *astnode_assignment,           /* assignment */
+    AST_CompoundSt_t    *astnode_compound_statement,   /* compound_statement */
+    AST_IfBlock_t       *astnode_if_block,             /* if_block */
+    AST_IfElseBlock_t   *astnode_if_else_block,        /* if_else_block */
+    AST_IfElseIfBlock_t *astnode_if_else_if_block,     /* if_else_if_block */
+    AST_ElseIfBlock_t   *astnode_else_if_block,        /* else_if_block */
+    AST_WhileBlock_t    *astnode_while_block,          /* while_block */
+    AST_ForBlock_t      *astnode_for_block,            /* for_block */
+    AST_Block_t         *astnode_block,                /* block */
+    AST_Condition_t     *astnode_condition,            /* condition */
+    AST_Expression_t    *astnode_expression,           /* expression */
+    AST_Operand_t       *astnode_operand,              /* operand */
+    AST_Literal_t       *astnode_literal,              /* literal */
+    AST_Identifier_t    *astnode_identifier            /* identifier */
 }
 
 
@@ -189,105 +189,104 @@ FILE *yyin = NULL;
 
 /* Push module name to a stack */
 module:
-    program { AST_module_stack_push(AST_identifier("main")); }
-    | "module" identifier "\n" program { AST_module_stack_push($2); }
+    { AST_ModuleStack_push(AST_Identifier("main")); } program
+    | "module" identifier "\n" { AST_ModuleStack_push($2); } program
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
 program:
-    | procedure
-    | program "\n" procedure
+    procedure
+    | program procedure
     ;
 
 /* Map each module name to a map of procedures */
 procedure:
-    | "proc" identifier "start" "\n" statements "end" { AST_procedure_add(AST_module_stack_top(), $2, $5); }
+    | "proc" identifier "start" "\n" statements "end" "\n" { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5); }
     ;
 
 statements:
-    | statement { $$ = AST_statements($1, NULL); }
-    | statements "\n" statement { $$ = AST_statements($1, $2); }
+    statement                    { $$ = AST_Statements($1, NULL); }
+    | statements statement %left { $$ = AST_Statements($1, $2);   }
     ;
 
-statement:
-    | "pass" { $$ = AST_statement_empty(); }
-    | assignment { $$ = AST_statement_assignment($1); }
-    | compound_statement { $$ = AST_statement_compound($1); }
+statement:                    { $$ = NULL;                         }
+    | "pass" "\n"             { $$ = AST_Statement_empty();        }
+    | assignment "\n"         { $$ = AST_Statement_Assignment($1); }
+    | compound_statement "\n" { $$ = AST_Statement_CompoundSt($1); }
     ;
 
 assignment:
-    "var" identifier "=" expression { $$ = AST_assignment_create($2, $4); }  /* shadow or create new var */
-    /* | identifier "=" expression { $$ = AST_assignment_update($2, $4); }   // access existing var */
-    | expression { $$ = AST_assignment_tovoid($1); }                         /* assignment to void */
+    "var" identifier "=" expression { $$ = AST_Assignment_create($2, $4); }   /* shadow or create new var */
+    | expression                    { $$ = AST_Assignment_tovoid($1);     }   /* assignment to void */
     ;
 
 compound_statement:
-    if_block { $$ = AST_compoundst_if_block($1); }
-    | if_else_block { $$ = AST_compoundst_if_else_block($1); }
-    | if_else_if_block { $$ = AST_compoundst_if_else_if_block($1); }
-    | while_block { $$ = AST_compoundst_while_block($1); }
-    | for_block { $$ = AST_compoundst_for_block($1); }
-    | block { $$ = AST_compoundst_block($1); }
+    if_block           { $$ = AST_CompoundSt_IfBlock($1);       }
+    | if_else_block    { $$ = AST_CompoundSt_IfElseBlock($1);   }
+    | if_else_if_block { $$ = AST_CompoundSt_IfElseIfBlock($1); }
+    | while_block      { $$ = AST_CompoundSt_WhileBlock($1);    }
+    | for_block        { $$ = AST_CompoundSt_ForBlock($1);      }
+    | block            { $$ = AST_CompoundSt_Block($1);         }
     ;
 
 if_block:
-    "if" condition "then" "\n" statements "end" { $$ = AST_if_block($2, $5); }
+    "if" condition "then" "\n" statements "end" { $$ = AST_IfBlock($2, $5); }
     ;
 
 if_else_block:
-    "if" condition "then" "\n" statements "else" statements "end" { $$ = AST_if_else_block($2, $5, $7); }
+    "if" condition "then" "\n" statements "else" statements "end" { $$ = AST_IfElseBlock($2, $5, $7); }
     ;
 
 if_else_if_block:
-    "if" condition "then" "\n" statements else_if_block { $$ = AST_if_else_if_block($2, $5, $6); }
+    "if" condition "then" "\n" statements else_if_block { $$ = AST_IfElseIfBlock($2, $5, $6); }
     ;
 
 else_if_block:
-    "else" if_else_if_block { $$ = AST_else_if_block($2); }
-    | "end" { $$ = AST_else_if_block(NULL); }
+    "else" if_else_if_block { $$ = AST_ElseIfBlock($2); }
+    | "end"                 { $$ = NULL;                }
     ;
 
 while_block:
-    "while" condition "do" "\n" statements "end" { $$ = AST_while_block($2, $5); }
+    "while" condition "do" "\n" statements "end" { $$ = AST_WhileBlock($2, $5); }
     ;
 
 for_block:
-    "for" identifier "from" operand "to" operand "do" statements "end" { $$ = AST_for_block($2, $4, $6, NULL, $8); }
-    | "for" identifier "from" operand "to" operand "by" operand "do" statements "end" { $$ = AST_for_block($2, $4, $6, $8, $10); }
+    "for" identifier "from" operand "to" operand "do" statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $8); }
+    | "for" identifier "from" operand "to" operand "by" operand "do" statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $10);  }
     ;
 
 block:
-    "block" statements "end" { $$ = AST_block($2); }
+    "block" statements "end" { $$ = AST_Block($2); }
     ;
 
 condition:
-    conditional_expression { $$ = AST_condition($1); }
+    conditional_expression { $$ = AST_Condition($1); }
     ;
 
 expression: operand;
 
 operand:
-    literal { $$ = AST_operand_literal($1); }
-    | identifier { $$ = AST_operand_identifier($1); }
+    literal      { $$ = AST_Operand_Literal($1);    }
+    | identifier { $$ = AST_Operand_Identifier($1); }
     ;
 
 literal:
-    LEXTOK_BOOL_LITERAL           { $$ = AST_literal_bul($1); }
-    | LEXTOK_CHAR_LITERAL         { $$ = AST_literal_chr($1); }
-    | LEXTOK_BINFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    | LEXTOK_OCTFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    | LEXTOK_DECFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    | LEXTOK_HEXFLOAT_LITERAL     { $$ = AST_literal_f64($1); }
-    | LEXTOK_BININT_LITERAL       { $$ = AST_literal_i64($1); }
-    | LEXTOK_OCTINT_LITERAL       { $$ = AST_literal_i64($1); }
-    | LEXTOK_DECINT_LITERAL       { $$ = AST_literal_i64($1); }
-    | LEXTOK_HEXINT_LITERAL       { $$ = AST_literal_i64($1); }
-    | LEXTOK_STR_LITERAL          { $$ = AST_literal_str($1); }
-    | LEXTOK_INTERP_STR_LITERAL   { $$ = AST_literal_interp_str($1); }
+    LEXTOK_BOOL_LITERAL           { $$ = AST_Literal_bul($1); }
+    | LEXTOK_CHAR_LITERAL         { $$ = AST_Literal_chr($1); }
+    | LEXTOK_BINFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
+    | LEXTOK_OCTFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
+    | LEXTOK_DECFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
+    | LEXTOK_HEXFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
+    | LEXTOK_BININT_LITERAL       { $$ = AST_Literal_i64($1); }
+    | LEXTOK_OCTINT_LITERAL       { $$ = AST_Literal_i64($1); }
+    | LEXTOK_DECINT_LITERAL       { $$ = AST_Literal_i64($1); }
+    | LEXTOK_HEXINT_LITERAL       { $$ = AST_Literal_i64($1); }
+    | LEXTOK_STR_LITERAL          { $$ = AST_Literal_str($1); }
+    | LEXTOK_INTERP_STR_LITERAL   { $$ = AST_Literal_interp_str($1); }
     ;
 
 identifier:
-    LEXTOK_IDENTIFIER { $$ = AST_identifier($1); }
+    LEXTOK_IDENTIFIER { $$ = AST_Identifier($1); }
     ;
 
 %%

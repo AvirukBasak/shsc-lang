@@ -4,27 +4,27 @@ expression:
 
 assignment_expression:
     conditional_expression
-    | postfix_expression "=" assignment_expression
-    | postfix_expression "||=" assignment_expression
-    | postfix_expression "&&=" assignment_expression
-    | postfix_expression "|=" assignment_expression
-    | postfix_expression "^=" assignment_expression
-    | postfix_expression "&=" assignment_expression
-    | postfix_expression ">>>=" assignment_expression
-    | postfix_expression "<<=" assignment_expression
-    | postfix_expression ">>=" assignment_expression
-    | postfix_expression "+=" assignment_expression
-    | postfix_expression "-=" assignment_expression
-    | postfix_expression "*=" assignment_expression
-    | postfix_expression "/=" assignment_expression
-    | postfix_expression "%=" assignment_expression
-    | postfix_expression "**=" assignment_expression
-    | postfix_expression "//=" assignment_expression
+    | postfix_expression "=" assignment_expression %right
+    | postfix_expression "||=" assignment_expression %right
+    | postfix_expression "&&=" assignment_expression %right
+    | postfix_expression "|=" assignment_expression %right
+    | postfix_expression "^=" assignment_expression %right
+    | postfix_expression "&=" assignment_expression %right
+    | postfix_expression ">>>=" assignment_expression %right
+    | postfix_expression "<<=" assignment_expression %right
+    | postfix_expression ">>=" assignment_expression %right
+    | postfix_expression "+=" assignment_expression %right
+    | postfix_expression "-=" assignment_expression %right
+    | postfix_expression "*=" assignment_expression %right
+    | postfix_expression "/=" assignment_expression %right
+    | postfix_expression "%=" assignment_expression %right
+    | postfix_expression "**=" assignment_expression %right
+    | postfix_expression "//=" assignment_expression %right
     ;
 
 conditional_expression:
     logical_or_expression
-    | expression "if" logical_or_expression "else" conditional_expression
+    | expression "if" logical_or_expression "else" conditional_expression %left
     ;
 
 logical_or_expression:
@@ -93,8 +93,8 @@ unary_expression:
     | "-" unary_expression %right
     | "!" unary_expression %right
     | "~" unary_expression %right
-    | "++" unary_expression
-    | "--" unary_expression
+    | "++" unary_expression %right
+    | "--" unary_expression %right
     ;
 
 postfix_expression:
@@ -114,5 +114,5 @@ primary_expression:
 
 arguments_list:
     expression
-    | arguments_list "," expression
+    | arguments_list "," expression %left
     ;

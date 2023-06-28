@@ -4,30 +4,30 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-typedef struct AST_Statements          AST_Statements;
-typedef struct AST_Statement           AST_Statement;
-typedef struct AST_Assignment          AST_Assignment;
-typedef struct AST_CompoundStatement   AST_CompoundStatement;
-typedef struct AST_IfBlock             AST_IfBlock;
-typedef struct AST_IfElseBlock         AST_IfElseBlock;
-typedef struct AST_IfElseIfBlock       AST_IfElseIfBlock;
-typedef struct AST_ElseIfBlock         AST_ElseIfBlock;
-typedef struct AST_WhileBlock          AST_WhileBlock;
-typedef struct AST_ForBlock            AST_ForBlock;
-typedef struct AST_Block               AST_Block;
-typedef struct AST_Condition           AST_Condition;
-typedef struct AST_Expression          AST_Expression;
-typedef struct AST_Operand             AST_Operand;
-typedef struct AST_Literal             AST_Literal;
-typedef struct AST_Identifier          AST_Identifier;
+typedef struct AST_Statements_t     AST_Statements_t;
+typedef struct AST_Statement_t      AST_Statement_t;
+typedef struct AST_Assignment_t     AST_Assignment_t;
+typedef struct AST_CompoundSt_t     AST_CompoundSt_t;
+typedef struct AST_IfBlock_t        AST_IfBlock_t;
+typedef struct AST_IfElseBlock_t    AST_IfElseBlock_t;
+typedef struct AST_IfElseIfBlock_t  AST_IfElseIfBlock_t;
+typedef struct AST_ElseIfBlock_t    AST_ElseIfBlock_t;
+typedef struct AST_WhileBlock_t     AST_WhileBlock_t;
+typedef struct AST_ForBlock_t       AST_ForBlock_t;
+typedef struct AST_Block_t          AST_Block_t;
+typedef struct AST_Condition_t      AST_Condition_t;
+typedef struct AST_Expression_t     AST_Expression_t;
+typedef struct AST_Operand_t        AST_Operand_t;
+typedef struct AST_Literal_t        AST_Literal_t;
+typedef struct AST_Identifier_t     AST_Identifier_t;
 
-struct AST_Root {
-    // TODO: 2D Hash map mapping module names & procedure names to (AST_Statements*)
+struct AST_Root_t {
+    // TODO: 2D Hash map mapping module names & procedure names to (AST_Statements_t*)
 };
 
-struct AST_Statements {
-    AST_Statements *statements;
-    AST_Statement *statement;
+struct AST_Statements_t {
+    AST_Statements_t *statements;
+    AST_Statement_t *statement;
 };
 
 enum StatementType {
@@ -36,10 +36,10 @@ enum StatementType {
     STATEMENT_TYPE_COMPOUND,
 };
 
-struct AST_Statement {
+struct AST_Statement_t {
     union {
-       AST_Assignment *assignment;
-       AST_CompoundStatement *compound_statement;
+       AST_Assignment_t *assignment;
+       AST_CompoundSt_t    *compound_statement;
     } statement;
     enum StatementType type;
 };
@@ -53,13 +53,13 @@ enum AssignmentType {
     ASSIGNMENT_TYPE_UPDATE,
 };
 
-struct AST_Assignment {
-    AST_Identifier *lhs;
-    AST_Expression *rhs;
+struct AST_Assignment_t {
+    AST_Identifier_t *lhs;
+    AST_Expression_t *rhs;
     enum AssignmentType type;
 };
 
-enum CompoundStatementType {
+enum CompoundStType {
     COMPOUNDST_TYPE_IF,
     COMPOUNDST_TYPE_IF_ELSE,
     COMPOUNDST_TYPE_IF_ELSE_IF,
@@ -68,66 +68,66 @@ enum CompoundStatementType {
     COMPOUNDST_TYPE_BLOCK,
 };
 
-struct AST_CompoundStatement {
+struct AST_CompoundSt_t {
     union {
-        AST_IfBlock *if_block;
-        AST_IfElseBlock *if_else_block;
-        AST_IfElseIfBlock *if_else_if_block;
-        AST_WhileBlock *while_block;
-        AST_ForBlock *for_block;
-        AST_Block *block;
+        AST_IfBlock_t *if_block;
+        AST_IfElseBlock_t *if_else_block;
+        AST_IfElseIfBlock_t *if_else_if_block;
+        AST_WhileBlock_t *while_block;
+        AST_ForBlock_t *for_block;
+        AST_Block_t *block;
     } compound_statement;
-   enum CompoundStatementType type;
+   enum CompoundStType type;
 };
 
-struct AST_IfBlock {
-    AST_Condition *condition;
-    AST_Statements *statements;
+struct AST_IfBlock_t {
+    AST_Condition_t *condition;
+    AST_Statements_t *statements;
 };
 
-struct AST_IfElseBlock {
-    AST_Condition *condition;
-    AST_Statements *if_statements;
-    AST_Statements *else_statements;
+struct AST_IfElseBlock_t {
+    AST_Condition_t *condition;
+    AST_Statements_t *if_statements;
+    AST_Statements_t *else_statements;
 };
 
-struct AST_IfElseIfBlock {
-    AST_Condition *condition;
-    AST_Statements *if_statements;
-    AST_ElseIfBlock *else_if_block;
+struct AST_IfElseIfBlock_t {
+    AST_Condition_t *condition;
+    AST_Statements_t *if_statements;
+    AST_ElseIfBlock_t *else_if_block;
 };
 
-struct AST_ElseIfBlock {
+struct AST_ElseIfBlock_t {
     /** Set to NULL if ladder ends */
-    AST_IfElseIfBlock *if_else_if_block;
+    AST_IfElseIfBlock_t *if_else_if_block;
 };
 
-struct AST_WhileBlock {
-    AST_Condition *condition;
-    AST_Statements *statements;
+struct AST_WhileBlock_t {
+    AST_Condition_t *condition;
+    AST_Statements_t *statements;
 };
 
-struct AST_ForBlock {
-    AST_Identifier *iter;
-    AST_Operand *start;
-    AST_Operand *end;
-    AST_Operand *by;
-    AST_Statements *statements;
+struct AST_ForBlock_t {
+    AST_Identifier_t *iter;
+    AST_Operand_t *start;
+    AST_Operand_t *end;
+    AST_Operand_t *by;
+    AST_Statements_t *statements;
 };
 
-struct AST_Block {
-    AST_Statements *statements;
+struct AST_Block_t {
+    AST_Statements_t *statements;
 };
 
-struct AST_Condition {
-    AST_Expression *expression;
+struct AST_Condition_t {
+    AST_Expression_t *expression;
 };
 
 /** TODO: Yet to be fully implemented */
-struct AST_Expression {
+struct AST_Expression_t {
     union {
-        AST_Operand *operand;
-        AST_Expression *expression;
+        AST_Operand_t *operand;
+        AST_Expression_t *expression;
     } expression;
 };
 
@@ -136,10 +136,10 @@ enum OperandType {
     OPERAND_TYPE_IDENTIFIER,
 };
 
-struct AST_Operand {
+struct AST_Operand_t {
     union {
-        AST_Literal *literal;
-        AST_Identifier *variable;
+        AST_Literal_t *literal;
+        AST_Identifier_t *variable;
     } operand;
     enum OperandType type;
 };
@@ -154,7 +154,7 @@ enum DataType {
     DATA_TYPE_ANY,
 };
 
-struct AST_Literal {
+struct AST_Literal_t {
     union {
         bool bul;
         char chr;
@@ -166,7 +166,7 @@ struct AST_Literal {
     enum DataType type;
 };
 
-struct AST_Identifier {
+struct AST_Identifier_t {
     char *identifier_name;
 };
 
@@ -176,43 +176,49 @@ struct AST_Identifier {
 #define ASTFUNCTIONS_H
 
 /* Modules stack, top stores name of currently parsing module (file) */
-void AST_module_stack_push(AST_Identifier *module_name);
-AST_Identifier *AST_module_stack_top(void);
-AST_Identifier *AST_module_stack_pop(void);
-void AST_module_stack_clear(void);
+void AST_ModuleStack_push(AST_Identifier_t *module);
+AST_Identifier_t *AST_ModuleStack_top(void);
+AST_Identifier_t *AST_ModuleStack_pop(void);
+void AST_ModuleStack_clear(void);
 
-/** Adds currently parsing procedure to currently parsing module (map data structure) */
-void AST_procedure_add(AST_Identifier *module_name, AST_Identifier *procedure_name, AST_Statements *statements);
+/** Set code to map of procedures */
+void AST_ProcedureMap_add(AST_Identifier_t *module, AST_Identifier_t *procedure, AST_Statements_t *code);
 
-AST_Statements        *AST_statements(AST_Statements *statements, AST_Statement *statement);
-AST_Statement         *AST_statement_empty(void);
-AST_Statement         *AST_statement_assignment(AST_Assignment *assignment);
-AST_Statement         *AST_statement_compound(AST_CompoundStatement *compund);
-AST_Assignment        *AST_assignment_create(AST_Identifier *identifier, AST_Expression *expression);
-AST_Assignment        *AST_assignment_update(AST_Identifier *identifier, AST_Expression *expression);
-AST_Assignment        *AST_assignment_tovoid(AST_Expression *expression);
-AST_CompoundStatement *AST_compoundst_if_block(AST_IfBlock *block);
-AST_CompoundStatement *AST_compoundst_if_else_block(AST_IfElseBlock *block);
-AST_CompoundStatement *AST_compoundst_if_else_if_block(AST_IfElseIfBlock *block);
-AST_CompoundStatement *AST_compoundst_while_block(AST_WhileBlock *block);
-AST_CompoundStatement *AST_compoundst_for_block(AST_ForBlock *block);
-AST_CompoundStatement *AST_compoundst_block(AST_Block *block);
-AST_IfBlock           *AST_if_block(AST_Condition *condition, AST_Statements *if_st);
-AST_IfElseBlock       *AST_if_else_block(AST_Condition *condition, AST_Statements *if_st, AST_Statements *else_st);
-AST_IfElseIfBlock     *AST_if_else_if_block(AST_Condition *condition, AST_Statements *if_st, AST_ElseIfBlock *block);
-AST_ElseIfBlock       *AST_else_if_block(AST_IfElseIfBlock *block);
-AST_WhileBlock        *AST_while_block(AST_Condition *condition, AST_Statements *while_st);
-AST_ForBlock          *AST_for_block(AST_Identifier *iter, AST_Operand *start, AST_Operand *end, AST_Operand *by, AST_Statements *for_st);
-AST_Block             *AST_block(AST_Statements *statements);
-AST_Condition         *AST_condition(AST_Expression *expression);
-AST_Operand           *AST_operand_literal(AST_Literal *literal);
-AST_Operand           *AST_operand_identifier(AST_Identifier *identifier);
-AST_Literal           *AST_literal_bul(bool literal);
-AST_Literal           *AST_literal_chr(char literal);
-AST_Literal           *AST_literal_f64(double literal);
-AST_Literal           *AST_literal_i64(int64_t literal);
-AST_Literal           *AST_literal_str(char *literal);
-AST_Literal           *AST_literal_interp_str(char *literal);
-AST_Identifier        *AST_identifier(char *identifier_name);
+/** Get procedure code by module and procedure name */
+AST_Statements_t *AST_ProcedureMap_get(AST_Identifier_t *module, AST_Identifier_t *procedure);
+
+/** Clear the map by calling AST_Identifier_free() and AST_Statements_free() on each key and value */
+void AST_ProcedureMap_clear();
+
+AST_Statements_t    *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement);
+AST_Statement_t     *AST_Statement_empty(void);
+AST_Statement_t     *AST_Statement_Assignment(AST_Assignment_t *assignment);
+AST_Statement_t     *AST_Statement_CompoundSt(AST_CompoundSt_t    *compund);
+AST_Assignment_t    *AST_Assignment_create(AST_Identifier_t *identifier, AST_Expression_t *expression);
+AST_Assignment_t    *AST_Assignment_update(AST_Identifier_t *identifier, AST_Expression_t *expression);
+AST_Assignment_t    *AST_Assignment_tovoid(AST_Expression_t *expression);
+AST_CompoundSt_t    *AST_CompoundSt_IfBlock(AST_IfBlock_t *block);
+AST_CompoundSt_t    *AST_CompoundSt_IfElseBlock(AST_IfElseBlock_t *block);
+AST_CompoundSt_t    *AST_CompoundSt_IfElseIfBlock(AST_IfElseIfBlock_t *block);
+AST_CompoundSt_t    *AST_CompoundSt_WhileBlock(AST_WhileBlock_t *block);
+AST_CompoundSt_t    *AST_CompoundSt_ForBlock(AST_ForBlock_t *block);
+AST_CompoundSt_t    *AST_CompoundSt_Block(AST_Block_t *block);
+AST_IfBlock_t       *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st);
+AST_IfElseBlock_t   *AST_IfElseBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_Statements_t *else_st);
+AST_IfElseIfBlock_t *AST_IfElseIfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseIfBlock_t *block);
+AST_ElseIfBlock_t   *AST_ElseIfBlock(AST_IfElseIfBlock_t *block);
+AST_WhileBlock_t    *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st);
+AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *iter, AST_Operand_t *start, AST_Operand_t *end, AST_Operand_t *by, AST_Statements_t *for_st);
+AST_Block_t         *AST_Block(AST_Statements_t *statements);
+AST_Condition_t     *AST_Condition(AST_Expression_t *expression);
+AST_Operand_t       *AST_Operand_Literal(AST_Literal_t *literal);
+AST_Operand_t       *AST_Operand_Identifier(AST_Identifier_t *identifier);
+AST_Literal_t       *AST_Literal_bul(bool literal);
+AST_Literal_t       *AST_Literal_chr(char literal);
+AST_Literal_t       *AST_Literal_f64(double literal);
+AST_Literal_t       *AST_Literal_i64(int64_t literal);
+AST_Literal_t       *AST_Literal_str(char *literal);
+AST_Literal_t       *AST_Literal_interp_str(char *literal);
+AST_Identifier_t    *AST_Identifier(char *identifier_name);
 
 #endif
