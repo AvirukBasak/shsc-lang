@@ -18,40 +18,43 @@ LexToken yylex(void)
     int token = lex_get_nexttok(yyin);
     switch (token) {
         case LEXTOK_IDENTIFIER:
-            yylval.idf = strdup(lex_get_buffstr());
+            yylval.identifier_name = strdup(lex_get_buffstr());
+            break;
+        case LEXTOK_BOOL_LITERAL:
+            yylval.literal_bool = parse_bool(lex_get_buffstr());
             break;
         case LEXTOK_CHAR_LITERAL:
-            yylval.chr = parse_char(lex_get_buffstr());
+            yylval.literal_char = parse_char(lex_get_buffstr());
             break;
         case LEXTOK_STR_LITERAL:
-            yylval.str = parse_str(lex_get_buffstr());
+            yylval.literal_str = parse_str(lex_get_buffstr());
             break;
         case LEXTOK_INTERP_STR_LITERAL:
-            yylval.str = parse_interpstr(lex_get_buffstr());
+            yylval.literal_str = parse_interpstr(lex_get_buffstr());
             break;
         case LEXTOK_BINFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 2);
+            yylval.literal_f64 = parse_float(lex_get_buffstr(), 2);
             break;
         case LEXTOK_OCTFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 8);
+            yylval.literal_f64 = parse_float(lex_get_buffstr(), 8);
             break;
         case LEXTOK_DECFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 10);
+            yylval.literal_f64 = parse_float(lex_get_buffstr(), 10);
             break;
         case LEXTOK_HEXFLOAT_LITERAL:
-            yylval.f64 = parse_float(lex_get_buffstr(), 16);
+            yylval.literal_f64 = parse_float(lex_get_buffstr(), 16);
             break;
         case LEXTOK_BININT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 2);
+            yylval.literal_i64 = parse_int(lex_get_buffstr(), 2);
             break;
         case LEXTOK_OCTINT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 8);
+            yylval.literal_i64 = parse_int(lex_get_buffstr(), 8);
             break;
         case LEXTOK_DECINT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 10);
+            yylval.literal_i64 = parse_int(lex_get_buffstr(), 10);
             break;
         case LEXTOK_HEXINT_LITERAL:
-            yylval.i64 = parse_int(lex_get_buffstr(), 16);
+            yylval.literal_i64 = parse_int(lex_get_buffstr(), 16);
             break;
         default: break;
     }
