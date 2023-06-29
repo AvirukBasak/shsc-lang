@@ -3,6 +3,30 @@
 
 #include "lexer.h"
 
+LexToken lex_match_bool(FILE *f, char ch)
+{
+    if (!isalpha(ch)) return LEXTOK_INVALID;
+    // start at 1 as ch is already in buffer
+    size_t kwdlen = 1;
+    while (true) {
+        ch = lex_getc(f);
+        if (!isalpha(ch)) {
+            // unget last non alpha char
+            lex_ungetc(&ch, f);
+            break;
+        }
+        kwdlen++;
+    }
+    if (lex_get_buffstr()[0] == 't' && !strcmp(lex_get_buffstr(), "true"))  return LEXTOK_BOOL_LITERAL;
+    if (lex_get_buffstr()[0] == 'f' && !strcmp(lex_get_buffstr(), "false")) return LEXTOK_BOOL_LITERAL;
+    // unget all characters except the first if all matches failed
+    while (kwdlen > 1) {
+        lex_ungetc(&ch, f);
+        kwdlen--;
+    }
+    return LEXTOK_INVALID;
+}
+
 LexToken lex_match_char(FILE *f, char ch)
 {
     if (ch != '\'') return LEXTOK_INVALID;

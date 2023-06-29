@@ -14,9 +14,6 @@ LexToken lex_match_identifiers(FILE *f, char ch)
             break;
         }
     }
-    // a boolean literal is just a special identifier lol
-    if (!strcmp(lex_get_buffstr(), "true"))  return LEXTOK_BOOL_LITERAL;
-    if (!strcmp(lex_get_buffstr(), "false")) return LEXTOK_BOOL_LITERAL;
     return LEXTOK_IDENTIFIER;
 }
 
