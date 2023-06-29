@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "ast.h"
 
+#include "ast/syntax/identifier.c.h"
+#include "ast/syntax/statements.c.h"
 #include "ast/modules.c.h"
 #include "ast/syntax.c.h"
 

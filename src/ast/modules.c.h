@@ -91,7 +91,7 @@ void AST_ProcedureMap_clear()
         for (khint_t k2 = kh_begin(submap); k2 != kh_end(submap); ++k2) {
             if (!kh_exist(submap, k2)) continue;
             // Free procedure name and statements
-            AST_Identifier_free(kh_key(submap, k2));
+            free((void*) kh_key(submap, k2));
             AST_Statements_free(kh_value(submap, k2));
         }
         kh_destroy(procedure_t, submap);
