@@ -3,8 +3,8 @@ module main
 proc main start
     print("Hello world!", lf)
 
-    x = input(int)
-
+    var x = input(int)
+    
     if x == 1 then
         print("entered 1", lf)
     elif x == 2 then
@@ -20,4 +20,12 @@ proc main start
 
     x = input("prompt: ", str)
     print(f"entered {x}", lf)
+
+    # test bool
+    var x = true;
+    print(f"bool value = {x}", lf)
+    var y = 5 if x == false else 7
+    if y == 5 then
+        print("x was false", lf)
+    end
 end
