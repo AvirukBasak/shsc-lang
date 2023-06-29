@@ -1,5 +1,7 @@
 #include <stdlib.h>
+
 #include "ast.h"
+#include "ast/syntax.h"
 
 AST_Statements_t *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement)
 {

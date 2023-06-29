@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include "tlib/khash/khash.h"
+
 #include "ast.h"
+#include "ast/syntax.h"
+#include "ast/util.h"
 #include "parser.h"
 
 // Define the hash map types

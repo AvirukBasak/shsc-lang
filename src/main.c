@@ -4,7 +4,7 @@
 
 #include "globals.h"
 #include "io.h"
-#include "lexer.h"
+#include "ast/util.h"
 #include "parser.h"
 
 int main(int argc, char **argv)
