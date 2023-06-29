@@ -2,6 +2,7 @@
 #define LEX_TOKENS_CH
 
 #include "lexer.h"
+#include "parser.yac.h"
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 char *lex_get_tokcode(LexToken code)
@@ -75,19 +76,30 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_TILDE:                 return "LEXTOK_TILDE";
         case LEXTOK_NEWLINE:               return "LEXTOK_NEWLINE";
         // keywords
-        case LEXTOK_KWD_FN:                return "LEXTOK_KWD_FN";
+        case LEXTOK_KWD_MODULE:            return "LEXTOK_KWD_MODULE";
+        case LEXTOK_KWD_PROC:              return "LEXTOK_KWD_PROC";
         case LEXTOK_KWD_START:             return "LEXTOK_KWD_START";
         case LEXTOK_KWD_END:               return "LEXTOK_KWD_END";
+        case LEXTOK_KWD_BLOCK:             return "LEXTOK_KWD_BLOCK";
         case LEXTOK_KWD_IF:                return "LEXTOK_KWD_IF";
         case LEXTOK_KWD_THEN:              return "LEXTOK_KWD_THEN";
         case LEXTOK_KWD_ELIF:              return "LEXTOK_KWD_ELIF";
         case LEXTOK_KWD_ELSE:              return "LEXTOK_KWD_ELSE";
         case LEXTOK_KWD_WHILE:             return "LEXTOK_KWD_WHILE";
+        case LEXTOK_KWD_BREAK:             return "LEXTOK_KWD_BREAK";
+        case LEXTOK_KWD_CONTINUE:          return "LEXTOK_KWD_CONTINUE";
+        case LEXTOK_KWD_RETURN:            return "LEXTOK_KWD_RETURN";
         case LEXTOK_KWD_FOR:               return "LEXTOK_KWD_FOR";
+        case LEXTOK_KWD_FROM:              return "LEXTOK_KWD_FROM";
+        case LEXTOK_KWD_TO:                return "LEXTOK_KWD_TO";
+        case LEXTOK_KWD_BY:                return "LEXTOK_KWD_BY";
         case LEXTOK_KWD_DO:                return "LEXTOK_KWD_DO";
+        case LEXTOK_KWD_VAR:               return "LEXTOK_KWD_VAR";
+        case LEXTOK_KWD_PASS:              return "LEXTOK_KWD_PASS";
         // identifier
         case LEXTOK_IDENTIFIER:            return "LEXTOK_IDENTIFIER";
         // literals
+        case LEXTOK_BOOL_LITERAL:          return "LEXTOK_BOOL_LITERAL";
         case LEXTOK_CHAR_LITERAL:          return "LEXTOK_CHAR_LITERAL";
         case LEXTOK_BINFLOAT_LITERAL:      return "LEXTOK_BINFLOAT_LITERAL";
         case LEXTOK_OCTFLOAT_LITERAL:      return "LEXTOK_OCTFLOAT_LITERAL";
@@ -104,6 +116,7 @@ char *lex_get_tokcode(LexToken code)
         case LEXTOK_INVALID:               return "LEXTOK_INVALID";
         default:                           return "INTERNAL";
     }
+    return "INTERNAL";
 }
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
@@ -178,35 +191,47 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_TILDE:                 return "~";
         case LEXTOK_NEWLINE:               return "\n";
         // keywords
-        case LEXTOK_KWD_FN:                return "fn";
+        case LEXTOK_KWD_MODULE:            return "module";
+        case LEXTOK_KWD_PROC:              return "proc";
         case LEXTOK_KWD_START:             return "start";
         case LEXTOK_KWD_END:               return "end";
+        case LEXTOK_KWD_BLOCK:             return "block";
         case LEXTOK_KWD_IF:                return "if";
         case LEXTOK_KWD_THEN:              return "then";
         case LEXTOK_KWD_ELIF:              return "elif";
         case LEXTOK_KWD_ELSE:              return "else";
         case LEXTOK_KWD_WHILE:             return "while";
+        case LEXTOK_KWD_BREAK:             return "break";
+        case LEXTOK_KWD_CONTINUE:          return "continue";
+        case LEXTOK_KWD_RETURN:            return "return";
         case LEXTOK_KWD_FOR:               return "for";
+        case LEXTOK_KWD_FROM:              return "from";
+        case LEXTOK_KWD_TO:                return "to";
+        case LEXTOK_KWD_BY:                return "by";
         case LEXTOK_KWD_DO:                return "do";
+        case LEXTOK_KWD_VAR:               return "var";
+        case LEXTOK_KWD_PASS:              return "pass";
         // identifier
-        case LEXTOK_IDENTIFIER:            return "<identifier>";
+        case LEXTOK_IDENTIFIER:            return "identifier";
         // literals
-        case LEXTOK_CHAR_LITERAL:          return "<charlit>";
-        case LEXTOK_BINFLOAT_LITERAL:      return "<binfloattlit>";
-        case LEXTOK_OCTFLOAT_LITERAL:      return "<octfloattlit>";
-        case LEXTOK_DECFLOAT_LITERAL:      return "<decfloattlit>";
-        case LEXTOK_HEXFLOAT_LITERAL:      return "<hexfloattlit>";
-        case LEXTOK_BININT_LITERAL:        return "<binintlit>";
-        case LEXTOK_OCTINT_LITERAL:        return "<octintlit>";
-        case LEXTOK_DECINT_LITERAL:        return "<decintlit>";
-        case LEXTOK_HEXINT_LITERAL:        return "<hexintlit>";
-        case LEXTOK_STR_LITERAL:           return "<strlit>";
-        case LEXTOK_INTERP_STR_LITERAL:    return "<interpstrlit>";
+        case LEXTOK_BOOL_LITERAL:          return "boolean literal";
+        case LEXTOK_CHAR_LITERAL:          return "character literal";
+        case LEXTOK_BINFLOAT_LITERAL:      return "binary float literal";
+        case LEXTOK_OCTFLOAT_LITERAL:      return "octal float literal";
+        case LEXTOK_DECFLOAT_LITERAL:      return "decimal float literal";
+        case LEXTOK_HEXFLOAT_LITERAL:      return "hexadecimal float literal";
+        case LEXTOK_BININT_LITERAL:        return "binary int literal";
+        case LEXTOK_OCTINT_LITERAL:        return "octal int literal";
+        case LEXTOK_DECINT_LITERAL:        return "decimal int literal";
+        case LEXTOK_HEXINT_LITERAL:        return "hexadecimal int literal";
+        case LEXTOK_STR_LITERAL:           return "string literal";
+        case LEXTOK_INTERP_STR_LITERAL:    return "interpolable string literal";
         // default cases
-        case LEXTOK_EOF:                   return "<eof>";
-        case LEXTOK_INVALID:               return "<invalid>";
+        case LEXTOK_EOF:                   return "eof";
+        case LEXTOK_INVALID:               return "invalid token";
         default:                           return "<internal>";
     }
+    return "<internal>";
 }
 
 #endif

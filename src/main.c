@@ -4,6 +4,7 @@
 
 #include "globals.h"
 #include "io.h"
+#include "ast/util.h"
 #include "parser.h"
 
 int main(int argc, char **argv)
@@ -15,8 +16,11 @@ int main(int argc, char **argv)
             stdin :
             fopen(argv[i], "rb");
         if (!f) io_errndie("couldn't read file: '%s'", argv[i]);
+        /* Auto pushes module names to a module stack */
         parse_interpret(f);
         if (f != stdin) fclose(f);
     }
+    /* Need to clear module stack */
+    AST_ModuleStack_clear();
     return 0;
 }

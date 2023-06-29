@@ -7,6 +7,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "ast.h"
 #include "parser.yac.h"
 
 #define LEX_MAX_BUFFALLOC_SZ   (64)

@@ -6,3 +6,5 @@ target/
 *.out
 core
 lib/*.h
+*.yac.*
+*.log
