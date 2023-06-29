@@ -10,14 +10,14 @@ proc main start
     elif x == 2 then
         print("entered 2", lf)
     else
-        print(f"entered {d:x}", lf)
+        print(f"entered {x}", lf)
     end
 
     while x >= 0 do
-        print(f"x = {d:x}")
+        print(f"x = {x}")
         x = x -1
     end
 
     x = input("prompt: ", str)
-    print(f"entered {s:x}", lf)
+    print(f"entered {x}", lf)
 end

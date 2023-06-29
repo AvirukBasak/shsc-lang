@@ -55,7 +55,7 @@ $
 ]
 ^
 ^=
-f"interp string"
+f"interp {data} string"
 {
 |
 |=
@@ -71,13 +71,31 @@ if
 end
 start
 while
+else
+if
+elif
+module
+from
+to
+by
+for
+break
+continue
+pass
+proc
+do
+
+# unary check
+a+++++b
+a++ + ++b
+a-----b
+a-- - -- -b
+a---b
 
 # identifier check
 a b
 alpha
 hello
-else
-break
 ox_11
 
 # number check
