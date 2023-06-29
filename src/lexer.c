@@ -84,14 +84,31 @@ LexToken lex_get_nexttok(FILE *f)
             return lex_match_string(f, ch);
         } else {
             lex_ungetc(&ch, f);
-            return lex_match_identifiers(f, ch);
+            LexToken currtok = lex_match_bool(f, ch);
+            if (currtok == LEXTOK_INVALID) {
+                currtok = lex_match_keywords(f, ch);
+                if (currtok == LEXTOK_INVALID)
+                    return lex_match_identifiers(f, ch);
+                return currtok;
+            }
+            return currtok;
         }
     }
+    else if (ch == 't') {
+        LexToken currtok = lex_match_bool(f, ch);
+        if (currtok == LEXTOK_INVALID) {
+            currtok = lex_match_keywords(f, ch);
+            if (currtok == LEXTOK_INVALID)
+                return lex_match_identifiers(f, ch);
+            return currtok;
+        }
+        return currtok;
+    }
     else if (isalpha(ch)) {
-        LexToken kwdtok = lex_match_keywords(f, ch);
-        if (kwdtok == LEXTOK_INVALID)
+        LexToken currtok = lex_match_keywords(f, ch);
+        if (currtok == LEXTOK_INVALID)
             return lex_match_identifiers(f, ch);
-        return kwdtok;
+        return currtok;
     }
     else if (ch == '\'') return lex_match_char(f, ch);
     else if (ch == '"') return lex_match_string(f, ch);
