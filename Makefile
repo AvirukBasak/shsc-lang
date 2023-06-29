@@ -113,3 +113,5 @@ cleaner:
 	@rm -rf $(DBG_TARGET)
 	@rm -rf $(HDR_TARGET)
 	@rm -rf $(TARGET_DIR)
+	@rm -f $(SRC_DIR)/parser.yac.c
+	@rm -f $(INCLUDE_DIR)/parser.yac.h
