@@ -29,7 +29,7 @@ char parse_char(const char *str)
             case '\"': c = '\"'; break;
             case '\?': c = '\?'; break;
             default:
-                err_msg = malloc(strlen(str) + 35);
+                err_msg = malloc(strlen(str) + GLOBAL_BYTES_BUFFER_LEN);
                 sprintf(err_msg, "invalid escape sequence: '\\%c'", str[1]);
                 parse_throw(err_msg);
                 free(err_msg);
@@ -56,7 +56,7 @@ char parse_char(const char *str)
             else break;
         if (i == len) c = (char) num;
         else {
-            err_msg = malloc(strlen(str) + 35);
+            err_msg = malloc(strlen(str) + GLOBAL_BYTES_BUFFER_LEN);
             sprintf(err_msg, "invalid escape sequence: '%s'", str);
             parse_throw(err_msg);
             free(err_msg);
@@ -65,7 +65,7 @@ char parse_char(const char *str)
 
     // If the input string has more than two characters, it is an error
     else {
-        err_msg = malloc(strlen(str) + 22);
+        err_msg = malloc(strlen(str) + GLOBAL_BYTES_BUFFER_LEN);
         sprintf(err_msg, "invalid character token: '%s'", str);
         parse_throw(err_msg);
         free(err_msg);
