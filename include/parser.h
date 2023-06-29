@@ -4,11 +4,6 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-/*
-#include "ctl/hashmap.h"
-*/
-#include "parser.yac.h"
-
 extern FILE *yyin;
 
 int yyerror(const char* s);
@@ -16,6 +11,7 @@ int yyerror(const char* s);
 void parse_interpret(FILE *f);
 void parse_throw(const char *msg);
 
+bool parse_bool(const char *str);
 char parse_char(const char *str);
 int64_t parse_int(const char *str, int base);
 double parse_float(const char *str, int base);

@@ -124,20 +124,31 @@ AST_IfElseBlock_t *AST_IfElseBlock(AST_Condition_t *condition, AST_Statements_t 
     return if_else_block;
 }
 
-AST_IfElseIfBlock_t *AST_IfElseIfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseIfBlock_t *block)
+AST_IfElseIfBlock_t *AST_IfElseIfBlock_IfElseIfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_IfElseIfBlock_t *block)
 {
     AST_IfElseIfBlock_t *if_else_if_block = (AST_IfElseIfBlock_t*) malloc(sizeof(AST_IfElseIfBlock_t));
     if_else_if_block->condition = condition;
     if_else_if_block->if_statements = if_st;
-    if_else_if_block->else_if_block = block;
+    if_else_if_block->block.if_else_if_block = block;
     return if_else_if_block;
 }
 
-AST_ElseIfBlock_t *AST_ElseIfBlock(AST_IfElseIfBlock_t *block)
+AST_IfElseIfBlock_t *AST_IfElseIfBlock_IfElseBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_IfElseBlock_t *block)
 {
-    AST_ElseIfBlock_t *else_if_block = (AST_ElseIfBlock_t*) malloc(sizeof(AST_ElseIfBlock_t));
-    else_if_block->if_else_if_block = block;
-    return else_if_block;
+    AST_IfElseIfBlock_t *if_else_if_block = (AST_IfElseIfBlock_t*) malloc(sizeof(AST_IfElseIfBlock_t));
+    if_else_if_block->condition = condition;
+    if_else_if_block->if_statements = if_st;
+    if_else_if_block->block.if_else_block = block;
+    return if_else_if_block;
+}
+
+AST_IfElseIfBlock_t *AST_IfElseIfBlock_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_IfBlock_t *block)
+{
+    AST_IfElseIfBlock_t *if_else_if_block = (AST_IfElseIfBlock_t*) malloc(sizeof(AST_IfElseIfBlock_t));
+    if_else_if_block->condition = condition;
+    if_else_if_block->if_statements = if_st;
+    if_else_if_block->block.if_block = block;
+    return if_else_if_block;
 }
 
 AST_WhileBlock_t *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st)

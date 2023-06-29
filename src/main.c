@@ -4,6 +4,7 @@
 
 #include "globals.h"
 #include "io.h"
+#include "lexer.h"
 #include "parser.h"
 
 int main(int argc, char **argv)
@@ -20,6 +21,6 @@ int main(int argc, char **argv)
         if (f != stdin) fclose(f);
     }
     /* Need to clear module stack */
-    AST_module_stack_clear();
+    AST_ModuleStack_clear();
     return 0;
 }

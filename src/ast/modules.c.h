@@ -1,10 +1,11 @@
 #include <stdlib.h>
-#include "tlib/khash.h"
+#include "tlib/khash/khash.h"
 #include "ast.h"
+#include "parser.h"
 
 // Define the hash map types
-KHASH_MAP_INIT_STR(module_t, khash_t(procedure_t)*)
 KHASH_MAP_INIT_STR(procedure_t, AST_Statements_t*)
+KHASH_MAP_INIT_STR(module_t, khash_t(procedure_t)*)
 
 // AST_ProcedureMap_t structure
 typedef struct
@@ -25,13 +26,10 @@ void AST_ProcedureMap_create()
 /** Set code to map of procedures */
 void AST_ProcedureMap_add(AST_Identifier_t *module, AST_Identifier_t *procedure, AST_Statements_t *code)
 {
-    if (!module) {
+    if (!module)
         parse_throw("AST_ProcedureMap_add: null pointer error for `module`");
-        return NULL;
-    } else if (!procedure) {
+    else if (!procedure)
         parse_throw("AST_ProcedureMap_add: null pointer error for `procedure`");
-        return NULL;
-    }
     if (!ast_root_node) AST_ProcedureMap_create();
     int ret;
     khash_t(procedure_t) *submap;

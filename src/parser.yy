@@ -187,22 +187,21 @@ FILE *yyin = NULL;
     char    *identifier_name;
 
     /* ast nodes */
-    AST_Statements_t    *astnode_statements,           /* statements */
-    AST_Statement_t     *astnode_statement,            /* statement */
-    AST_Assignment_t    *astnode_assignment,           /* assignment */
-    AST_CompoundSt_t    *astnode_compound_statement,   /* compound_statement */
-    AST_IfBlock_t       *astnode_if_block,             /* if_block */
-    AST_IfElseBlock_t   *astnode_if_else_block,        /* if_else_block */
-    AST_IfElseIfBlock_t *astnode_if_else_if_block,     /* if_else_if_block */
-    AST_ElseIfBlock_t   *astnode_else_if_block,        /* else_if_block */
-    AST_WhileBlock_t    *astnode_while_block,          /* while_block */
-    AST_ForBlock_t      *astnode_for_block,            /* for_block */
-    AST_Block_t         *astnode_block,                /* block */
-    AST_Condition_t     *astnode_condition,            /* condition */
-    AST_Expression_t    *astnode_expression,           /* expression */
-    AST_Operand_t       *astnode_operand,              /* operand */
-    AST_Literal_t       *astnode_literal,              /* literal */
-    AST_Identifier_t    *astnode_identifier            /* identifier */
+    AST_Statements_t    *astnode_statements;           /* statements */
+    AST_Statement_t     *astnode_statement;            /* statement */
+    AST_Assignment_t    *astnode_assignment;           /* assignment */
+    AST_CompoundSt_t    *astnode_compound_statement;   /* compound_statement */
+    AST_IfBlock_t       *astnode_if_block;             /* if_block */
+    AST_IfElseBlock_t   *astnode_if_else_block;        /* if_else_block */
+    AST_IfElseIfBlock_t *astnode_if_else_if_block;     /* if_else_if_block */
+    AST_WhileBlock_t    *astnode_while_block;          /* while_block */
+    AST_ForBlock_t      *astnode_for_block;            /* for_block */
+    AST_Block_t         *astnode_block;                /* block */
+    AST_Condition_t     *astnode_condition;            /* condition */
+    AST_Expression_t    *astnode_expression;           /* expression */
+    AST_Operand_t       *astnode_operand;              /* operand */
+    AST_Literal_t       *astnode_literal;              /* literal */
+    AST_Identifier_t    *astnode_identifier;           /* identifier */
 }
 
 
@@ -214,7 +213,6 @@ FILE *yyin = NULL;
 %type <astnode_if_block>              if_block
 %type <astnode_if_else_block>         if_else_block
 %type <astnode_if_else_if_block>      if_else_if_block
-%type <astnode_else_if_block>         else_if_block
 %type <astnode_while_block>           while_block
 %type <astnode_for_block>             for_block
 %type <astnode_block>                 block
@@ -249,7 +247,7 @@ procedure:
     ;
 
 statements:
-    statement                       { $$ = AST_Statements($1, NULL);         }
+    statement                       { $$ = AST_Statements(NULL, $1);         }
     | statements statement          { $$ = AST_Statements($1, $2);           }
     ;
 
@@ -282,12 +280,9 @@ if_else_block:
     ;
 
 if_else_if_block:
-    "if" condition "then" "\n" statements else_if_block { $$ = AST_IfElseIfBlock($2, $5, $6); }
-    ;
-
-else_if_block:
-    "else" if_else_if_block { $$ = AST_ElseIfBlock($2); }
-    | "end"                 { $$ = NULL;                }
+    "if" condition "then" "\n" statements "else" if_else_if_block { AST_IfElseIfBlock_IfElseIfBlock($2, $5, $7); }
+    | "if" condition "then" "\n" statements "else" if_else_block  { AST_IfElseIfBlock_IfElseBlock($2, $5, $7);   }
+    | "if" condition "then" "\n" statements "else" if_block       { AST_IfElseIfBlock_IfBlock($2, $5, $7);       }
     ;
 
 while_block:
@@ -451,6 +446,12 @@ identifier:
     ;
 
 %%
+
+#include "parser/parse_bool.c.h"
+#include "parser/parse_chr.c.h"
+#include "parser/parse_f64.c.h"
+#include "parser/parse_i64.c.h"
+#include "parser/parse_str.c.h"
 
 int yyerror(const char* s)
 {

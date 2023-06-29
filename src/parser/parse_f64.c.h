@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "parser.h"
+
 double parse_float(const char *str, int base) {
     const int MAX_EXP_LEN = 4;
     const int BUF_SIZE = 128;

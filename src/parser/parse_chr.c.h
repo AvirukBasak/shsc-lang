@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "globals.h"
 #include "parser.h"
 
 char parse_char(const char *str)
