@@ -295,10 +295,10 @@ compound_statement:
     ;
 
 if_block:
-    "if" condition "then" nwl statements "end"                                         { $$ = AST_IfBlock($2, $5, NULL, NULL); }
-    | "if" condition "then" nwl statements "else" nwl statements "end"                { $$ = AST_IfBlock($2, $5, NULL, $8);   }
-    | "if" condition "then" nwl statements else_if_block "end"                         { $$ = AST_IfBlock($2, $5, $6, NULL);   }
-    | "if" condition "then" nwl statements else_if_block "else" nwl statements "end"  { $$ = AST_IfBlock($2, $5, $6, $9);     }
+    "if" condition "then" nwl statements "end"                                       { $$ = AST_IfBlock($2, $5, NULL, NULL); }
+    | "if" condition "then" nwl statements "else" nwl statements "end"               { $$ = AST_IfBlock($2, $5, NULL, $8);   }
+    | "if" condition "then" nwl statements else_if_block "end"                       { $$ = AST_IfBlock($2, $5, $6, NULL);   }
+    | "if" condition "then" nwl statements else_if_block "else" nwl statements "end" { $$ = AST_IfBlock($2, $5, $6, $9);     }
     ;
 
 else_if_block:
@@ -307,12 +307,12 @@ else_if_block:
     ;
 
 else_if_statement:
-    "else" "if" condition "then" nwl statements { $$ = AST_ElseIfSt($3, $6); }
-    | "elif" condition "then" nwl statements    { $$ = AST_ElseIfSt($2, $5); }
+    "else" "if" condition "then" nwl statements  { $$ = AST_ElseIfSt($3, $6); }
+    | "elif" condition "then" nwl statements     { $$ = AST_ElseIfSt($2, $5); }
     ;
 
 while_block:
-    "while" condition "do" nwl statements "end" { $$ = AST_WhileBlock($2, $5); }
+    "while" condition "do" nwl statements "end"  { $$ = AST_WhileBlock($2, $5); }
     ;
 
 for_block:
