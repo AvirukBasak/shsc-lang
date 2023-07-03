@@ -1,4 +1,3 @@
-src/parser.yy: warning: 2 shift/reduce conflicts [-Wconflicts-sr]
 src/parser.yy: warning: 17 reduce/reduce conflicts [-Wconflicts-rr]
 src/parser.yy: warning: reduce/reduce conflict on token "if" [-Wcounterexamples]
   Example: postfix_expression "%=" assignment_expression • "if" logical_or_expression "else" conditional_expression
@@ -238,62 +237,3 @@ src/parser.yy: warning: reduce/reduce conflict on token "if" [-Wcounterexamples]
           ↳ 32: assignment_expression
                 ↳ 33: conditional_expression
                       ↳ 51: expression "if" logical_or_expression "else" conditional_expression •
-src/parser.yy: warning: shift/reduce conflict on token "if" [-Wcounterexamples]
-time limit exceeded: 6.000000
-  First example: $@1 program "proc" identifier "start" statements "if" condition "then" "\n" statements "else" • "if" condition "then" "\n" statements "end" "\n" statements "end" "\n" $end
-  Shift derivation
-    $accept
-    ↳ 0: module                                                                                                                                                                                                                   $end
-         ↳ 2: $@1 program
-                  ↳ 6: program procedure
-                               ↳ 7: "proc" identifier "start" statements                                                                                                                                    statements "end" "\n"
-                                                              ↳ 9: statements statement
-                                                                              ↳ 12: compound_statement                                                                                                 "\n"
-                                                                                    ↳ 15: if_block
-                                                                                          ↳ 21: "if" condition "then" "\n" statements else_if_block                                              "end"
-                                                                                                                                      ↳ 23: else_if_statement
-                                                                                                                                            ↳ 25: "else" • "if" condition "then" "\n" statements
-  Second example: $@1 program "proc" identifier "start" "\n" statements "if" condition "then" "\n" statements "else" • "if" condition "then" "\n" statements "end" "\n" "end" "\n" "end" "\n" $end
-  Reduce derivation
-    $accept
-    ↳ 0: module                                                                                                                                                                                                                                            $end
-         ↳ 2: $@1 program
-                  ↳ 6: program procedure
-                               ↳ 7: "proc" identifier "start" "\n" statements                                                                                                                                                                   "end" "\n"
-                                                                   ↳ 9: statements statement
-                                                                                   ↳ 12: compound_statement                                                                                                                                "\n"
-                                                                                         ↳ 15: if_block
-                                                                                               ↳ 20: "if" condition "then" "\n" statements "else" statements                                                                         "end"
-                                                                                                                                                  ↳ 9: statements statement
-                                                                                                                                                       ↳ 8: ε •   ↳ 12: compound_statement                                      "\n"
-                                                                                                                                                                        ↳ 15: if_block
-                                                                                                                                                                              ↳ 19: "if" condition "then" "\n" statements "end"
-src/parser.yy: warning: shift/reduce conflict on token "if" [-Wcounterexamples]
-  First example: $@1 program "proc" identifier "start" statements "if" condition "then" "\n" statements else_if_block "else" • "if" condition "then" "\n" statements "end" "\n" statements "end" "\n" $end
-  Shift derivation
-    $accept
-    ↳ 0: module                                                                                                                                                                                                                                 $end
-         ↳ 2: $@1 program
-                  ↳ 6: program procedure
-                               ↳ 7: "proc" identifier "start" statements                                                                                                                                                  statements "end" "\n"
-                                                              ↳ 9: statements statement
-                                                                              ↳ 12: compound_statement                                                                                                               "\n"
-                                                                                    ↳ 15: if_block
-                                                                                          ↳ 21: "if" condition "then" "\n" statements else_if_block                                                            "end"
-                                                                                                                                      ↳ 24: else_if_block else_if_statement
-                                                                                                                                                          ↳ 25: "else" • "if" condition "then" "\n" statements
-  Second example: $@1 program "proc" identifier "start" "\n" statements "if" condition "then" "\n" statements else_if_block "else" • "if" condition "then" "\n" statements "end" "\n" "end" "\n" "end" "\n" $end
-  Reduce derivation
-    $accept
-    ↳ 0: module                                                                                                                                                                                                                                                          $end
-         ↳ 2: $@1 program
-                  ↳ 6: program procedure
-                               ↳ 7: "proc" identifier "start" "\n" statements                                                                                                                                                                                 "end" "\n"
-                                                                   ↳ 9: statements statement
-                                                                                   ↳ 12: compound_statement                                                                                                                                              "\n"
-                                                                                         ↳ 15: if_block
-                                                                                               ↳ 22: "if" condition "then" "\n" statements else_if_block "else" statements                                                                         "end"
-                                                                                                                                                                ↳ 9: statements statement
-                                                                                                                                                                     ↳ 8: ε •   ↳ 12: compound_statement                                      "\n"
-                                                                                                                                                                                      ↳ 15: if_block
-                                                                                                                                                                                            ↳ 19: "if" condition "then" "\n" statements "end"

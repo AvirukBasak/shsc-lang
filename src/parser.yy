@@ -293,10 +293,10 @@ compound_statement:
     ;
 
 if_block:
-    "if" condition "then" "\n" statements "end"                                    { $$ = AST_IfBlock($2, $5, NULL, NULL); }
-    | "if" condition "then" "\n" statements "else" statements "end"                { $$ = AST_IfBlock($2, $5, NULL, $7);   }
-    | "if" condition "then" "\n" statements else_if_block "end"                    { $$ = AST_IfBlock($2, $5, $6, NULL);   }
-    | "if" condition "then" "\n" statements else_if_block "else" statements "end"  { $$ = AST_IfBlock($2, $5, $6, $8);     }
+    "if" condition "then" "\n" statements "end"                                         { $$ = AST_IfBlock($2, $5, NULL, NULL); }
+    | "if" condition "then" "\n" statements "else" "\n" statements "end"                { $$ = AST_IfBlock($2, $5, NULL, $8);   }
+    | "if" condition "then" "\n" statements else_if_block "end"                         { $$ = AST_IfBlock($2, $5, $6, NULL);   }
+    | "if" condition "then" "\n" statements else_if_block "else" "\n" statements "end"  { $$ = AST_IfBlock($2, $5, $6, $9);     }
     ;
 
 else_if_block:
