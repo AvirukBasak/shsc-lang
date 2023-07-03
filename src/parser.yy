@@ -277,9 +277,9 @@ statements:
     ;
 
 statement:
-    "pass" nwl                     { $$ = AST_Statement_empty();            }
-    | assignment nwl               { $$ = AST_Statement_Assignment($1);     }
-    | compound_statement nwl       { $$ = AST_Statement_CompoundSt($1);     }
+    "pass" nwl                      { $$ = AST_Statement_empty();            }
+    | assignment nwl                { $$ = AST_Statement_Assignment($1);     }
+    | compound_statement nwl        { $$ = AST_Statement_CompoundSt($1);     }
     ;
 
 assignment:
