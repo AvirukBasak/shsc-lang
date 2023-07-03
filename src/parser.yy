@@ -307,21 +307,21 @@ else_if_block:
     ;
 
 else_if_statement:
-    "else" "if" condition "then" nwl statements  { $$ = AST_ElseIfSt($3, $6); }
-    | "elif" condition "then" nwl statements     { $$ = AST_ElseIfSt($2, $5); }
+    "else" "if" condition "then" nwl statements  { $$ = AST_ElseIfSt($3, $6);      }
+    | "elif" condition "then" nwl statements     { $$ = AST_ElseIfSt($2, $5);      }
     ;
 
 while_block:
-    "while" condition "do" nwl statements "end"  { $$ = AST_WhileBlock($2, $5); }
+    "while" condition "do" nwl statements "end"  { $$ = AST_WhileBlock($2, $5);    }
     ;
 
 for_block:
-    "for" identifier "from" operand "to" operand "do" statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $8); }
-    | "for" identifier "from" operand "to" operand "by" operand "do" statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $10);  }
+    "for" identifier "from" operand "to" operand "do" nwl statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
+    | "for" identifier "from" operand "to" operand "by" operand "do" nwl statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11);  }
     ;
 
 block:
-    "block" statements "end" { $$ = AST_Block($2); }
+    "block" nwl statements "end" { $$ = AST_Block($3); }
     ;
 
 condition:
