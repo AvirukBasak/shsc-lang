@@ -39,8 +39,6 @@ struct AST_Assignment_t {
 
 enum CompoundStType {
     COMPOUNDST_TYPE_IF,
-    COMPOUNDST_TYPE_IF_ELSE,
-    COMPOUNDST_TYPE_IF_ELSE_IF,
     COMPOUNDST_TYPE_WHILE,
     COMPOUNDST_TYPE_FOR,
     COMPOUNDST_TYPE_BLOCK,
@@ -49,8 +47,6 @@ enum CompoundStType {
 struct AST_CompoundSt_t {
     union {
         AST_IfBlock_t *if_block;
-        AST_IfElseBlock_t *if_else_block;
-        AST_IfElseIfBlock_t *if_else_if_block;
         AST_WhileBlock_t *while_block;
         AST_ForBlock_t *for_block;
         AST_Block_t *block;
@@ -60,23 +56,19 @@ struct AST_CompoundSt_t {
 
 struct AST_IfBlock_t {
     AST_Condition_t *condition;
+    AST_Statements_t *if_st;
+    AST_ElseIfBlock_t *else_if_block;
+    AST_Statements_t *else_st;
+};
+
+struct AST_ElseIfBlock_t {
+    AST_ElseIfBlock_t *else_if_block;
+    AST_ElseIfSt_t *else_if_st;
+};
+
+struct AST_ElseIfSt_t {
+    AST_Condition_t *condition;
     AST_Statements_t *statements;
-};
-
-struct AST_IfElseBlock_t {
-    AST_Condition_t *condition;
-    AST_Statements_t *if_statements;
-    AST_Statements_t *else_statements;
-};
-
-struct AST_IfElseIfBlock_t {
-    AST_Condition_t *condition;
-    AST_Statements_t *if_statements;
-    union {
-        AST_IfElseIfBlock_t *if_else_if_block;
-        AST_IfElseBlock_t *if_else_block;
-        AST_IfBlock_t *if_block;
-    } block;
 };
 
 struct AST_WhileBlock_t {
@@ -158,18 +150,13 @@ AST_Assignment_t    *AST_Assignment_update(AST_Identifier_t *identifier, AST_Exp
 AST_Assignment_t    *AST_Assignment_tovoid(AST_Expression_t *expression);
 
 AST_CompoundSt_t    *AST_CompoundSt_IfBlock(AST_IfBlock_t *block);
-AST_CompoundSt_t    *AST_CompoundSt_IfElseBlock(AST_IfElseBlock_t *block);
-AST_CompoundSt_t    *AST_CompoundSt_IfElseIfBlock(AST_IfElseIfBlock_t *block);
 AST_CompoundSt_t    *AST_CompoundSt_WhileBlock(AST_WhileBlock_t *block);
 AST_CompoundSt_t    *AST_CompoundSt_ForBlock(AST_ForBlock_t *block);
 AST_CompoundSt_t    *AST_CompoundSt_Block(AST_Block_t *block);
 
-AST_IfBlock_t       *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st);
-AST_IfElseBlock_t   *AST_IfElseBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_Statements_t *else_st);
-
-AST_IfElseIfBlock_t *AST_IfElseIfBlock_IfElseIfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_IfElseIfBlock_t *block);
-AST_IfElseIfBlock_t *AST_IfElseIfBlock_IfElseBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_IfElseBlock_t *block);
-AST_IfElseIfBlock_t *AST_IfElseIfBlock_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_IfBlock_t *block);
+AST_IfBlock_t       *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseIfBlock_t *else_if_block, AST_Statements_t *else_st);
+AST_ElseIfBlock_t   *AST_ElseIfBlock(AST_ElseIfBlock_t *else_if_block, AST_ElseIfSt_t *else_if_st);
+AST_ElseIfSt_t      *AST_ElseIfSt(AST_Condition_t *condition, AST_Statements_t *statements);
 
 AST_WhileBlock_t    *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st);
 AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *iter, AST_Operand_t *start, AST_Operand_t *end, AST_Operand_t *by, AST_Statements_t *for_st);

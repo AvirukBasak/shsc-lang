@@ -194,8 +194,8 @@ FILE *yyin = NULL;
     AST_Assignment_t    *astnode_assignment;           /* assignment */
     AST_CompoundSt_t    *astnode_compound_statement;   /* compound_statement */
     AST_IfBlock_t       *astnode_if_block;             /* if_block */
-    AST_IfElseBlock_t   *astnode_if_else_block;        /* if_else_block */
-    AST_IfElseIfBlock_t *astnode_if_else_if_block;     /* if_else_if_block */
+    AST_ElseIfBlock_t   *astnode_else_if_block;        /* else_if_block */
+    AST_ElseIfSt_t      *astnode_else_if_statement;    /* else_if_statement */
     AST_WhileBlock_t    *astnode_while_block;          /* while_block */
     AST_ForBlock_t      *astnode_for_block;            /* for_block */
     AST_Block_t         *astnode_block;                /* block */
@@ -213,8 +213,8 @@ FILE *yyin = NULL;
 %type <astnode_assignment>            assignment
 %type <astnode_compound_statement>    compound_statement
 %type <astnode_if_block>              if_block
-%type <astnode_if_else_block>         if_else_block
-%type <astnode_if_else_if_block>      if_else_if_block
+%type <astnode_else_if_block>         else_if_block
+%type <astnode_else_if_statement>     else_if_statement
 %type <astnode_while_block>           while_block
 %type <astnode_for_block>             for_block
 %type <astnode_block>                 block
@@ -266,25 +266,26 @@ assignment:
 
 compound_statement:
     if_block                        { $$ = AST_CompoundSt_IfBlock($1);       }
-    | if_else_block                 { $$ = AST_CompoundSt_IfElseBlock($1);   }
-    | if_else_if_block              { $$ = AST_CompoundSt_IfElseIfBlock($1); }
     | while_block                   { $$ = AST_CompoundSt_WhileBlock($1);    }
     | for_block                     { $$ = AST_CompoundSt_ForBlock($1);      }
     | block                         { $$ = AST_CompoundSt_Block($1);         }
     ;
 
 if_block:
-    "if" condition "then" "\n" statements "end" { $$ = AST_IfBlock($2, $5); }
+    "if" condition "then" "\n" statements "end"                                    { $$ = AST_IfBlock($2, $5, NULL, NULL); }
+    | "if" condition "then" "\n" statements "else" statements "end"                { $$ = AST_IfBlock($2, $5, NULL, $7);   }
+    | "if" condition "then" "\n" statements else_if_block "end"                    { $$ = AST_IfBlock($2, $5, $6, NULL);   }
+    | "if" condition "then" "\n" statements else_if_block "else" statements "end"  { $$ = AST_IfBlock($2, $5, $6, $8);     }
     ;
 
-if_else_block:
-    "if" condition "then" "\n" statements "else" statements "end" { $$ = AST_IfElseBlock($2, $5, $7); }
+else_if_block:
+    else_if_statement                            { $$ = AST_ElseIfBlock(NULL, $1); }
+    | else_if_block else_if_statement            { $$ = AST_ElseIfBlock($1, $2);   }
     ;
 
-if_else_if_block:
-    "if" condition "then" "\n" statements "else" if_else_if_block { AST_IfElseIfBlock_IfElseIfBlock($2, $5, $7); }
-    | "if" condition "then" "\n" statements "else" if_else_block  { AST_IfElseIfBlock_IfElseBlock($2, $5, $7);   }
-    | "if" condition "then" "\n" statements "else" if_block       { AST_IfElseIfBlock_IfBlock($2, $5, $7);       }
+else_if_statement:
+    "else" "if" condition "then" "\n" statements { $$ = AST_ElseIfSt($3, $6); }
+    | "elif" condition "then" "\n" statements    { $$ = AST_ElseIfSt($2, $5); }
     ;
 
 while_block:
