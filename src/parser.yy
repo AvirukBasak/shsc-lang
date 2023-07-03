@@ -127,6 +127,27 @@ FILE *yyin = NULL;
 /* identifier */
 %token <identifier_name>   LEXTOK_IDENTIFIER               "<identifier>"
 
+%left  LEXTOK_KWD_MODULE
+%left  LEXTOK_KWD_PROC
+%left  LEXTOK_KWD_START
+%left  LEXTOK_KWD_END
+%left  LEXTOK_KWD_BLOCK
+%left  LEXTOK_KWD_IF
+%left  LEXTOK_KWD_THEN
+%left  LEXTOK_KWD_ELIF
+%left  LEXTOK_KWD_ELSE
+%left  LEXTOK_KWD_WHILE
+%left  LEXTOK_KWD_BREAK
+%left  LEXTOK_KWD_CONTINUE
+%left  LEXTOK_KWD_RETURN
+%left  LEXTOK_KWD_FOR
+%left  LEXTOK_KWD_FROM
+%left  LEXTOK_KWD_TO
+%left  LEXTOK_KWD_BY
+%left  LEXTOK_KWD_DO
+%left  LEXTOK_KWD_VAR
+%left  LEXTOK_KWD_PASS
+
 %left  LEXTOK_LOGICAL_UNEQUAL
 %left  LEXTOK_LOGICAL_UNIDENTICAL
 %left  LEXTOK_PERCENT
@@ -239,22 +260,22 @@ module:
 
 /* A program is empty or a single procedure or multiple procedures */
 program:
-    procedure
+    %empty
     | program procedure
     ;
 
 /* Map each module name to a map of procedures */
 procedure:
-    | "proc" identifier "start" "\n" statements "end" "\n" { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5); }
+    "proc" identifier "start" "\n" statements "end" "\n" { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5); }
     ;
 
 statements:
-    statement                       { $$ = AST_Statements(NULL, $1);         }
+    %empty                          { $$ = NULL                              }
     | statements statement          { $$ = AST_Statements($1, $2);           }
     ;
 
-statement:                          { $$ = NULL;                             }
-    | "pass" "\n"                   { $$ = AST_Statement_empty();            }
+statement:
+    "pass" "\n"                     { $$ = AST_Statement_empty();            }
     | assignment "\n"               { $$ = AST_Statement_Assignment($1);     }
     | compound_statement "\n"       { $$ = AST_Statement_CompoundSt($1);     }
     ;
