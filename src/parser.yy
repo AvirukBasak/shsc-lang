@@ -270,7 +270,7 @@ procedure:
     ;
 
 statements:
-    %empty                          { $$ = NULL                              }
+    %empty                          { $$ = NULL;                             }
     | statements statement          { $$ = AST_Statements($1, $2);           }
     ;
 
