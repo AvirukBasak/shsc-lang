@@ -252,10 +252,12 @@ FILE *yyin = NULL;
 
 %%
 
+nwl: nwl "\n" | "\n";
+
 /* Push module name to a stack */
 module:
     { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); }
-    | "module" identifier "\n" { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
+    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
@@ -266,7 +268,7 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" "\n" statements "end" "\n" { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5); }
+    "proc" identifier "start" nwl statements "end" nwl { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5); }
     ;
 
 statements:
@@ -275,9 +277,9 @@ statements:
     ;
 
 statement:
-    "pass" "\n"                     { $$ = AST_Statement_empty();            }
-    | assignment "\n"               { $$ = AST_Statement_Assignment($1);     }
-    | compound_statement "\n"       { $$ = AST_Statement_CompoundSt($1);     }
+    "pass" nwl                     { $$ = AST_Statement_empty();            }
+    | assignment nwl               { $$ = AST_Statement_Assignment($1);     }
+    | compound_statement nwl       { $$ = AST_Statement_CompoundSt($1);     }
     ;
 
 assignment:
@@ -293,10 +295,10 @@ compound_statement:
     ;
 
 if_block:
-    "if" condition "then" "\n" statements "end"                                         { $$ = AST_IfBlock($2, $5, NULL, NULL); }
-    | "if" condition "then" "\n" statements "else" "\n" statements "end"                { $$ = AST_IfBlock($2, $5, NULL, $8);   }
-    | "if" condition "then" "\n" statements else_if_block "end"                         { $$ = AST_IfBlock($2, $5, $6, NULL);   }
-    | "if" condition "then" "\n" statements else_if_block "else" "\n" statements "end"  { $$ = AST_IfBlock($2, $5, $6, $9);     }
+    "if" condition "then" nwl statements "end"                                         { $$ = AST_IfBlock($2, $5, NULL, NULL); }
+    | "if" condition "then" nwl statements "else" nwl statements "end"                { $$ = AST_IfBlock($2, $5, NULL, $8);   }
+    | "if" condition "then" nwl statements else_if_block "end"                         { $$ = AST_IfBlock($2, $5, $6, NULL);   }
+    | "if" condition "then" nwl statements else_if_block "else" nwl statements "end"  { $$ = AST_IfBlock($2, $5, $6, $9);     }
     ;
 
 else_if_block:
@@ -305,12 +307,12 @@ else_if_block:
     ;
 
 else_if_statement:
-    "else" "if" condition "then" "\n" statements { $$ = AST_ElseIfSt($3, $6); }
-    | "elif" condition "then" "\n" statements    { $$ = AST_ElseIfSt($2, $5); }
+    "else" "if" condition "then" nwl statements { $$ = AST_ElseIfSt($3, $6); }
+    | "elif" condition "then" nwl statements    { $$ = AST_ElseIfSt($2, $5); }
     ;
 
 while_block:
-    "while" condition "do" "\n" statements "end" { $$ = AST_WhileBlock($2, $5); }
+    "while" condition "do" nwl statements "end" { $$ = AST_WhileBlock($2, $5); }
     ;
 
 for_block:
