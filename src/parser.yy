@@ -354,7 +354,7 @@ assignment_expression:
 
 conditional_expression:
     logical_or_expression
-    | expression "if" logical_or_expression "else" conditional_expression
+    | conditional_expression "if" condition "else" conditional_expression
     ;
 
 logical_or_expression:
