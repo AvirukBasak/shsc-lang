@@ -17,7 +17,7 @@ enum StatementType {
 struct AST_Statement_t {
     union {
        AST_Assignment_t *assignment;
-       AST_CompoundSt_t    *compound_statement;
+       AST_CompoundSt_t *compound_statement;
     } statement;
     enum StatementType type;
 };

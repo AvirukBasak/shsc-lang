@@ -7,7 +7,7 @@
 #include "parser.h"
 
 // Define the hash map types
-KHASH_MAP_INIT_STR(procedure_t, AST_Statements_t*)
+KHASH_MAP_INIT_STR(procedure_t, const AST_Statements_t*)
 KHASH_MAP_INIT_STR(module_t, khash_t(procedure_t)*)
 
 // AST_ProcedureMap_t structure
@@ -20,14 +20,14 @@ typedef struct
 AST_ProcedureMap_t *ast_root_node = NULL;
 
 // Function to create a new AST_ProcedureMap_t object
-void AST_ProcedureMap_create()
+void AST_ProcedureMap_create(void)
 {
     ast_root_node = (AST_ProcedureMap_t*) malloc(sizeof(AST_ProcedureMap_t));
     ast_root_node->map = kh_init(module_t);
 }
 
 /** Set code to map of procedures */
-void AST_ProcedureMap_add(AST_Identifier_t *module, AST_Identifier_t *procedure, AST_Statements_t *code)
+void AST_ProcedureMap_add(const AST_Identifier_t *module, const AST_Identifier_t *procedure, const AST_Statements_t *code)
 {
     if (!module)
         parse_throw("AST_ProcedureMap_add: null pointer error for `module`");
@@ -53,7 +53,7 @@ void AST_ProcedureMap_add(AST_Identifier_t *module, AST_Identifier_t *procedure,
 }
 
 /** Get procedure code by module and procedure name */
-AST_Statements_t *AST_ProcedureMap_get(AST_Identifier_t *module, AST_Identifier_t *procedure)
+const AST_Statements_t *AST_ProcedureMap_get(const AST_Identifier_t *module, const AST_Identifier_t *procedure)
 {
     if (!ast_root_node) {
         parse_throw("AST_procedure_get: null pointer error for `ast_root_node`");
@@ -79,7 +79,7 @@ AST_Statements_t *AST_ProcedureMap_get(AST_Identifier_t *module, AST_Identifier_
 }
 
 /** Clear the map by calling AST_Identifier_free() and AST_Statements_free() on each key and value */
-void AST_ProcedureMap_clear()
+void AST_ProcedureMap_clear(void)
 {
     if (!ast_root_node) return;
     khash_t(procedure_t) *submap = NULL;
@@ -92,7 +92,7 @@ void AST_ProcedureMap_clear()
             if (!kh_exist(submap, k2)) continue;
             // Free procedure name and statements
             free((void*) kh_key(submap, k2));
-            AST_Statements_free(kh_value(submap, k2));
+            AST_Statements_free((void*) kh_value(submap, k2));
         }
         kh_destroy(procedure_t, submap);
     }
