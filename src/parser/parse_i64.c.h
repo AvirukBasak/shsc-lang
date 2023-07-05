@@ -1,3 +1,6 @@
+#ifndef PARSER_PARSE_I64_C_H
+#define PARSER_PARSE_I64_C_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -54,3 +57,7 @@ int64_t parse_int(const char *str, int base)
 
     return result;
 }
+
+#else
+    #warning re-inclusion of module 'parser/parse_i64.c.h'
+#endif

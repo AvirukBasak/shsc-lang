@@ -1,3 +1,6 @@
+#ifndef PARSER_PARSE_F64_C_H
+#define PARSER_PARSE_F64_C_H
+
 #include <ctype.h>
 #include <math.h>
 #include <stdbool.h>
@@ -96,3 +99,7 @@ double parse_float(const char *str, int base) {
     free(buf);
     return (int64_t)val;
 }
+
+#else
+    #warning re-inclusion of module 'parser/parse_f64.c.h'
+#endif

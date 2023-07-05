@@ -1,3 +1,6 @@
+#ifndef PARSER_PARSE_BOOL_C_H
+#define PARSER_PARSE_BOOL_C_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,3 +19,7 @@ bool parse_bool(const char *str)
     free(err_msg);
     return false;
 }
+
+#else
+    #warning re-inclusion of module 'parser/parse_bool.c.h'
+#endif

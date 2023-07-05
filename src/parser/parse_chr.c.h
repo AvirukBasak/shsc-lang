@@ -1,3 +1,6 @@
+#ifndef PARSER_PARSE_CHR_C_H
+#define PARSER_PARSE_CHR_C_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,3 +77,7 @@ char parse_char(const char *str)
 
     return c;
 }
+
+#else
+    #warning re-inclusion of module 'parser/parse_chr.c.h'
+#endif

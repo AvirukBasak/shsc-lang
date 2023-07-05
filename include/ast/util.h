@@ -1,7 +1,7 @@
-#include "ast.h"
-
 #ifndef AST_UTIL_H
 #define AST_UTIL_H
+
+#include "ast.h"
 
 /* Modules stack, top stores name of currently parsing module (file) */
 void AST_ModuleStack_push(const AST_Identifier_t *module_name);

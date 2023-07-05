@@ -1,7 +1,7 @@
-#include "ast.h"
-
 #ifndef AST_NODES_H
 #define AST_NODES_H
+
+#include "ast.h"
 
 struct AST_Statements_t {
     AST_Statements_t *statements;
