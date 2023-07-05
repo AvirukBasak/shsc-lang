@@ -14,26 +14,29 @@ AST_Statements_t *AST_Statements(AST_Statements_t *statements, AST_Statement_t *
     return stmts;
 }
 
-AST_Statement_t *AST_Statement_empty(void) {
+AST_Statement_t *AST_Statement_empty(int line_no) {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
     stmt->type = STATEMENT_TYPE_EMPTY;
     stmt->statement.assignment = NULL;
+    stmt->line_no = line_no;
     return stmt;
 }
 
-AST_Statement_t *AST_Statement_Assignment(AST_Assignment_t *assignment)
+AST_Statement_t *AST_Statement_Assignment(AST_Assignment_t *assignment, int line_no)
 {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
     stmt->type = STATEMENT_TYPE_ASSIGNMENT;
     stmt->statement.assignment = assignment;
+    stmt->line_no = line_no;
     return stmt;
 }
 
-AST_Statement_t *AST_Statement_CompoundSt(AST_CompoundSt_t *compound)
+AST_Statement_t *AST_Statement_CompoundSt(AST_CompoundSt_t *compound, int line_no)
 {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
     stmt->type = STATEMENT_TYPE_COMPOUND;
     stmt->statement.compound_statement = compound;
+    stmt->line_no = line_no;
     return stmt;
 }
 

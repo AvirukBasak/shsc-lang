@@ -19,6 +19,7 @@ struct AST_Statement_t {
        AST_Assignment_t *assignment;
        AST_CompoundSt_t *compound_statement;
     } statement;
+    int line_no;
     enum StatementType type;
 };
 
@@ -141,9 +142,9 @@ struct AST_Identifier_t {
 
 AST_Statements_t    *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement);
 
-AST_Statement_t     *AST_Statement_empty(void);
-AST_Statement_t     *AST_Statement_Assignment(AST_Assignment_t *assignment);
-AST_Statement_t     *AST_Statement_CompoundSt(AST_CompoundSt_t    *compund);
+AST_Statement_t     *AST_Statement_empty(int line_no);
+AST_Statement_t     *AST_Statement_Assignment(AST_Assignment_t *assignment, int line_no);
+AST_Statement_t     *AST_Statement_CompoundSt(AST_CompoundSt_t *compund, int line_no);
 
 AST_Assignment_t    *AST_Assignment_create(AST_Identifier_t *identifier, AST_Expression_t *expression);
 AST_Assignment_t    *AST_Assignment_update(AST_Identifier_t *identifier, AST_Expression_t *expression);
