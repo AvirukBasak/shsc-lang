@@ -1,5 +1,5 @@
-#ifndef LEX_IO_CH
-#define LEX_IO_CH
+#ifndef LEXER_IO_C_H
+#define LEXER_IO_C_H
 
 #include "lexer.h"
 
@@ -52,4 +52,6 @@ bool lex_isalmun_undr(char c)
     return isalnum(c) || c == '_';
 }
 
+#else
+    #warning re-inclusion of module 'lexer/io.c.h'
 #endif

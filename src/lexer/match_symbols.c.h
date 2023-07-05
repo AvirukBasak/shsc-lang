@@ -1,5 +1,5 @@
-#ifndef LEX_MATCH_SYMBOLS_CH
-#define LEX_MATCH_SYMBOLS_CH
+#ifndef LEXER_MATCH_SYMBOLS_C_H
+#define LEXER_MATCH_SYMBOLS_C_H
 
 #include "lexer.h"
 
@@ -224,4 +224,6 @@ LexToken lex_match_symbols(FILE *f, char ch)
     return LEXTOK_INVALID;
 }
 
+#else
+    #warning re-inclusion of module 'lexer/match_symbols.c.h'
 #endif

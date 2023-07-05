@@ -1,5 +1,5 @@
-#ifndef LEX_BUFFER_CH
-#define LEX_BUFFER_CH
+#ifndef LEXER_BUFFER_C_H
+#define LEXER_BUFFER_C_H
 
 #include "lexer.h"
 
@@ -47,4 +47,6 @@ void lex_buffree()
     free(lex_buffer);
 }
 
+#else
+    #warning re-inclusion of module 'lexer/buffer.c.h'
 #endif

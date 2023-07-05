@@ -1,7 +1,10 @@
+#ifndef AST_NODES_STATEMENTS_C_H
+#define AST_NODES_STATEMENTS_C_H
+
 #include <stdlib.h>
 
-#include "ast/syntax.h"
-#include "ast/syntax/statements.h"
+#include "ast/nodes.h"
+#include "ast/nodes/statements.h"
 
 void AST_Statements_free(AST_Statements_t *statements)
 {
@@ -14,3 +17,7 @@ void AST_Statements_free(AST_Statements_t *statements)
         free(tmp);
     }
 }
+
+#else
+    #warning re-inclusion of module 'ast/nodes/statements.c.h'
+#endif

@@ -1,7 +1,10 @@
+#ifndef AST_NODES_C_H
+#define AST_NODES_C_H
+
 #include <stdlib.h>
 
 #include "ast.h"
-#include "ast/syntax.h"
+#include "ast/nodes.h"
 
 AST_Statements_t *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement)
 {
@@ -221,3 +224,7 @@ AST_Identifier_t *AST_Identifier(char *identifier_name)
     identifier->identifier_name = identifier_name;
     return identifier;
 }
+
+#else
+    #warning re-inclusion of module 'ast/nodes.c.h'
+#endif

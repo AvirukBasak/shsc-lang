@@ -1,5 +1,5 @@
-#ifndef LEX_TOKENS_CH
-#define LEX_TOKENS_CH
+#ifndef LEXER_TOKENS_C_H
+#define LEXER_TOKENS_C_H
 
 #include "lexer.h"
 #include "parser.yac.h"
@@ -234,4 +234,6 @@ char *lex_get_symbol(LexToken code)
     return "<internal>";
 }
 
+#else
+    #warning re-inclusion of module 'lexer/tokens.c.h'
 #endif

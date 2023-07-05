@@ -9,7 +9,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "ast.h"
-#include "ast/syntax.h"
+#include "ast/nodes.h"
 #include "ast/util.h"
 
 FILE *yyin = NULL;
