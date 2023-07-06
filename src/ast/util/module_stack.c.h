@@ -1,9 +1,9 @@
 #ifndef AST_UTIL_MODULE_STACK_C_H
 #define AST_UTIL_MODULE_STACK_C_H
 
+#include <stdlib.h>
 #include "ast/nodes.h"
-#include "ast/util.h"
-#include "parser.h"
+#include "ast/util/module_stack.h"
 
 typedef struct ModuleStack_t ModuleStack_t;
 
@@ -15,7 +15,7 @@ struct ModuleStack_t {
 // Global variable representing the top of the stack
 struct ModuleStack_t *top = NULL;
 
-// Function to push an AST identifier onto the stack
+/** Push name of current module to module stack */
 void AST_ModuleStack_push(const AST_Identifier_t *module_name)
 {
     ModuleStack_t *newNode = (ModuleStack_t*) malloc(sizeof(ModuleStack_t));
@@ -24,14 +24,14 @@ void AST_ModuleStack_push(const AST_Identifier_t *module_name)
     top = newNode;
 }
 
-// Function to get the top AST identifier from the stack
+/** Function to get the top module name from the stack */
 const AST_Identifier_t *AST_ModuleStack_top(void)
 {
     if (top == NULL) return NULL;
     return top->data;
 }
 
-// Function to pop the top AST identifier from the stack
+/** Pop top module name from stack */
 const AST_Identifier_t *AST_ModuleStack_pop(void)
 {
     if (top == NULL) return NULL;
@@ -42,7 +42,7 @@ const AST_Identifier_t *AST_ModuleStack_pop(void)
     return poppedData;
 }
 
-// Function to clear the stack
+/** Empty the stack (doesn't free the (AST_Identifier*)) */
 void AST_ModuleStack_clear(void)
 {
     while (top != NULL) {

@@ -14,7 +14,7 @@
 #include "tlib/khash/khash.h"
 
 #include "ast/nodes.h"
-#include "ast/util.h"
+#include "ast/util/procedure_map.h"
 #include "parser.h"
 
 /* Define the hash map types */

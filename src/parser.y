@@ -8,7 +8,6 @@
 #include "io.h"
 #include "lexer.h"
 #include "parser.h"
-#include "ast.h"
 #include "ast/nodes.h"
 #include "ast/util.h"
 
