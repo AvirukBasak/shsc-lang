@@ -8,7 +8,7 @@
 #include <ctype.h>
 
 #include "ast.h"
-#include "parser.yac.h"
+#include "parser.yy.h"
 
 #define LEX_MAX_BUFFALLOC_SZ   (64)
 #define LEX_MAX_IDENTIFIER_LEN (64)

@@ -39,7 +39,7 @@ SOURCES        := $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)) $(shell find $(S
 HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
 TESTSRC        := $(shell find $(TEST_DIR)/ -name "*."$(SRCEXT))
 
-PARSER         := $(INCLUDE_DIR)/parser.yac.h $(SRC_DIR)/parser.yy.c
+PARSER         := $(INCLUDE_DIR)/parser.yy.h $(SRC_DIR)/parser.yy.c
 
 ## release build
 
@@ -65,7 +65,7 @@ $(DBG_OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 
 ## parser source
 $(PARSER): $(SRC_DIR)/parser.yy
-	bison --defines=$(INCLUDE_DIR)/parser.yac.h -o $(SRC_DIR)/parser.yy.c $(SRC_DIR)/parser.yy
+	bison --defines=$(INCLUDE_DIR)/parser.yy.h -o $(SRC_DIR)/parser.yy.c $(SRC_DIR)/parser.yy
 
 ## target for debug executable
 $(DBG_TARGET): $(REQ_DIRS) $(DBG_LIBRARIES) $(DBG_OBJECTS)
@@ -114,4 +114,4 @@ cleaner:
 	@rm -rf $(HDR_TARGET)
 	@rm -rf $(TARGET_DIR)
 	@rm -f $(SRC_DIR)/parser.yy.c
-	@rm -f $(INCLUDE_DIR)/parser.yac.h
+	@rm -f $(INCLUDE_DIR)/parser.yy.h
