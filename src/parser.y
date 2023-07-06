@@ -268,7 +268,7 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" nwl statements "end" nwl { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5); }
+    "proc" identifier "start" nwl statements "end" nwl { AST_ProcedureMap_add((AST_Identifier_t*) AST_ModuleStack_top(), $2, $5); }
     ;
 
 statements:
@@ -325,11 +325,11 @@ block:
     ;
 
 condition:
-    conditional_expression { $$ = AST_Condition(NULL); }
+    conditional_expression { $$ = NULL; }
     ;
 
 expression:
-    assignment_expression { $$ = NULL; }
+    assignment_expression  { $$ = NULL; }
     ;
 
 assignment_expression:
@@ -354,7 +354,11 @@ assignment_expression:
 
 conditional_expression:
     logical_or_expression
-    | conditional_expression "if" condition "else" conditional_expression
+    | ternary_expression
+    ;
+
+ternary_expression:
+    conditional_expression "if" condition "else" conditional_expression
     ;
 
 logical_or_expression:

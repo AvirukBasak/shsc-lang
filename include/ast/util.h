@@ -9,13 +9,14 @@ const AST_Identifier_t *AST_ModuleStack_top(void);
 const AST_Identifier_t *AST_ModuleStack_pop(void);
 void AST_ModuleStack_clear(void);
 
-/** Set code to map of procedures */
-void AST_ProcedureMap_add(const AST_Identifier_t *module, const AST_Identifier_t *procedure, const AST_Statements_t *code);
+/** Maps ( module_name, proc_name ) -> code */
+void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_name, AST_Statements_t *code);
 
-/** Get procedure code by module and procedure name */
-const AST_Statements_t *AST_ProcedureMap_get(const AST_Identifier_t *module, const AST_Identifier_t *procedure);
+/** Get code by a module and a procedure name */
+const AST_Statements_t *AST_ProcedureMap_get(const AST_Identifier_t *module_name, const AST_Identifier_t *proc_name);
 
-/** Clear the map by calling AST_Identifier_free() and AST_Statements_free() on each key and value */
+/** Clears the entire runtime representation of code,
+    i.e. everything the parser generated */
 void AST_ProcedureMap_clear(void);
 
 #endif
