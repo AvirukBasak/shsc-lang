@@ -64,8 +64,8 @@ $(DBG_OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 	@cd $(SRC_DIR) && $(MAKE) dbg
 
 ## parser source
-$(PARSER): $(SRC_DIR)/parser.yy
-	bison --defines=$(INCLUDE_DIR)/parser.yy.h -o $(SRC_DIR)/parser.yy.c $(SRC_DIR)/parser.yy
+$(PARSER): $(SRC_DIR)/parser.y
+	bison --defines=$(INCLUDE_DIR)/parser.yy.h -o $(SRC_DIR)/parser.yy.c $(SRC_DIR)/parser.y
 
 ## target for debug executable
 $(DBG_TARGET): $(REQ_DIRS) $(DBG_LIBRARIES) $(DBG_OBJECTS)

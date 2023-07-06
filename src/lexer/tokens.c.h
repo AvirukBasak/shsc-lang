@@ -2,7 +2,7 @@
 #define LEXER_TOKENS_C_H
 
 #include "lexer.h"
-#include "parser.yac.h"
+#include "parser.yy.h"
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 char *lex_get_tokcode(LexToken code)
