@@ -417,7 +417,7 @@ multiplicative_expression:
     | multiplicative_expression "*" unary_expression
     | multiplicative_expression "/" unary_expression
     | multiplicative_expression "%" unary_expression
-    | multiplicative_expression "**" unary_expression
+    | unary_expression "**" multiplicative_expression
     | multiplicative_expression "//" unary_expression
     ;
 
