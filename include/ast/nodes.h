@@ -93,32 +93,6 @@ struct AST_Block_t {
 
 #include "nodes/expressions.h"
 
-enum AST_ExpressionType_t {
-    EXPR_TYPE_PRIMARY,
-    EXPR_TYPE_UNARY,
-    EXPR_TYPE_BINARY,
-    EXPR_TYPE_INDEXING,
-    EXPR_TYPE_FUNCTION_CALL,
-    EXPR_TYPE_MEMBER_ACCESS,
-    EXPR_TYPE_POSTFIX,
-    EXPR_TYPE_CONDITIONAL,
-};
-
-struct AST_Expression_t {
-    union {
-        AST_PrimaryExpr_t *primary;
-        AST_UnaryExpr_t *unary;
-        AST_BinaryExpr_t *binary;
-        AST_TernaryExpr_t *ternary;
-        AST_IndexingExpr_t *indexing;
-        AST_FunctionCallExpr_t *fn_call;
-        AST_MemberAccessExpr_t *member_access;
-        AST_PostfixExpr_t *postfix;
-        AST_ConditionalExpr_t *conditional;
-    } exp;
-    enum AST_ExpressionType_t type;
-};
-
 enum AST_OperandType_t {
     OPERAND_TYPE_LITERAL,
     OPERAND_TYPE_IDENTIFIER,
@@ -139,6 +113,7 @@ enum AST_DataType_t {
     DATA_TYPE_F64,
     DATA_TYPE_STR,
     DATA_TYPE_INTERP_STR,
+    DATA_TYPE_LST,
     DATA_TYPE_ANY,
 };
 
@@ -149,6 +124,7 @@ struct AST_Literal_t {
         int64_t i64;
         double f64;
         char *str;
+        AST_CommaSepList_t *lst;
         void *any;
     }  data;
     enum AST_DataType_t type;

@@ -56,7 +56,9 @@ LexToken yylex(void)
         case LEXTOK_HEXINT_LITERAL:
             yylval.literal_i64 = parse_int(lex_get_buffstr(), 16);
             break;
-        default: break;
+        default:
+            yylval.tok = token;
+            break;
     }
     return token;
 }

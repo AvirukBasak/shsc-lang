@@ -15,71 +15,71 @@ FILE *yyin = NULL;
 
 %}
 
-%token LEXTOK_BANG                     "!"
-%token LEXTOK_LOGICAL_UNEQUAL          "!="
-%token LEXTOK_LOGICAL_UNIDENTICAL      "!=="
-%token LEXTOK_DQUOTE                   '"'
-%token LEXTOK_DOLLAR                   "$"
-%token LEXTOK_PERCENT                  "%"
-%token LEXTOK_MODULO_ASSIGN            "%="
-%token LEXTOK_AMPERSAND                "&"
-%token LEXTOK_LOGICAL_AND              "&&"
-%token LEXTOK_LOGICAL_AND_ASSIGN       "&&="
-%token LEXTOK_BITWISE_AND_ASSIGN       "&="
-%token LEXTOK_SQUOTE                   "'"
-%token LEXTOK_LBRACE_PAREN             "("
-%token LEXTOK_RBRACE_PAREN             ")"
-%token LEXTOK_ASTERIX                  "*"
-%token LEXTOK_EXPONENT                 "**"
-%token LEXTOK_EXPONENT_ASSIGN          "**="
-%token LEXTOK_MULTIPLY_ASSIGN          "*="
-%token LEXTOK_PLUS                     "+"
-%token LEXTOK_INCREMENT                "++"
-%token LEXTOK_ADD_ASSIGN               "+="
-%token LEXTOK_COMMA                    ","
-%token LEXTOK_MINUS                    "-"
-%token LEXTOK_DECREMENT                "--"
-%token LEXTOK_SUBSTRACT_ASSIGN         "-="
-%token LEXTOK_SARROW                   "->"
-%token LEXTOK_DOT                      "."
-%token LEXTOK_ELIPSIS                  "..."
-%token LEXTOK_FSLASH                   "/"
-%token LEXTOK_FLOOR_DIVIDE             "//"
-%token LEXTOK_FLOOR_DIVIDE_ASSIGN      "//="
-%token LEXTOK_DIVIDE_ASSIGN            "/="
-%token LEXTOK_COLON                    ":"
-%token LEXTOK_DCOLON                   "::"
-%token LEXTOK_SEMICOLON                ";"
-%token LEXTOK_LBRACE_ANGULAR           "<"
-%token LEXTOK_BITWISE_LSHIFT           "<<"
-%token LEXTOK_BITWISE_LSHIFT_ASSIGN    "<<="
-%token LEXTOK_LOGICAL_LESSER_EQUAL     "<="
-%token LEXTOK_ASSIGN                   "="
-%token LEXTOK_LOGICAL_EQUAL            "=="
-%token LEXTOK_LOGICAL_IDENTICAL        "==="
-%token LEXTOK_DARROW                   "=>"
-%token LEXTOK_RBRACE_ANGULAR           ">"
-%token LEXTOK_LOGICAL_GREATER_EQUAL    ">="
-%token LEXTOK_BITWISE_RSHIFT           ">>"
-%token LEXTOK_BITWISE_RSHIFT_ASSIGN    ">>="
-%token LEXTOK_ARITH_RSHIFT             ">>>"
-%token LEXTOK_ARITH_RSHIFT_ASSIGN      ">>>="
-%token LEXTOK_QUESTION                 "?"
-%token LEXTOK_AT                       "@"
-%token LEXTOK_LBRACE_SQUARE            "["
-%token LEXTOK_BSLASH                   "\\"
-%token LEXTOK_RBRACE_SQUARE            "]"
-%token LEXTOK_CARET                    "^"
-%token LEXTOK_BITWISE_XOR_ASSIGN       "^="
-%token LEXTOK_BACKTICK                 "`"
-%token LEXTOK_LBRACE_CURLY             "{"
-%token LEXTOK_PIPE                     "|"
-%token LEXTOK_BITWISE_OR_ASSIGN        "|="
-%token LEXTOK_PIPEOUT                  "|>"
-%token LEXTOK_LOGICAL_OR               "||"
-%token LEXTOK_LOGICAL_OR_ASSIGN        "||="
-%token LEXTOK_RBRACE_CURLY             "}"
-%token LEXTOK_TILDE                    "~"
+%token <tok> LEXTOK_BANG                     "!"
+%token <tok> LEXTOK_LOGICAL_UNEQUAL          "!="
+%token <tok> LEXTOK_LOGICAL_UNIDENTICAL      "!=="
+%token <tok> LEXTOK_DQUOTE                   '"'
+%token <tok> LEXTOK_DOLLAR                   "$"
+%token <tok> LEXTOK_PERCENT                  "%"
+%token <tok> LEXTOK_MODULO_ASSIGN            "%="
+%token <tok> LEXTOK_AMPERSAND                "&"
+%token <tok> LEXTOK_LOGICAL_AND              "&&"
+%token <tok> LEXTOK_LOGICAL_AND_ASSIGN       "&&="
+%token <tok> LEXTOK_BITWISE_AND_ASSIGN       "&="
+%token <tok> LEXTOK_SQUOTE                   "'"
+%token <tok> LEXTOK_LBRACE_PAREN             "("
+%token <tok> LEXTOK_RBRACE_PAREN             ")"
+%token <tok> LEXTOK_ASTERIX                  "*"
+%token <tok> LEXTOK_EXPONENT                 "**"
+%token <tok> LEXTOK_EXPONENT_ASSIGN          "**="
+%token <tok> LEXTOK_MULTIPLY_ASSIGN          "*="
+%token <tok> LEXTOK_PLUS                     "+"
+%token <tok> LEXTOK_INCREMENT                "++"
+%token <tok> LEXTOK_ADD_ASSIGN               "+="
+%token <tok> LEXTOK_COMMA                    ","
+%token <tok> LEXTOK_MINUS                    "-"
+%token <tok> LEXTOK_DECREMENT                "--"
+%token <tok> LEXTOK_SUBSTRACT_ASSIGN         "-="
+%token <tok> LEXTOK_SARROW                   "->"
+%token <tok> LEXTOK_DOT                      "."
+%token <tok> LEXTOK_ELIPSIS                  "..."
+%token <tok> LEXTOK_FSLASH                   "/"
+%token <tok> LEXTOK_FLOOR_DIVIDE             "//"
+%token <tok> LEXTOK_FLOOR_DIVIDE_ASSIGN      "//="
+%token <tok> LEXTOK_DIVIDE_ASSIGN            "/="
+%token <tok> LEXTOK_COLON                    ":"
+%token <tok> LEXTOK_DCOLON                   "::"
+%token <tok> LEXTOK_SEMICOLON                ";"
+%token <tok> LEXTOK_LBRACE_ANGULAR           "<"
+%token <tok> LEXTOK_BITWISE_LSHIFT           "<<"
+%token <tok> LEXTOK_BITWISE_LSHIFT_ASSIGN    "<<="
+%token <tok> LEXTOK_LOGICAL_LESSER_EQUAL     "<="
+%token <tok> LEXTOK_ASSIGN                   "="
+%token <tok> LEXTOK_LOGICAL_EQUAL            "=="
+%token <tok> LEXTOK_LOGICAL_IDENTICAL        "==="
+%token <tok> LEXTOK_DARROW                   "=>"
+%token <tok> LEXTOK_RBRACE_ANGULAR           ">"
+%token <tok> LEXTOK_LOGICAL_GREATER_EQUAL    ">="
+%token <tok> LEXTOK_BITWISE_RSHIFT           ">>"
+%token <tok> LEXTOK_BITWISE_RSHIFT_ASSIGN    ">>="
+%token <tok> LEXTOK_ARITH_RSHIFT             ">>>"
+%token <tok> LEXTOK_ARITH_RSHIFT_ASSIGN      ">>>="
+%token <tok> LEXTOK_QUESTION                 "?"
+%token <tok> LEXTOK_AT                       "@"
+%token <tok> LEXTOK_LBRACE_SQUARE            "["
+%token <tok> LEXTOK_BSLASH                   "\\"
+%token <tok> LEXTOK_RBRACE_SQUARE            "]"
+%token <tok> LEXTOK_CARET                    "^"
+%token <tok> LEXTOK_BITWISE_XOR_ASSIGN       "^="
+%token <tok> LEXTOK_BACKTICK                 "`"
+%token <tok> LEXTOK_LBRACE_CURLY             "{"
+%token <tok> LEXTOK_PIPE                     "|"
+%token <tok> LEXTOK_BITWISE_OR_ASSIGN        "|="
+%token <tok> LEXTOK_PIPEOUT                  "|>"
+%token <tok> LEXTOK_LOGICAL_OR               "||"
+%token <tok> LEXTOK_LOGICAL_OR_ASSIGN        "||="
+%token <tok> LEXTOK_RBRACE_CURLY             "}"
+%token <tok> LEXTOK_TILDE                    "~"
 
 %token LEXTOK_NEWLINE                  "\n"
 
@@ -101,6 +101,7 @@ FILE *yyin = NULL;
 %token LEXTOK_KWD_FROM                 "from"
 %token LEXTOK_KWD_TO                   "to"
 %token LEXTOK_KWD_BY                   "by"
+%token LEXTOK_KWD_IN                   "in"
 %token LEXTOK_KWD_DO                   "do"
 %token LEXTOK_KWD_VAR                  "var"
 %token LEXTOK_KWD_PASS                 "pass"
@@ -197,6 +198,9 @@ FILE *yyin = NULL;
 
 %union
 {
+    /* just the token id */
+    LexToken tok;
+
     /* base literals */
     bool     literal_bool;
     char     literal_char;
@@ -209,21 +213,31 @@ FILE *yyin = NULL;
     char    *identifier_name;
 
     /* ast nodes */
-    AST_Statements_t    *astnode_statements;           /* statements */
-    AST_Statement_t     *astnode_statement;            /* statement */
-    AST_Assignment_t    *astnode_assignment;           /* assignment */
-    AST_CompoundSt_t    *astnode_compound_statement;   /* compound_statement */
-    AST_IfBlock_t       *astnode_if_block;             /* if_block */
-    AST_ElseIfBlock_t   *astnode_else_if_block;        /* else_if_block */
-    AST_ElseIfSt_t      *astnode_else_if_statement;    /* else_if_statement */
-    AST_WhileBlock_t    *astnode_while_block;          /* while_block */
-    AST_ForBlock_t      *astnode_for_block;            /* for_block */
-    AST_Block_t         *astnode_block;                /* block */
-    AST_Condition_t     *astnode_condition;            /* condition */
-    AST_Expression_t    *astnode_expression;           /* expression */
-    AST_Operand_t       *astnode_operand;              /* operand */
-    AST_Literal_t       *astnode_literal;              /* literal */
-    AST_Identifier_t    *astnode_identifier;           /* identifier */
+    AST_Statements_t        *astnode_statements;           /* statements */
+    AST_Statement_t         *astnode_statement;            /* statement */
+    AST_Assignment_t        *astnode_assignment;           /* assignment */
+    AST_CompoundSt_t        *astnode_compound_statement;   /* compound_statement */
+    AST_IfBlock_t           *astnode_if_block;             /* if_block */
+    AST_ElseIfBlock_t       *astnode_else_if_block;        /* else_if_block */
+    AST_ElseIfSt_t          *astnode_else_if_statement;    /* else_if_statement */
+    AST_WhileBlock_t        *astnode_while_block;          /* while_block */
+    AST_ForBlock_t          *astnode_for_block;            /* for_block */
+    AST_Block_t             *astnode_block;                /* block */
+    AST_ConditionalExpr_t   *astnode_condition;            /* condition */
+    AST_Expression_t        *astnode_expression;           /* expression */
+    AST_Operand_t           *astnode_operand;              /* operand */
+    AST_Literal_t           *astnode_literal;              /* literal */
+    AST_Identifier_t        *astnode_identifier;           /* identifier */
+
+    /* various types of expressions */
+    AST_AssignmentExpr_t    *astnode_assignment_expression;
+    AST_ConditonalExpr_t    *astnode_condtional_expression;
+    AST_TernaryExpr_t       *astnode_ternary_expression;
+    AST_BinaryExpr_t        *astnode_binary_expression;
+    AST_UnaryExpr_t         *astnode_unary_expression;
+    AST_PostfixExpr_t       *astnode_postfix_expression;
+    AST_PrimaryExpr_t       *astnode_primary_expression;
+    AST_CommaSepList_t      *astnode_comma_list;
 }
 
 
@@ -244,6 +258,7 @@ FILE *yyin = NULL;
 %type <astnode_literal>               literal
 %type <astnode_identifier>            identifier
 
+/* various types of expressions */
 
 /* parser entry point? */
 %start module
@@ -317,6 +332,7 @@ while_block:
 for_block:
     "for" identifier "from" operand "to" operand "do" nwl statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
     | "for" identifier "from" operand "to" operand "by" operand "do" nwl statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11);  }
+    | "for" identifier "in" operand "do" nwl statements "end"                             { $$ = AST_ForBlock_iterate($2, $4, $7);   }
     ;
 
 block:
@@ -324,140 +340,140 @@ block:
     ;
 
 condition:
-    conditional_expression { $$ = NULL; }
+    conditional_expression { $$ = $1; }
     ;
 
 expression:
-    assignment_expression  { $$ = NULL; }
+    assignment_expression  { $$ = $1; }
     ;
 
 assignment_expression:
-    conditional_expression
-    | postfix_expression "=" assignment_expression
-    | postfix_expression "||=" assignment_expression
-    | postfix_expression "&&=" assignment_expression
-    | postfix_expression "|=" assignment_expression
-    | postfix_expression "^=" assignment_expression
-    | postfix_expression "&=" assignment_expression
-    | postfix_expression ">>>=" assignment_expression
-    | postfix_expression "<<=" assignment_expression
-    | postfix_expression ">>=" assignment_expression
-    | postfix_expression "+=" assignment_expression
-    | postfix_expression "-=" assignment_expression
-    | postfix_expression "*=" assignment_expression
-    | postfix_expression "/=" assignment_expression
-    | postfix_expression "%=" assignment_expression
-    | postfix_expression "**=" assignment_expression
-    | postfix_expression "//=" assignment_expression
+    conditional_expression                              { $$ = AST_AssignmentExpr_conditional($1); }
+    | postfix_expression "=" assignment_expression      { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "||=" assignment_expression    { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "&&=" assignment_expression    { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "|=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "^=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "&=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression ">>>=" assignment_expression   { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "<<=" assignment_expression    { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression ">>=" assignment_expression    { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "+=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "-=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "*=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "/=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "%=" assignment_expression     { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "**=" assignment_expression    { $$ = AST_AssignmentExpr($1, $2, $3); }
+    | postfix_expression "//=" assignment_expression    { $$ = AST_AssignmentExpr($1, $2, $3); }
     ;
 
 conditional_expression:
-    logical_or_expression
-    | ternary_expression
+    logical_or_expression                               { $$ = AST_ConditionalExpr_binary($1);  }
+    | ternary_expression                                { $$ = AST_ConditionalExpr_ternary($1); }
     ;
 
 ternary_expression:
-    conditional_expression "if" condition "else" conditional_expression
+    conditional_expression "if" condition "else" conditional_expression { $$ = AST_TernaryExpr($1, $3, $5); }
     ;
 
 logical_or_expression:
-    logical_and_expression
-    | logical_or_expression "||" logical_and_expression
+    logical_and_expression                              { $$ = $1; }
+    | logical_or_expression "||" logical_and_expression { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 logical_and_expression:
-    bitwise_or_expression
-    | logical_and_expression "&&" bitwise_or_expression
+    bitwise_or_expression                               { $$ = $1; }
+    | logical_and_expression "&&" bitwise_or_expression { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 bitwise_or_expression:
-    bitwise_xor_expression
-    | bitwise_or_expression "|" bitwise_xor_expression
+    bitwise_xor_expression                              { $$ = $1; }
+    | bitwise_or_expression "|" bitwise_xor_expression  { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 bitwise_xor_expression:
-    bitwise_and_expression
-    | bitwise_xor_expression "^" bitwise_and_expression
+    bitwise_and_expression                              { $$ = $1; }
+    | bitwise_xor_expression "^" bitwise_and_expression { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 bitwise_and_expression:
-    equality_expression
-    | bitwise_and_expression "&" equality_expression
+    equality_expression                                 { $$ = $1; }
+    | bitwise_and_expression "&" equality_expression    { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 equality_expression:
-    relational_expression
-    | equality_expression "==" relational_expression
-    | equality_expression "!=" relational_expression
+    relational_expression                               { $$ = $1; }
+    | equality_expression "==" relational_expression    { $$ = AST_BinaryExpr($1, $2, $3); }
+    | equality_expression "!=" relational_expression    { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 relational_expression:
-    shift_expression
-    | relational_expression "<" shift_expression
-    | relational_expression ">" shift_expression
-    | relational_expression "<=" shift_expression
-    | relational_expression ">=" shift_expression
+    shift_expression                                    { $$ = $1; }
+    | relational_expression "<" shift_expression        { $$ = AST_BinaryExpr($1, $2, $3); }
+    | relational_expression ">" shift_expression        { $$ = AST_BinaryExpr($1, $2, $3); }
+    | relational_expression "<=" shift_expression       { $$ = AST_BinaryExpr($1, $2, $3); }
+    | relational_expression ">=" shift_expression       { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 shift_expression:
-    additive_expression
-    | shift_expression ">>>" additive_expression
-    | shift_expression "<<" additive_expression
-    | shift_expression ">>" additive_expression
+    additive_expression                                 { $$ = $1; }
+    | shift_expression ">>>" additive_expression        { $$ = AST_BinaryExpr($1, $2, $3); }
+    | shift_expression "<<" additive_expression         { $$ = AST_BinaryExpr($1, $2, $3); }
+    | shift_expression ">>" additive_expression         { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 additive_expression:
-    multiplicative_expression
-    | additive_expression "+" multiplicative_expression
-    | additive_expression "-" multiplicative_expression
+    multiplicative_expression                           { $$ = $1; }
+    | additive_expression "+" multiplicative_expression { $$ = AST_BinaryExpr($1, $2, $3); }
+    | additive_expression "-" multiplicative_expression { $$ = AST_BinaryExpr($1, $2, $3); }
     ;
 
 multiplicative_expression:
-    unary_expression
-    | multiplicative_expression "*" unary_expression
-    | multiplicative_expression "/" unary_expression
-    | multiplicative_expression "%" unary_expression
-    | unary_expression "**" multiplicative_expression
-    | multiplicative_expression "//" unary_expression
+    unary_expression                                    { $$ = AST_BinaryExpr_unary($1);            }
+    | multiplicative_expression "*" unary_expression    { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
+    | multiplicative_expression "/" unary_expression    { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
+    | multiplicative_expression "%" unary_expression    { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
+    | unary_expression "**" multiplicative_expression   { $$ = AST_BinaryExpr_unary_op($1, $2, $3); }
+    | multiplicative_expression "//" unary_expression   { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
     ;
 
 unary_expression:
-    postfix_expression
-    | "-" unary_expression
-    | "!" unary_expression
-    | "~" unary_expression
-    | "++" unary_expression
-    | "--" unary_expression
+    postfix_expression                                  { $$ = AST_UnaryExpr_postfix($1); }
+    | "-" unary_expression                              { $$ = AST_UnaryExpr($1, $2);     }
+    | "!" unary_expression                              { $$ = AST_UnaryExpr($1, $2);     }
+    | "~" unary_expression                              { $$ = AST_UnaryExpr($1, $2);     }
+    | "++" unary_expression                             { $$ = AST_UnaryExpr($1, $2);     }
+    | "--" unary_expression                             { $$ = AST_UnaryExpr($1, $2);     }
     ;
 
 postfix_expression:
-    primary_expression
-    | postfix_expression "(" comma_sep_list ")"
-    | postfix_expression "[" expression "]"
-    | postfix_expression "++"
-    | postfix_expression "--"
-    | postfix_expression "." identifier
-    | postfix_expression "::" identifier
+    primary_expression                                  { $$ = AST_PostfixExpr_primary($1);      }
+    | postfix_expression "(" ")"                        { $$ = AST_FunctionCallExpr($1, NULL);   }
+    | postfix_expression "(" comma_list ")"             { $$ = AST_FunctionCallExpr($1, $3);     }
+    | postfix_expression "[" expression "]"             { $$ = AST_IndexingExpr($1, $3);         }
+    | postfix_expression "++"                           { $$ = AST_PostfixExpr($1, $2);          }
+    | postfix_expression "--"                           { $$ = AST_PostfixExpr($1, $2);          }
+    | postfix_expression "." identifier                 { $$ = AST_MemberAccessExpr($1, $2, $3); }
+    | postfix_expression "::" identifier                { $$ = AST_MemberAccessExpr($1, $2, $3); }
     ;
 
 primary_expression:
-    operand
-    | "(" expression ")"
+    operand                       { $$ = AST_PrimaryExpr_operand($1);    }
+    | "(" expression ")"          { $$ = AST_PrimaryExpr_expression($1); }
     ;
 
-comma_sep_list:
-    expression
-    | comma_sep_list "," expression
+comma_list:
+    expression                    { $$ = AST_CommaSepList(NULL, $1); }
+    | comma_list "," expression   { $$ = AST_CommaSepList($1, $2);   }
     ;
 
 operand:
-    literal      { $$ = AST_Operand_Literal($1);    }
-    | identifier { $$ = AST_Operand_Identifier($1); }
+    literal                       { $$ = AST_Operand_Literal($1);    }
+    | identifier                  { $$ = AST_Operand_Identifier($1); }
     ;
 
 literal:
-    "[" comma_sep_list "]"        { $$ = AST_Literal_lst($2); }
-    | LEXTOK_BOOL_LITERAL         { $$ = AST_Literal_bul($1); }
+    LEXTOK_BOOL_LITERAL           { $$ = AST_Literal_bul($1); }
     | LEXTOK_CHAR_LITERAL         { $$ = AST_Literal_chr($1); }
     | LEXTOK_BINFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
     | LEXTOK_OCTFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
@@ -469,10 +485,12 @@ literal:
     | LEXTOK_HEXINT_LITERAL       { $$ = AST_Literal_i64($1); }
     | LEXTOK_STR_LITERAL          { $$ = AST_Literal_str($1); }
     | LEXTOK_INTERP_STR_LITERAL   { $$ = AST_Literal_interp_str($1); }
+    | "[" "]"                     { $$ = AST_Literal_lst(NULL); }
+    | "[" comma_list "]"          { $$ = AST_Literal_lst($2); }
     ;
 
 identifier:
-    LEXTOK_IDENTIFIER { $$ = AST_Identifier($1); }
+    LEXTOK_IDENTIFIER             { $$ = AST_Identifier($1); }
     ;
 
 %%
