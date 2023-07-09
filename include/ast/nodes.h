@@ -10,7 +10,7 @@ struct AST_Statements_t {
     AST_Statement_t *statement;
 };
 
-enum StatementType {
+enum AST_StatementType_t {
     STATEMENT_TYPE_EMPTY,
     STATEMENT_TYPE_ASSIGNMENT,
     STATEMENT_TYPE_COMPOUND,
@@ -22,10 +22,10 @@ struct AST_Statement_t {
        AST_CompoundSt_t *compound_statement;
     } statement;
     int line_no;
-    enum StatementType type;
+    enum AST_StatementType_t type;
 };
 
-enum AssignmentType {
+enum AST_AssignmentType_t {
     /** Return value of RHS discarded */
     ASSIGNMENT_TYPE_TOVOID,
     /** Create or shadow existing variable */
@@ -37,10 +37,10 @@ enum AssignmentType {
 struct AST_Assignment_t {
     AST_Identifier_t *lhs;
     AST_Expression_t *rhs;
-    enum AssignmentType type;
+    enum AST_AssignmentType_t type;
 };
 
-enum CompoundStType {
+enum AST_CompoundStType_t {
     COMPOUNDST_TYPE_IF,
     COMPOUNDST_TYPE_WHILE,
     COMPOUNDST_TYPE_FOR,
@@ -54,7 +54,7 @@ struct AST_CompoundSt_t {
         AST_ForBlock_t *for_block;
         AST_Block_t *block;
     } compound_statement;
-   enum CompoundStType type;
+   enum AST_CompoundStType_t type;
 };
 
 struct AST_IfBlock_t {
@@ -91,19 +91,35 @@ struct AST_Block_t {
     AST_Statements_t *statements;
 };
 
-struct AST_Condition_t {
-    AST_Expression_t *expression;
+#include "nodes/expressions.h"
+
+enum AST_ExpressionType_t {
+    EXPR_TYPE_PRIMARY,
+    EXPR_TYPE_UNARY,
+    EXPR_TYPE_BINARY,
+    EXPR_TYPE_INDEXING,
+    EXPR_TYPE_FUNCTION_CALL,
+    EXPR_TYPE_MEMBER_ACCESS,
+    EXPR_TYPE_POSTFIX,
+    EXPR_TYPE_CONDITIONAL,
 };
 
-/** TODO: Yet to be fully implemented */
 struct AST_Expression_t {
     union {
-        AST_Operand_t *operand;
-        AST_Expression_t *expression;
-    } expression;
+        AST_PrimaryExpr_t *primary;
+        AST_UnaryExpr_t *unary;
+        AST_BinaryExpr_t *binary;
+        AST_TernaryExpr_t *ternary;
+        AST_IndexingExpr_t *indexing;
+        AST_FunctionCallExpr_t *fn_call;
+        AST_MemberAccessExpr_t *member_access;
+        AST_PostfixExpr_t *postfix;
+        AST_ConditionalExpr_t *conditional;
+    } exp;
+    enum AST_ExpressionType_t type;
 };
 
-enum OperandType {
+enum AST_OperandType_t {
     OPERAND_TYPE_LITERAL,
     OPERAND_TYPE_IDENTIFIER,
 };
@@ -113,10 +129,10 @@ struct AST_Operand_t {
         AST_Literal_t *literal;
         AST_Identifier_t *variable;
     } operand;
-    enum OperandType type;
+    enum AST_OperandType_t type;
 };
 
-enum DataType {
+enum AST_DataType_t {
     DATA_TYPE_BUL,
     DATA_TYPE_CHR,
     DATA_TYPE_I64,
@@ -135,7 +151,7 @@ struct AST_Literal_t {
         char *str;
         void *any;
     }  data;
-    enum DataType type;
+    enum AST_DataType_t type;
 };
 
 struct AST_Identifier_t {

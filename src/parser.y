@@ -432,7 +432,7 @@ unary_expression:
 
 postfix_expression:
     primary_expression
-    | postfix_expression "(" arguments_list ")"
+    | postfix_expression "(" comma_sep_list ")"
     | postfix_expression "[" expression "]"
     | postfix_expression "++"
     | postfix_expression "--"
@@ -445,9 +445,9 @@ primary_expression:
     | "(" expression ")"
     ;
 
-arguments_list:
+comma_sep_list:
     expression
-    | arguments_list "," expression
+    | comma_sep_list "," expression
     ;
 
 operand:
@@ -456,7 +456,8 @@ operand:
     ;
 
 literal:
-    LEXTOK_BOOL_LITERAL           { $$ = AST_Literal_bul($1); }
+    "[" comma_sep_list "]"        { $$ = AST_Literal_lst($2); }
+    | LEXTOK_BOOL_LITERAL         { $$ = AST_Literal_bul($1); }
     | LEXTOK_CHAR_LITERAL         { $$ = AST_Literal_chr($1); }
     | LEXTOK_BINFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
     | LEXTOK_OCTFLOAT_LITERAL     { $$ = AST_Literal_f64($1); }
