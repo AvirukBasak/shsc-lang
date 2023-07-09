@@ -18,7 +18,6 @@ typedef struct AST_Block_t                AST_Block_t;
 typedef struct AST_AssignmentExpr_t       AST_Expression_t;
 typedef struct AST_AssignmentExpr_t       AST_AssignmentExpr_t;
 typedef struct AST_ConditonalExpr_t       AST_ConditonalExpr_t;
-typedef struct AST_TernaryExpr_t          AST_TernaryExpr_t;
 typedef struct AST_BinaryExpr_t           AST_BinaryExpr_t;
 typedef struct AST_UnaryExpr_t            AST_UnaryExpr_t;
 typedef struct AST_PostfixExpr_t          AST_PostfixExpr_t;

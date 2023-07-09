@@ -232,7 +232,6 @@ FILE *yyin = NULL;
     /* various types of expressions */
     AST_AssignmentExpr_t    *astnode_assignment_expression;
     AST_ConditonalExpr_t    *astnode_condtional_expression;
-    AST_TernaryExpr_t       *astnode_ternary_expression;
     AST_BinaryExpr_t        *astnode_binary_expression;
     AST_UnaryExpr_t         *astnode_unary_expression;
     AST_PostfixExpr_t       *astnode_postfix_expression;
@@ -369,11 +368,7 @@ assignment_expression:
 
 conditional_expression:
     logical_or_expression                               { $$ = AST_ConditionalExpr_binary($1);  }
-    | ternary_expression                                { $$ = AST_ConditionalExpr_ternary($1); }
-    ;
-
-ternary_expression:
-    conditional_expression "if" condition "else" conditional_expression { $$ = AST_TernaryExpr($1, $3, $5); }
+    | conditional_expression "if" condition "else" conditional_expression { $$ = AST_ConditionalExpr_ternary($1, $3, $5); }                                { $$ = $1; }
     ;
 
 logical_or_expression:
