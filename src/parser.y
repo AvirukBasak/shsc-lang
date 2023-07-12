@@ -113,7 +113,7 @@ FILE *yyin = NULL;
 %token LEXTOK_KWD_PASS                                "pass"
 
 /* default cases */
-%token LEXTOK_EOF                                     "<eof>"
+%token LEXTOK_EOF 0                                   "<eof>"
 %token LEXTOK_INVALID                                 "<invalid>"
 
 /* literals */
