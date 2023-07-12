@@ -423,11 +423,11 @@ additive_expression:
 
 multiplicative_expression:
     unary_expression                                    { $$ = $1; }
-    | multiplicative_expression "*" unary_expression    { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
-    | multiplicative_expression "/" unary_expression    { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
-    | multiplicative_expression "%" unary_expression    { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
-    | unary_expression "**" multiplicative_expression   { $$ = AST_BinaryExpr_unary_op($1, $2, $3); }
-    | multiplicative_expression "//" unary_expression   { $$ = AST_BinaryExpr_op_unary($1, $2, $3); }
+    | multiplicative_expression "*" unary_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | multiplicative_expression "/" unary_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | multiplicative_expression "%" unary_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | unary_expression "**" multiplicative_expression   { $$ = AST_Expression($2, $1, $3, NULL); }
+    | multiplicative_expression "//" unary_expression   { $$ = AST_Expression($2, $1, $3, NULL); }
     ;
 
 unary_expression:

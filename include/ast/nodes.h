@@ -95,6 +95,7 @@ enum AST_ExpressionType_t {
     EXPR_TYPE_EXPRESSION,
     EXPR_TYPE_OPERAND,
     EXPR_TYPE_LIST,
+    EXPR_TYPE_NULL,
 };
 
 struct AST_Expression_t {

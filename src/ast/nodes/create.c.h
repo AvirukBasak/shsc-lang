@@ -149,12 +149,65 @@ AST_Block_t *AST_Block(AST_Statements_t *statements)
     return block;
 }
 
-AST_Expression_t    *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition);
-AST_Expression_t    *AST_Expression_Operand(AST_Operand_t *operand);
-AST_Expression_t    *AST_Expression_Identifier(AST_Identifier_t *identifier);
-AST_Expression_t    *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list);
+AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition)
+{
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = op;
+    expression->lhs_type = lhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+    expression->lhs.expr = lhs;
+    expression->rhs_type = rhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+    expression->rhs.expr = rhs;
+    expression->condition_type = condition ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+    expression->condition.expr = condition;
+    return expression;
+}
 
-AST_CommaSepList_t  *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Expression_t *expression);
+AST_Expression_t *AST_Expression_Operand(AST_Operand_t *operand)
+{
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = TOKOP_NOP;
+    expression->lhs_type = EXPR_TYPE_OPERAND;
+    expression->lhs.oprnd = operand;
+    expression->rhs_type = EXPR_TYPE_NULL;
+    expression->rhs.expr = NULL;
+    expression->condition_type = EXPR_TYPE_NULL;
+    expression->condition.expr = NULL;
+    return expression;
+}
+
+AST_Expression_t *AST_Expression_Identifier(AST_Identifier_t *identifier)
+{
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = TOKOP_NOP;
+    expression->lhs_type = EXPR_TYPE_OPERAND;
+    expression->lhs.oprnd = AST_Operand_Identifier(identifier);
+    expression->rhs_type = EXPR_TYPE_NULL;
+    expression->rhs.expr = NULL;
+    expression->condition_type = EXPR_TYPE_NULL;
+    expression->condition.expr = NULL;
+    return expression;
+}
+
+AST_Expression_t *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list)
+{
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = TOKOP_NOP;
+    expression->lhs_type = EXPR_TYPE_LIST;
+    expression->lhs.lst = comma_list;
+    expression->rhs_type = EXPR_TYPE_NULL;
+    expression->rhs.expr = NULL;
+    expression->condition_type = EXPR_TYPE_NULL;
+    expression->condition.expr = NULL;
+    return expression;
+}
+
+AST_CommaSepList_t *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Expression_t *expression)
+{
+    AST_CommaSepList_t *comma_sep_list = (AST_CommaSepList_t*) malloc(sizeof(AST_CommaSepList_t));
+    comma_sep_list->comma_list = comma_list;
+    comma_sep_list->expression = expression;
+    return comma_sep_list;
+}
 
 AST_Operand_t *AST_Operand_Literal(AST_Literal_t *literal)
 {
@@ -217,6 +270,14 @@ AST_Literal_t *AST_Literal_interp_str(char *literal)
     AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
     ast_literal->type = DATA_TYPE_INTERP_STR;
     ast_literal->data.str = literal;
+    return ast_literal;
+}
+
+AST_Literal_t *AST_Literal_lst(AST_CommaSepList_t *literal)
+{
+    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    ast_literal->type = DATA_TYPE_LST;
+    ast_literal->data.lst = literal;
     return ast_literal;
 }
 
