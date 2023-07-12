@@ -202,10 +202,6 @@ FILE *yyin = NULL;
 %right LEXTOK_LOGICAL_OR_ASSIGN
 %right LEXTOK_TILDE
 
-%{
-    #include "lexer.h"
-%}
-
 %union
 {
     /* just the token id */
@@ -287,8 +283,8 @@ nwl: nwl "\n" | "\n";
 
 /* Push module name to a stack */
 module:
-    { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); } "<eof>"
-    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); } "<eof>"
+    { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); }
+    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
