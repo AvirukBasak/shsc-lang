@@ -227,7 +227,7 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_STR_LITERAL:           return "string literal";
         case LEXTOK_INTERP_STR_LITERAL:    return "interpolable string literal";
         // default cases
-        case LEXTOK_EOF:                   return "eof";
+        case LEXTOK_EOF:                   return "end-of-file";
         case LEXTOK_INVALID:               return "invalid token";
         default:                           return "<internal>";
     }

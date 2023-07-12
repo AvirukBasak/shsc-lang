@@ -18,10 +18,10 @@ char lex_getc(FILE *f)
         if (c == (char) EOF) return (char) EOF;
         if (!lex_is_printable(c))
             lex_throw("un-printable character found");
-        if (c == '\n') { lex_line_no++; lex_char_no = 0; }
+        if (c == '\n') { lex_line_no++; lex_char_no = 1; }
         else if (lex_is_printable(c)) lex_char_no++;
     }
-    else if (c == '\n') { lex_line_no++; lex_char_no = 0; }
+    else if (c == '\n') { lex_line_no++; lex_char_no = 1; }
     else if (lex_is_printable(c)) lex_char_no++;
     if (!lex_is_delimiter(c)) lex_buffpush(c);
     return c;

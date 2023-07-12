@@ -542,6 +542,6 @@ void parse_interpret(FILE *f)
 void parse_throw(const char *msg)
 {
     if (!msg) abort();
-    io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
+    io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s on %s", msg, lex_get_symbol(lex_currtok));
     exit(2);
 }

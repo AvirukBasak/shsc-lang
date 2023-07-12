@@ -12,7 +12,7 @@ LexBuffer *lex_buffer = NULL;
 LexToken lex_currtok = LEXTOK_INVALID;
 
 int lex_line_no = 1;
-int lex_char_no = 0;
+int lex_char_no = 1;
 
 LexToken yylex(void)
 {
