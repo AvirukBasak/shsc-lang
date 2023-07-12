@@ -112,7 +112,7 @@ You can also use `elif` instead of `else if`.
 ```
 while condition do
     # code
-done
+end
 ```
 
 ### For Loops
@@ -136,7 +136,7 @@ for i from 0 to end by 2 do
 end
 ```
 
-Note that the following will throw a [warning prompt](warning-prompt).
+Note that the following will throw a [warning prompt](#warning-prompt).
 ```
 var end = 10
 for i from 0 to end by -2 do
