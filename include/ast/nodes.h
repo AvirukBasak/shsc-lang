@@ -91,11 +91,46 @@ struct AST_Block_t {
     AST_Statements_t *statements;
 };
 
-#include "nodes/expressions.h"
+enum AST_ExpressionType_t {
+    EXPR_TYPE_EXPRESSION,
+    EXPR_TYPE_OPERAND,
+    EXPR_TYPE_LIST,
+};
+
+struct AST_Expression_t {
+    AST_Operator_t op;
+    /** lhs or if part of ternary expression */
+    union {
+        AST_Expression_t *expr;
+        AST_Operand_t *oprnd;
+        AST_CommaSepList_t *lst;
+    } lhs;
+    AST_ExpressionType_t lhs_type;
+    /** rhs or else part of ternary expression */
+    union {
+        AST_Expression_t *expr;
+        AST_Operand_t *oprnd;
+        AST_CommaSepList_t *lst;
+    } rhs;
+    AST_ExpressionType_t rhs_type;
+    /** optional condition for ternary operators,
+        set to NULL if not used */
+    union {
+        AST_Expression_t *expr;
+        AST_Operand_t *oprnd;
+        AST_CommaSepList_t *lst;
+    } condition;
+    AST_ExpressionType_t condition_type;
+};
 
 enum AST_OperandType_t {
     OPERAND_TYPE_LITERAL,
     OPERAND_TYPE_IDENTIFIER,
+};
+
+struct AST_CommaSepList_t {
+    AST_CommaSepList_t *comma_list;
+    AST_Expression_t *expression;
 };
 
 struct AST_Operand_t {

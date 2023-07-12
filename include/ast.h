@@ -15,13 +15,7 @@ typedef struct AST_WhileBlock_t           AST_WhileBlock_t;
 typedef struct AST_ForBlock_t             AST_ForBlock_t;
 typedef struct AST_Block_t                AST_Block_t;
 
-typedef struct AST_AssignmentExpr_t       AST_Expression_t;
-typedef struct AST_AssignmentExpr_t       AST_AssignmentExpr_t;
-typedef struct AST_ConditonalExpr_t       AST_ConditonalExpr_t;
-typedef struct AST_BinaryExpr_t           AST_BinaryExpr_t;
-typedef struct AST_UnaryExpr_t            AST_UnaryExpr_t;
-typedef struct AST_PostfixExpr_t          AST_PostfixExpr_t;
-typedef struct AST_PrimaryExpr_t          AST_PrimaryExpr_t;
+typedef struct AST_Expression_t           AST_Expression_t;
 typedef struct AST_CommaSepList_t         AST_CommaSepList_t;
 
 typedef struct AST_Operand_t              AST_Operand_t;
