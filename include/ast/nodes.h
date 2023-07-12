@@ -1,6 +1,7 @@
 #ifndef AST_NODES_H
 #define AST_NODES_H
 
+#include "lexer.h"
 #include "ast.h"
 #include "nodes/create.h"
 #include "nodes/destroy.h"
@@ -79,12 +80,23 @@ struct AST_WhileBlock_t {
     AST_Statements_t *statements;
 };
 
+enum AST_ForBlockType_t {
+    FORBLOCK_TYPE_RANGE,
+    FORBLOCK_TYPE_LIST,
+};
+
 struct AST_ForBlock_t {
     AST_Identifier_t *iter;
-    AST_Operand_t *start;
-    AST_Operand_t *end;
-    AST_Operand_t *by;
+    union {
+        struct {
+            AST_Operand_t *start;
+            AST_Operand_t *end;
+            AST_Operand_t *by;
+        } range;
+        AST_Operand_t *oprnd;
+    } iterable;
     AST_Statements_t *statements;
+    enum AST_ForBlockType_t type;
 };
 
 struct AST_Block_t {
@@ -106,14 +118,14 @@ struct AST_Expression_t {
         AST_Operand_t *oprnd;
         AST_CommaSepList_t *lst;
     } lhs;
-    AST_ExpressionType_t lhs_type;
+    enum AST_ExpressionType_t lhs_type;
     /** rhs or else part of ternary expression */
     union {
         AST_Expression_t *expr;
         AST_Operand_t *oprnd;
         AST_CommaSepList_t *lst;
     } rhs;
-    AST_ExpressionType_t rhs_type;
+    enum AST_ExpressionType_t rhs_type;
     /** optional condition for ternary operators,
         set to NULL if not used */
     union {
@@ -121,7 +133,7 @@ struct AST_Expression_t {
         AST_Operand_t *oprnd;
         AST_CommaSepList_t *lst;
     } condition;
-    AST_ExpressionType_t condition_type;
+    enum AST_ExpressionType_t condition_type;
 };
 
 enum AST_OperandType_t {

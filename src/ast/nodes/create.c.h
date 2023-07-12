@@ -135,10 +135,21 @@ AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *iter, AST_Operand_t *start, AST_O
 {
     AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
     for_block->iter = iter;
-    for_block->start = start;
-    for_block->end = end;
-    for_block->by = by;
+    for_block->iterable.range.start = start;
+    for_block->iterable.range.end = end;
+    for_block->iterable.range.by = by;
     for_block->statements = for_st;
+    for_block->type = FORBLOCK_TYPE_RANGE;
+    return for_block;
+}
+
+AST_ForBlock_t *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Operand_t *oprnd, AST_Statements_t *for_st)
+{
+    AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
+    for_block->iter = iter;
+    for_block->iterable.oprnd = oprnd;
+    for_block->statements = for_st;
+    for_block->type = FORBLOCK_TYPE_LIST;
     return for_block;
 }
 

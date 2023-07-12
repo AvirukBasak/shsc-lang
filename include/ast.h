@@ -16,6 +16,7 @@ typedef struct AST_ForBlock_t             AST_ForBlock_t;
 typedef struct AST_Block_t                AST_Block_t;
 
 typedef struct AST_Expression_t           AST_Expression_t;
+typedef struct AST_Expression_t           AST_Condition_t;
 typedef struct AST_CommaSepList_t         AST_CommaSepList_t;
 
 typedef struct AST_Operand_t              AST_Operand_t;

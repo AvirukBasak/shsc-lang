@@ -202,10 +202,14 @@ FILE *yyin = NULL;
 %right LEXTOK_LOGICAL_OR_ASSIGN
 %right LEXTOK_TILDE
 
+%{
+    #include "lexer.h"
+%}
+
 %union
 {
     /* just the token id */
-    LexToken tok;
+    enum yytokentype tok;
 
     /* base literals */
     bool     literal_bool;
@@ -229,7 +233,6 @@ FILE *yyin = NULL;
     AST_WhileBlock_t       *astnode_while_block;          /* while_block */
     AST_ForBlock_t         *astnode_for_block;            /* for_block */
     AST_Block_t            *astnode_block;                /* block */
-    AST_Expression_t       *astnode_condition;            /* condition */
     AST_Expression_t       *astnode_expression;           /* expression */
     AST_CommaSepList_t     *astnode_comma_list;           /* comma_list */
     AST_Operand_t          *astnode_operand;              /* operand */
@@ -249,8 +252,25 @@ FILE *yyin = NULL;
 %type <astnode_while_block>        while_block
 %type <astnode_for_block>          for_block
 %type <astnode_block>              block
-%type <astnode_condition>          condition
+
 %type <astnode_expression>         expression
+%type <astnode_expression>         condition
+%type <astnode_expression>         assignment_expression
+%type <astnode_expression>         conditional_expression
+%type <astnode_expression>         logical_or_expression
+%type <astnode_expression>         logical_and_expression
+%type <astnode_expression>         bitwise_or_expression
+%type <astnode_expression>         bitwise_xor_expression
+%type <astnode_expression>         bitwise_and_expression
+%type <astnode_expression>         equality_expression
+%type <astnode_expression>         relational_expression
+%type <astnode_expression>         shift_expression
+%type <astnode_expression>         additive_expression
+%type <astnode_expression>         multiplicative_expression
+%type <astnode_expression>         unary_expression
+%type <astnode_expression>         postfix_expression
+%type <astnode_expression>         primary_expression
+
 %type <astnode_comma_list>         comma_list
 %type <astnode_operand>            operand
 %type <astnode_literal>            literal
@@ -366,7 +386,7 @@ assignment_expression:
 
 conditional_expression:
     logical_or_expression                               { $$ = $1; }
-    | conditional_expression "if" condition "else" conditional_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $3, $5); }                                { $$ = $1; }
+    | conditional_expression "if" condition "else" conditional_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
     ;
 
 logical_or_expression:
@@ -432,17 +452,17 @@ multiplicative_expression:
 
 unary_expression:
     postfix_expression                                  { $$ = $1; }
-    | "-" unary_expression                              { $$ = AST_Expression($2, NULL, $3, NULL); }
-    | "!" unary_expression                              { $$ = AST_Expression($2, NULL, $3, NULL); }
-    | "~" unary_expression                              { $$ = AST_Expression($2, NULL, $3, NULL); }
-    | "++" unary_expression                             { $$ = AST_Expression($2, NULL, $3, NULL); }
-    | "--" unary_expression                             { $$ = AST_Expression($2, NULL, $3, NULL); }
+    | "-" unary_expression                              { $$ = AST_Expression($1, NULL, $2, NULL); }
+    | "!" unary_expression                              { $$ = AST_Expression($1, NULL, $2, NULL); }
+    | "~" unary_expression                              { $$ = AST_Expression($1, NULL, $2, NULL); }
+    | "++" unary_expression                             { $$ = AST_Expression($1, NULL, $2, NULL); }
+    | "--" unary_expression                             { $$ = AST_Expression($1, NULL, $2, NULL); }
     ;
 
 postfix_expression:
     primary_expression                                  { $$ = $1; }
-    | postfix_expression "(" ")"                        { $$ = AST_Expression(TOKOP_FNCALL, $1, NULL); }
-    | postfix_expression "(" comma_list ")"             { $$ = AST_Expression($2, $1,
+    | postfix_expression "(" ")"                        { $$ = AST_Expression(TOKOP_FNCALL, $1, NULL, NULL); }
+    | postfix_expression "(" comma_list ")"             { $$ = AST_Expression(TOKOP_FNCALL, $1,
                                                             AST_Expression_CommaSepList($3), NULL);
                                                         }
     | postfix_expression "[" expression "]"             { $$ = AST_Expression(TOKOP_INDEXING, $1, $3, NULL); }
@@ -458,12 +478,12 @@ postfix_expression:
 
 primary_expression:
     operand                                             { $$ = AST_Expression_Operand($1); }
-    | "(" expression ")"                                { $$ = $1; }
+    | "(" expression ")"                                { $$ = $2; }
     ;
 
 comma_list:
     expression                                          { $$ = AST_CommaSepList(NULL, $1); }
-    | comma_list "," expression                         { $$ = AST_CommaSepList($1, $2); }
+    | comma_list "," expression                         { $$ = AST_CommaSepList($1, $3); }
     ;
 
 operand:
