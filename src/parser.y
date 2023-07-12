@@ -354,22 +354,22 @@ expression:
 
 assignment_expression:
     conditional_expression                              { $$ = $1; }
-    | postfix_expression "=" assignment_expression      { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "||=" assignment_expression    { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "&&=" assignment_expression    { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "|=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "^=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "&=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression ">>>=" assignment_expression   { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "<<=" assignment_expression    { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression ">>=" assignment_expression    { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "+=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "-=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "*=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "/=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "%=" assignment_expression     { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "**=" assignment_expression    { AST_Expression($2, $1, $3, NULL); }
-    | postfix_expression "//=" assignment_expression    { AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "=" assignment_expression      { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "||=" assignment_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "&&=" assignment_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "|=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "^=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "&=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression ">>>=" assignment_expression   { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "<<=" assignment_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression ">>=" assignment_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "+=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "-=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "*=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "/=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "%=" assignment_expression     { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "**=" assignment_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
+    | postfix_expression "//=" assignment_expression    { $$ = AST_Expression($2, $1, $3, NULL); }
     ;
 
 conditional_expression:
