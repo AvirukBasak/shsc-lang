@@ -529,19 +529,22 @@ int yyerror(const char* s)
 void parse_interpret(FILE *f)
 {
     yyin = f;
-    /* LexToken tok = lex_get_nexttok(yyin);
+#ifdef LEX_DEBUG
+    LexToken tok = lex_get_nexttok(yyin);
     while (tok != LEXTOK_EOF) {
         printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
         tok = lex_get_nexttok(f);
     }
-    printf("%s\n", lex_get_tokcode(tok)); */
+    printf("%s\n", lex_get_tokcode(tok));
+#else
     yyparse();
+#endif
     lex_buffree();
 }
 
 void parse_throw(const char *msg)
 {
     if (!msg) abort();
-    io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s on %s", msg, lex_get_symbol(lex_currtok));
+    io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
     exit(2);
 }
