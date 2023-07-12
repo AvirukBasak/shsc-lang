@@ -229,20 +229,12 @@ FILE *yyin = NULL;
     AST_WhileBlock_t       *astnode_while_block;          /* while_block */
     AST_ForBlock_t         *astnode_for_block;            /* for_block */
     AST_Block_t            *astnode_block;                /* block */
-    AST_ConditionalExpr_t  *astnode_condition;            /* condition */
+    AST_Expression_t       *astnode_condition;            /* condition */
     AST_Expression_t       *astnode_expression;           /* expression */
+    AST_CommaSepList_t     *astnode_comma_list;           /* comma_list */
     AST_Operand_t          *astnode_operand;              /* operand */
     AST_Literal_t          *astnode_literal;              /* literal */
     AST_Identifier_t       *astnode_identifier;           /* identifier */
-
-    /* various types of expressions */
-    AST_AssignmentExpr_t   *astnode_assignment_expression;
-    AST_ConditonalExpr_t   *astnode_condtional_expression;
-    AST_BinaryExpr_t       *astnode_binary_expression;
-    AST_UnaryExpr_t        *astnode_unary_expression;
-    AST_PostfixExpr_t      *astnode_postfix_expression;
-    AST_PrimaryExpr_t      *astnode_primary_expression;
-    AST_CommaSepList_t     *astnode_comma_list;
 }
 
 
@@ -259,13 +251,13 @@ FILE *yyin = NULL;
 %type <astnode_block>              block
 %type <astnode_condition>          condition
 %type <astnode_expression>         expression
+%type <astnode_comma_list>         comma_list
 %type <astnode_operand>            operand
 %type <astnode_literal>            literal
 %type <astnode_identifier>         identifier
 
-/* various types of expressions */
 
-/* parser entry point? */
+/* parser entry point */
 %start module
 
 
