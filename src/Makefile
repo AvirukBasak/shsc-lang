@@ -32,7 +32,7 @@ SUB_DIR_DBG    := $(SUB_DIRS)
 ## source code headers
 
 LEXER_SRC_CH       := $(shell find $(SRC_DIR)/lexer/ -name "*".$(SRCEXT).$(HEADEREXT))
-# PARSER_SRC_CH      := $(shell find $(SRC_DIR)/parser/ -name "*".$(SRCEXT).$(HEADEREXT))
+# PARSER_SRC_CH    := $(shell find $(SRC_DIR)/parser/ -name "*".$(SRCEXT).$(HEADEREXT))
 FUNCTIONS_SRC_CH   := $(shell find $(SRC_DIR)/functions/ -name "*".$(SRCEXT).$(HEADEREXT))
 
 ## release build

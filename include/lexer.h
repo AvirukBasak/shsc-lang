@@ -8,7 +8,7 @@
 #include <ctype.h>
 
 #include "ast.h"
-#include "parser.yac.h"
+#include "parser.yy.h"
 
 #define LEX_MAX_BUFFALLOC_SZ   (64)
 #define LEX_MAX_IDENTIFIER_LEN (64)
@@ -25,7 +25,7 @@ LexToken lex_get_nexttok(FILE *f);
 char *lex_get_tokcode(LexToken code);
 char *lex_get_symbol(LexToken code);
 
-char *lex_get_buffstr();
+const char *lex_get_buffstr();
 
 extern int lex_line_no;
 extern int lex_char_no;
@@ -35,6 +35,7 @@ extern int lex_char_no;
 typedef struct LexBuffer LexBuffer;
 
 extern LexBuffer *lex_buffer;
+extern LexToken lex_currtok;
 
 struct LexBuffer {
     char *buffer;

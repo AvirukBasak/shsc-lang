@@ -7,4 +7,5 @@ target/
 core
 lib/*.h
 *.yac.*
+*.yy.*
 *.log

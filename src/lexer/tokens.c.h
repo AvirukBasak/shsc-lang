@@ -1,8 +1,8 @@
-#ifndef LEX_TOKENS_CH
-#define LEX_TOKENS_CH
+#ifndef LEXER_TOKENS_C_H
+#define LEXER_TOKENS_C_H
 
 #include "lexer.h"
-#include "parser.yac.h"
+#include "parser.yy.h"
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
 char *lex_get_tokcode(LexToken code)
@@ -227,11 +227,13 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_STR_LITERAL:           return "string literal";
         case LEXTOK_INTERP_STR_LITERAL:    return "interpolable string literal";
         // default cases
-        case LEXTOK_EOF:                   return "eof";
+        case LEXTOK_EOF:                   return "end-of-file";
         case LEXTOK_INVALID:               return "invalid token";
         default:                           return "<internal>";
     }
     return "<internal>";
 }
 
+#else
+    #warning re-inclusion of module 'lexer/tokens.c.h'
 #endif

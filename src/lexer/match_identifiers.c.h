@@ -1,5 +1,5 @@
-#ifndef LEX_MATCH_IDENTIFIERS_CH
-#define LEX_MATCH_IDENTIFIERS_CH
+#ifndef LEXER_MATCH_IDENTIFIERS_C_H
+#define LEXER_MATCH_IDENTIFIERS_C_H
 
 #include "lexer.h"
 
@@ -17,4 +17,6 @@ LexToken lex_match_identifiers(FILE *f, char ch)
     return LEXTOK_IDENTIFIER;
 }
 
+#else
+    #warning re-inclusion of module 'lexer/match_identifiers.c.h'
 #endif

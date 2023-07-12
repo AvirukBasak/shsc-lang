@@ -1,5 +1,5 @@
-#ifndef LEX_MATCH_KEYWORDS_CH
-#define LEX_MATCH_KEYWORDS_CH
+#ifndef LEXER_MATCH_KEYWORDS_C_H
+#define LEXER_MATCH_KEYWORDS_C_H
 
 #include "lexer.h"
 
@@ -45,4 +45,6 @@ LexToken lex_match_keywords(FILE *f, char ch)
     return LEXTOK_INVALID;
 }
 
+#else
+    #warning re-inclusion of module 'lexer/match_keywords.c.h'
 #endif

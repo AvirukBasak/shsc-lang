@@ -1,5 +1,5 @@
-#ifndef LEX_MATCH_LITERALS_CH
-#define LEX_MATCH_LITERALS_CH
+#ifndef LEXER_MATCH_LITERALS_C_H
+#define LEXER_MATCH_LITERALS_C_H
 
 #include "lexer.h"
 
@@ -278,4 +278,6 @@ LexToken lex_match_numeric(FILE *f, char ch)
     else return LEXTOK_INVALID;
 }
 
+#else
+    #warning re-inclusion of module 'lexer/match_literals.c.h'
 #endif

@@ -1,7 +1,8 @@
-#include <stdlib.h>
+#ifndef AST_NODES_CREATE_C_H
+#define AST_NODES_CREATE_C_H
 
-#include "ast.h"
-#include "ast/syntax.h"
+#include <stdlib.h>
+#include "ast/nodes.h"
 
 AST_Statements_t *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement)
 {
@@ -11,26 +12,29 @@ AST_Statements_t *AST_Statements(AST_Statements_t *statements, AST_Statement_t *
     return stmts;
 }
 
-AST_Statement_t *AST_Statement_empty(void) {
+AST_Statement_t *AST_Statement_empty(int line_no) {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
     stmt->type = STATEMENT_TYPE_EMPTY;
     stmt->statement.assignment = NULL;
+    stmt->line_no = line_no;
     return stmt;
 }
 
-AST_Statement_t *AST_Statement_Assignment(AST_Assignment_t *assignment)
+AST_Statement_t *AST_Statement_Assignment(AST_Assignment_t *assignment, int line_no)
 {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
     stmt->type = STATEMENT_TYPE_ASSIGNMENT;
     stmt->statement.assignment = assignment;
+    stmt->line_no = line_no;
     return stmt;
 }
 
-AST_Statement_t *AST_Statement_CompoundSt(AST_CompoundSt_t *compound)
+AST_Statement_t *AST_Statement_CompoundSt(AST_CompoundSt_t *compound, int line_no)
 {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
     stmt->type = STATEMENT_TYPE_COMPOUND;
     stmt->statement.compound_statement = compound;
+    stmt->line_no = line_no;
     return stmt;
 }
 
@@ -131,10 +135,21 @@ AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *iter, AST_Operand_t *start, AST_O
 {
     AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
     for_block->iter = iter;
-    for_block->start = start;
-    for_block->end = end;
-    for_block->by = by;
+    for_block->iterable.range.start = start;
+    for_block->iterable.range.end = end;
+    for_block->iterable.range.by = by;
     for_block->statements = for_st;
+    for_block->type = FORBLOCK_TYPE_RANGE;
+    return for_block;
+}
+
+AST_ForBlock_t *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Operand_t *oprnd, AST_Statements_t *for_st)
+{
+    AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
+    for_block->iter = iter;
+    for_block->iterable.oprnd = oprnd;
+    for_block->statements = for_st;
+    for_block->type = FORBLOCK_TYPE_LIST;
     return for_block;
 }
 
@@ -145,10 +160,64 @@ AST_Block_t *AST_Block(AST_Statements_t *statements)
     return block;
 }
 
-AST_Condition_t *AST_Condition(AST_Expression_t *expression)
+AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition)
 {
-    // TODO: add implementation
-    return NULL;
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = op;
+    expression->lhs_type = lhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+    expression->lhs.expr = lhs;
+    expression->rhs_type = rhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+    expression->rhs.expr = rhs;
+    expression->condition_type = condition ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+    expression->condition.expr = condition;
+    return expression;
+}
+
+AST_Expression_t *AST_Expression_Operand(AST_Operand_t *operand)
+{
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = TOKOP_NOP;
+    expression->lhs_type = EXPR_TYPE_OPERAND;
+    expression->lhs.oprnd = operand;
+    expression->rhs_type = EXPR_TYPE_NULL;
+    expression->rhs.expr = NULL;
+    expression->condition_type = EXPR_TYPE_NULL;
+    expression->condition.expr = NULL;
+    return expression;
+}
+
+AST_Expression_t *AST_Expression_Identifier(AST_Identifier_t *identifier)
+{
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = TOKOP_NOP;
+    expression->lhs_type = EXPR_TYPE_OPERAND;
+    expression->lhs.oprnd = AST_Operand_Identifier(identifier);
+    expression->rhs_type = EXPR_TYPE_NULL;
+    expression->rhs.expr = NULL;
+    expression->condition_type = EXPR_TYPE_NULL;
+    expression->condition.expr = NULL;
+    return expression;
+}
+
+AST_Expression_t *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list)
+{
+    AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
+    expression->op = TOKOP_NOP;
+    expression->lhs_type = EXPR_TYPE_LIST;
+    expression->lhs.lst = comma_list;
+    expression->rhs_type = EXPR_TYPE_NULL;
+    expression->rhs.expr = NULL;
+    expression->condition_type = EXPR_TYPE_NULL;
+    expression->condition.expr = NULL;
+    return expression;
+}
+
+AST_CommaSepList_t *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Expression_t *expression)
+{
+    AST_CommaSepList_t *comma_sep_list = (AST_CommaSepList_t*) malloc(sizeof(AST_CommaSepList_t));
+    comma_sep_list->comma_list = comma_list;
+    comma_sep_list->expression = expression;
+    return comma_sep_list;
 }
 
 AST_Operand_t *AST_Operand_Literal(AST_Literal_t *literal)
@@ -215,9 +284,21 @@ AST_Literal_t *AST_Literal_interp_str(char *literal)
     return ast_literal;
 }
 
+AST_Literal_t *AST_Literal_lst(AST_CommaSepList_t *literal)
+{
+    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    ast_literal->type = DATA_TYPE_LST;
+    ast_literal->data.lst = literal;
+    return ast_literal;
+}
+
 AST_Identifier_t *AST_Identifier(char *identifier_name)
 {
     AST_Identifier_t *identifier = (AST_Identifier_t*) malloc(sizeof(AST_Identifier_t));
     identifier->identifier_name = identifier_name;
     return identifier;
 }
+
+#else
+    #warning re-inclusion of module 'ast/nodes/create.c.h'
+#endif
