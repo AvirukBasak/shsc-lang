@@ -116,14 +116,14 @@ void AST_ProcedureMap_clear(void)
     /* Iterate over the top-level map */
     for (khint_t k1 = kh_begin(ast_modulemap); k1 != kh_end(ast_modulemap); ++k1) {
         if (!kh_exist(ast_modulemap, k1)) continue;
-        AST_Identifier_free(kh_value(ast_modulemap, k1).module_name);
+        AST_Identifier_free(&kh_value(ast_modulemap, k1).module_name);
         khash_t(procedure_t) *procmap = kh_value(ast_modulemap, k1).procmap;
         /* Iterate over the sub map */
         for (khint_t k2 = kh_begin(procmap); k2 != kh_end(procmap); ++k2) {
             if (!kh_exist(procmap, k2)) continue;
             /* Free procedure name and statements */
-            AST_Identifier_free(kh_value(procmap, k2).proc_name);
-            AST_Statements_free(kh_value(procmap, k2).code);
+            AST_Identifier_free(&kh_value(procmap, k2).proc_name);
+            AST_Statements_free(&kh_value(procmap, k2).code);
         }
         kh_destroy(procedure_t, procmap);
     }

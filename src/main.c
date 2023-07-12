@@ -22,5 +22,7 @@ int main(int argc, char **argv)
     }
     /* Need to clear module stack */
     AST_ModuleStack_clear();
+    /* Clear the entire AST */
+    AST_ProcedureMap_clear();
     return 0;
 }
