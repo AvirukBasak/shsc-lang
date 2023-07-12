@@ -113,7 +113,7 @@ FILE *yyin = NULL;
 %token LEXTOK_KWD_PASS                                "pass"
 
 /* default cases */
-%token LEXTOK_EOF                                     "<eof>"
+%token LEXTOK_EOF 0                                   "<eof>"
 %token LEXTOK_INVALID                                 "<invalid>"
 
 /* literals */
@@ -202,10 +202,6 @@ FILE *yyin = NULL;
 %right LEXTOK_LOGICAL_OR_ASSIGN
 %right LEXTOK_TILDE
 
-%{
-    #include "lexer.h"
-%}
-
 %union
 {
     /* just the token id */
@@ -287,8 +283,8 @@ nwl: nwl "\n" | "\n";
 
 /* Push module name to a stack */
 module:
-    { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); } "<eof>"
-    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); } "<eof>"
+    { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); }
+    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
@@ -545,6 +541,8 @@ void parse_interpret(FILE *f)
 void parse_throw(const char *msg)
 {
     if (!msg) abort();
-    io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
+    int line = lex_line_no;
+    if (lex_currtok == LEXTOK_NEWLINE) --line;
+    io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
     exit(2);
 }

@@ -133,6 +133,6 @@ LexToken lex_get_nexttok(FILE *f)
 void lex_throw(const char *msg)
 {
     if (!msg) abort();
-    io_print_srcerr(lex_line_no, lex_char_no, "lexer error: %s", msg);
+    io_print_srcerr(lex_line_no, lex_char_no, "lexing error: %s", msg);
     exit(1);
 }
