@@ -210,4 +210,3 @@ end
 Arguments to a function is defined by the actual parameters (i.e. at the caller side).
 
 Functions have no prototypes or formal parameters.
-
