@@ -35,6 +35,7 @@ extern int lex_char_no;
 typedef struct LexBuffer LexBuffer;
 
 extern LexBuffer *lex_buffer;
+extern LexToken lex_currtok;
 
 struct LexBuffer {
     char *buffer;

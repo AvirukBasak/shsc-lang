@@ -36,7 +36,7 @@ void lex_buffreset()
 
 const char *lex_get_buffstr()
 {
-    if (!lex_buffer->push_i) return "NULL";
+    if (!lex_buffer || !lex_buffer->push_i) return "NULL";
     return lex_buffer->buffer;
 }
 

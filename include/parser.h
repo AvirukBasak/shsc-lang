@@ -11,6 +11,9 @@ int yyerror(const char* s);
 void parse_interpret(FILE *f);
 void parse_throw(const char *msg);
 
+#undef YY_
+#define YY_(Msgid) Msgid
+
 bool parse_bool(const char *str);
 char parse_char(const char *str);
 int64_t parse_int(const char *str, int base);

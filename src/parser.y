@@ -287,8 +287,8 @@ nwl: nwl "\n" | "\n";
 
 /* Push module name to a stack */
 module:
-    { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); }
-    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
+    { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); } "<eof>"
+    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); } "<eof>"
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
@@ -529,12 +529,12 @@ int yyerror(const char* s)
 void parse_interpret(FILE *f)
 {
     yyin = f;
-    LexToken tok = lex_get_nexttok(yyin);
+    /* LexToken tok = lex_get_nexttok(yyin);
     while (tok != LEXTOK_EOF) {
         printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
         tok = lex_get_nexttok(f);
     }
-    printf("%s\n", lex_get_tokcode(tok));
+    printf("%s\n", lex_get_tokcode(tok)); */
     yyparse();
     lex_buffree();
 }
@@ -542,6 +542,6 @@ void parse_interpret(FILE *f)
 void parse_throw(const char *msg)
 {
     if (!msg) abort();
-    io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s", msg);
+    io_print_srcerr(lex_line_no, lex_char_no, "parser error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
     exit(2);
 }

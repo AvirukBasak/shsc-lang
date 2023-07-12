@@ -22,7 +22,7 @@ proc main start
     print(f"entered {x}", lf)
 
     # test bool
-    var x = true;
+    var x = true
     print(f"bool value = {x}", lf)
     var y = 5 if x == false else 7
     if y == 5 then

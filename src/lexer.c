@@ -9,13 +9,14 @@
 #include "parser.h"
 
 LexBuffer *lex_buffer = NULL;
+LexToken lex_currtok = LEXTOK_INVALID;
 
 int lex_line_no = 1;
 int lex_char_no = 0;
 
 LexToken yylex(void)
 {
-    int token = lex_get_nexttok(yyin);
+    int token = lex_currtok = lex_get_nexttok(yyin);
     switch (token) {
         case LEXTOK_IDENTIFIER:
             yylval.identifier_name = strdup(lex_get_buffstr());
