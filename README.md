@@ -10,7 +10,6 @@ World's most sh*tty scripting language.
 Visit [`docs/TestResult.md`](docs/TestResult.md) to view lexer output.
 
 ### Todo
-- Implement the `ModuleStack` and test.
-- Work on `expressions` AST.
-- Build modules to manage AST.
+- Build AST management modules.
+- Build the symbols table.
 - Build the runtime.
