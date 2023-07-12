@@ -1,104 +1,213 @@
-## Syntax
+**Last updated on July 12, 2023**
 
-Syntax is inspired partly by Python, JS and Go.
-However, unlike them, this language has a very few datatypes.
+The following is a specification of the syntax and behaviour of the language.
 
-Composite data types will be implemented as classes when OOP is introduced.
+Majority of this is yet to be implemented.
 
-#### Behaviour
-- Execution starts at procedure main of the main module, i.e. `main::main()`.
-- The main procedure will carry the CLI args as function arguments.
-- Function arguments are accessible using the special `$[index]` syntax.
+# Syntax Documentation
 
-#### Modules
-Modules don't require to be imported, only declared in the first line of the file.
+## File Structure
+The interpreter accepts file paths as command-line arguments for the files you want to run. It parses each file and constructs a data structure that maps module names to a list of defined procedures.
 
-If not, those procedures are put automatically in a module called `main`.
-
-The runtime loads as modules the files passed as CLI arguments to the interpreter.
-
-Functions from modules can be accessed by the syntax `module_name::function_name()`.
-
-If the module was not loaded, it'll error out and exit.
-
-Printing verbose information may provide intial information on what is loaded.
-
-#### Policies
-- Dynamically typed (type inferred at runtime).
-- Weakly typed (sensible type coercion).
-- Error if type coercion is impossible.
-- Objects are objects, everything is not.
-- Support for libc functions.
-- Apart from primitive datatypes, everything else should be objects.
-- Syntax should be sensible.
-- Should not become JS.
-
-#### Coercion rules
-- Any primitive can be coerced to string.
-- Certain string to primitive coercions may fail and cause error.
-- Any primitive type except float can be coerced to bool.
-- Float, int and char can be coerced among themselves
-- Bool can be coerced to any type.
-
-#### Expressions
+## Module Declaration
+Each file must start with the following syntax, indicating the module to which the subsequent procedures belong:
 ```
-r * (cos(a) + sin(b)) - pow(E, sin(ab))
+module module_name
 ```
+Note that there should be no other tokens before the module declaration.
 
-#### Assignment
-```
-var x = r * (cos(a) + sin(b)) - pow(E, sin(ab))
-x = x + 11
-```
+Also, after the module declaration, the same file can't have another module declaration.
 
-#### Functions
+Procedure definitions can be placed only after the module declaration.
+
+## Default Main Module
+If the very first line starts with a procedure declaration (without a module name provided), the runtime assumes the module to be `main` by default.
+
+For example:
 ```
-proc cos start
-    return sin(PI/2 + $[1])
+proc procname start
+    # Procedure code
+end
+```
+is equivalent to:
+```
+module main
+proc procname start
+    # Procedure code
 end
 ```
 
-#### Conditional statements
+## Procedure Declaration
+Procedures can only appear after the module declaration.
+
+The basic syntax for declaring a procedure is as follows:
 ```
-if x == 5 then
-    x = x + 7
+proc procname start
+    # Procedure code
+end
+```
+The procedure name (`procname`) should be a valid identifier.
+
+## Valid Identifiers
+- Should start with either a letter or an underscore.
+- Can have alphanumeric characters and underscores.
+
+## Code Organization
+Since this language doesn't recognize files, module declarations are used to organize code.
+If multiple files have the same module declaration, all procedures will be stored under the same module name.
+
+## Module Access
+To access a procedure from a different module, use the following syntax:
+```
+modulename::procname
+```
+Replace `modulename` with the appropriate module name and `procname` with the name of the procedure you want to access.
+
+## Entry Point
+Program execution starts at `main::main`, i.e., the main procedure of the main module.
+
+## Naming Collision
+If there is a naming collision between procedures in the same module, the runtime will raise an error and stop execution.
+
+## End of File
+Ensure that each file ends with a newline character, or a syntax error will be thrown.
+
+## Statements
+All statements end with a newline.
+A statement can be a variable declaration or an expression.
+
+Each statement can have only one variable declaration.
+
+Each variable declared must be given some value.
+
+A good choice is to assign them to `false` (or `null` when that is introduced).
+
+### Expressions
+Expressions are basically C expressions with some additional operators.
+
+One addition is the exponentiation operator (`**`).
+
+### If Statements
+#### Example 1:
+```
+if condition then
+    # code
+end
+```
+
+#### Example 2:
+```
+if condition then
+    # code
+else if condition then
+    # code
 else
-    x = x + 8
+    # code
+end
+```
+You can also use `elif` instead of `else if`.
+
+### While Loops
+#### Example:
+```
+while condition do
+    # code
+done
+```
+
+### For Loops
+There are 3 kinds of `for` loops.
+
+#### Default Increment
+Increment (or decrement) by 1 depending on the start and end values.
+```
+var start = 10
+for i from start to 0 do
+    # this will automatically do decrement by 1
 end
 ```
 
-#### Loops
+#### Specified Increment
+Increment (or decrement) by the value specified.
 ```
-while x < 10 do
-    x = x + 1
-end
-
-for i from 0 to 17 by 2 do
-    print(i+1)
+var end = 10
+for i from 0 to end by 2 do
+    # this will do an increment by 2
 end
 ```
 
-#### Data memory model
-- Primitives: pseudo stack, auto managed
-- Objects: reference counted, auto managed
+Note that the following will throw a [warning prompt](warning-prompt).
+```
+var end = 10
+for i from 0 to end by -2 do
+    # this will do a decrement by 2
+    # this is a potential infinite loop
+end
+```
 
-A pseudo stack is a contiguous (array type) stack maintained in the heap.
+#### List Iteration
+```
+var list = [ "this", 1, 5, "a", 1, 'i', 's', "t" ]
+for i in list do
+    # `i` will be a reference to the current element
+    # this means the list can be modified using `i`
+    # eg: i = "new value"
+end
+```
 
-#### Datatypes
-The following 5 arr the primitive types:
-- bool
-- char
-- int (int64_t)
-- float (float64_t)
-- string
+### Block Statement
+Creates an unnamed scope.
+It's pretty much useless.
 
-#### Strings
-The current form of strings are purely immutable and useless.
-One may use template strings for some string functionality.
+### Ternary Expression
+Follows Python syntax.
+#### Example
+```
+expression if condition else expression
+```
 
-#### OOP (if added)
-- Class string will replace primitive string type
-- Class array will be added for arrays
-- Basic data structure classes may be added
+### Assignments
+An assignment is possible only to an already existing variable.
 
-Objects will always be passed as reference and ref counted.
+The language supports `=` and all the shortcut assignments.
+
+An assignment is a part of an expression, which means you can do the same operations as in C.
+
+#### Example
+```
+x = y = x = 5
+var u = (x = 4) if true else "hi"
+```
+
+## Warning Prompt
+
+A warning prompt halts execution with a warning and asks the programmer to resume execution.
+It can be disabled using the flag `-disable-warning-prompts`.
+
+## Function Arguments
+The following is an example of a factorial program that shows how to use function arguments.
+
+#### Example
+```
+module main
+
+# factorial(num)
+proc factorial start
+    if $[0] <= 1 then
+        return 1
+    else
+        return $[0] * factorial($[0] - 1)
+    end
+end
+
+proc main start
+    var inp = input("Enter a number: ", i64)
+    var res = factorial(inp)
+    print("result = {res}\n")
+end
+```
+
+Arguments to a function is defined by the actual parameters (i.e. at the caller side).
+
+Functions have no prototypes or formal parameters.
+
