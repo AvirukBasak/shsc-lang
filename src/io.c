@@ -21,7 +21,8 @@ void io_errndie(const char *fmt, ...)
 
 void io_print_srcerr(int line_no, int char_no, const char *fmt, ...)
 {
-    fprintf(stderr, "scsh: %s:%d:%d: ", global_currfile, line_no, char_no);
+    /* fprintf(stderr, "scsh: %s:%d:%d: ", global_currfile, line_no, char_no); */
+    fprintf(stderr, "scsh: %s:%d: ", global_currfile, line_no);
     fflush(stderr);
     va_list args;
     va_start(args, fmt);

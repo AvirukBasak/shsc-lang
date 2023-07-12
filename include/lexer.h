@@ -22,8 +22,8 @@ typedef enum yytokentype LexToken;
 
 LexToken yylex(void);
 LexToken lex_get_nexttok(FILE *f);
-char *lex_get_tokcode(LexToken code);
-char *lex_get_symbol(LexToken code);
+const char *lex_get_tokcode(LexToken code);
+const char *lex_get_symbol(LexToken code);
 
 const char *lex_get_buffstr();
 

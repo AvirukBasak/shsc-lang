@@ -5,7 +5,7 @@
 #include "parser.yy.h"
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
-char *lex_get_tokcode(LexToken code)
+const char *lex_get_tokcode(LexToken code)
 {
     switch (code) {
         // operators and seperators
@@ -120,7 +120,7 @@ char *lex_get_tokcode(LexToken code)
 }
 
 // contributor's warning: ensure tokens are grouped and sorted in alphabetical order
-char *lex_get_symbol(LexToken code)
+const char *lex_get_symbol(LexToken code)
 {
     switch (code) {
         // operators and seperators
@@ -189,7 +189,7 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_LOGICAL_OR_ASSIGN:     return "||=";
         case LEXTOK_RBRACE_CURLY:          return "}";
         case LEXTOK_TILDE:                 return "~";
-        case LEXTOK_NEWLINE:               return "\n";
+        case LEXTOK_NEWLINE:               return "\\n";
         // keywords
         case LEXTOK_KWD_MODULE:            return "module";
         case LEXTOK_KWD_PROC:              return "proc";
@@ -212,24 +212,24 @@ char *lex_get_symbol(LexToken code)
         case LEXTOK_KWD_VAR:               return "var";
         case LEXTOK_KWD_PASS:              return "pass";
         // identifier
-        case LEXTOK_IDENTIFIER:            return "identifier";
+        case LEXTOK_IDENTIFIER:            return lex_get_buffstr();
         // literals
-        case LEXTOK_BOOL_LITERAL:          return "boolean literal";
-        case LEXTOK_CHAR_LITERAL:          return "character literal";
-        case LEXTOK_BINFLOAT_LITERAL:      return "binary float literal";
-        case LEXTOK_OCTFLOAT_LITERAL:      return "octal float literal";
-        case LEXTOK_DECFLOAT_LITERAL:      return "decimal float literal";
-        case LEXTOK_HEXFLOAT_LITERAL:      return "hexadecimal float literal";
-        case LEXTOK_BININT_LITERAL:        return "binary int literal";
-        case LEXTOK_OCTINT_LITERAL:        return "octal int literal";
-        case LEXTOK_DECINT_LITERAL:        return "decimal int literal";
-        case LEXTOK_HEXINT_LITERAL:        return "hexadecimal int literal";
-        case LEXTOK_STR_LITERAL:           return "string literal";
-        case LEXTOK_INTERP_STR_LITERAL:    return "interpolable string literal";
+        case LEXTOK_BOOL_LITERAL:          return lex_get_buffstr();
+        case LEXTOK_CHAR_LITERAL:          return lex_get_buffstr();
+        case LEXTOK_BINFLOAT_LITERAL:      return lex_get_buffstr();
+        case LEXTOK_OCTFLOAT_LITERAL:      return lex_get_buffstr();
+        case LEXTOK_DECFLOAT_LITERAL:      return lex_get_buffstr();
+        case LEXTOK_HEXFLOAT_LITERAL:      return lex_get_buffstr();
+        case LEXTOK_BININT_LITERAL:        return lex_get_buffstr();
+        case LEXTOK_OCTINT_LITERAL:        return lex_get_buffstr();
+        case LEXTOK_DECINT_LITERAL:        return lex_get_buffstr();
+        case LEXTOK_HEXINT_LITERAL:        return lex_get_buffstr();
+        case LEXTOK_STR_LITERAL:           return lex_get_buffstr();
+        case LEXTOK_INTERP_STR_LITERAL:    return lex_get_buffstr();
         // default cases
         case LEXTOK_EOF:                   return "end-of-file";
         case LEXTOK_INVALID:               return "invalid token";
-        default:                           return "<internal>";
+        default:                           return "<internal token>";
     }
     return "<internal>";
 }
