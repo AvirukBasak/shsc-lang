@@ -535,8 +535,8 @@ void parse_interpret(FILE *f)
         tok = lex_get_nexttok(f);
     }
     printf("%s\n", lex_get_tokcode(tok));
-    return;
     yyparse();
+    lex_buffree();
 }
 
 void parse_throw(const char *msg)
