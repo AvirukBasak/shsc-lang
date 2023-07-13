@@ -505,9 +505,11 @@ void AST2JSON_ProcedureMap()
 
 void AST2JSON_convert(const char *filepath)
 {
-    AST2JSON_outfile = fopen(filepath, "wb");
+    if (!strcmp(filepath, "-")) AST2JSON_outfile = stdout;
+    else AST2JSON_outfile = fopen(filepath, "wb");
     AST2JSON_ProcedureMap();
-    fclose(AST2JSON_outfile);
+    if (AST2JSON_outfile != stdout)
+        fclose(AST2JSON_outfile);
 }
 
 #else
