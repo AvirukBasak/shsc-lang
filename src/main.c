@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     AST_ModuleStack_clear();
 
     /* Convert the AST to JSON */
-    FILE *f = fopen("ast.json", "w");
+    FILE *f = fopen("docs/SytanxTree.json", "w");
     AST2JSON_convert(f);
     fclose(f);
 
