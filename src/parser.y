@@ -204,6 +204,9 @@ FILE *yyin = NULL;
 
 %union
 {
+    /* line count */
+    int line_count;
+
     /* just the token id */
     enum yytokentype tok;
 
@@ -236,6 +239,8 @@ FILE *yyin = NULL;
     AST_Identifier_t       *astnode_identifier;           /* identifier */
 }
 
+
+%type <line_count> nwl
 
 /* semantic types of each parser rule */
 %type <astnode_statements>         statements
@@ -279,7 +284,10 @@ FILE *yyin = NULL;
 
 %%
 
-nwl: nwl "\n" | "\n";
+nwl:
+    nwl "\n" { $$ = $1 + 1; }
+    | "\n"   { $$ = 1; }
+    ;
 
 /* Push module name to a stack */
 module:
@@ -304,9 +312,9 @@ statements:
     ;
 
 statement:
-    "pass" nwl                                          { $$ = AST_Statement_empty(lex_line_no); }
-    | assignment nwl                                    { $$ = AST_Statement_Assignment($1, lex_line_no); }
-    | compound_statement nwl                            { $$ = AST_Statement_CompoundSt($1, lex_line_no); }
+    "pass" nwl                                          { $$ = AST_Statement_empty(lex_line_no - $2); }
+    | assignment nwl                                    { $$ = AST_Statement_Assignment($1, lex_line_no - $2); }
+    | compound_statement nwl                            { $$ = AST_Statement_CompoundSt($1, lex_line_no - $2); }
     ;
 
 assignment:

@@ -1,1 +1,956 @@
-{"module": "main", "procedure": {"procedure_name": "main", "code": {"statements": [{"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 6}, {"statement": {"lhs": {"identifier_name": "x"}, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "input"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"identifier_name": "i64"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 8}, {"statement": {"compound_statement": {"condition": {"op": "==", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "x"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"operand": {"data": 1, "type": "i64"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}, "if_st": {"statements": [{"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 10}]}, "else_if_block": {"else_if_block": null, "else_if_st": {"condition": {"op": "==", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "x"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"operand": {"data": 2, "type": "i64"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}, "statements": {"statements": [{"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 12}]}}}, "else_st": {"statements": [{"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 14}]}}, "type": 0}, "type": 2, "line_no": 16}, {"statement": {"compound_statement": {"condition": {"op": ">=", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "x"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"operand": {"data": 0, "type": "i64"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}, "statements": {"statements": [{"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 18}, {"statement": {"lhs": null, "rhs": {"op": "=", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "x"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "-", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "x"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"operand": {"data": 1, "type": "i64"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 19}]}}, "type": 1}, "type": 2, "line_no": 21}, {"statement": {"lhs": null, "rhs": {"op": "=", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "x"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "input"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 22}, {"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 25}, {"statement": {"lhs": {"identifier_name": "x"}, "rhs": {"op": "NOP", "lhs": {"operand": {"data": true, "type": "bool"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 26}, {"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 27}, {"statement": {"lhs": {"identifier_name": "y"}, "rhs": {"op": "?:", "lhs": {"op": "NOP", "lhs": {"operand": {"data": 5, "type": "i64"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"operand": {"data": 7, "type": "i64"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": {"op": "==", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "x"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"operand": {"data": false, "type": "bool"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}, "condition_type": 0}}, "type": 1, "line_no": 28}, {"statement": {"compound_statement": {"condition": {"op": "==", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "y"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"operand": {"data": 5, "type": "i64"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}, "if_st": {"statements": [{"statement": {"lhs": null, "rhs": {"op": "()", "lhs": {"op": "NOP", "lhs": {"operand": {"identifier_name": "print"}, "type": "identifier"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "lhs_type": 0, "rhs": {"op": "NOP", "lhs": {"comma_list": [{"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, {"op": "NOP", "lhs": {"operand": {"data": null, "type": "str"}, "type": "literal"}, "lhs_type": 1, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}]}, "lhs_type": 2, "rhs": null, "rhs_type": 3, "condition": null, "condition_type": 3}, "rhs_type": 0, "condition": null, "condition_type": 3}}, "type": 1, "line_no": 30}]}, "else_if_block": null, "else_st": null}, "type": 0}, "type": 2, "line_no": 31}]}}}
+{
+    "node": "root",
+    "main": {
+        "node": "module",
+        "main": {
+            "node": "procedure",
+            "statements": {
+                "node": "statements",
+                "statements": [
+                    {
+                        "node": "statement",
+                        "line_no": 4,
+                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                        "statement": {
+                            "node": "assignment",
+                            "lhs": null,
+                            "rhs": {
+                                "node": "expression",
+                                "op": "()",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "print"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_LIST",
+                                "rhs": {
+                                    "node": "comma_list",
+                                    "comma_list": [
+                                        {
+                                            "node": "expression",
+                                            "op": "NOP",
+                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                            "lhs": {
+                                                "node": "operand",
+                                                "type": "OPERAND_TYPE_LITERAL",
+                                                "operand": {
+                                                    "node": "literal",
+                                                    "type": "DATA_TYPE_STR",
+                                                    "data": "Hello world!"
+                                                }
+                                            },
+                                            "rhs_type": "EXPR_TYPE_NULL",
+                                            "rhs": null,
+                                            "condition_type": "EXPR_TYPE_NULL",
+                                            "condition": null
+                                        },
+                                        {
+                                            "node": "expression",
+                                            "op": "NOP",
+                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                            "lhs": {
+                                                "node": "operand",
+                                                "type": "OPERAND_TYPE_LITERAL",
+                                                "operand": {
+                                                    "node": "literal",
+                                                    "type": "DATA_TYPE_STR",
+                                                    "data": "Hello world!"
+                                                }
+                                            },
+                                            "rhs_type": "EXPR_TYPE_NULL",
+                                            "rhs": null,
+                                            "condition_type": "EXPR_TYPE_NULL",
+                                            "condition": null
+                                        }
+                                    ]
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 7,
+                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                        "statement": {
+                            "node": "assignment",
+                            "lhs": {
+                                "node": "identifier",
+                                "identifier_name": "x"
+                            },
+                            "rhs": {
+                                "node": "expression",
+                                "op": "()",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "input"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_LIST",
+                                "rhs": {
+                                    "node": "comma_list",
+                                    "comma_list": [
+                                        {
+                                            "node": "expression",
+                                            "op": "NOP",
+                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                            "lhs": {
+                                                "node": "operand",
+                                                "type": "OPERAND_TYPE_IDENTIFIER",
+                                                "operand": {
+                                                    "node": "identifier",
+                                                    "identifier_name": "i64"
+                                                }
+                                            },
+                                            "rhs_type": "EXPR_TYPE_NULL",
+                                            "rhs": null,
+                                            "condition_type": "EXPR_TYPE_NULL",
+                                            "condition": null
+                                        }
+                                    ]
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 14,
+                        "type": "STATEMENT_TYPE_COMPOUND",
+                        "statement": {
+                            "node": "if_block",
+                            "condition": {
+                                "node": "expression",
+                                "op": "==",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "x"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_OPERAND",
+                                "rhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_LITERAL",
+                                    "operand": {
+                                        "node": "literal",
+                                        "type": "DATA_TYPE_I64",
+                                        "data": 1
+                                    }
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            },
+                            "if_st": {
+                                "node": "statements",
+                                "statements": [
+                                    {
+                                        "node": "statement",
+                                        "line_no": 9,
+                                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                                        "statement": {
+                                            "node": "assignment",
+                                            "lhs": null,
+                                            "rhs": {
+                                                "node": "expression",
+                                                "op": "()",
+                                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                                "lhs": {
+                                                    "node": "operand",
+                                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                                    "operand": {
+                                                        "node": "identifier",
+                                                        "identifier_name": "print"
+                                                    }
+                                                },
+                                                "rhs_type": "EXPR_TYPE_LIST",
+                                                "rhs": {
+                                                    "node": "comma_list",
+                                                    "comma_list": [
+                                                        {
+                                                            "node": "expression",
+                                                            "op": "NOP",
+                                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                                            "lhs": {
+                                                                "node": "operand",
+                                                                "type": "OPERAND_TYPE_LITERAL",
+                                                                "operand": {
+                                                                    "node": "literal",
+                                                                    "type": "DATA_TYPE_STR",
+                                                                    "data": "entered 1"
+                                                                }
+                                                            },
+                                                            "rhs_type": "EXPR_TYPE_NULL",
+                                                            "rhs": null,
+                                                            "condition_type": "EXPR_TYPE_NULL",
+                                                            "condition": null
+                                                        },
+                                                        {
+                                                            "node": "expression",
+                                                            "op": "NOP",
+                                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                                            "lhs": {
+                                                                "node": "operand",
+                                                                "type": "OPERAND_TYPE_LITERAL",
+                                                                "operand": {
+                                                                    "node": "literal",
+                                                                    "type": "DATA_TYPE_STR",
+                                                                    "data": "entered 1"
+                                                                }
+                                                            },
+                                                            "rhs_type": "EXPR_TYPE_NULL",
+                                                            "rhs": null,
+                                                            "condition_type": "EXPR_TYPE_NULL",
+                                                            "condition": null
+                                                        }
+                                                    ]
+                                                },
+                                                "condition_type": "EXPR_TYPE_NULL",
+                                                "condition": null
+                                            }
+                                        }
+                                    }
+                                ]
+                            },
+                            "else_if_block": {
+                                "node": "else_if_block",
+                                "else_if_block": null,
+                                "else_if_st": {
+                                    "node": "else_if_st",
+                                    "condition": {
+                                        "node": "expression",
+                                        "op": "==",
+                                        "lhs_type": "EXPR_TYPE_OPERAND",
+                                        "lhs": {
+                                            "node": "operand",
+                                            "type": "OPERAND_TYPE_IDENTIFIER",
+                                            "operand": {
+                                                "node": "identifier",
+                                                "identifier_name": "x"
+                                            }
+                                        },
+                                        "rhs_type": "EXPR_TYPE_OPERAND",
+                                        "rhs": {
+                                            "node": "operand",
+                                            "type": "OPERAND_TYPE_LITERAL",
+                                            "operand": {
+                                                "node": "literal",
+                                                "type": "DATA_TYPE_I64",
+                                                "data": 2
+                                            }
+                                        },
+                                        "condition_type": "EXPR_TYPE_NULL",
+                                        "condition": null
+                                    },
+                                    "statements": {
+                                        "node": "statements",
+                                        "statements": [
+                                            {
+                                                "node": "statement",
+                                                "line_no": 11,
+                                                "type": "STATEMENT_TYPE_ASSIGNMENT",
+                                                "statement": {
+                                                    "node": "assignment",
+                                                    "lhs": null,
+                                                    "rhs": {
+                                                        "node": "expression",
+                                                        "op": "()",
+                                                        "lhs_type": "EXPR_TYPE_OPERAND",
+                                                        "lhs": {
+                                                            "node": "operand",
+                                                            "type": "OPERAND_TYPE_IDENTIFIER",
+                                                            "operand": {
+                                                                "node": "identifier",
+                                                                "identifier_name": "print"
+                                                            }
+                                                        },
+                                                        "rhs_type": "EXPR_TYPE_LIST",
+                                                        "rhs": {
+                                                            "node": "comma_list",
+                                                            "comma_list": [
+                                                                {
+                                                                    "node": "expression",
+                                                                    "op": "NOP",
+                                                                    "lhs_type": "EXPR_TYPE_OPERAND",
+                                                                    "lhs": {
+                                                                        "node": "operand",
+                                                                        "type": "OPERAND_TYPE_LITERAL",
+                                                                        "operand": {
+                                                                            "node": "literal",
+                                                                            "type": "DATA_TYPE_STR",
+                                                                            "data": "entered 2"
+                                                                        }
+                                                                    },
+                                                                    "rhs_type": "EXPR_TYPE_NULL",
+                                                                    "rhs": null,
+                                                                    "condition_type": "EXPR_TYPE_NULL",
+                                                                    "condition": null
+                                                                },
+                                                                {
+                                                                    "node": "expression",
+                                                                    "op": "NOP",
+                                                                    "lhs_type": "EXPR_TYPE_OPERAND",
+                                                                    "lhs": {
+                                                                        "node": "operand",
+                                                                        "type": "OPERAND_TYPE_LITERAL",
+                                                                        "operand": {
+                                                                            "node": "literal",
+                                                                            "type": "DATA_TYPE_STR",
+                                                                            "data": "entered 2"
+                                                                        }
+                                                                    },
+                                                                    "rhs_type": "EXPR_TYPE_NULL",
+                                                                    "rhs": null,
+                                                                    "condition_type": "EXPR_TYPE_NULL",
+                                                                    "condition": null
+                                                                }
+                                                            ]
+                                                        },
+                                                        "condition_type": "EXPR_TYPE_NULL",
+                                                        "condition": null
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            "else_st": {
+                                "node": "statements",
+                                "statements": [
+                                    {
+                                        "node": "statement",
+                                        "line_no": 13,
+                                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                                        "statement": {
+                                            "node": "assignment",
+                                            "lhs": null,
+                                            "rhs": {
+                                                "node": "expression",
+                                                "op": "()",
+                                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                                "lhs": {
+                                                    "node": "operand",
+                                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                                    "operand": {
+                                                        "node": "identifier",
+                                                        "identifier_name": "print"
+                                                    }
+                                                },
+                                                "rhs_type": "EXPR_TYPE_LIST",
+                                                "rhs": {
+                                                    "node": "comma_list",
+                                                    "comma_list": [
+                                                        {
+                                                            "node": "expression",
+                                                            "op": "NOP",
+                                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                                            "lhs": {
+                                                                "node": "operand",
+                                                                "type": "OPERAND_TYPE_LITERAL",
+                                                                "operand": {
+                                                                    "node": "literal",
+                                                                    "type": "DATA_TYPE_STR",
+                                                                    "data": "entered {x}"
+                                                                }
+                                                            },
+                                                            "rhs_type": "EXPR_TYPE_NULL",
+                                                            "rhs": null,
+                                                            "condition_type": "EXPR_TYPE_NULL",
+                                                            "condition": null
+                                                        },
+                                                        {
+                                                            "node": "expression",
+                                                            "op": "NOP",
+                                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                                            "lhs": {
+                                                                "node": "operand",
+                                                                "type": "OPERAND_TYPE_LITERAL",
+                                                                "operand": {
+                                                                    "node": "literal",
+                                                                    "type": "DATA_TYPE_STR",
+                                                                    "data": "entered {x}"
+                                                                }
+                                                            },
+                                                            "rhs_type": "EXPR_TYPE_NULL",
+                                                            "rhs": null,
+                                                            "condition_type": "EXPR_TYPE_NULL",
+                                                            "condition": null
+                                                        }
+                                                    ]
+                                                },
+                                                "condition_type": "EXPR_TYPE_NULL",
+                                                "condition": null
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 19,
+                        "type": "STATEMENT_TYPE_COMPOUND",
+                        "statement": {
+                            "node": "while_block",
+                            "condition": {
+                                "node": "expression",
+                                "op": ">=",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "x"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_OPERAND",
+                                "rhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_LITERAL",
+                                    "operand": {
+                                        "node": "literal",
+                                        "type": "DATA_TYPE_I64",
+                                        "data": 0
+                                    }
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            },
+                            "statements": {
+                                "node": "statements",
+                                "statements": [
+                                    {
+                                        "node": "statement",
+                                        "line_no": 17,
+                                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                                        "statement": {
+                                            "node": "assignment",
+                                            "lhs": null,
+                                            "rhs": {
+                                                "node": "expression",
+                                                "op": "()",
+                                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                                "lhs": {
+                                                    "node": "operand",
+                                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                                    "operand": {
+                                                        "node": "identifier",
+                                                        "identifier_name": "print"
+                                                    }
+                                                },
+                                                "rhs_type": "EXPR_TYPE_LIST",
+                                                "rhs": {
+                                                    "node": "comma_list",
+                                                    "comma_list": [
+                                                        {
+                                                            "node": "expression",
+                                                            "op": "NOP",
+                                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                                            "lhs": {
+                                                                "node": "operand",
+                                                                "type": "OPERAND_TYPE_LITERAL",
+                                                                "operand": {
+                                                                    "node": "literal",
+                                                                    "type": "DATA_TYPE_STR",
+                                                                    "data": "x = {x}"
+                                                                }
+                                                            },
+                                                            "rhs_type": "EXPR_TYPE_NULL",
+                                                            "rhs": null,
+                                                            "condition_type": "EXPR_TYPE_NULL",
+                                                            "condition": null
+                                                        }
+                                                    ]
+                                                },
+                                                "condition_type": "EXPR_TYPE_NULL",
+                                                "condition": null
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "node": "statement",
+                                        "line_no": 18,
+                                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                                        "statement": {
+                                            "node": "assignment",
+                                            "lhs": null,
+                                            "rhs": {
+                                                "node": "expression",
+                                                "op": "=",
+                                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                                "lhs": {
+                                                    "node": "operand",
+                                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                                    "operand": {
+                                                        "node": "identifier",
+                                                        "identifier_name": "x"
+                                                    }
+                                                },
+                                                "rhs_type": "EXPR_TYPE_EXPRESSION",
+                                                "rhs": {
+                                                    "node": "expression",
+                                                    "op": "-",
+                                                    "lhs_type": "EXPR_TYPE_OPERAND",
+                                                    "lhs": {
+                                                        "node": "operand",
+                                                        "type": "OPERAND_TYPE_IDENTIFIER",
+                                                        "operand": {
+                                                            "node": "identifier",
+                                                            "identifier_name": "x"
+                                                        }
+                                                    },
+                                                    "rhs_type": "EXPR_TYPE_OPERAND",
+                                                    "rhs": {
+                                                        "node": "operand",
+                                                        "type": "OPERAND_TYPE_LITERAL",
+                                                        "operand": {
+                                                            "node": "literal",
+                                                            "type": "DATA_TYPE_I64",
+                                                            "data": 1
+                                                        }
+                                                    },
+                                                    "condition_type": "EXPR_TYPE_NULL",
+                                                    "condition": null
+                                                },
+                                                "condition_type": "EXPR_TYPE_NULL",
+                                                "condition": null
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 21,
+                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                        "statement": {
+                            "node": "assignment",
+                            "lhs": null,
+                            "rhs": {
+                                "node": "expression",
+                                "op": "=",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "x"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_EXPRESSION",
+                                "rhs": {
+                                    "node": "expression",
+                                    "op": "()",
+                                    "lhs_type": "EXPR_TYPE_OPERAND",
+                                    "lhs": {
+                                        "node": "operand",
+                                        "type": "OPERAND_TYPE_IDENTIFIER",
+                                        "operand": {
+                                            "node": "identifier",
+                                            "identifier_name": "input"
+                                        }
+                                    },
+                                    "rhs_type": "EXPR_TYPE_LIST",
+                                    "rhs": {
+                                        "node": "comma_list",
+                                        "comma_list": [
+                                            {
+                                                "node": "expression",
+                                                "op": "NOP",
+                                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                                "lhs": {
+                                                    "node": "operand",
+                                                    "type": "OPERAND_TYPE_LITERAL",
+                                                    "operand": {
+                                                        "node": "literal",
+                                                        "type": "DATA_TYPE_STR",
+                                                        "data": "prompt: "
+                                                    }
+                                                },
+                                                "rhs_type": "EXPR_TYPE_NULL",
+                                                "rhs": null,
+                                                "condition_type": "EXPR_TYPE_NULL",
+                                                "condition": null
+                                            },
+                                            {
+                                                "node": "expression",
+                                                "op": "NOP",
+                                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                                "lhs": {
+                                                    "node": "operand",
+                                                    "type": "OPERAND_TYPE_LITERAL",
+                                                    "operand": {
+                                                        "node": "literal",
+                                                        "type": "DATA_TYPE_STR",
+                                                        "data": "prompt: "
+                                                    }
+                                                },
+                                                "rhs_type": "EXPR_TYPE_NULL",
+                                                "rhs": null,
+                                                "condition_type": "EXPR_TYPE_NULL",
+                                                "condition": null
+                                            }
+                                        ]
+                                    },
+                                    "condition_type": "EXPR_TYPE_NULL",
+                                    "condition": null
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 23,
+                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                        "statement": {
+                            "node": "assignment",
+                            "lhs": null,
+                            "rhs": {
+                                "node": "expression",
+                                "op": "()",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "print"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_LIST",
+                                "rhs": {
+                                    "node": "comma_list",
+                                    "comma_list": [
+                                        {
+                                            "node": "expression",
+                                            "op": "NOP",
+                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                            "lhs": {
+                                                "node": "operand",
+                                                "type": "OPERAND_TYPE_LITERAL",
+                                                "operand": {
+                                                    "node": "literal",
+                                                    "type": "DATA_TYPE_STR",
+                                                    "data": "entered {x}"
+                                                }
+                                            },
+                                            "rhs_type": "EXPR_TYPE_NULL",
+                                            "rhs": null,
+                                            "condition_type": "EXPR_TYPE_NULL",
+                                            "condition": null
+                                        },
+                                        {
+                                            "node": "expression",
+                                            "op": "NOP",
+                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                            "lhs": {
+                                                "node": "operand",
+                                                "type": "OPERAND_TYPE_LITERAL",
+                                                "operand": {
+                                                    "node": "literal",
+                                                    "type": "DATA_TYPE_STR",
+                                                    "data": "entered {x}"
+                                                }
+                                            },
+                                            "rhs_type": "EXPR_TYPE_NULL",
+                                            "rhs": null,
+                                            "condition_type": "EXPR_TYPE_NULL",
+                                            "condition": null
+                                        }
+                                    ]
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 25,
+                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                        "statement": {
+                            "node": "assignment",
+                            "lhs": {
+                                "node": "identifier",
+                                "identifier_name": "x"
+                            },
+                            "rhs": {
+                                "node": "expression",
+                                "op": "NOP",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_LITERAL",
+                                    "operand": {
+                                        "node": "literal",
+                                        "type": "DATA_TYPE_BUL",
+                                        "data": true
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_NULL",
+                                "rhs": null,
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 26,
+                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                        "statement": {
+                            "node": "assignment",
+                            "lhs": null,
+                            "rhs": {
+                                "node": "expression",
+                                "op": "()",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "print"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_LIST",
+                                "rhs": {
+                                    "node": "comma_list",
+                                    "comma_list": [
+                                        {
+                                            "node": "expression",
+                                            "op": "NOP",
+                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                            "lhs": {
+                                                "node": "operand",
+                                                "type": "OPERAND_TYPE_LITERAL",
+                                                "operand": {
+                                                    "node": "literal",
+                                                    "type": "DATA_TYPE_STR",
+                                                    "data": "bool value = {x}"
+                                                }
+                                            },
+                                            "rhs_type": "EXPR_TYPE_NULL",
+                                            "rhs": null,
+                                            "condition_type": "EXPR_TYPE_NULL",
+                                            "condition": null
+                                        },
+                                        {
+                                            "node": "expression",
+                                            "op": "NOP",
+                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                            "lhs": {
+                                                "node": "operand",
+                                                "type": "OPERAND_TYPE_LITERAL",
+                                                "operand": {
+                                                    "node": "literal",
+                                                    "type": "DATA_TYPE_STR",
+                                                    "data": "bool value = {x}"
+                                                }
+                                            },
+                                            "rhs_type": "EXPR_TYPE_NULL",
+                                            "rhs": null,
+                                            "condition_type": "EXPR_TYPE_NULL",
+                                            "condition": null
+                                        }
+                                    ]
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 27,
+                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                        "statement": {
+                            "node": "assignment",
+                            "lhs": {
+                                "node": "identifier",
+                                "identifier_name": "y"
+                            },
+                            "rhs": {
+                                "node": "expression",
+                                "op": "?:",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_LITERAL",
+                                    "operand": {
+                                        "node": "literal",
+                                        "type": "DATA_TYPE_I64",
+                                        "data": 5
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_OPERAND",
+                                "rhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_LITERAL",
+                                    "operand": {
+                                        "node": "literal",
+                                        "type": "DATA_TYPE_I64",
+                                        "data": 7
+                                    }
+                                },
+                                "condition_type": "EXPR_TYPE_EXPRESSION",
+                                "condition": {
+                                    "node": "expression",
+                                    "op": "==",
+                                    "lhs_type": "EXPR_TYPE_OPERAND",
+                                    "lhs": {
+                                        "node": "operand",
+                                        "type": "OPERAND_TYPE_IDENTIFIER",
+                                        "operand": {
+                                            "node": "identifier",
+                                            "identifier_name": "x"
+                                        }
+                                    },
+                                    "rhs_type": "EXPR_TYPE_OPERAND",
+                                    "rhs": {
+                                        "node": "operand",
+                                        "type": "OPERAND_TYPE_LITERAL",
+                                        "operand": {
+                                            "node": "literal",
+                                            "type": "DATA_TYPE_BUL",
+                                            "data": false
+                                        }
+                                    },
+                                    "condition_type": "EXPR_TYPE_NULL",
+                                    "condition": null
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "node": "statement",
+                        "line_no": 30,
+                        "type": "STATEMENT_TYPE_COMPOUND",
+                        "statement": {
+                            "node": "if_block",
+                            "condition": {
+                                "node": "expression",
+                                "op": "==",
+                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                "lhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                    "operand": {
+                                        "node": "identifier",
+                                        "identifier_name": "y"
+                                    }
+                                },
+                                "rhs_type": "EXPR_TYPE_OPERAND",
+                                "rhs": {
+                                    "node": "operand",
+                                    "type": "OPERAND_TYPE_LITERAL",
+                                    "operand": {
+                                        "node": "literal",
+                                        "type": "DATA_TYPE_I64",
+                                        "data": 5
+                                    }
+                                },
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                            },
+                            "if_st": {
+                                "node": "statements",
+                                "statements": [
+                                    {
+                                        "node": "statement",
+                                        "line_no": 29,
+                                        "type": "STATEMENT_TYPE_ASSIGNMENT",
+                                        "statement": {
+                                            "node": "assignment",
+                                            "lhs": null,
+                                            "rhs": {
+                                                "node": "expression",
+                                                "op": "()",
+                                                "lhs_type": "EXPR_TYPE_OPERAND",
+                                                "lhs": {
+                                                    "node": "operand",
+                                                    "type": "OPERAND_TYPE_IDENTIFIER",
+                                                    "operand": {
+                                                        "node": "identifier",
+                                                        "identifier_name": "print"
+                                                    }
+                                                },
+                                                "rhs_type": "EXPR_TYPE_LIST",
+                                                "rhs": {
+                                                    "node": "comma_list",
+                                                    "comma_list": [
+                                                        {
+                                                            "node": "expression",
+                                                            "op": "NOP",
+                                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                                            "lhs": {
+                                                                "node": "operand",
+                                                                "type": "OPERAND_TYPE_LITERAL",
+                                                                "operand": {
+                                                                    "node": "literal",
+                                                                    "type": "DATA_TYPE_STR",
+                                                                    "data": "x was false"
+                                                                }
+                                                            },
+                                                            "rhs_type": "EXPR_TYPE_NULL",
+                                                            "rhs": null,
+                                                            "condition_type": "EXPR_TYPE_NULL",
+                                                            "condition": null
+                                                        },
+                                                        {
+                                                            "node": "expression",
+                                                            "op": "NOP",
+                                                            "lhs_type": "EXPR_TYPE_OPERAND",
+                                                            "lhs": {
+                                                                "node": "operand",
+                                                                "type": "OPERAND_TYPE_LITERAL",
+                                                                "operand": {
+                                                                    "node": "literal",
+                                                                    "type": "DATA_TYPE_STR",
+                                                                    "data": "x was false"
+                                                                }
+                                                            },
+                                                            "rhs_type": "EXPR_TYPE_NULL",
+                                                            "rhs": null,
+                                                            "condition_type": "EXPR_TYPE_NULL",
+                                                            "condition": null
+                                                        }
+                                                    ]
+                                                },
+                                                "condition_type": "EXPR_TYPE_NULL",
+                                                "condition": null
+                                            }
+                                        }
+                                    }
+                                ]
+                            },
+                            "else_if_block": null,
+                            "else_st": null
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

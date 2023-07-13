@@ -110,29 +110,23 @@ enum AST_ExpressionType_t {
     EXPR_TYPE_NULL,
 };
 
+union AST_ExpressionUnion_t {
+    AST_Expression_t *expr;
+    AST_Operand_t *oprnd;
+    AST_CommaSepList_t *lst;
+};
+
 struct AST_Expression_t {
     AST_Operator_t op;
     /** lhs or if part of ternary expression */
-    union {
-        AST_Expression_t *expr;
-        AST_Operand_t *oprnd;
-        AST_CommaSepList_t *lst;
-    } lhs;
+    union AST_ExpressionUnion_t lhs;
     enum AST_ExpressionType_t lhs_type;
     /** rhs or else part of ternary expression */
-    union {
-        AST_Expression_t *expr;
-        AST_Operand_t *oprnd;
-        AST_CommaSepList_t *lst;
-    } rhs;
+    union AST_ExpressionUnion_t rhs;
     enum AST_ExpressionType_t rhs_type;
     /** optional condition for ternary operators,
         set to NULL if not used */
-    union {
-        AST_Expression_t *expr;
-        AST_Operand_t *oprnd;
-        AST_CommaSepList_t *lst;
-    } condition;
+    union AST_ExpressionUnion_t condition;
     enum AST_ExpressionType_t condition_type;
 };
 
