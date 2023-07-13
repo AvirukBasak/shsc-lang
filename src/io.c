@@ -38,19 +38,23 @@ char **io_read_lines(const char *filepath, size_t *line_cnt)
         /* check if matrix needs to be resized */
         if (i >= row_size) {
             row_size = row_size * 2 +1;
-            buffer = (char**) realloc(buffer, row_size * sizeof(char*));
+L_BUFFRZ1:  buffer = (char**) realloc(buffer, row_size * sizeof(char*));
             if (!buffer) io_errndie("io_read_lines: memory reallocation failed");
+            /* set garbage to NULL or else realloc will fail at label L_BUFFRZ2 */
             buffer[i] = NULL;
         }
         if (j >= col_size) {
             col_size = col_size * 2 +1;
-            buffer[i] = (char*) realloc(buffer[i], col_size * sizeof(char));
+L_BUFFRZ2:  buffer[i] = (char*) realloc(buffer[i], col_size * sizeof(char));
             if (!buffer[i]) io_errndie("io_read_lines: memory reallocation failed");
         }
         if (c == '\n') {
             /* null-terminate the string and reset column size */
             buffer[i][j] = '\0';
             col_size = j = 0;
+            /* set garbage to NULL or else realloc will fail at label L_BUFFRZ2
+               the condition ensures is within range coz the buffer isn't resized
+               before L_BUFFRZ1 */
             if (i < row_size -1) buffer[++i] = NULL;
             continue;
         }
