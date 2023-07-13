@@ -2,13 +2,15 @@
 World's most sh*tty scripting language.
 
 ## Usage
-- build with `make`
-- copy the executable from `taget/`.
-- example syntax at [`tests/test.txt`](tests/test.txt).
-- syntax specs at [`docs/Syntax.md`](docs/Syntax.md).
+- Build with `make`
+- Copy the executable from `taget/`.
+- Example code at [`tests/test.txt`](tests/test.txt).
+- Syntax specs at [`docs/Syntax.md`](docs/Syntax.md).
 
 ### Tests
-Visit [`docs/TestResult.md`](docs/TestResult.md) to view lexer output.
+- Tested on [`tests/test.txt`](tests/test.txt).
+- Lexer output at [`docs/TestResult.md`](docs/TestResult.md).
+- AST output at [`docs/SyntaxTree.json`](docs/SyntaxTree.json).
 
 ### Todo
 - Build AST management modules.
