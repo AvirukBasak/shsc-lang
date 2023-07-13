@@ -291,7 +291,7 @@ nwl:
 
 /* Push module name to a stack */
 module:
-    { AST_ModuleStack_push(AST_Identifier("main")); } program { AST_ModuleStack_pop(); }
+    { AST_ModuleStack_push(AST_Identifier(strdup("main"))); } program { AST_ModuleStack_pop(); }
     | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
     ;
 

@@ -57,6 +57,8 @@ void AST_ProcedureMap_create(void)
 /** Get a list of map keys */
 AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get()
 {
+    if (!ast_modulemap)
+        return (AST_ProcedureMapKeyList_t) { NULL, 0 };
     AST_ProcedureMapKeyList_t key_list;
     /* Count the number of modules */
     key_list.module_cnt = kh_size(ast_modulemap);
