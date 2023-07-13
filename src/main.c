@@ -22,12 +22,8 @@ int main(int argc, char **argv)
         parse_interpret(f);
         if (f != stdin) fclose(f);
     }
-    /* Need to clear module stack */
-    AST_ModuleStack_clear();
-
     /* Save the AST as JSON */
     AST2JSON_convert("docs/SyntaxTree.json");
-
     /* Clear the entire AST */
     AST_ProcedureMap_clear();
     return 0;
