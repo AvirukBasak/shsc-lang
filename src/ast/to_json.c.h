@@ -15,7 +15,7 @@ FILE *AST2JSON_outfile = NULL;
 /* Helper function to escape special characters in a string */
 char* AST2JSON_escape_string(const char* input)
 {
-    if (!input) input = "null";
+    if (!input) return NULL;
     size_t input_len = strlen(input);
     size_t output_len = 0;
     for (size_t i = 0; i < input_len; ++i) {
@@ -353,9 +353,11 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
         fprintf(AST2JSON_outfile, ", \"type\": \"f64\"");
     } else if (literal->type == DATA_TYPE_STR || literal->type == DATA_TYPE_INTERP_STR) {
         char* escaped_str = AST2JSON_escape_string(literal->data.str);
-        fprintf(AST2JSON_outfile, "\"%s\"", escaped_str);
+        if (escaped_str) {
+            fprintf(AST2JSON_outfile, "\"%s\"", escaped_str);
+            free(escaped_str);
+        } else fprintf(AST2JSON_outfile, "null");
         fprintf(AST2JSON_outfile, ", \"type\": \"str\"");
-        free(escaped_str);
     } else if (literal->type == DATA_TYPE_LST) {
         AST2JSON_CommaSepList(literal->data.lst);
         fprintf(AST2JSON_outfile, ", \"type\": \"list\"");
