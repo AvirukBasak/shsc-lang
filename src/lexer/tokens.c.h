@@ -75,6 +75,11 @@ const char *lex_get_tokcode(LexToken code)
         case LEXTOK_RBRACE_CURLY:          return "LEXTOK_RBRACE_CURLY";
         case LEXTOK_TILDE:                 return "LEXTOK_TILDE";
         case LEXTOK_NEWLINE:               return "LEXTOK_NEWLINE";
+        // special operations
+        case TOKOP_NOP:                    return "TOKOP_NOP";
+        case TOKOP_FNCALL:                 return "TOKOP_FNCALL";
+        case TOKOP_INDEXING:               return "TOKOP_INDEXING";
+        case TOKOP_TERNARY_COND:           return "TOKOP_TERNARY_COND";
         // keywords
         case LEXTOK_KWD_MODULE:            return "LEXTOK_KWD_MODULE";
         case LEXTOK_KWD_PROC:              return "LEXTOK_KWD_PROC";
@@ -190,6 +195,11 @@ const char *lex_get_symbol(LexToken code)
         case LEXTOK_RBRACE_CURLY:          return "}";
         case LEXTOK_TILDE:                 return "~";
         case LEXTOK_NEWLINE:               return "\\n";
+        // special operations
+        case TOKOP_NOP:                    return "NOP";
+        case TOKOP_FNCALL:                 return "()";
+        case TOKOP_INDEXING:               return "[]";
+        case TOKOP_TERNARY_COND:           return "?:";
         // keywords
         case LEXTOK_KWD_MODULE:            return "module";
         case LEXTOK_KWD_PROC:              return "proc";

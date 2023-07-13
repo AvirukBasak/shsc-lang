@@ -7,6 +7,8 @@
 #include "ast/util.h"
 #include "parser.h"
 
+#include "ast/to_json.h"
+
 int main(int argc, char **argv)
 {
     if (argc < 2) io_errndie("no args provided");
@@ -22,6 +24,12 @@ int main(int argc, char **argv)
     }
     /* Need to clear module stack */
     AST_ModuleStack_clear();
+
+    /* Convert the AST to JSON */
+    FILE *f = fopen("ast.json", "w");
+    AST2JSON_convert(f);
+    fclose(f);
+
     /* Clear the entire AST */
     AST_ProcedureMap_clear();
     return 0;
