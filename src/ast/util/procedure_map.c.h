@@ -54,6 +54,51 @@ void AST_ProcedureMap_create(void)
     ast_modulemap = kh_init(module_t);
 }
 
+/** Get a list of map keys */
+AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get()
+{
+    AST_ProcedureMapKeyList_t key_list;
+    /* Count the number of modules */
+    key_list.module_cnt = kh_size(ast_modulemap);
+    /* Allocate memory for the module array */
+    key_list.module = malloc(key_list.module_cnt * sizeof(*key_list.module));
+    /* Iterate over the module map and populate the key list */
+    int i = 0;
+    for (khiter_t iter = kh_begin(ast_modulemap); iter != kh_end(ast_modulemap); ++iter) {
+        if (kh_exist(ast_modulemap, iter)) {
+            /* Get the module name and procedure list for the current module */
+            AST_ProcedureMap_module_t *module = &kh_value(ast_modulemap, iter);
+            /* Store the module name and procedure count */
+            key_list.module[i].module_name = module->module_name;
+            key_list.module[i].proc_cnt = kh_size(module->procmap);
+            /* Allocate memory for the procedure list */
+            key_list.module[i].lst = malloc(key_list.module[i].proc_cnt * sizeof(*key_list.module[i].lst));
+            /* Iterate over the procedure map and populate the procedure list */
+            int j = 0;
+            for (khiter_t p_iter = kh_begin(module->procmap); p_iter != kh_end(module->procmap); ++p_iter) {
+                if (kh_exist(module->procmap, p_iter)) {
+                    AST_ProcedureMap_procedure_t *procedure = &kh_value(module->procmap, p_iter);
+                    key_list.module[i].lst[j] = procedure->proc_name;
+                    ++j;
+                }
+            }
+            ++i;
+        }
+    }
+    return key_list;
+}
+
+/** Free the list of map keys */
+void AST_ProcedureMap_KeyList_free(AST_ProcedureMapKeyList_t *ptr)
+{
+    if (!ptr) return;
+    for (int i = 0; i < ptr->module_cnt; i++)
+        free((void*) ptr->module[i].lst);
+    free(ptr->module);
+    ptr->module = NULL;
+    ptr->module_cnt = 0;
+}
+
 /** Maps ( module_name, proc_name ) -> code */
 void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_name, AST_Statements_t *code)
 {
@@ -116,14 +161,14 @@ void AST_ProcedureMap_clear(void)
     /* Iterate over the top-level map */
     for (khint_t k1 = kh_begin(ast_modulemap); k1 != kh_end(ast_modulemap); ++k1) {
         if (!kh_exist(ast_modulemap, k1)) continue;
-        AST_Identifier_free(kh_value(ast_modulemap, k1).module_name);
+        AST_Identifier_free(&kh_value(ast_modulemap, k1).module_name);
         khash_t(procedure_t) *procmap = kh_value(ast_modulemap, k1).procmap;
         /* Iterate over the sub map */
         for (khint_t k2 = kh_begin(procmap); k2 != kh_end(procmap); ++k2) {
             if (!kh_exist(procmap, k2)) continue;
             /* Free procedure name and statements */
-            AST_Identifier_free(kh_value(procmap, k2).proc_name);
-            AST_Statements_free(kh_value(procmap, k2).code);
+            AST_Identifier_free(&kh_value(procmap, k2).proc_name);
+            AST_Statements_free(&kh_value(procmap, k2).code);
         }
         kh_destroy(procedure_t, procmap);
     }

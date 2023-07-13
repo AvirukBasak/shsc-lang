@@ -3,6 +3,21 @@
 
 #include "ast.h"
 
+typedef struct {
+    struct {
+        const AST_Identifier_t *module_name;
+        AST_Identifier_t **lst;
+        int proc_cnt;
+    } *module;
+    int module_cnt;
+} AST_ProcedureMapKeyList_t;
+
+/** Get a list of map keys */
+AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get();
+
+/** Free the list of map keys */
+void AST_ProcedureMap_KeyList_free(AST_ProcedureMapKeyList_t *ptr);
+
 /** Maps ( module_name, proc_name ) -> code */
 void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_name, AST_Statements_t *code);
 

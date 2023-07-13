@@ -3,7 +3,7 @@ module main
 proc main start
     print("Hello world!", lf)
 
-    var x = input(int)
+    var x = input(i64)
     
     if x == 1 then
         print("entered 1", lf)

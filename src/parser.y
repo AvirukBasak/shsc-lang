@@ -300,7 +300,7 @@ procedure:
 
 statements:
     %empty                                              { $$ = NULL; }
-    | statements statement                              { $$ = AST_Statements($1, $2); }
+    | statement statements                              { $$ = AST_Statements($2, $1); }
     ;
 
 statement:
@@ -479,7 +479,7 @@ primary_expression:
 
 comma_list:
     expression                                          { $$ = AST_CommaSepList(NULL, $1); }
-    | comma_list "," expression                         { $$ = AST_CommaSepList($1, $3); }
+    | expression "," comma_list                         { $$ = AST_CommaSepList($3, $1); }
     ;
 
 operand:
