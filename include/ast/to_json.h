@@ -19,6 +19,6 @@ void AST2JSON_Operand(const AST_Operand_t* operand);
 void AST2JSON_Literal(const AST_Literal_t* literal);
 void AST2JSON_Identifier(const AST_Identifier_t* identifier);
 void AST2JSON_ProcedureMap();
-void AST2JSON_convert(FILE *f);
+void AST2JSON_convert(const char *filepath);
 
 #endif

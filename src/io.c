@@ -6,6 +6,26 @@
 #include "globals.h"
 #include "io.h"
 
+long long io_get_filesize(FILE *file)
+{
+    long long fileSize;
+
+    if (fseek(file, 0, SEEK_END) != 0) {
+        fprintf(stderr, "scsh: io_get_filesize: error seeking to end of file\n");
+        return -1;
+    }
+    fileSize = ftell(file);
+    if (fileSize == -1L) {
+        fprintf(stderr, "scsh: io_get_filesize: error getting the file size\n");
+        return -1;
+    }
+    if (fseek(file, 0, SEEK_SET) != 0) {
+        fprintf(stderr, "scsh: io_get_filesize: error seeking to the beginning of the file\n");
+        return -1;
+    }
+    return fileSize;
+}
+
 void io_errndie(const char *fmt, ...)
 {
     fprintf(stderr, "scsh: ");

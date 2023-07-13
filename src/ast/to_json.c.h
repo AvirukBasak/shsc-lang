@@ -7,6 +7,7 @@
 #include <string.h>
 #include <inttypes.h>
 
+#include "io.h"
 #include "ast/nodes.h"
 #include "ast/to_json.h"
 
@@ -502,10 +503,11 @@ void AST2JSON_ProcedureMap()
     AST_ProcedureMap_KeyList_free(&lst);
 }
 
-void AST2JSON_convert(FILE *f)
+void AST2JSON_convert(const char *filepath)
 {
-    AST2JSON_outfile = f;
+    AST2JSON_outfile = fopen(filepath, "wb");
     AST2JSON_ProcedureMap();
+    fclose(AST2JSON_outfile);
 }
 
 #else

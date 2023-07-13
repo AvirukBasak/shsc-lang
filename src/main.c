@@ -25,10 +25,8 @@ int main(int argc, char **argv)
     /* Need to clear module stack */
     AST_ModuleStack_clear();
 
-    /* Convert the AST to JSON */
-    FILE *f = fopen("docs/SyntaxTree.json", "w");
-    AST2JSON_convert(f);
-    fclose(f);
+    /* Save the AST as JSON */
+    AST2JSON_convert("docs/SyntaxTree.json");
 
     /* Clear the entire AST */
     AST_ProcedureMap_clear();
