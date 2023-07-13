@@ -1,11 +1,14 @@
 # Scheisse Script
 World's most sh*tty scripting language.
 
-## Usage
+### Usage
 - Build with `make`
 - Copy the executable from `taget/`.
+
+### Docs
 - Example code at [`tests/test.txt`](tests/test.txt).
 - Syntax specs at [`docs/Syntax.md`](docs/Syntax.md).
+- Contribution guidelines at [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 
 ### Tests
 - Tested on [`tests/test.txt`](tests/test.txt).
