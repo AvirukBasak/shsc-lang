@@ -17,7 +17,7 @@ EXEC_NAME      := scsh
 
 CC             := gcc
 CFLAGS         := -Wall -Ofast
-CDBGFLAGS      := -Wall -g -fsanitize=address -D DEBUG
+CDBGFLAGS      := -Wall -g -fsanitize=address -D _LEX_DEBUG -D DEBUG
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
