@@ -14,7 +14,7 @@
 #include "tlib/khash/khash.h"
 
 #include "ast/nodes.h"
-#include "ast/util/procedure_map.h"
+#include "ast/util.h"
 #include "parser.h"
 
 /* Define the hash map types */
@@ -52,6 +52,10 @@ void AST_ProcedureMap_create(void)
 {
     if (ast_modulemap) return;
     ast_modulemap = kh_init(module_t);
+}
+
+bool AST_ProcedureMap_empty(void) {
+    return !ast_modulemap;
 }
 
 /** Get a list of map keys */
@@ -159,7 +163,10 @@ const AST_Statements_t *AST_ProcedureMap_get(const AST_Identifier_t *module_name
     i.e. everything the parser generated */
 void AST_ProcedureMap_clear(void)
 {
-    if (!ast_modulemap) return;
+    if (!ast_modulemap) {
+        AST_ModuleStack_clear();
+        return;
+    }
     /* Iterate over the top-level map */
     for (khint_t k1 = kh_begin(ast_modulemap); k1 != kh_end(ast_modulemap); ++k1) {
         if (!kh_exist(ast_modulemap, k1)) continue;
@@ -176,6 +183,7 @@ void AST_ProcedureMap_clear(void)
     }
     kh_destroy(module_t, ast_modulemap);
     ast_modulemap = NULL;
+    AST_ModuleStack_clear();
 }
 
 #else

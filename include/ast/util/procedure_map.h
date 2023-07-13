@@ -1,6 +1,7 @@
 #ifndef AST_UTIL_PROCEDURE_MAP_H
 #define AST_UTIL_PROCEDURE_MAP_H
 
+#include <stdbool.h>
 #include "ast.h"
 
 typedef struct {
@@ -11,6 +12,8 @@ typedef struct {
     } *module;
     int module_cnt;
 } AST_ProcedureMapKeyList_t;
+
+bool AST_ProcedureMap_empty(void);
 
 /** Get a list of map keys */
 AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get();

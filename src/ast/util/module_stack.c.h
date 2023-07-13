@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include "ast/nodes.h"
-#include "ast/util/module_stack.h"
+#include "ast/util.h"
 
 typedef struct ModuleStack_t ModuleStack_t;
 
@@ -38,6 +38,8 @@ const AST_Identifier_t *AST_ModuleStack_pop(void)
     const AST_Identifier_t *poppedData = top->data;
     ModuleStack_t *temp = top;
     top = top->next;
+    if (AST_ProcedureMap_empty())
+        AST_Identifier_free((AST_Identifier_t**) &temp->data);
     free(temp);
     return poppedData;
 }
@@ -48,6 +50,7 @@ void AST_ModuleStack_clear(void)
     while (top != NULL) {
         ModuleStack_t *temp = top;
         top = top->next;
+        AST_Identifier_free((AST_Identifier_t**) &temp->data);
         free(temp);
     }
 }
