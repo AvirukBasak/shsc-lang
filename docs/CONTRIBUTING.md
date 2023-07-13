@@ -19,7 +19,7 @@ Before you get started, please take a moment to read and follow these guidelines
 Scheisse Script is an interpreter written in C for a custom-designed programming language.
 
 ## Syntax
-The syntax for the this language can be found in the file [docs/Syntax.md](docs/Syntax.md).
+The syntax for this language can be found in the file [docs/Syntax.md](../docs/Syntax.md).
 
 ## Module Structure
 Modules in this C project have the `.c.h` extension and are directly included in the top-level `.c` file from lower-level directories.
@@ -34,17 +34,17 @@ If you encounter linker errors, double-check if you have missed any necessary `.
 ## Naming Conventions
 - Lexer functions are prefixed with `lex_`.
 - Parser functions are prefixed with `parse_`.
-- Input output wrappers are prefixed with `io_`.
+- Input-output wrappers are prefixed with `io_`.
 - AST (Abstract Syntax Tree) functions are prefixed with `AST_` or simply `AST`.
 - Custom-defined types are suffixed with `_t`.
 - Struct types follow the convention `prefix_TypeName_t`, where `TypeName` uses camel case and `prefix` can be any prefix associated with the type.
-- Struct declarations placed in files based on whether their inner member definitions need to be localized to that single file or visible globally.
-- Constructor for struct types must be named `prefix_TypeName()`.
+- Struct declarations are placed in files based on whether their inner member definitions need to be localized to that single file or visible globally.
+- Constructors for struct types must be named `prefix_TypeName()`.
 - Specialized constructors and functions can have names like `prefix_TypeName_something_something`, indicating that the function `something_something` is related to `TypeName_t` within the `prefix` namespace.
 - The underscore (`_`) in function names and global variables is generally significant and is commonly used for namespacing purposes.
 
 ## Memory Management
-If a function can call free upon a pointer, the function is said to own it.
+If a function can call `free` upon a pointer, the function is said to own it.
 
 - If a function does not modify a passed heap pointer or object, the pointer **MUST** be marked as `const` in the formal parameters.
 - If a function makes changes to a heap object, there are 3 options:
@@ -56,26 +56,24 @@ If a function can call free upon a pointer, the function is said to own it.
 If you have a pointer to memory and want to explicitly pass ownership, even if you don't currently own it, you may explicitly cast it to non-`const`.
 However, be cautious as this can result in poor code quality, so use it judiciously.
 
-For example, a temporary list of identifiers may be created initially but the list (just assume) can't free them.
+For example, a temporary list of identifiers may be created initially, but the list (just assume) can't free them.
 So you may need to explicitly cast and pass ownership to the syntax tree that (just assume) can free them.
 
 ## Address Sanitizer
 Using an address sanitizer is **mandatory** to ensure code quality and catch memory issues early.
 Make sure to run the address sanitizer during development and testing.
 
-The Makefile has a target `run-sanitize` for the purpose.
+The Makefile has a target `run-sanitize` for this purpose.
 
-Debug builds are build w/ `-fsanitize=address`.
+Debug builds are built with `-fsanitize=address`.
 
 ## Contributing Guidelines
 To contribute to Scheisse Script, please follow these guidelines:
 1. Fork the repository and create a new branch for your contribution.
 2. Make your changes or additions while adhering to the coding conventions and guidelines mentioned above.
-3. Write clear and concise commit messages (alternatively mail the repo owner explaining your changes and include commit link from github site in that mail).
-5. Submit a pull request, documenting the changes made and providing any necessary context.
+3. Write clear and concise commit messages (alternatively, email the repo owner explaining your changes and include the commit link from the GitHub site in that email).
+4. Submit a pull request, documenting the changes made and providing any necessary context.
 
 We appreciate your contributions and look forward to working with you to improve Scheisse Script!
-
-Please note that by submitting a pull request, you agree to license your contributions under the [project's license](LICENSE.txt).
 
 If you have any questions or need assistance, feel free to reach out to the project maintainers.
