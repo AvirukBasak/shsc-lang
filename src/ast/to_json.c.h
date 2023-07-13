@@ -362,7 +362,7 @@ void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
 
     while (lst) {
         fprintf(AST2JSON_outfile, ", ");
-        AST2JSON_Expression(comma_list->expression);
+        AST2JSON_Expression(lst->expression);
         lst = lst->comma_list;
     }
 
