@@ -160,16 +160,63 @@ AST_Block_t *AST_Block(AST_Statements_t *statements)
     return block;
 }
 
+#define AST_EXPRESSION_ISOPERAND(expr_) ({          \
+    AST_Expression_t *expr = expr_;                 \
+    expr && expr->op == TOKOP_NOP                   \
+         && expr->lhs_type == EXPR_TYPE_OPERAND     \
+         && expr->rhs_type == EXPR_TYPE_NULL        \
+         && expr->condition_type == EXPR_TYPE_NULL; \
+})
+
+#define AST_EXPRESSION_ISCOMMALIST(expr_) ({        \
+    AST_Expression_t *expr = expr_;                 \
+    expr && expr->op == TOKOP_NOP                   \
+         && expr->lhs_type == EXPR_TYPE_LIST        \
+         && expr->rhs_type == EXPR_TYPE_NULL        \
+         && expr->condition_type == EXPR_TYPE_NULL; \
+})
+
 AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition)
 {
     AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
     expression->op = op;
-    expression->lhs_type = lhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
-    expression->lhs.expr = lhs;
-    expression->rhs_type = rhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
-    expression->rhs.expr = rhs;
-    expression->condition_type = condition ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
-    expression->condition.expr = condition;
+
+    if ( AST_EXPRESSION_ISOPERAND(lhs) || AST_EXPRESSION_ISCOMMALIST(lhs) ) {
+        expression->lhs_type = lhs->lhs_type;
+        expression->lhs = lhs->lhs;
+        lhs->lhs.oprnd = NULL;
+        lhs->lhs.lst = NULL;
+        lhs->lhs_type = EXPR_TYPE_NULL;
+        AST_Expression_free(&lhs);
+    } else {
+        expression->lhs_type = lhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+        expression->lhs.expr = lhs;
+    }
+
+    if ( AST_EXPRESSION_ISOPERAND(rhs) || AST_EXPRESSION_ISCOMMALIST(rhs) ) {
+        expression->rhs_type = rhs->lhs_type;
+        expression->rhs = rhs->lhs;
+        rhs->lhs.oprnd = NULL;
+        rhs->lhs.lst = NULL;
+        rhs->lhs_type = EXPR_TYPE_NULL;
+        AST_Expression_free(&rhs);
+    } else {
+        expression->rhs_type = rhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+        expression->rhs.expr = rhs;
+    }
+
+    if ( AST_EXPRESSION_ISOPERAND(condition) || AST_EXPRESSION_ISCOMMALIST(condition) ) {
+        expression->condition_type = condition->lhs_type;
+        expression->condition = condition->lhs;
+        condition->lhs.oprnd = NULL;
+        condition->lhs.lst = NULL;
+        condition->lhs_type = EXPR_TYPE_NULL;
+        AST_Expression_free(&condition);
+    } else {
+        expression->condition_type = condition ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
+        expression->condition.expr = condition;
+    }
+
     return expression;
 }
 
