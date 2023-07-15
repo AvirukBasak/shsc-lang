@@ -5,7 +5,7 @@
 
 char lex_getc(FILE *f)
 {
-    char c = fgetc(f);
+    char c = getc(f);
     if (!c) return 0;
     if (c == (char) EOF) return (char) EOF;
     if (!lex_is_printable(c))
@@ -13,7 +13,7 @@ char lex_getc(FILE *f)
     if (c > 127) lex_throw("non-ascii symbol found");
     // ignore single line comments
     if (c == '#') while (c != '\n') {
-        c = fgetc(f);
+        c = getc(f);
         if (!c) return 0;
         if (c == (char) EOF) return (char) EOF;
         if (!lex_is_printable(c))

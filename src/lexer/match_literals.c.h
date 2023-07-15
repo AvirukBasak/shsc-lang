@@ -7,7 +7,7 @@ LexToken lex_match_bool(FILE *f, char ch)
 {
     if (!isalpha(ch)) return LEXTOK_INVALID;
     // start at 1 as ch is already in buffer
-    size_t kwdlen = 1;
+    size_t currlen = 1;
     while (true) {
         ch = lex_getc(f);
         if (!isalpha(ch)) {
@@ -15,14 +15,14 @@ LexToken lex_match_bool(FILE *f, char ch)
             lex_ungetc(&ch, f);
             break;
         }
-        kwdlen++;
+        currlen++;
     }
     if (lex_get_buffstr()[0] == 't' && !strcmp(lex_get_buffstr(), "true"))  return LEXTOK_BOOL_LITERAL;
     if (lex_get_buffstr()[0] == 'f' && !strcmp(lex_get_buffstr(), "false")) return LEXTOK_BOOL_LITERAL;
     // unget all characters except the first if all matches failed
-    while (kwdlen > 1) {
+    while (currlen > 1) {
         lex_ungetc(&ch, f);
-        kwdlen--;
+        currlen--;
     }
     return LEXTOK_INVALID;
 }
@@ -32,12 +32,13 @@ LexToken lex_match_char(FILE *f, char ch)
     if (ch != '\'') return LEXTOK_INVALID;
     // pop out quote symbol
     lex_buffpop();
-    char prev = 0;
+    char prev2 = 0, prev = 0;
     while (true) {
         // can't use lex_getc as it doesn't buffer delimiters
+        prev2 = prev;
         prev = ch;
         ch = getc(f);
-        if (prev == '\\' && ch == '\'') {
+        if (prev2 != '\\' && prev == '\\' && ch == '\'') {
             lex_buffpush(ch);
             continue;
         }
@@ -52,37 +53,24 @@ LexToken lex_match_string(FILE *f, char ch)
 {
     if (ch != '"') {
         if (ch != 'f') return LEXTOK_INVALID;
-        else {
-            char ch = getc(f);
-            if (ch != '"') {
-                ungetc(ch, f);
-                ungetc('f', f);
-                return LEXTOK_INVALID;
-            }
+        char ch = getc(f);
+        if (ch != '"') {
+            ungetc(ch, f);
+            ungetc('f', f);
+            return LEXTOK_INVALID;
         }
     }
-    // if (ch != '"' && ch != '`') return LEXTOK_INVALID;
+    // after the above checks, ch is now either " or f
     LexToken tok = ch == '"' ? LEXTOK_STR_LITERAL : LEXTOK_INTERP_STR_LITERAL;
-    // pop out quote/'f' symbol
+    // pop out " or f symbol
     lex_buffpop();
-    char prev = 0;
-    if (tok == LEXTOK_STR_LITERAL) while (true) {
+    char prev2 = 0, prev = 0;
+    while (true) {
         // can't use lex_getc as it doesn't buffer delimiters
+        prev2 = prev;
         prev = ch;
         ch = getc(f);
-        if (prev == '\\' && ch == '"') {
-            lex_buffpush(ch);
-            continue;
-        }
-        if (ch == '"') break;
-        if (ch == (char) EOF) lex_throw("unexpected end of file");
-        lex_buffpush(ch);
-    }
-    else if (tok == LEXTOK_INTERP_STR_LITERAL) while (true) {
-        // can't use lex_getc as it doesn't buffer delimiters
-        prev = ch;
-        ch = getc(f);
-        if (prev == '\\' && ch == '"') {
+        if (prev2 != '\\' && prev == '\\' && ch == '"') {
             lex_buffpush(ch);
             continue;
         }
