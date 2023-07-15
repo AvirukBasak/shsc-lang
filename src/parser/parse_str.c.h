@@ -6,7 +6,7 @@
 /** Calls strdup, remember to free */
 char *parse_str(const char *str)
 {
-    int len = strlen(str);
+    const size_t len = strlen(str);
     char *parsed_str = malloc(len +1);
     if (!parsed_str) parse_throw("memory allocation failed");
     int parsed_index = 0;
@@ -20,23 +20,25 @@ char *parse_str(const char *str)
                 free(parsed_str);
             }
             /* octal escape sequence */
-            if (isdigit(str[i])) {
+            if ( isdigit(str[i]) && len - (i+1) >= 2 && isdigit(str[i+1]) && isdigit(str[i+2]) ) {
                 char *endptr;
-                int res = strtol(&str[i], &endptr, 8);
+                char oct[4] = { str[i], str[i+1], str[i+2], '\0' };
+                int res = strtol(oct, &endptr, 8);
                 if (!*endptr && 0 <= res && res <= 255) {
                     parsed_str[parsed_index++] = (char) res;
                     /* update the loop index */
-                    i += endptr - &str[i] -1;
+                    i += 2;
                 } else parse_throw("invalid octal escape sequence");
             }
             /* hex escape sequence */
-            else if (str[i] == 'x' && isxdigit(str[i + 1])) {
+            else if ( str[i] == 'x' && len - (i+1) >= 2 && isxdigit(str[i+1]) && isxdigit(str[i+2]) ) {
                 char *endptr;
-                int res = strtol(&str[i+1], &endptr, 16);
+                char hex[3] = { str[i+1], str[i+2], '\0' };
+                int res = strtol(hex, &endptr, 16);
                 if (!*endptr && 0 <= res && res <= 255) {
                     parsed_str[parsed_index++] = (char) res;
                     /* update the loop index */
-                    i += endptr - &str[i];
+                    i += 2;
                 } else parse_throw("invalid hex escape sequence");
             }
             /* other escape sequences */

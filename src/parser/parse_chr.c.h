@@ -11,7 +11,7 @@
 char parse_char(const char *str)
 {
     char c = str[0];
-    int len = strlen(str);
+    const size_t len = strlen(str);
 
     /* if the input string has only one character, return it */
     if (len == 1) c = str[0];
@@ -34,7 +34,7 @@ char parse_char(const char *str)
     }
 
     /* if the input string starts with '\x', it is a hexadecimal escape sequence */
-    else if (len >= 3 && str[0] == '\\' && str[1] == 'x' && isxdigit(str[2])) {
+    else if (len == 4 && str[0] == '\\' && str[1] == 'x' && isxdigit(str[2])) {
         char* endptr;
         int res = strtol(&str[2], &endptr, 16);
         if (!*endptr && 0 <= res && res <= 255) c = (char) res;
@@ -42,7 +42,7 @@ char parse_char(const char *str)
     }
 
     /* if the input string starts with '\', it is an octal escape sequence */
-    else if (len >= 2 && str[0] == '\\' && isdigit(str[1])) {
+    else if (len == 4 && str[0] == '\\' && isdigit(str[1])) {
         char* endptr;
         int res = strtol(&str[1], &endptr, 8);
         if (!*endptr && 0 <= res && res <= 255) c = (char) res;
