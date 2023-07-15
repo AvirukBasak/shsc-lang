@@ -6,6 +6,7 @@
 /** Calls strdup, remember to free */
 char *parse_str(const char *str)
 {
+    if (!str || !strcmp(str, "NULL")) str = "\0";
     const size_t len = strlen(str);
     char *parsed_str = malloc(len +1);
     if (!parsed_str) parse_throw("memory allocation failed");

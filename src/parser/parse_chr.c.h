@@ -10,6 +10,7 @@
 
 char parse_char(const char *str)
 {
+    if (!str || !strcmp(str, "NULL")) return '\0';
     char c = str[0];
     const size_t len = strlen(str);
 
