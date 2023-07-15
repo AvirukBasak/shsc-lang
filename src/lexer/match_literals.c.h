@@ -43,6 +43,7 @@ LexToken lex_match_char(FILE *f, char ch)
             continue;
         }
         if (ch == '\'') break;
+        if (ch == '\n') lex_throw("character literal cannot have un-escaped newline");
         if (ch == (char) EOF) lex_throw("unexpected end of file");
         lex_buffpush(ch);
     }

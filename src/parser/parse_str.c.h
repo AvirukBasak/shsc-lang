@@ -8,6 +8,7 @@ char *parse_str(const char *str)
 {
     int len = strlen(str);
     char *parsed_str = malloc(len +1);
+    if (!parsed_str) parse_throw("memory allocation failed");
     int parsed_index = 0;
     for (int i = 0; i < len; ++i) {
         /* if the current character is a backslash, it might be an escape sequence */

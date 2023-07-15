@@ -5,6 +5,7 @@
 
 #include "globals.h"
 #include "io.h"
+#include "errcodes.h"
 
 long long io_get_filesize(const char *filepath)
 {
@@ -83,7 +84,7 @@ void io_errndie(const char *fmt, ...)
     va_end(args);
     fflush(stderr);
     fprintf(stderr, "\n");
-    exit(1);
+    exit(ERR_DIE);
 }
 
 void io_print_srcerr(int line_no, int char_no, const char *fmt, ...)

@@ -7,6 +7,7 @@
 #include "io.h"
 #include "lexer.h"
 #include "parser.h"
+#include "errcodes.h"
 
 LexBuffer *lex_buffer = NULL;
 LexToken lex_currtok = LEXTOK_INVALID;
@@ -133,6 +134,8 @@ LexToken lex_get_nexttok(FILE *f)
 void lex_throw(const char *msg)
 {
     if (!msg) abort();
-    io_print_srcerr(lex_line_no, lex_char_no, "lexing error: %s", msg);
-    exit(1);
+    int line = lex_line_no;
+    if (lex_currtok == LEXTOK_NEWLINE) --line;
+    io_print_srcerr(line, lex_char_no, "lexing error: after token '%s': %s", lex_get_symbol(lex_currtok), msg);
+    exit(ERR_LEXER);
 }
