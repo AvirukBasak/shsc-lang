@@ -51,6 +51,14 @@ char *AST2JSON_escape_string(const char *str)
                 *ptr++ = '\\';
                 *ptr++ = 'v';
                 break;
+            case '\\':
+                *ptr++ = '\\';
+                *ptr++ = '\\';
+                break;
+            case '\"':
+                *ptr++ = '\\';
+                *ptr++ = '"';
+                break;
             default:
                 if (*str < 32 || *str > 126) {
                     /* unprintable character, escape using \xXX notation */
