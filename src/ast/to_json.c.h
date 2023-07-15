@@ -13,34 +13,63 @@
 
 FILE *AST2JSON_outfile = NULL;
 
-/* Helper function to escape special characters in a string */
-char* AST2JSON_escape_string(const char* input)
+/* helper function to escape special characters in a string */
+char *AST2JSON_escape_string(const char *str)
 {
-    if (!input) return NULL;
-    size_t input_len = strlen(input);
-    size_t output_len = 0;
-    for (size_t i = 0; i < input_len; ++i) {
-        if (input[i] == '"' || input[i] == '\\' || input[i] == '\n') {
-            /* Add escape character */
-            output_len += 2;
-        } else {
-            ++output_len;
+    if (!str) return NULL;
+    size_t len = strlen(str);
+    char *escaped = (char*) malloc((4 * len +1) * sizeof(char));
+    if (!escaped) parse_throw("memory allocation failed");
+    char *ptr = escaped;
+    while (*str != '\0') {
+        switch (*str) {
+            case '\a':
+                *ptr++ = '\\';
+                *ptr++ = 'a';
+                break;
+            case '\b':
+                *ptr++ = '\\';
+                *ptr++ = 'b';
+                break;
+            case '\f':
+                *ptr++ = '\\';
+                *ptr++ = 'f';
+                break;
+            case '\n':
+                *ptr++ = '\\';
+                *ptr++ = 'n';
+                break;
+            case '\r':
+                *ptr++ = '\\';
+                *ptr++ = 'r';
+                break;
+            case '\t':
+                *ptr++ = '\\';
+                *ptr++ = 't';
+                break;
+            case '\v':
+                *ptr++ = '\\';
+                *ptr++ = 'v';
+                break;
+            default:
+                if (*str < 32 || *str > 126) {
+                    /* unprintable character, escape using \xXX notation */
+                    sprintf(
+                        ptr, "\\x%02X",
+                        (unsigned char) *str);
+                    ptr += 4;
+                } else
+                    /* copy printable character as is */
+                    *ptr++ = *str;
+                break;
         }
+        ++str;
     }
-
-    char* output = (char*) malloc(output_len + 1);
-    size_t j = 0;
-    for (size_t i = 0; i < input_len; ++i) {
-        if (input[i] == '"' || input[i] == '\\' || input[i] == '\n') {
-            output[j++] = '\\';  /* Add escape character */
-        }
-        output[j++] = input[i];
-    }
-    output[j] = '\0';
-    return output;
+    *ptr = '\0';
+    return escaped;
 }
 
-/* Function to convert AST_Statements_t to JSON */
+/* function to convert AST_Statements_t to JSON */
 void AST2JSON_Statements(const AST_Statements_t *statements)
 {
     if (!statements) {
@@ -63,7 +92,7 @@ void AST2JSON_Statements(const AST_Statements_t *statements)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_Statement_t to JSON */
+/* function to convert AST_Statement_t to JSON */
 void AST2JSON_Statement(const AST_Statement_t *statement)
 {
     if (!statement) {
@@ -94,7 +123,7 @@ void AST2JSON_Statement(const AST_Statement_t *statement)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_Assignment_t to JSON */
+/* function to convert AST_Assignment_t to JSON */
 void AST2JSON_Assignment(const AST_Assignment_t *assignment)
 {
     if (!assignment) {
@@ -111,7 +140,7 @@ void AST2JSON_Assignment(const AST_Assignment_t *assignment)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_CompoundSt_t to JSON */
+/* function to convert AST_CompoundSt_t to JSON */
 void AST2JSON_CompoundSt(const AST_CompoundSt_t *compound_statement)
 {
     if (!compound_statement) {
@@ -135,7 +164,7 @@ void AST2JSON_CompoundSt(const AST_CompoundSt_t *compound_statement)
     }
 }
 
-/* Function to convert AST_IfBlock_t to JSON */
+/* function to convert AST_IfBlock_t to JSON */
 void AST2JSON_IfBlock(const AST_IfBlock_t *if_block)
 {
     if (!if_block) {
@@ -156,7 +185,7 @@ void AST2JSON_IfBlock(const AST_IfBlock_t *if_block)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_ElseIfBlock_t to JSON */
+/* function to convert AST_ElseIfBlock_t to JSON */
 void AST2JSON_ElseIfBlock(const AST_ElseIfBlock_t *else_if_block)
 {
     if (!else_if_block) {
@@ -173,7 +202,7 @@ void AST2JSON_ElseIfBlock(const AST_ElseIfBlock_t *else_if_block)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_ElseIfSt_t to JSON */
+/* function to convert AST_ElseIfSt_t to JSON */
 void AST2JSON_ElseIfSt(const AST_ElseIfSt_t *else_if_st)
 {
     if (!else_if_st) {
@@ -190,7 +219,7 @@ void AST2JSON_ElseIfSt(const AST_ElseIfSt_t *else_if_st)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_WhileBlock_t to JSON */
+/* function to convert AST_WhileBlock_t to JSON */
 void AST2JSON_WhileBlock(const AST_WhileBlock_t *while_block)
 {
     if (!while_block) {
@@ -263,7 +292,7 @@ void AST2JSON_Block(const AST_Block_t *block)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_Expression_t to JSON */
+/* function to convert AST_Expression_t to JSON */
 void AST2JSON_Expression(const AST_Expression_t *expression)
 {
     if (!expression) {
@@ -344,7 +373,7 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_CommaSepList_t to JSON */
+/* function to convert AST_CommaSepList_t to JSON */
 void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
 {
     if (!comma_list) {
@@ -370,7 +399,7 @@ void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_Operand_t to JSON */
+/* function to convert AST_Operand_t to JSON */
 void AST2JSON_Operand(const AST_Operand_t *operand)
 {
     if (!operand) {
@@ -400,7 +429,7 @@ void AST2JSON_Operand(const AST_Operand_t *operand)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_Literal_t to JSON */
+/* function to convert AST_Literal_t to JSON */
 void AST2JSON_Literal(const AST_Literal_t *literal)
 {
     if (!literal) {
@@ -417,11 +446,19 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
             fprintf(AST2JSON_outfile, ", \"data\": ");
             fprintf(AST2JSON_outfile, "%s", literal->data.bul ? "true" : "false");
             break;
-        case DATA_TYPE_CHR:
+        case DATA_TYPE_CHR: {
+            char chr[2] = { literal->data.chr, '\0' };
+            char *escaped_chr = AST2JSON_escape_string(chr);
             fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_CHR\"");
             fprintf(AST2JSON_outfile, ", \"data\": ");
-            fprintf(AST2JSON_outfile, "\"%c\"", literal->data.chr);
+            if (escaped_chr) {
+                fprintf(AST2JSON_outfile, "\"%s\"", escaped_chr);
+                free(escaped_chr);
+            } else {
+                fprintf(AST2JSON_outfile, "null");
+            }
             break;
+        }
         case DATA_TYPE_I64:
             fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_I64\"");
             fprintf(AST2JSON_outfile, ", \"data\": ");
@@ -436,7 +473,7 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
         case DATA_TYPE_INTERP_STR: {
             fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_STR\"");
             fprintf(AST2JSON_outfile, ", \"data\": ");
-            char* escaped_str = AST2JSON_escape_string(literal->data.str);
+            char *escaped_str = AST2JSON_escape_string(literal->data.str);
             if (escaped_str) {
                 fprintf(AST2JSON_outfile, "\"%s\"", escaped_str);
                 free(escaped_str);
@@ -459,7 +496,7 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
     fprintf(AST2JSON_outfile, "}");
 }
 
-/* Function to convert AST_Identifier_t to JSON */
+/* function to convert AST_Identifier_t to JSON */
 void AST2JSON_Identifier(const AST_Identifier_t *identifier)
 {
     if (!identifier) {
