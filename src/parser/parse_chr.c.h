@@ -10,15 +10,16 @@
 
 char parse_char(const char *str)
 {
+    if (!str || !strcmp(str, "NULL")) return '\0';
     char c = str[0];
-    int len = strlen(str);
-    char *err_msg = NULL;
+    const size_t len = strlen(str);
 
-    // If the input string has only one character, return it
+    /* if the input string has only one character, return it */
     if (len == 1) c = str[0];
 
-    // If the input string has two characters and the first character is a backslash,
-    // then the second character is an escape sequence
+    /* if the input string has two characters and the first
+       character is a backslash, then the second character is an
+       escape sequence */
     else if (len == 2 && str[0] == '\\') {
         switch (str[1]) {
             case 'a': c = '\a'; break;
@@ -28,52 +29,29 @@ char parse_char(const char *str)
             case 'r': c = '\r'; break;
             case 't': c = '\t'; break;
             case 'v': c = '\v'; break;
-            case '\\': c = '\\'; break;
-            case '\'': c = '\''; break;
-            case '\"': c = '\"'; break;
-            case '\?': c = '\?'; break;
-            default:
-                err_msg = malloc(strlen(str) + GLOBAL_BYTES_BUFFER_LEN);
-                sprintf(err_msg, "invalid escape sequence: '\\%c'", str[1]);
-                parse_throw(err_msg);
-                free(err_msg);
+            case '0': c = '\0'; break;
+            default: c = str[1]; break;
         }
     }
 
-    // If the input string starts with '\x', it is a hexadecimal escape sequence
-    else if (len >= 4 && str[0] == '\\' && str[1] == 'x') {
-        char hex[3];
-        hex[0] = str[2];
-        hex[1] = str[3];
-        hex[2] = '\0';
-        int num = (int) strtol(hex, NULL, 16);
-        c = (char) num;
+    /* if the input string starts with '\x', it is a hexadecimal escape sequence */
+    else if (len == 4 && str[0] == '\\' && str[1] == 'x' && isxdigit(str[2])) {
+        char* endptr;
+        int res = strtol(&str[2], &endptr, 16);
+        if (!*endptr && 0 <= res && res <= 255) c = (char) res;
+        else parse_throw("invalid hex escape sequence");
     }
 
-    // If the input string starts with '\', it is an octal escape sequence
-    else if (len > 1 && str[0] == '\\') {
-        int num = 0;
-        int i;
-        for (i = 1; i < len && i <= 3; i++)
-            if (str[i] >= '0' && str[i] <= '7')
-                num = num * 8 + (str[i] - '0');
-            else break;
-        if (i == len) c = (char) num;
-        else {
-            err_msg = malloc(strlen(str) + GLOBAL_BYTES_BUFFER_LEN);
-            sprintf(err_msg, "invalid escape sequence: '%s'", str);
-            parse_throw(err_msg);
-            free(err_msg);
-        }
+    /* if the input string starts with '\', it is an octal escape sequence */
+    else if (len == 4 && str[0] == '\\' && isdigit(str[1])) {
+        char* endptr;
+        int res = strtol(&str[1], &endptr, 8);
+        if (!*endptr && 0 <= res && res <= 255) c = (char) res;
+        else parse_throw("invalid octal escape sequence");
     }
 
-    // If the input string has more than two characters, it is an error
-    else {
-        err_msg = malloc(strlen(str) + GLOBAL_BYTES_BUFFER_LEN);
-        sprintf(err_msg, "invalid character token: '%s'", str);
-        parse_throw(err_msg);
-        free(err_msg);
-    }
+    /* if the input string has more than two characters, it is an error */
+    else parse_throw("invalid character token");
 
     return c;
 }

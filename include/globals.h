@@ -3,6 +3,6 @@
 
 #define GLOBAL_BYTES_BUFFER_LEN (128)
 
-extern char *global_currfile;
+extern const char *global_currfile;
 
 #endif

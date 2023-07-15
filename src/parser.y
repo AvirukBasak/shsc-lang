@@ -8,6 +8,7 @@
 #include "io.h"
 #include "lexer.h"
 #include "parser.h"
+#include "errcodes.h"
 #include "ast/nodes.h"
 #include "ast/util.h"
 
@@ -552,5 +553,5 @@ void parse_throw(const char *msg)
     int line = lex_line_no;
     if (lex_currtok == LEXTOK_NEWLINE) --line;
     io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
-    exit(2);
+    exit(ERR_PARSER);
 }

@@ -16,8 +16,8 @@ INCLUDE_DIR    := ../include
 EXEC_NAME      := scsh
 
 CC             := gcc
-CFLAGS         := -Wall -Ofast
-CDBGFLAGS      := -Wall -g -fsanitize=address -D _LEX_DEBUG -D DEBUG
+CFLAGS         := -Wall -Wno-unused-label -Ofast
+CDBGFLAGS      := -Wall -Wno-unused-label -g -fsanitize=address -D _LEX_DEBUG -D DEBUG
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)

@@ -1,4 +1,4 @@
 #include <stddef.h>
 #include "globals.h"
 
-char *global_currfile = NULL;
+const char *global_currfile = NULL;

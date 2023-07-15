@@ -5,6 +5,14 @@ World's most sh*tty scripting language.
 - Build with `make`
 - Copy the executable from `taget/`.
 
+```
+USAGE:
+  scsh [FILENAMES]               execute files listed as args
+  scsh -b or --build [FILENAME]  execute files listed in file
+  scsh -t or --ast [FILENAME]    save AST as JSON to file
+  scsh -h or --help              view this message
+```
+
 ### Docs
 - Example code at [`tests/test.txt`](tests/test.txt).
 - Syntax specs at [`docs/Syntax.md`](docs/Syntax.md).
