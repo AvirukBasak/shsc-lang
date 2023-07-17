@@ -480,7 +480,7 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
         case DATA_TYPE_F64:
             fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_F64\"");
             fprintf(AST2JSON_outfile, ", \"data\": ");
-            fprintf(AST2JSON_outfile, "%f", literal->data.f64);
+            fprintf(AST2JSON_outfile, "%lf", literal->data.f64);
             break;
         case DATA_TYPE_STR:
         case DATA_TYPE_INTERP_STR: {
