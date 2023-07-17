@@ -53,7 +53,7 @@ int64_t parse_int(const char *str, int base)
                 parse_throw("integer underflow");
             }
             /* divide by base ^ exponent */
-            result /= (int64_t) (1LL * pow(base, exponent));
+            result *= (int64_t) (1LL * pow(base, exponent));
         }
     } else {
         /* parse the integer value using strtol */
