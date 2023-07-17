@@ -37,6 +37,7 @@ LexToken lex_match_keywords(FILE *f, char ch)
     if (!strcmp(lex_get_buffstr(), "do"))        return LEXTOK_KWD_DO;
     if (!strcmp(lex_get_buffstr(), "var"))       return LEXTOK_KWD_VAR;
     if (!strcmp(lex_get_buffstr(), "pass"))      return LEXTOK_KWD_PASS;
+    if (!strcmp(lex_get_buffstr(), "return"))    return LEXTOK_KWD_RETURN;
     /* unget all characters except the first if all matches failed */
     while (kwdlen > 1) {
         lex_ungetc(&ch, f);
