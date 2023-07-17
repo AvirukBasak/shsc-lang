@@ -27,6 +27,9 @@ void AST_Statement_free(AST_Statement_t **ptr)
     switch (statement->type) {
         case STATEMENT_TYPE_EMPTY:
             break;
+        case STATEMENT_TYPE_RETURN:
+            AST_Expression_free(&statement->statement.expression);
+            break;
         case STATEMENT_TYPE_ASSIGNMENT:
             AST_Assignment_free(&statement->statement.assignment);
             break;

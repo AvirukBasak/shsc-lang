@@ -20,6 +20,15 @@ AST_Statement_t *AST_Statement_empty(int line_no) {
     return stmt;
 }
 
+AST_Statement_t *AST_Statement_return(AST_Expression_t *expression, int line_no)
+{
+    AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
+    stmt->type = STATEMENT_TYPE_RETURN;
+    stmt->statement.expression = expression;
+    stmt->line_no = line_no;
+    return stmt;
+}
+
 AST_Statement_t *AST_Statement_Assignment(AST_Assignment_t *assignment, int line_no)
 {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));

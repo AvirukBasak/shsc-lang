@@ -13,12 +13,14 @@ struct AST_Statements_t {
 
 enum AST_StatementType_t {
     STATEMENT_TYPE_EMPTY,
+    STATEMENT_TYPE_RETURN,
     STATEMENT_TYPE_ASSIGNMENT,
     STATEMENT_TYPE_COMPOUND,
 };
 
 struct AST_Statement_t {
     union {
+       AST_Expression_t *expression;
        AST_Assignment_t *assignment;
        AST_CompoundSt_t *compound_statement;
     } statement;

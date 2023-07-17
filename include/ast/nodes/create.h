@@ -9,6 +9,7 @@ typedef LexToken AST_Operator_t;
 AST_Statements_t    *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement);
 
 AST_Statement_t     *AST_Statement_empty(int line_no);
+AST_Statement_t     *AST_Statement_return(AST_Expression_t *expression, int line_no);
 AST_Statement_t     *AST_Statement_Assignment(AST_Assignment_t *assignment, int line_no);
 AST_Statement_t     *AST_Statement_CompoundSt(AST_CompoundSt_t *compund, int line_no);
 
