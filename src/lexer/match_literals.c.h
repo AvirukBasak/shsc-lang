@@ -228,7 +228,6 @@ LexToken lex_match_numeric(FILE *f, char ch)
         ch = lex_getc(f);
         if (!isdigit(ch) && ch != '.') {
             lex_ungetc(&ch, f);    /* unget ch */
-            lex_ungetc(&ch, f);    /* unget '+' or '-' */
             return LEXTOK_INVALID;
         }
     }
