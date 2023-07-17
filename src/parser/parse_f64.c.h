@@ -35,7 +35,7 @@ double parse_float(const char *str, int base)
     const char *exp_index = endptr;
     result += (double) fraction / pow(base, exp_index - dot_index -1);
     if (*endptr == '\0') return sign * result;
-    if (*endptr != 'e') parse_throw("invalid float format 2; wtf was the lexer designer doing?");
+    if (*endptr != 'p') parse_throw("invalid float format 2; wtf was the lexer designer doing?");
 
     /* parse the exponent if available */
     const int64_t exponent = strtol(exp_index +1, &endptr, base);

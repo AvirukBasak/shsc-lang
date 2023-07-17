@@ -190,10 +190,10 @@ LexToken lex_match_unum(FILE *f, char ch, enum LexBase base)
     }
     /* match ([ep][+-]?\d+){0:1} */
     if ((base != LEXBASE_16 && ch == 'e') || ch == 'p') {
-        /* pop 'p' and push 'e', convert p to e */
+        /* pop 'e' and push 'p', convert e to p */
         char backup_expchar = ch;
         lex_buffpop();
-        lex_buffpush('e');
+        lex_buffpush('p');
         /* next char */
         ch = lex_getc(f);
         /* consume + or - symbol */
