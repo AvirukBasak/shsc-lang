@@ -17,7 +17,7 @@ EXEC_NAME      := scsh
 
 CC             := gcc
 CFLAGS         := -Wall -Wno-unused-label -Ofast
-CDBGFLAGS      := -Wall -Wno-unused-label -g -fsanitize=address -D LEX_DEBUG -D DEBUG
+CDBGFLAGS      := -Wall -Wno-unused-label -g -fsanitize=address -D _LEX_DEBUG -D DEBUG
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
