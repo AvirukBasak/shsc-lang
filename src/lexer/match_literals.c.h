@@ -226,7 +226,7 @@ LexToken lex_match_numeric(FILE *f, char ch)
     /* starts with '+' or '-' then consume the sign */
     if (ch == '+' || ch == '-') {
         ch = lex_getc(f);
-        if (!lex_isdigit(ch)) {
+        if (!isdigit(ch) && ch != '.') {
             lex_ungetc(&ch, f);    /* unget ch */
             lex_ungetc(&ch, f);    /* unget '+' or '-' */
             return LEXTOK_INVALID;

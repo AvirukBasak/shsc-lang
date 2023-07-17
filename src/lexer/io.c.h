@@ -44,7 +44,8 @@ bool lex_is_delimiter(char c)
 
 bool lex_is_printable(char c)
 {
-    return (c >= 32 && c < 127) || lex_is_delimiter(c);
+    return ( c == 10 || (c >= 32 && c < 127) )
+        || lex_is_delimiter(c);
 }
 
 bool lex_isalmun_undr(char c)
