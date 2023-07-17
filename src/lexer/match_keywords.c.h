@@ -6,12 +6,12 @@
 LexToken lex_match_keywords(FILE *f, char ch)
 {
     if (!isalpha(ch)) return LEXTOK_INVALID;
-    // start at 1 as ch is already in buffer
+    /* start at 1 as ch is already in buffer */
     size_t kwdlen = 1;
     while (true) {
         ch = lex_getc(f);
         if (!isalpha(ch)) {
-            // unget last non alpha char
+            /* unget last non alpha char */
             lex_ungetc(&ch, f);
             break;
         }
@@ -37,7 +37,7 @@ LexToken lex_match_keywords(FILE *f, char ch)
     if (!strcmp(lex_get_buffstr(), "do"))        return LEXTOK_KWD_DO;
     if (!strcmp(lex_get_buffstr(), "var"))       return LEXTOK_KWD_VAR;
     if (!strcmp(lex_get_buffstr(), "pass"))      return LEXTOK_KWD_PASS;
-    // unget all characters except the first if all matches failed
+    /* unget all characters except the first if all matches failed */
     while (kwdlen > 1) {
         lex_ungetc(&ch, f);
         kwdlen--;
