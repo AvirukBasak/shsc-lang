@@ -78,15 +78,17 @@ LexToken lex_get_nexttok(FILE *f)
 {
     lex_buffreset();
     char ch = lex_getc(f);
-    if (ch == '\n') return LEXTOK_NEWLINE;
     while (lex_is_delimiter(ch)) ch = lex_getc(f);
     if (ch == '_') return lex_match_identifiers(f, ch);
     if (ch == 'f') {
         char ch = lex_getc(f);
+        /* can be a format string literal */
         if (ch == '"') {
             lex_ungetc(&ch, f);
             return lex_match_string(f, ch);
         } else {
+            /* can be boolean `false` literal or keyword
+               or identifier */
             lex_ungetc(&ch, f);
             LexToken currtok = lex_match_bool(f, ch);
             if (currtok == LEXTOK_INVALID) {
@@ -98,8 +100,10 @@ LexToken lex_get_nexttok(FILE *f)
             return currtok;
         }
     }
+    /* can be boolean `true` literal */
     else if (ch == 't') {
         LexToken currtok = lex_match_bool(f, ch);
+        /* can be keyword or identifier */
         if (currtok == LEXTOK_INVALID) {
             currtok = lex_match_keywords(f, ch);
             if (currtok == LEXTOK_INVALID)
@@ -108,6 +112,8 @@ LexToken lex_get_nexttok(FILE *f)
         }
         return currtok;
     }
+    /* any other alphanumeric combo is either a
+       keyword or identifier */
     else if (isalpha(ch)) {
         LexToken currtok = lex_match_keywords(f, ch);
         if (currtok == LEXTOK_INVALID)
@@ -117,14 +123,11 @@ LexToken lex_get_nexttok(FILE *f)
     else if (ch == '\'') return lex_match_char(f, ch);
     else if (ch == '"') return lex_match_string(f, ch);
     else if (isdigit(ch)) return lex_match_numeric(f, ch);
-    else if (ch == '.') {
-        ch = lex_getc(f);
-        if (isdigit(ch)) {
-            lex_ungetc(&ch, f);
-            return lex_match_numeric(f, ch);
-        }
-        lex_ungetc(&ch, f);
-        return lex_match_symbols(f, ch);
+    else if (ch == '.' || ch == '+' || ch == '-') {
+        LexToken currtok = lex_match_numeric(f, ch);
+        if (currtok == LEXTOK_INVALID)
+            return lex_match_symbols(f, ch);
+        return currtok;
     }
     else return lex_match_symbols(f, ch);
 }
