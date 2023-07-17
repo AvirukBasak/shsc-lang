@@ -222,20 +222,20 @@ const char *lex_get_symbol(LexToken code)
         case LEXTOK_KWD_VAR:               return "var";
         case LEXTOK_KWD_PASS:              return "pass";
         // identifier
-        case LEXTOK_IDENTIFIER:            return lex_get_buffstr();
+        case LEXTOK_IDENTIFIER:            return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
         // literals
-        case LEXTOK_BOOL_LITERAL:          return lex_get_buffstr();
-        case LEXTOK_CHAR_LITERAL:          return lex_get_buffstr();
-        case LEXTOK_BINFLOAT_LITERAL:      return lex_get_buffstr();
-        case LEXTOK_OCTFLOAT_LITERAL:      return lex_get_buffstr();
-        case LEXTOK_DECFLOAT_LITERAL:      return lex_get_buffstr();
-        case LEXTOK_HEXFLOAT_LITERAL:      return lex_get_buffstr();
-        case LEXTOK_BININT_LITERAL:        return lex_get_buffstr();
-        case LEXTOK_OCTINT_LITERAL:        return lex_get_buffstr();
-        case LEXTOK_DECINT_LITERAL:        return lex_get_buffstr();
-        case LEXTOK_HEXINT_LITERAL:        return lex_get_buffstr();
-        case LEXTOK_STR_LITERAL:           return lex_get_buffstr();
-        case LEXTOK_INTERP_STR_LITERAL:    return lex_get_buffstr();
+        case LEXTOK_BOOL_LITERAL:          return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_CHAR_LITERAL:          return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_BINFLOAT_LITERAL:      return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_OCTFLOAT_LITERAL:      return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_DECFLOAT_LITERAL:      return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_HEXFLOAT_LITERAL:      return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_BININT_LITERAL:        return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_OCTINT_LITERAL:        return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_DECINT_LITERAL:        return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_HEXINT_LITERAL:        return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_STR_LITERAL:           return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
+        case LEXTOK_INTERP_STR_LITERAL:    return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
         // default cases
         case LEXTOK_EOF:                   return "end-of-file";
         case LEXTOK_INVALID:               return "invalid token";

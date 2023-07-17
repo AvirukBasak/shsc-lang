@@ -219,6 +219,7 @@ LexToken lex_match_symbols(FILE *f, char ch)
             lex_buffree();
             return LEXTOK_EOF;
         }
+        case '\n': return LEXTOK_NEWLINE;
         default: return LEXTOK_INVALID;
     }
     return LEXTOK_INVALID;

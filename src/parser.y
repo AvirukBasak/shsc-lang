@@ -537,7 +537,7 @@ void parse_interpret(FILE *f)
 #ifdef LEX_DEBUG
     LexToken tok = lex_get_nexttok(yyin);
     while (tok != LEXTOK_EOF) {
-        printf("%s: %s\n", lex_get_tokcode(tok), lex_get_buffstr());
+        printf("%s: %s\n", lex_get_tokcode(tok), lex_get_symbol(tok));
         tok = lex_get_nexttok(f);
     }
     printf("%s\n", lex_get_tokcode(tok));

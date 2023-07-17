@@ -44,7 +44,6 @@ int main(int argc, char **argv)
     if (!strcmp(argv[index], "-b") || !strcmp(argv[index], "--build")) {
         if (argc < 3) io_errndie("build file path not provided");
         lines = io_read_lines(argv[++index], &line_cnt);
-        if (!lines) io_errndie("build file content is null");
         ++index;
         if (index < argc) io_errndie("too many arguments: '%s' onwards", argv[index]);
     }
