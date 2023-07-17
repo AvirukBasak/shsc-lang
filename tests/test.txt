@@ -15,7 +15,7 @@ proc main start
 
     while x >= 0 do
         print(f"x = {x}")
-        x = x -1
+        x = x - 1
     end
 
     x = input("prompt: ", str)
