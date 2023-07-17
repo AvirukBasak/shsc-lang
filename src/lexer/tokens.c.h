@@ -4,11 +4,11 @@
 #include "lexer.h"
 #include "parser.yy.h"
 
-// contributor's warning: ensure tokens are grouped and sorted in alphabetical order
+/* contributor's warning: ensure tokens are grouped and sorted in alphabetical order */
 const char *lex_get_tokcode(LexToken code)
 {
     switch (code) {
-        // operators and seperators
+        /* operators and seperators */
         case LEXTOK_BANG:                  return "LEXTOK_BANG";
         case LEXTOK_LOGICAL_UNEQUAL:       return "LEXTOK_LOGICAL_UNEQUAL";
         case LEXTOK_LOGICAL_UNIDENTICAL:   return "LEXTOK_LOGICAL_UNIDENTICAL";
@@ -75,12 +75,12 @@ const char *lex_get_tokcode(LexToken code)
         case LEXTOK_RBRACE_CURLY:          return "LEXTOK_RBRACE_CURLY";
         case LEXTOK_TILDE:                 return "LEXTOK_TILDE";
         case LEXTOK_NEWLINE:               return "LEXTOK_NEWLINE";
-        // special operations
+        /* special operations */
         case TOKOP_NOP:                    return "TOKOP_NOP";
         case TOKOP_FNCALL:                 return "TOKOP_FNCALL";
         case TOKOP_INDEXING:               return "TOKOP_INDEXING";
         case TOKOP_TERNARY_COND:           return "TOKOP_TERNARY_COND";
-        // keywords
+        /* keywords */
         case LEXTOK_KWD_MODULE:            return "LEXTOK_KWD_MODULE";
         case LEXTOK_KWD_PROC:              return "LEXTOK_KWD_PROC";
         case LEXTOK_KWD_START:             return "LEXTOK_KWD_START";
@@ -93,7 +93,6 @@ const char *lex_get_tokcode(LexToken code)
         case LEXTOK_KWD_WHILE:             return "LEXTOK_KWD_WHILE";
         case LEXTOK_KWD_BREAK:             return "LEXTOK_KWD_BREAK";
         case LEXTOK_KWD_CONTINUE:          return "LEXTOK_KWD_CONTINUE";
-        case LEXTOK_KWD_RETURN:            return "LEXTOK_KWD_RETURN";
         case LEXTOK_KWD_FOR:               return "LEXTOK_KWD_FOR";
         case LEXTOK_KWD_FROM:              return "LEXTOK_KWD_FROM";
         case LEXTOK_KWD_TO:                return "LEXTOK_KWD_TO";
@@ -101,9 +100,10 @@ const char *lex_get_tokcode(LexToken code)
         case LEXTOK_KWD_DO:                return "LEXTOK_KWD_DO";
         case LEXTOK_KWD_VAR:               return "LEXTOK_KWD_VAR";
         case LEXTOK_KWD_PASS:              return "LEXTOK_KWD_PASS";
-        // identifier
+        case LEXTOK_KWD_RETURN:            return "LEXTOK_KWD_RETURN";
+        /* identifier */
         case LEXTOK_IDENTIFIER:            return "LEXTOK_IDENTIFIER";
-        // literals
+        /* literals */
         case LEXTOK_BOOL_LITERAL:          return "LEXTOK_BOOL_LITERAL";
         case LEXTOK_CHAR_LITERAL:          return "LEXTOK_CHAR_LITERAL";
         case LEXTOK_BINFLOAT_LITERAL:      return "LEXTOK_BINFLOAT_LITERAL";
@@ -116,7 +116,7 @@ const char *lex_get_tokcode(LexToken code)
         case LEXTOK_HEXINT_LITERAL:        return "LEXTOK_HEXINT_LITERAL";
         case LEXTOK_STR_LITERAL:           return "LEXTOK_STR_LITERAL";
         case LEXTOK_INTERP_STR_LITERAL:    return "LEXTOK_INTERP_STR_LITERAL";
-        // default cases
+        /* default cases */
         case LEXTOK_EOF:                   return "LEXTOK_EOF";
         case LEXTOK_INVALID:               return "LEXTOK_INVALID";
         default:                           return "INTERNAL";
@@ -124,11 +124,11 @@ const char *lex_get_tokcode(LexToken code)
     return "INTERNAL";
 }
 
-// contributor's warning: ensure tokens are grouped and sorted in alphabetical order
+/* contributor's warning: ensure tokens are grouped and sorted in alphabetical order */
 const char *lex_get_symbol(LexToken code)
 {
     switch (code) {
-        // operators and seperators
+        /* operators and seperators */
         case LEXTOK_BANG:                  return "!";
         case LEXTOK_LOGICAL_UNEQUAL:       return "!=";
         case LEXTOK_LOGICAL_UNIDENTICAL:   return "!==";
@@ -195,12 +195,12 @@ const char *lex_get_symbol(LexToken code)
         case LEXTOK_RBRACE_CURLY:          return "}";
         case LEXTOK_TILDE:                 return "~";
         case LEXTOK_NEWLINE:               return "\\n";
-        // special operations
+        /* special operations */
         case TOKOP_NOP:                    return "NOP";
         case TOKOP_FNCALL:                 return "()";
         case TOKOP_INDEXING:               return "[]";
         case TOKOP_TERNARY_COND:           return "?:";
-        // keywords
+        /* keywords */
         case LEXTOK_KWD_MODULE:            return "module";
         case LEXTOK_KWD_PROC:              return "proc";
         case LEXTOK_KWD_START:             return "start";
@@ -213,7 +213,6 @@ const char *lex_get_symbol(LexToken code)
         case LEXTOK_KWD_WHILE:             return "while";
         case LEXTOK_KWD_BREAK:             return "break";
         case LEXTOK_KWD_CONTINUE:          return "continue";
-        case LEXTOK_KWD_RETURN:            return "return";
         case LEXTOK_KWD_FOR:               return "for";
         case LEXTOK_KWD_FROM:              return "from";
         case LEXTOK_KWD_TO:                return "to";
@@ -221,9 +220,10 @@ const char *lex_get_symbol(LexToken code)
         case LEXTOK_KWD_DO:                return "do";
         case LEXTOK_KWD_VAR:               return "var";
         case LEXTOK_KWD_PASS:              return "pass";
-        // identifier
+        case LEXTOK_KWD_RETURN:            return "return";
+        /* identifier */
         case LEXTOK_IDENTIFIER:            return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
-        // literals
+        /* literals */
         case LEXTOK_BOOL_LITERAL:          return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
         case LEXTOK_CHAR_LITERAL:          return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
         case LEXTOK_BINFLOAT_LITERAL:      return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
@@ -236,10 +236,10 @@ const char *lex_get_symbol(LexToken code)
         case LEXTOK_HEXINT_LITERAL:        return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
         case LEXTOK_STR_LITERAL:           return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
         case LEXTOK_INTERP_STR_LITERAL:    return lex_get_buffstr() ? lex_get_buffstr() : "NULL";
-        // default cases
+        /* default cases */
         case LEXTOK_EOF:                   return "end-of-file";
         case LEXTOK_INVALID:               return "invalid token";
-        default:                           return "<internal token>";
+        default:                           return "<internal>";
     }
     return "<internal>";
 }

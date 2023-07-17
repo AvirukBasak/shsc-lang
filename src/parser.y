@@ -103,7 +103,6 @@ FILE *yyin = NULL;
 %token LEXTOK_KWD_WHILE                               "while"
 %token LEXTOK_KWD_BREAK                               "break"
 %token LEXTOK_KWD_CONTINUE                            "continue"
-%token LEXTOK_KWD_RETURN                              "return"
 %token LEXTOK_KWD_FOR                                 "for"
 %token LEXTOK_KWD_FROM                                "from"
 %token LEXTOK_KWD_TO                                  "to"
@@ -112,6 +111,7 @@ FILE *yyin = NULL;
 %token LEXTOK_KWD_DO                                  "do"
 %token LEXTOK_KWD_VAR                                 "var"
 %token LEXTOK_KWD_PASS                                "pass"
+%token LEXTOK_KWD_RETURN                              "return"
 
 /* default cases */
 %token LEXTOK_EOF 0                                   "<eof>"
@@ -133,27 +133,6 @@ FILE *yyin = NULL;
 
 /* identifier */
 %token <identifier_name> LEXTOK_IDENTIFIER            "<identifier>"
-
-%left  LEXTOK_KWD_MODULE
-%left  LEXTOK_KWD_PROC
-%left  LEXTOK_KWD_START
-%left  LEXTOK_KWD_END
-%left  LEXTOK_KWD_BLOCK
-%left  LEXTOK_KWD_IF
-%left  LEXTOK_KWD_THEN
-%left  LEXTOK_KWD_ELIF
-%left  LEXTOK_KWD_ELSE
-%left  LEXTOK_KWD_WHILE
-%left  LEXTOK_KWD_BREAK
-%left  LEXTOK_KWD_CONTINUE
-%left  LEXTOK_KWD_RETURN
-%left  LEXTOK_KWD_FOR
-%left  LEXTOK_KWD_FROM
-%left  LEXTOK_KWD_TO
-%left  LEXTOK_KWD_BY
-%left  LEXTOK_KWD_DO
-%left  LEXTOK_KWD_VAR
-%left  LEXTOK_KWD_PASS
 
 %left  LEXTOK_LOGICAL_UNEQUAL
 %left  LEXTOK_LOGICAL_UNIDENTICAL
@@ -314,6 +293,7 @@ statements:
 
 statement:
     "pass" nwl                                          { $$ = AST_Statement_empty(lex_line_no - $2); }
+    | "return" expression nwl                           { $$ = AST_Statement_return($2, lex_line_no - $3); }
     | assignment nwl                                    { $$ = AST_Statement_Assignment($1, lex_line_no - $2); }
     | compound_statement nwl                            { $$ = AST_Statement_CompoundSt($1, lex_line_no - $2); }
     ;
@@ -391,7 +371,7 @@ assignment_expression:
 
 conditional_expression:
     logical_or_expression                               { $$ = $1; }
-    | conditional_expression "if" condition "else" conditional_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
+    | logical_or_expression "if" condition "else" logical_or_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
     ;
 
 logical_or_expression:

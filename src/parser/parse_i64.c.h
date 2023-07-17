@@ -17,41 +17,49 @@ int64_t parse_int(const char *str, int base)
         parse_throw("unsupported base");
 
     char *endptr;
+    char *exp_loc = NULL;
     int64_t result = 0;
 
     /* set errno to 0 before calling strtol */
     errno = 0;
 
     /* handle scientific notation separately */
-    if (strchr(str, 'e')) {
+    if ( (exp_loc = strchr(str, 'e')) ) {
+        /* convert to 'p' from 'e' as for hex values,
+           'e' will cause issues as we are using strtol */
+        *exp_loc = 'p';
         /* parse the integer part before the 'e' */
         result = strtol(str, &endptr, base);
-        if (errno || *endptr != 'e')
-            parse_throw("invalid integer format");
-        /* skip over the 'e' character */
+        if (errno || *endptr != 'p')
+            parse_throw("invalid integer format 1; wtf was the lexer designer doing?");
+        /* skip over the 'p' character */
         ++endptr;
         char *exponent_endptr;
         /* parse the exponent value */
         int64_t exponent = strtol(endptr, &exponent_endptr, 10);
         if (errno || exponent_endptr == endptr || *exponent_endptr != '\0')
-            parse_throw("invalid integer format");
+            parse_throw("invalid integer format 2; wtf was the lexer designer doing?");
         /* check that the resulting value is representable in int64_t */
         if (exponent >= 0) {
-            if ( exponent > 18 || (result >= INT64_MAX / (int64_t) (1LL << exponent)) )
+            if ( exponent > 18 || result >= INT64_MAX / (int64_t) (1LL * pow(base, exponent)) ) {
+                *exp_loc = 'e';
                 parse_throw("integer overflow");
-            /* multiply by 10^exponent */
-            result *= (int64_t) (1LL << exponent);
+            }
+            /* multiply by base ^ exponent */
+            result *= (int64_t) (1LL * pow(base, exponent));
         } else {
-            if ( exponent < -18 || (result <= INT64_MIN / (int64_t) (1LL << (-exponent))) )
+            if ( exponent < -18 || result <= INT64_MIN / (int64_t) (1LL * pow(base, -exponent)) ) {
+                *exp_loc = 'e';
                 parse_throw("integer underflow");
-            /* divide by 10^-exponent */
-            result /= (int64_t) (1LL << (-exponent));
+            }
+            /* divide by base ^ exponent */
+            result /= (int64_t) (1LL * pow(base, exponent));
         }
     } else {
         /* parse the integer value using strtol */
         result = strtol(str, &endptr, base);
         if (errno || *endptr != '\0')
-            parse_throw("invalid integer format");
+            parse_throw("invalid integer format 3; wtf was the lexer designer doing?");
     }
 
     return result;

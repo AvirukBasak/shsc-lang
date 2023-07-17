@@ -113,6 +113,11 @@ void AST2JSON_Statement(const AST_Statement_t *statement)
     fprintf(AST2JSON_outfile, ", \"line_no\": %d", statement->line_no);
 
     switch (statement->type) {
+        case STATEMENT_TYPE_RETURN:
+            fprintf(AST2JSON_outfile, ", \"type\": \"STATEMENT_TYPE_RETURN\"");
+            fprintf(AST2JSON_outfile, ", \"statement\": ");
+            AST2JSON_Expression(statement->statement.expression);
+            break;
         case STATEMENT_TYPE_ASSIGNMENT:
             fprintf(AST2JSON_outfile, ", \"type\": \"STATEMENT_TYPE_ASSIGNMENT\"");
             fprintf(AST2JSON_outfile, ", \"statement\": ");
