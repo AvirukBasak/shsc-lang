@@ -74,7 +74,7 @@
           },
           {
             "node": "statement",
-            "line_no": 7,
+            "line_no": 6,
             "type": "STATEMENT_TYPE_ASSIGNMENT",
             "statement": {
               "node": "assignment",
@@ -616,7 +616,7 @@
           },
           {
             "node": "statement",
-            "line_no": 23,
+            "line_no": 22,
             "type": "STATEMENT_TYPE_ASSIGNMENT",
             "statement": {
               "node": "assignment",
