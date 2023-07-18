@@ -221,6 +221,7 @@ FILE *yyin = NULL;
 
 
 %type <line_count> nwl
+%type <line_count> trm
 
 /* semantic types of each parser rule */
 %type <astnode_statements>         statements
@@ -279,7 +280,7 @@ trm:
 /* Push module name to a stack */
 module:
     { AST_ModuleStack_push(AST_Identifier(strdup("main"))); } program { AST_ModuleStack_pop(); }
-    | "module" identifier nwl { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
+    | "module" identifier trm { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
     ;
 
 /* A program is empty or a single procedure or multiple procedures */
@@ -290,7 +291,7 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" nwl statements "end" nwl  { AST_ProcedureMap_add((AST_Identifier_t*) AST_ModuleStack_top(), $2, $5); }
+    "proc" identifier "start" trm statements "end" trm  { AST_ProcedureMap_add((AST_Identifier_t*) AST_ModuleStack_top(), $2, $5); }
     ;
 
 statements:
@@ -299,10 +300,10 @@ statements:
     ;
 
 statement:
-    "pass" nwl                                          { $$ = AST_Statement_empty(lex_line_no - $2); }
-    | "return" expression nwl                           { $$ = AST_Statement_return($2, lex_line_no - $3); }
-    | assignment nwl                                    { $$ = AST_Statement_Assignment($1, lex_line_no - $2); }
-    | compound_statement nwl                            { $$ = AST_Statement_CompoundSt($1, lex_line_no - $2); }
+    "pass" trm                                          { $$ = AST_Statement_empty(lex_line_no - $2); }
+    | "return" expression trm                           { $$ = AST_Statement_return($2, lex_line_no - $3); }
+    | assignment trm                                    { $$ = AST_Statement_Assignment($1, lex_line_no - $2); }
+    | compound_statement trm                            { $$ = AST_Statement_CompoundSt($1, lex_line_no - $2); }
     ;
 
 assignment:
@@ -318,10 +319,10 @@ compound_statement:
     ;
 
 if_block:
-    "if" condition "then" nwl statements "end"                                            { $$ = AST_IfBlock($2, $5, NULL, NULL); }
-    | "if" condition "then" nwl statements "else" nwl statements "end"                    { $$ = AST_IfBlock($2, $5, NULL, $8); }
-    | "if" condition "then" nwl statements else_if_block "end"                            { $$ = AST_IfBlock($2, $5, $6, NULL); }
-    | "if" condition "then" nwl statements else_if_block "else" nwl statements "end"      { $$ = AST_IfBlock($2, $5, $6, $9); }
+    "if" condition "then" trm statements "end"                                            { $$ = AST_IfBlock($2, $5, NULL, NULL); }
+    | "if" condition "then" trm statements "else" trm statements "end"                    { $$ = AST_IfBlock($2, $5, NULL, $8); }
+    | "if" condition "then" trm statements else_if_block "end"                            { $$ = AST_IfBlock($2, $5, $6, NULL); }
+    | "if" condition "then" trm statements else_if_block "else" trm statements "end"      { $$ = AST_IfBlock($2, $5, $6, $9); }
     ;
 
 else_if_block:
@@ -330,22 +331,22 @@ else_if_block:
     ;
 
 else_if_statement:
-    "else" "if" condition "then" nwl statements         { $$ = AST_ElseIfSt($3, $6); }
-    | "elif" condition "then" nwl statements            { $$ = AST_ElseIfSt($2, $5); }
+    "else" "if" condition "then" trm statements         { $$ = AST_ElseIfSt($3, $6); }
+    | "elif" condition "then" trm statements            { $$ = AST_ElseIfSt($2, $5); }
     ;
 
 while_block:
-    "while" condition "do" nwl statements "end"         { $$ = AST_WhileBlock($2, $5); }
+    "while" condition "do" trm statements "end"         { $$ = AST_WhileBlock($2, $5); }
     ;
 
 for_block:
-    "for" identifier "from" operand "to" operand "do" nwl statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
-    | "for" identifier "from" operand "to" operand "by" operand "do" nwl statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
-    | "for" identifier "in" operand "do" nwl statements "end"                             { $$ = AST_ForBlock_iterate($2, $4, $7); }
+    "for" identifier "from" operand "to" operand "do" trm statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
+    | "for" identifier "from" operand "to" operand "by" operand "do" trm statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
+    | "for" identifier "in" operand "do" trm statements "end"                             { $$ = AST_ForBlock_iterate($2, $4, $7); }
     ;
 
 block:
-    "block" nwl statements "end"                        { $$ = AST_Block($3); }
+    "block" trm statements "end"                        { $$ = AST_Block($3); }
     ;
 
 condition:
