@@ -541,6 +541,7 @@ void parse_throw(const char *msg)
 {
     if (!msg) abort();
     int line = lex_line_no;
+    if (lex_currtok == LEXTOK_NEWLINE) --line;
     io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
     exit(ERR_PARSER);
 }
