@@ -123,7 +123,7 @@ LexToken lex_get_nexttok(FILE *f)
     else if (ch == '\'') return lex_match_char(f, ch);
     else if (ch == '"') return lex_match_string(f, ch);
     else if (isdigit(ch)) return lex_match_numeric(f, ch);
-    else if (ch == '.' || ch == '+' || ch == '-') {
+    else if (ch == '.') {
         LexToken currtok = lex_match_numeric(f, ch);
         if (currtok == LEXTOK_INVALID)
             return lex_match_symbols(f, ch);

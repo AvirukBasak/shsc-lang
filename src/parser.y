@@ -437,6 +437,7 @@ multiplicative_expression:
 
 unary_expression:
     postfix_expression                                  { $$ = $1; }
+    | "+" unary_expression                              { $$ = AST_Expression($1, NULL, $2, NULL); }
     | "-" unary_expression                              { $$ = AST_Expression($1, NULL, $2, NULL); }
     | "!" unary_expression                              { $$ = AST_Expression($1, NULL, $2, NULL); }
     | "~" unary_expression                              { $$ = AST_Expression($1, NULL, $2, NULL); }
