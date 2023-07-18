@@ -169,20 +169,21 @@ AST_Block_t *AST_Block(AST_Statements_t *statements)
     return block;
 }
 
-#define AST_EXPRESSION_ISOPERAND(expr_) ({          \
-    AST_Expression_t *expr = expr_;                 \
-    expr && expr->op == TOKOP_NOP                   \
-         && expr->lhs_type == EXPR_TYPE_OPERAND     \
-         && expr->rhs_type == EXPR_TYPE_NULL        \
-         && expr->condition_type == EXPR_TYPE_NULL; \
+#define AST_EXPRESSION_ISOPERAND(expr_) ({             \
+    AST_Expression_t *expr = expr_;                    \
+    expr && expr->op == TOKOP_NOP                      \
+         && ( expr->lhs_type == EXPR_TYPE_LITERAL      \
+           || expr->lhs_type == EXPR_TYPE_IDENTIFIER ) \
+         && expr->rhs_type == EXPR_TYPE_NULL           \
+         && expr->condition_type == EXPR_TYPE_NULL;    \
 })
 
-#define AST_EXPRESSION_ISCOMMALIST(expr_) ({        \
-    AST_Expression_t *expr = expr_;                 \
-    expr && expr->op == TOKOP_NOP                   \
-         && expr->lhs_type == EXPR_TYPE_LIST        \
-         && expr->rhs_type == EXPR_TYPE_NULL        \
-         && expr->condition_type == EXPR_TYPE_NULL; \
+#define AST_EXPRESSION_ISCOMMALIST(expr_) ({           \
+    AST_Expression_t *expr = expr_;                    \
+    expr && expr->op == TOKOP_NOP                      \
+         && expr->lhs_type == EXPR_TYPE_LIST           \
+         && expr->rhs_type == EXPR_TYPE_NULL           \
+         && expr->condition_type == EXPR_TYPE_NULL;    \
 })
 
 AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition)
@@ -193,8 +194,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
     if ( AST_EXPRESSION_ISOPERAND(lhs) || AST_EXPRESSION_ISCOMMALIST(lhs) ) {
         expression->lhs_type = lhs->lhs_type;
         expression->lhs = lhs->lhs;
-        lhs->lhs.oprnd = NULL;
-        lhs->lhs.lst = NULL;
+        lhs->lhs.expr = NULL;
         lhs->lhs_type = EXPR_TYPE_NULL;
         AST_Expression_free(&lhs);
     } else {
@@ -205,8 +205,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
     if ( AST_EXPRESSION_ISOPERAND(rhs) || AST_EXPRESSION_ISCOMMALIST(rhs) ) {
         expression->rhs_type = rhs->lhs_type;
         expression->rhs = rhs->lhs;
-        rhs->lhs.oprnd = NULL;
-        rhs->lhs.lst = NULL;
+        rhs->lhs.expr = NULL;
         rhs->lhs_type = EXPR_TYPE_NULL;
         AST_Expression_free(&rhs);
     } else {
@@ -217,8 +216,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
     if ( AST_EXPRESSION_ISOPERAND(condition) || AST_EXPRESSION_ISCOMMALIST(condition) ) {
         expression->condition_type = condition->lhs_type;
         expression->condition = condition->lhs;
-        condition->lhs.oprnd = NULL;
-        condition->lhs.lst = NULL;
+        condition->lhs.expr = NULL;
         condition->lhs_type = EXPR_TYPE_NULL;
         AST_Expression_free(&condition);
     } else {
@@ -229,12 +227,12 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
     return expression;
 }
 
-AST_Expression_t *AST_Expression_Operand(AST_Operand_t *operand)
+AST_Expression_t *AST_Expression_Literal(AST_Literal_t *literal)
 {
     AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
     expression->op = TOKOP_NOP;
-    expression->lhs_type = EXPR_TYPE_OPERAND;
-    expression->lhs.oprnd = operand;
+    expression->lhs_type = EXPR_TYPE_LITERAL;
+    expression->lhs.literal = literal;
     expression->rhs_type = EXPR_TYPE_NULL;
     expression->rhs.expr = NULL;
     expression->condition_type = EXPR_TYPE_NULL;
@@ -246,8 +244,8 @@ AST_Expression_t *AST_Expression_Identifier(AST_Identifier_t *identifier)
 {
     AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
     expression->op = TOKOP_NOP;
-    expression->lhs_type = EXPR_TYPE_OPERAND;
-    expression->lhs.oprnd = AST_Operand_Identifier(identifier);
+    expression->lhs_type = EXPR_TYPE_IDENTIFIER;
+    expression->lhs.variable = identifier;
     expression->rhs_type = EXPR_TYPE_NULL;
     expression->rhs.expr = NULL;
     expression->condition_type = EXPR_TYPE_NULL;

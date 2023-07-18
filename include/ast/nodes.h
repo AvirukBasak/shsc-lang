@@ -107,14 +107,16 @@ struct AST_Block_t {
 
 enum AST_ExpressionType_t {
     EXPR_TYPE_EXPRESSION,
-    EXPR_TYPE_OPERAND,
+    EXPR_TYPE_LITERAL,
+    EXPR_TYPE_IDENTIFIER,
     EXPR_TYPE_LIST,
     EXPR_TYPE_NULL,
 };
 
 union AST_ExpressionUnion_t {
     AST_Expression_t *expr;
-    AST_Operand_t *oprnd;
+    AST_Literal_t *literal;
+    AST_Identifier_t *variable;
     AST_CommaSepList_t *lst;
 };
 

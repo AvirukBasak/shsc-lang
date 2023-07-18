@@ -457,9 +457,9 @@ postfix_expression:
     primary_expression                                  { $$ = $1; }
     | postfix_expression "(" ")"                        { $$ = AST_Expression(TOKOP_FNCALL, $1, NULL, NULL); }
     | postfix_expression "(" nwl comma_list ")"         { $$ = AST_Expression(TOKOP_FNCALL, $1,
-                                                            AST_Expression_CommaSepList($3), NULL);
+                                                            AST_Expression_CommaSepList($4), NULL);
                                                         }
-    | postfix_expression "[" nwl expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $3, NULL); }
+    | postfix_expression "[" nwl expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,
@@ -471,7 +471,8 @@ postfix_expression:
     ;
 
 primary_expression:
-    operand                                             { $$ = AST_Expression_Operand($1); }
+    literal                                             { $$ = AST_Expression_Literal($1); }
+    | identifier                                        { $$ = AST_Expression_Identifier($1); }
     | "(" expression ")"                                { $$ = $2; }
     ;
 
@@ -500,7 +501,7 @@ literal:
     | LEXTOK_STR_LITERAL                                { $$ = AST_Literal_str($1); }
     | LEXTOK_INTERP_STR_LITERAL                         { $$ = AST_Literal_interp_str($1); }
     | "[" "]"                                           { $$ = AST_Literal_lst(NULL); }
-    | "[" nwl comma_list "]"                            { $$ = AST_Literal_lst($2); }
+    | "[" nwl comma_list "]"                            { $$ = AST_Literal_lst($3); }
     ;
 
 identifier:

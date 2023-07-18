@@ -32,7 +32,7 @@ AST_ForBlock_t      *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Operand_t 
 AST_Block_t         *AST_Block(AST_Statements_t *statements);
 
 AST_Expression_t    *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition);
-AST_Expression_t    *AST_Expression_Operand(AST_Operand_t *operand);
+AST_Expression_t    *AST_Expression_Literal(AST_Literal_t *literal);
 AST_Expression_t    *AST_Expression_Identifier(AST_Identifier_t *identifier);
 AST_Expression_t    *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list);
 
