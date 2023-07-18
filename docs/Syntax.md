@@ -1,4 +1,4 @@
-**Last updated on July 12, 2023**
+**Last updated on July 18, 2023**
 
 The following is a specification of the syntax and behaviour of the language.
 
@@ -178,6 +178,48 @@ An assignment is a part of an expression, which means you can do the same operat
 x = y = x = 5
 var u = (x = 4) if true else "hi"
 ```
+
+### Lists
+The language supports lists in the same syntax as that of Python.
+A single list can have multiple datatypes together.
+
+#### Example
+```
+proc test start
+    var x = [
+        [ 1, 2, 4, 5 ],
+        [ 1, 2, 4, 5 ],
+        [ 1, 2, 4, 5 ],
+        [ 1, 2, 4, 5 ],
+    ]
+end
+```
+
+#### Implementation
+They'll be stored as an array of union of multiple expressions and the type will be dynamically inferred when an element is accessed.
+
+## Semicolons
+Newlines or semicolons can be used to terminate a statement.
+
+If semicolon is used, one can write multiple statements in a single line.
+
+There's no up or downside in using either.
+If used at the end of a statement, the parser makes no distinction b/w newlines or semicolons.
+
+Even a combination of the two can be used wherever one desires.
+
+#### Example
+```
+proc test start
+    var x = 5; x = 0
+    ;
+end
+```
+
+## Indentation
+The parser ignores indentation and whitespaces completely.
+
+Only newlines are significant when used as statement termination symbols.
 
 ## Warning Prompt
 

@@ -190,10 +190,10 @@ LexToken lex_match_unum(FILE *f, char ch, enum LexBase base)
     }
     /* match ([ep][+-]?\d+){0:1} */
     if ((base != LEXBASE_16 && ch == 'e') || ch == 'p') {
-        /* pop 'p' and push 'e', convert p to e */
+        /* pop 'e' and push 'p', convert e to p */
         char backup_expchar = ch;
         lex_buffpop();
-        lex_buffpush('e');
+        lex_buffpush('p');
         /* next char */
         ch = lex_getc(f);
         /* consume + or - symbol */
@@ -223,14 +223,6 @@ LexToken lex_match_unum(FILE *f, char ch, enum LexBase base)
 /* may accept only if the string starts w/ '+', '-', '.', digit or '0' */
 LexToken lex_match_numeric(FILE *f, char ch)
 {
-    /* starts with '+' or '-' then consume the sign */
-    if (ch == '+' || ch == '-') {
-        ch = lex_getc(f);
-        if (!isdigit(ch) && ch != '.') {
-            lex_ungetc(&ch, f);    /* unget ch */
-            return LEXTOK_INVALID;
-        }
-    }
     /* if starts with a 0 */
     if (ch == '0') {
         ch = lex_getc(f);
@@ -271,15 +263,9 @@ LexToken lex_match_numeric(FILE *f, char ch)
             }
         }
     }
-    /* starts with any other number */
-    else if (isdigit(ch))
+    /* starts with any other number or '.' */
+    else if (isdigit(ch) || ch == '.')
         return lex_match_unum(f, ch, LEXBASE_10);
-    /* starts with '.', eg .ddd, convert it to 0.ddd */
-    else if (ch == '.') {
-        lex_ungetc(&ch, f);      /* unget '.' */
-        lex_buffpush('0');       /* push a '0' */
-        return lex_match_unum(f, '0', LEXBASE_10);
-    }
     else return LEXTOK_INVALID;
 }
 

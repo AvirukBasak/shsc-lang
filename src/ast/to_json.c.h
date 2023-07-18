@@ -323,10 +323,15 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
             fprintf(AST2JSON_outfile, ", \"lhs\": ");
             AST2JSON_Expression(expression->lhs.expr);
             break;
-        case EXPR_TYPE_OPERAND:
-            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_OPERAND\"");
+        case EXPR_TYPE_LITERAL:
+            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_LITERAL\"");
             fprintf(AST2JSON_outfile, ", \"lhs\": ");
-            AST2JSON_Operand(expression->lhs.oprnd);
+            AST2JSON_Literal(expression->lhs.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_IDENTIFIER\"");
+            fprintf(AST2JSON_outfile, ", \"lhs\": ");
+            AST2JSON_Identifier(expression->lhs.variable);
             break;
         case EXPR_TYPE_LIST:
             fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_LIST\"");
@@ -345,10 +350,15 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
             fprintf(AST2JSON_outfile, ", \"rhs\": ");
             AST2JSON_Expression(expression->rhs.expr);
             break;
-        case EXPR_TYPE_OPERAND:
-            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_OPERAND\"");
+        case EXPR_TYPE_LITERAL:
+            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_LITERAL\"");
             fprintf(AST2JSON_outfile, ", \"rhs\": ");
-            AST2JSON_Operand(expression->rhs.oprnd);
+            AST2JSON_Literal(expression->rhs.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_IDENTIFIER\"");
+            fprintf(AST2JSON_outfile, ", \"rhs\": ");
+            AST2JSON_Identifier(expression->rhs.variable);
             break;
         case EXPR_TYPE_LIST:
             fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_LIST\"");
@@ -367,10 +377,15 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
             fprintf(AST2JSON_outfile, ", \"condition\": ");
             AST2JSON_Expression(expression->condition.expr);
             break;
-        case EXPR_TYPE_OPERAND:
-            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_OPERAND\"");
+        case EXPR_TYPE_LITERAL:
+            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_LITERAL\"");
             fprintf(AST2JSON_outfile, ", \"condition\": ");
-            AST2JSON_Operand(expression->condition.oprnd);
+            AST2JSON_Literal(expression->condition.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_IDENTIFIER\"");
+            fprintf(AST2JSON_outfile, ", \"condition\": ");
+            AST2JSON_Identifier(expression->condition.variable);
             break;
         case EXPR_TYPE_LIST:
             fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_LIST\"");
@@ -480,7 +495,7 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
         case DATA_TYPE_F64:
             fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_F64\"");
             fprintf(AST2JSON_outfile, ", \"data\": ");
-            fprintf(AST2JSON_outfile, "%f", literal->data.f64);
+            fprintf(AST2JSON_outfile, "%lf", literal->data.f64);
             break;
         case DATA_TYPE_STR:
         case DATA_TYPE_INTERP_STR: {

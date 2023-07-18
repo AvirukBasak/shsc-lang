@@ -123,7 +123,7 @@ LexToken lex_get_nexttok(FILE *f)
     else if (ch == '\'') return lex_match_char(f, ch);
     else if (ch == '"') return lex_match_string(f, ch);
     else if (isdigit(ch)) return lex_match_numeric(f, ch);
-    else if (ch == '.' || ch == '+' || ch == '-') {
+    else if (ch == '.') {
         LexToken currtok = lex_match_numeric(f, ch);
         if (currtok == LEXTOK_INVALID)
             return lex_match_symbols(f, ch);
@@ -138,7 +138,7 @@ void lex_throw(const char *msg)
 {
     if (!msg) abort();
     int line = lex_line_no;
-    if (lex_currtok == LEXTOK_NEWLINE) --line;
+    /* if (lex_currtok == LEXTOK_NEWLINE) --line; */
     io_print_srcerr(line, lex_char_no, "lexing error: after token '%s': %s", lex_get_symbol(lex_currtok), msg);
     exit(ERR_LEXER);
 }

@@ -17,14 +17,10 @@
               "rhs": {
                 "node": "expression",
                 "op": "()",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "print"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "print"
                 },
                 "rhs_type": "EXPR_TYPE_LIST",
                 "rhs": {
@@ -33,15 +29,11 @@
                     {
                       "node": "expression",
                       "op": "NOP",
-                      "lhs_type": "EXPR_TYPE_OPERAND",
+                      "lhs_type": "EXPR_TYPE_LITERAL",
                       "lhs": {
-                        "node": "operand",
-                        "type": "OPERAND_TYPE_LITERAL",
-                        "operand": {
-                          "node": "literal",
-                          "type": "DATA_TYPE_STR",
-                          "data": "Hello world!"
-                        }
+                        "node": "literal",
+                        "type": "DATA_TYPE_STR",
+                        "data": "Hello world!"
                       },
                       "rhs_type": "EXPR_TYPE_NULL",
                       "rhs": null,
@@ -51,14 +43,10 @@
                     {
                       "node": "expression",
                       "op": "NOP",
-                      "lhs_type": "EXPR_TYPE_OPERAND",
+                      "lhs_type": "EXPR_TYPE_IDENTIFIER",
                       "lhs": {
-                        "node": "operand",
-                        "type": "OPERAND_TYPE_IDENTIFIER",
-                        "operand": {
-                          "node": "identifier",
-                          "identifier_name": "lf"
-                        }
+                        "node": "identifier",
+                        "identifier_name": "lf"
                       },
                       "rhs_type": "EXPR_TYPE_NULL",
                       "rhs": null,
@@ -74,7 +62,7 @@
           },
           {
             "node": "statement",
-            "line_no": 7,
+            "line_no": 6,
             "type": "STATEMENT_TYPE_ASSIGNMENT",
             "statement": {
               "node": "assignment",
@@ -85,14 +73,10 @@
               "rhs": {
                 "node": "expression",
                 "op": "()",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "input"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "input"
                 },
                 "rhs_type": "EXPR_TYPE_LIST",
                 "rhs": {
@@ -101,14 +85,10 @@
                     {
                       "node": "expression",
                       "op": "NOP",
-                      "lhs_type": "EXPR_TYPE_OPERAND",
+                      "lhs_type": "EXPR_TYPE_IDENTIFIER",
                       "lhs": {
-                        "node": "operand",
-                        "type": "OPERAND_TYPE_IDENTIFIER",
-                        "operand": {
-                          "node": "identifier",
-                          "identifier_name": "i64"
-                        }
+                        "node": "identifier",
+                        "identifier_name": "i64"
                       },
                       "rhs_type": "EXPR_TYPE_NULL",
                       "rhs": null,
@@ -131,24 +111,16 @@
               "condition": {
                 "node": "expression",
                 "op": "==",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "x"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "x"
                 },
-                "rhs_type": "EXPR_TYPE_OPERAND",
+                "rhs_type": "EXPR_TYPE_LITERAL",
                 "rhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_LITERAL",
-                  "operand": {
-                    "node": "literal",
-                    "type": "DATA_TYPE_I64",
-                    "data": 1
-                  }
+                  "node": "literal",
+                  "type": "DATA_TYPE_I64",
+                  "data": 1
                 },
                 "condition_type": "EXPR_TYPE_NULL",
                 "condition": null
@@ -166,14 +138,10 @@
                       "rhs": {
                         "node": "expression",
                         "op": "()",
-                        "lhs_type": "EXPR_TYPE_OPERAND",
+                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
-                          "node": "operand",
-                          "type": "OPERAND_TYPE_IDENTIFIER",
-                          "operand": {
-                            "node": "identifier",
-                            "identifier_name": "print"
-                          }
+                          "node": "identifier",
+                          "identifier_name": "print"
                         },
                         "rhs_type": "EXPR_TYPE_LIST",
                         "rhs": {
@@ -182,15 +150,11 @@
                             {
                               "node": "expression",
                               "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_OPERAND",
+                              "lhs_type": "EXPR_TYPE_LITERAL",
                               "lhs": {
-                                "node": "operand",
-                                "type": "OPERAND_TYPE_LITERAL",
-                                "operand": {
-                                  "node": "literal",
-                                  "type": "DATA_TYPE_STR",
-                                  "data": "entered 1"
-                                }
+                                "node": "literal",
+                                "type": "DATA_TYPE_STR",
+                                "data": "entered 1"
                               },
                               "rhs_type": "EXPR_TYPE_NULL",
                               "rhs": null,
@@ -200,14 +164,10 @@
                             {
                               "node": "expression",
                               "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_OPERAND",
+                              "lhs_type": "EXPR_TYPE_IDENTIFIER",
                               "lhs": {
-                                "node": "operand",
-                                "type": "OPERAND_TYPE_IDENTIFIER",
-                                "operand": {
-                                  "node": "identifier",
-                                  "identifier_name": "lf"
-                                }
+                                "node": "identifier",
+                                "identifier_name": "lf"
                               },
                               "rhs_type": "EXPR_TYPE_NULL",
                               "rhs": null,
@@ -231,24 +191,16 @@
                   "condition": {
                     "node": "expression",
                     "op": "==",
-                    "lhs_type": "EXPR_TYPE_OPERAND",
+                    "lhs_type": "EXPR_TYPE_IDENTIFIER",
                     "lhs": {
-                      "node": "operand",
-                      "type": "OPERAND_TYPE_IDENTIFIER",
-                      "operand": {
-                        "node": "identifier",
-                        "identifier_name": "x"
-                      }
+                      "node": "identifier",
+                      "identifier_name": "x"
                     },
-                    "rhs_type": "EXPR_TYPE_OPERAND",
+                    "rhs_type": "EXPR_TYPE_LITERAL",
                     "rhs": {
-                      "node": "operand",
-                      "type": "OPERAND_TYPE_LITERAL",
-                      "operand": {
-                        "node": "literal",
-                        "type": "DATA_TYPE_I64",
-                        "data": 2
-                      }
+                      "node": "literal",
+                      "type": "DATA_TYPE_I64",
+                      "data": 2
                     },
                     "condition_type": "EXPR_TYPE_NULL",
                     "condition": null
@@ -266,14 +218,10 @@
                           "rhs": {
                             "node": "expression",
                             "op": "()",
-                            "lhs_type": "EXPR_TYPE_OPERAND",
+                            "lhs_type": "EXPR_TYPE_IDENTIFIER",
                             "lhs": {
-                              "node": "operand",
-                              "type": "OPERAND_TYPE_IDENTIFIER",
-                              "operand": {
-                                "node": "identifier",
-                                "identifier_name": "print"
-                              }
+                              "node": "identifier",
+                              "identifier_name": "print"
                             },
                             "rhs_type": "EXPR_TYPE_LIST",
                             "rhs": {
@@ -282,15 +230,11 @@
                                 {
                                   "node": "expression",
                                   "op": "NOP",
-                                  "lhs_type": "EXPR_TYPE_OPERAND",
+                                  "lhs_type": "EXPR_TYPE_LITERAL",
                                   "lhs": {
-                                    "node": "operand",
-                                    "type": "OPERAND_TYPE_LITERAL",
-                                    "operand": {
-                                      "node": "literal",
-                                      "type": "DATA_TYPE_STR",
-                                      "data": "entered 2"
-                                    }
+                                    "node": "literal",
+                                    "type": "DATA_TYPE_STR",
+                                    "data": "entered 2"
                                   },
                                   "rhs_type": "EXPR_TYPE_NULL",
                                   "rhs": null,
@@ -300,14 +244,10 @@
                                 {
                                   "node": "expression",
                                   "op": "NOP",
-                                  "lhs_type": "EXPR_TYPE_OPERAND",
+                                  "lhs_type": "EXPR_TYPE_IDENTIFIER",
                                   "lhs": {
-                                    "node": "operand",
-                                    "type": "OPERAND_TYPE_IDENTIFIER",
-                                    "operand": {
-                                      "node": "identifier",
-                                      "identifier_name": "lf"
-                                    }
+                                    "node": "identifier",
+                                    "identifier_name": "lf"
                                   },
                                   "rhs_type": "EXPR_TYPE_NULL",
                                   "rhs": null,
@@ -338,14 +278,10 @@
                       "rhs": {
                         "node": "expression",
                         "op": "()",
-                        "lhs_type": "EXPR_TYPE_OPERAND",
+                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
-                          "node": "operand",
-                          "type": "OPERAND_TYPE_IDENTIFIER",
-                          "operand": {
-                            "node": "identifier",
-                            "identifier_name": "print"
-                          }
+                          "node": "identifier",
+                          "identifier_name": "print"
                         },
                         "rhs_type": "EXPR_TYPE_LIST",
                         "rhs": {
@@ -354,15 +290,11 @@
                             {
                               "node": "expression",
                               "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_OPERAND",
+                              "lhs_type": "EXPR_TYPE_LITERAL",
                               "lhs": {
-                                "node": "operand",
-                                "type": "OPERAND_TYPE_LITERAL",
-                                "operand": {
-                                  "node": "literal",
-                                  "type": "DATA_TYPE_STR",
-                                  "data": "entered {x}"
-                                }
+                                "node": "literal",
+                                "type": "DATA_TYPE_STR",
+                                "data": "entered {x}"
                               },
                               "rhs_type": "EXPR_TYPE_NULL",
                               "rhs": null,
@@ -372,14 +304,10 @@
                             {
                               "node": "expression",
                               "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_OPERAND",
+                              "lhs_type": "EXPR_TYPE_IDENTIFIER",
                               "lhs": {
-                                "node": "operand",
-                                "type": "OPERAND_TYPE_IDENTIFIER",
-                                "operand": {
-                                  "node": "identifier",
-                                  "identifier_name": "lf"
-                                }
+                                "node": "identifier",
+                                "identifier_name": "lf"
                               },
                               "rhs_type": "EXPR_TYPE_NULL",
                               "rhs": null,
@@ -406,24 +334,16 @@
               "condition": {
                 "node": "expression",
                 "op": ">=",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "x"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "x"
                 },
-                "rhs_type": "EXPR_TYPE_OPERAND",
+                "rhs_type": "EXPR_TYPE_LITERAL",
                 "rhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_LITERAL",
-                  "operand": {
-                    "node": "literal",
-                    "type": "DATA_TYPE_I64",
-                    "data": 0
-                  }
+                  "node": "literal",
+                  "type": "DATA_TYPE_I64",
+                  "data": 0
                 },
                 "condition_type": "EXPR_TYPE_NULL",
                 "condition": null
@@ -441,14 +361,10 @@
                       "rhs": {
                         "node": "expression",
                         "op": "()",
-                        "lhs_type": "EXPR_TYPE_OPERAND",
+                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
-                          "node": "operand",
-                          "type": "OPERAND_TYPE_IDENTIFIER",
-                          "operand": {
-                            "node": "identifier",
-                            "identifier_name": "print"
-                          }
+                          "node": "identifier",
+                          "identifier_name": "print"
                         },
                         "rhs_type": "EXPR_TYPE_LIST",
                         "rhs": {
@@ -457,15 +373,11 @@
                             {
                               "node": "expression",
                               "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_OPERAND",
+                              "lhs_type": "EXPR_TYPE_LITERAL",
                               "lhs": {
-                                "node": "operand",
-                                "type": "OPERAND_TYPE_LITERAL",
-                                "operand": {
-                                  "node": "literal",
-                                  "type": "DATA_TYPE_STR",
-                                  "data": "x = {x}"
-                                }
+                                "node": "literal",
+                                "type": "DATA_TYPE_STR",
+                                "data": "x = {x}"
                               },
                               "rhs_type": "EXPR_TYPE_NULL",
                               "rhs": null,
@@ -489,37 +401,25 @@
                       "rhs": {
                         "node": "expression",
                         "op": "=",
-                        "lhs_type": "EXPR_TYPE_OPERAND",
+                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
-                          "node": "operand",
-                          "type": "OPERAND_TYPE_IDENTIFIER",
-                          "operand": {
-                            "node": "identifier",
-                            "identifier_name": "x"
-                          }
+                          "node": "identifier",
+                          "identifier_name": "x"
                         },
                         "rhs_type": "EXPR_TYPE_EXPRESSION",
                         "rhs": {
                           "node": "expression",
                           "op": "-",
-                          "lhs_type": "EXPR_TYPE_OPERAND",
+                          "lhs_type": "EXPR_TYPE_IDENTIFIER",
                           "lhs": {
-                            "node": "operand",
-                            "type": "OPERAND_TYPE_IDENTIFIER",
-                            "operand": {
-                              "node": "identifier",
-                              "identifier_name": "x"
-                            }
+                            "node": "identifier",
+                            "identifier_name": "x"
                           },
-                          "rhs_type": "EXPR_TYPE_OPERAND",
+                          "rhs_type": "EXPR_TYPE_LITERAL",
                           "rhs": {
-                            "node": "operand",
-                            "type": "OPERAND_TYPE_LITERAL",
-                            "operand": {
-                              "node": "literal",
-                              "type": "DATA_TYPE_I64",
-                              "data": 1
-                            }
+                            "node": "literal",
+                            "type": "DATA_TYPE_I64",
+                            "data": 1
                           },
                           "condition_type": "EXPR_TYPE_NULL",
                           "condition": null
@@ -543,27 +443,19 @@
               "rhs": {
                 "node": "expression",
                 "op": "=",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "x"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "x"
                 },
                 "rhs_type": "EXPR_TYPE_EXPRESSION",
                 "rhs": {
                   "node": "expression",
                   "op": "()",
-                  "lhs_type": "EXPR_TYPE_OPERAND",
+                  "lhs_type": "EXPR_TYPE_IDENTIFIER",
                   "lhs": {
-                    "node": "operand",
-                    "type": "OPERAND_TYPE_IDENTIFIER",
-                    "operand": {
-                      "node": "identifier",
-                      "identifier_name": "input"
-                    }
+                    "node": "identifier",
+                    "identifier_name": "input"
                   },
                   "rhs_type": "EXPR_TYPE_LIST",
                   "rhs": {
@@ -572,15 +464,11 @@
                       {
                         "node": "expression",
                         "op": "NOP",
-                        "lhs_type": "EXPR_TYPE_OPERAND",
+                        "lhs_type": "EXPR_TYPE_LITERAL",
                         "lhs": {
-                          "node": "operand",
-                          "type": "OPERAND_TYPE_LITERAL",
-                          "operand": {
-                            "node": "literal",
-                            "type": "DATA_TYPE_STR",
-                            "data": "prompt: "
-                          }
+                          "node": "literal",
+                          "type": "DATA_TYPE_STR",
+                          "data": "prompt: "
                         },
                         "rhs_type": "EXPR_TYPE_NULL",
                         "rhs": null,
@@ -590,14 +478,10 @@
                       {
                         "node": "expression",
                         "op": "NOP",
-                        "lhs_type": "EXPR_TYPE_OPERAND",
+                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
-                          "node": "operand",
-                          "type": "OPERAND_TYPE_IDENTIFIER",
-                          "operand": {
-                            "node": "identifier",
-                            "identifier_name": "str"
-                          }
+                          "node": "identifier",
+                          "identifier_name": "str"
                         },
                         "rhs_type": "EXPR_TYPE_NULL",
                         "rhs": null,
@@ -616,7 +500,7 @@
           },
           {
             "node": "statement",
-            "line_no": 23,
+            "line_no": 22,
             "type": "STATEMENT_TYPE_ASSIGNMENT",
             "statement": {
               "node": "assignment",
@@ -624,14 +508,10 @@
               "rhs": {
                 "node": "expression",
                 "op": "()",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "print"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "print"
                 },
                 "rhs_type": "EXPR_TYPE_LIST",
                 "rhs": {
@@ -640,15 +520,11 @@
                     {
                       "node": "expression",
                       "op": "NOP",
-                      "lhs_type": "EXPR_TYPE_OPERAND",
+                      "lhs_type": "EXPR_TYPE_LITERAL",
                       "lhs": {
-                        "node": "operand",
-                        "type": "OPERAND_TYPE_LITERAL",
-                        "operand": {
-                          "node": "literal",
-                          "type": "DATA_TYPE_STR",
-                          "data": "entered {x}"
-                        }
+                        "node": "literal",
+                        "type": "DATA_TYPE_STR",
+                        "data": "entered {x}"
                       },
                       "rhs_type": "EXPR_TYPE_NULL",
                       "rhs": null,
@@ -658,14 +534,10 @@
                     {
                       "node": "expression",
                       "op": "NOP",
-                      "lhs_type": "EXPR_TYPE_OPERAND",
+                      "lhs_type": "EXPR_TYPE_IDENTIFIER",
                       "lhs": {
-                        "node": "operand",
-                        "type": "OPERAND_TYPE_IDENTIFIER",
-                        "operand": {
-                          "node": "identifier",
-                          "identifier_name": "lf"
-                        }
+                        "node": "identifier",
+                        "identifier_name": "lf"
                       },
                       "rhs_type": "EXPR_TYPE_NULL",
                       "rhs": null,
@@ -692,15 +564,11 @@
               "rhs": {
                 "node": "expression",
                 "op": "NOP",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_LITERAL",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_LITERAL",
-                  "operand": {
-                    "node": "literal",
-                    "type": "DATA_TYPE_BUL",
-                    "data": true
-                  }
+                  "node": "literal",
+                  "type": "DATA_TYPE_BUL",
+                  "data": true
                 },
                 "rhs_type": "EXPR_TYPE_NULL",
                 "rhs": null,
@@ -719,14 +587,10 @@
               "rhs": {
                 "node": "expression",
                 "op": "()",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "print"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "print"
                 },
                 "rhs_type": "EXPR_TYPE_LIST",
                 "rhs": {
@@ -735,15 +599,11 @@
                     {
                       "node": "expression",
                       "op": "NOP",
-                      "lhs_type": "EXPR_TYPE_OPERAND",
+                      "lhs_type": "EXPR_TYPE_LITERAL",
                       "lhs": {
-                        "node": "operand",
-                        "type": "OPERAND_TYPE_LITERAL",
-                        "operand": {
-                          "node": "literal",
-                          "type": "DATA_TYPE_STR",
-                          "data": "bool value = {x}"
-                        }
+                        "node": "literal",
+                        "type": "DATA_TYPE_STR",
+                        "data": "bool value = {x}"
                       },
                       "rhs_type": "EXPR_TYPE_NULL",
                       "rhs": null,
@@ -753,14 +613,10 @@
                     {
                       "node": "expression",
                       "op": "NOP",
-                      "lhs_type": "EXPR_TYPE_OPERAND",
+                      "lhs_type": "EXPR_TYPE_IDENTIFIER",
                       "lhs": {
-                        "node": "operand",
-                        "type": "OPERAND_TYPE_IDENTIFIER",
-                        "operand": {
-                          "node": "identifier",
-                          "identifier_name": "lf"
-                        }
+                        "node": "identifier",
+                        "identifier_name": "lf"
                       },
                       "rhs_type": "EXPR_TYPE_NULL",
                       "rhs": null,
@@ -787,48 +643,32 @@
               "rhs": {
                 "node": "expression",
                 "op": "?:",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_LITERAL",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_LITERAL",
-                  "operand": {
-                    "node": "literal",
-                    "type": "DATA_TYPE_I64",
-                    "data": 5
-                  }
+                  "node": "literal",
+                  "type": "DATA_TYPE_I64",
+                  "data": 5
                 },
-                "rhs_type": "EXPR_TYPE_OPERAND",
+                "rhs_type": "EXPR_TYPE_LITERAL",
                 "rhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_LITERAL",
-                  "operand": {
-                    "node": "literal",
-                    "type": "DATA_TYPE_I64",
-                    "data": 7
-                  }
+                  "node": "literal",
+                  "type": "DATA_TYPE_I64",
+                  "data": 7
                 },
                 "condition_type": "EXPR_TYPE_EXPRESSION",
                 "condition": {
                   "node": "expression",
                   "op": "==",
-                  "lhs_type": "EXPR_TYPE_OPERAND",
+                  "lhs_type": "EXPR_TYPE_IDENTIFIER",
                   "lhs": {
-                    "node": "operand",
-                    "type": "OPERAND_TYPE_IDENTIFIER",
-                    "operand": {
-                      "node": "identifier",
-                      "identifier_name": "x"
-                    }
+                    "node": "identifier",
+                    "identifier_name": "x"
                   },
-                  "rhs_type": "EXPR_TYPE_OPERAND",
+                  "rhs_type": "EXPR_TYPE_LITERAL",
                   "rhs": {
-                    "node": "operand",
-                    "type": "OPERAND_TYPE_LITERAL",
-                    "operand": {
-                      "node": "literal",
-                      "type": "DATA_TYPE_BUL",
-                      "data": false
-                    }
+                    "node": "literal",
+                    "type": "DATA_TYPE_BUL",
+                    "data": false
                   },
                   "condition_type": "EXPR_TYPE_NULL",
                   "condition": null
@@ -845,24 +685,16 @@
               "condition": {
                 "node": "expression",
                 "op": "==",
-                "lhs_type": "EXPR_TYPE_OPERAND",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_IDENTIFIER",
-                  "operand": {
-                    "node": "identifier",
-                    "identifier_name": "y"
-                  }
+                  "node": "identifier",
+                  "identifier_name": "y"
                 },
-                "rhs_type": "EXPR_TYPE_OPERAND",
+                "rhs_type": "EXPR_TYPE_LITERAL",
                 "rhs": {
-                  "node": "operand",
-                  "type": "OPERAND_TYPE_LITERAL",
-                  "operand": {
-                    "node": "literal",
-                    "type": "DATA_TYPE_I64",
-                    "data": 5
-                  }
+                  "node": "literal",
+                  "type": "DATA_TYPE_I64",
+                  "data": 5
                 },
                 "condition_type": "EXPR_TYPE_NULL",
                 "condition": null
@@ -880,14 +712,10 @@
                       "rhs": {
                         "node": "expression",
                         "op": "()",
-                        "lhs_type": "EXPR_TYPE_OPERAND",
+                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
-                          "node": "operand",
-                          "type": "OPERAND_TYPE_IDENTIFIER",
-                          "operand": {
-                            "node": "identifier",
-                            "identifier_name": "print"
-                          }
+                          "node": "identifier",
+                          "identifier_name": "print"
                         },
                         "rhs_type": "EXPR_TYPE_LIST",
                         "rhs": {
@@ -896,15 +724,11 @@
                             {
                               "node": "expression",
                               "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_OPERAND",
+                              "lhs_type": "EXPR_TYPE_LITERAL",
                               "lhs": {
-                                "node": "operand",
-                                "type": "OPERAND_TYPE_LITERAL",
-                                "operand": {
-                                  "node": "literal",
-                                  "type": "DATA_TYPE_STR",
-                                  "data": "x was false"
-                                }
+                                "node": "literal",
+                                "type": "DATA_TYPE_STR",
+                                "data": "x was false"
                               },
                               "rhs_type": "EXPR_TYPE_NULL",
                               "rhs": null,
@@ -914,14 +738,10 @@
                             {
                               "node": "expression",
                               "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_OPERAND",
+                              "lhs_type": "EXPR_TYPE_IDENTIFIER",
                               "lhs": {
-                                "node": "operand",
-                                "type": "OPERAND_TYPE_IDENTIFIER",
-                                "operand": {
-                                  "node": "identifier",
-                                  "identifier_name": "lf"
-                                }
+                                "node": "identifier",
+                                "identifier_name": "lf"
                               },
                               "rhs_type": "EXPR_TYPE_NULL",
                               "rhs": null,
