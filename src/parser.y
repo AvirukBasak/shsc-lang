@@ -265,8 +265,15 @@ FILE *yyin = NULL;
 %%
 
 nwl:
-    nwl "\n" { $$ = $1 + 1; }
-    | "\n"   { $$ = 1; }
+    %empty     { $$ = 0; }
+    | nwl "\n" { $$ = $1 + 1; }
+    ;
+
+trm:
+    trm ";"    { $$ = $1; }
+    | ";"      { $$ = 0; }
+    | trm "\n" { $$ = $1 + 1; }
+    | "\n"     { $$ = 1; }
     ;
 
 /* Push module name to a stack */
@@ -448,10 +455,10 @@ unary_expression:
 postfix_expression:
     primary_expression                                  { $$ = $1; }
     | postfix_expression "(" ")"                        { $$ = AST_Expression(TOKOP_FNCALL, $1, NULL, NULL); }
-    | postfix_expression "(" comma_list ")"             { $$ = AST_Expression(TOKOP_FNCALL, $1,
+    | postfix_expression "(" nwl comma_list ")"         { $$ = AST_Expression(TOKOP_FNCALL, $1,
                                                             AST_Expression_CommaSepList($3), NULL);
                                                         }
-    | postfix_expression "[" expression "]"             { $$ = AST_Expression(TOKOP_INDEXING, $1, $3, NULL); }
+    | postfix_expression "[" nwl expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $3, NULL); }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,
@@ -469,7 +476,8 @@ primary_expression:
 
 comma_list:
     expression                                          { $$ = AST_CommaSepList(NULL, $1); }
-    | expression "," comma_list                         { $$ = AST_CommaSepList($3, $1); }
+    | expression "," nwl                                { $$ = AST_CommaSepList(NULL, $1); }
+    | expression "," nwl comma_list                     { $$ = AST_CommaSepList($4, $1); }
     ;
 
 operand:
@@ -491,7 +499,7 @@ literal:
     | LEXTOK_STR_LITERAL                                { $$ = AST_Literal_str($1); }
     | LEXTOK_INTERP_STR_LITERAL                         { $$ = AST_Literal_interp_str($1); }
     | "[" "]"                                           { $$ = AST_Literal_lst(NULL); }
-    | "[" comma_list "]"                                { $$ = AST_Literal_lst($2); }
+    | "[" nwl comma_list "]"                            { $$ = AST_Literal_lst($2); }
     ;
 
 identifier:
