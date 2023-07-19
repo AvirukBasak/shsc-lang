@@ -30,8 +30,8 @@ An operation here is arithmetic, bitwise, logical or relational.
 <operation> src, dest            (dest op= src, 1 for each kind of assignment)
 <operation> src1, src2, dest     (dest = src1 op src2, 1 for each operator)
 
-call <function_name>             (takes function name as string and auto pushes new
-                                     stack frame and auto manages variable scope)
+call <execution_label>             (auto pushes new stack
+frame and auto manages variable scope)
 ret src                          (auto pops stack frame and calls ref_counting garbage collector
                                      return 0 if void procedure)
 brz src, <execution_label> ]
