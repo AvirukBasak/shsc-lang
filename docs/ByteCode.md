@@ -30,13 +30,14 @@ An operation here is arithmetic, bitwise, logical or relational.
 <operation> src, dest            (dest op= src, 1 for each kind of assignment)
 <operation> src1, src2, dest     (dest = src1 op src2, 1 for each operator)
 
-call <execution_label>             (auto pushes new stack
-frame and auto manages variable scope)
+call <execution_label>           (auto pushes new stack frame and auto manages variable scope)
 ret src                          (auto pops stack frame and calls ref_counting garbage collector
                                      return 0 if void procedure)
 brz src, <execution_label> ]
 brp src, <execution_label> ]-----(branch if src is zero, positive or negative)
 brn src, <execution_label> ]
+
+br <execution_label>             (unconditional branch)
 ```
 
 - An `execution_label` is basically a position of code file.
