@@ -27,8 +27,8 @@ AST_ElseIfBlock_t   *AST_ElseIfBlock(AST_ElseIfBlock_t *else_if_block, AST_ElseI
 AST_ElseIfSt_t      *AST_ElseIfSt(AST_Condition_t *condition, AST_Statements_t *statements);
 
 AST_WhileBlock_t    *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st);
-AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *iter, AST_Operand_t *start, AST_Operand_t *end, AST_Operand_t *by, AST_Statements_t *for_st);
-AST_ForBlock_t      *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Operand_t *oprnd, AST_Statements_t *for_st);
+AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *iter, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st);
+AST_ForBlock_t      *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Expression_t *lst, AST_Statements_t *for_st);
 AST_Block_t         *AST_Block(AST_Statements_t *statements);
 
 AST_Expression_t    *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition);
@@ -37,9 +37,6 @@ AST_Expression_t    *AST_Expression_Identifier(AST_Identifier_t *identifier);
 AST_Expression_t    *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list);
 
 AST_CommaSepList_t  *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Expression_t *expression);
-
-AST_Operand_t       *AST_Operand_Literal(AST_Literal_t *literal);
-AST_Operand_t       *AST_Operand_Identifier(AST_Identifier_t *identifier);
 
 AST_Literal_t       *AST_Literal_bul(bool literal);
 AST_Literal_t       *AST_Literal_chr(char literal);

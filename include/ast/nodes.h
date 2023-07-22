@@ -91,11 +91,11 @@ struct AST_ForBlock_t {
     AST_Identifier_t *iter;
     union {
         struct {
-            AST_Operand_t *start;
-            AST_Operand_t *end;
-            AST_Operand_t *by;
+            AST_Expression_t *start;
+            AST_Expression_t *end;
+            AST_Expression_t *by;
         } range;
-        AST_Operand_t *oprnd;
+        AST_Expression_t *lst;
     } iterable;
     AST_Statements_t *statements;
     enum AST_ForBlockType_t type;

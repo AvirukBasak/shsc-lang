@@ -254,7 +254,6 @@ FILE *yyin = NULL;
 %type <astnode_expression>         primary_expression
 
 %type <astnode_comma_list>         comma_list
-%type <astnode_operand>            operand
 %type <astnode_literal>            literal
 %type <astnode_identifier>         identifier
 
@@ -340,9 +339,9 @@ while_block:
     ;
 
 for_block:
-    "for" identifier "from" operand "to" operand "do" trm statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
-    | "for" identifier "from" operand "to" operand "by" operand "do" trm statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
-    | "for" identifier "in" operand "do" trm statements "end"                             { $$ = AST_ForBlock_iterate($2, $4, $7); }
+    "for" identifier "from" expression "to" expression "do" trm statements "end"                   { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
+    | "for" identifier "from" expression "to" expression "by" expression "do" trm statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
+    | "for" identifier "in" expression "do" trm statements "end"                                   { $$ = AST_ForBlock_iterate($2, $4, $7); }
     ;
 
 block:
@@ -480,11 +479,6 @@ comma_list:
     expression                                          { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nwl                                { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nwl comma_list                     { $$ = AST_CommaSepList($4, $1); }
-    ;
-
-operand:
-    literal                                             { $$ = AST_Operand_Literal($1); }
-    | identifier                                        { $$ = AST_Operand_Identifier($1); }
     ;
 
 literal:

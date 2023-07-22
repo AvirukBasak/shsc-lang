@@ -268,11 +268,11 @@ void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
             fprintf(AST2JSON_outfile, ", \"iterable\": {");
             fprintf(AST2JSON_outfile, "\"node\": \"iterable\"");
             fprintf(AST2JSON_outfile, ", \"start\": ");
-            AST2JSON_Operand(for_block->iterable.range.start);
+            AST2JSON_Expression(for_block->iterable.range.start);
             fprintf(AST2JSON_outfile, ", \"end\": ");
-            AST2JSON_Operand(for_block->iterable.range.end);
+            AST2JSON_Expression(for_block->iterable.range.end);
             fprintf(AST2JSON_outfile, ", \"by\": ");
-            AST2JSON_Operand(for_block->iterable.range.by);
+            AST2JSON_Expression(for_block->iterable.range.by);
             fprintf(AST2JSON_outfile, "}");
             break;
         }
@@ -281,7 +281,7 @@ void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
             fprintf(AST2JSON_outfile, ", \"iter\": ");
             AST2JSON_Identifier(for_block->iter);
             fprintf(AST2JSON_outfile, ", \"iterable\": ");
-            AST2JSON_Operand(for_block->iterable.oprnd);
+            AST2JSON_Expression(for_block->iterable.lst);
             break;
     }
 
@@ -424,36 +424,6 @@ void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
     }
 
     fprintf(AST2JSON_outfile, "]");
-    fprintf(AST2JSON_outfile, "}");
-}
-
-/* function to convert AST_Operand_t to JSON */
-void AST2JSON_Operand(const AST_Operand_t *operand)
-{
-    if (!operand) {
-        fprintf(AST2JSON_outfile, "null");
-        return;
-    }
-
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"operand\"");
-
-    switch (operand->type) {
-        case OPERAND_TYPE_LITERAL:
-            fprintf(AST2JSON_outfile, ", \"type\": \"OPERAND_TYPE_LITERAL\"");
-            fprintf(AST2JSON_outfile, ", \"operand\": ");
-            AST2JSON_Literal(operand->operand.literal);
-            break;
-        case OPERAND_TYPE_IDENTIFIER:
-            fprintf(AST2JSON_outfile, ", \"type\": \"OPERAND_TYPE_IDENTIFIER\"");
-            fprintf(AST2JSON_outfile, ", \"operand\": ");
-            AST2JSON_Identifier(operand->operand.variable);
-            break;
-        default:
-            fprintf(AST2JSON_outfile, ", \"operand\": null");
-            break;
-    }
-
     fprintf(AST2JSON_outfile, "}");
 }
 

@@ -15,7 +15,6 @@ void AST_ForBlock_free(AST_ForBlock_t **ptr);
 void AST_Block_free(AST_Block_t **ptr);
 void AST_Expression_free(AST_Expression_t **ptr);
 void AST_CommaSepList_free(AST_CommaSepList_t **ptr);
-void AST_Operand_free(AST_Operand_t **ptr);
 void AST_Literal_free(AST_Literal_t **ptr);
 void AST_Identifier_free(AST_Identifier_t **ptr);
 
