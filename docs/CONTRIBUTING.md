@@ -23,7 +23,7 @@ Before you get started, please take a moment to read and follow these guidelines
 Scheisse Script is an interpreter written in C for a custom-designed programming language.
 
 ## Syntax
-The syntax for this language can be found in the file [docs/Syntax.md](../docs/Syntax.md).
+The syntax for this language can be found in the file [LanguageSyntax.md](LanguageSyntax.md).
 
 ## Module Structure
 Modules in this C project have the `.c.h` extension and are directly included in the top-level `.c` file from lower-level directories.
