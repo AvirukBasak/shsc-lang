@@ -35,14 +35,14 @@ typedef union {
    by the Scsh IR Spec
    https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md */
 enum DataType_t {
-    DATA_TYPE_BUL = 0,        /* boolean        : 1 B */
-    DATA_TYPE_CHR = 1,        /* char           : 1 B */
-    DATA_TYPE_I64 = 1,        /* int64_t        : 8 B */
-    DATA_TYPE_F64 = 2,        /* double         : 8 B */
-    DATA_TYPE_STR = 3,        /* char*          : variable  */
-    DATA_TYPE_INTERP_STR = 4, /* parsable char* : variable  */
-    DATA_TYPE_LST = 5,        /* list           : variable  */
-    DATA_TYPE_ANY = 6,        /* void*          : undefined */
+    VAR_TYPE_BUL = 0,        /* boolean        : 1 B */
+    VAR_TYPE_CHR = 1,        /* char           : 1 B */
+    VAR_TYPE_I64 = 2,        /* int64_t        : 8 B */
+    VAR_TYPE_F64 = 3,        /* double         : 8 B */
+    VAR_TYPE_STR = 4,        /* char*          : variable  */
+    VAR_TYPE_INTERP_STR = 5, /* parsable char* : variable  */
+    VAR_TYPE_LST = 6,        /* list           : variable  */
+    VAR_TYPE_ANY = 7,        /* void*          : undefined */
 };
 
 #endif

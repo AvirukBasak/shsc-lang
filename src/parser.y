@@ -176,7 +176,6 @@ FILE *yyin = NULL;
     AST_Block_t            *astnode_block;                /* block */
     AST_Expression_t       *astnode_expression;           /* expression */
     AST_CommaSepList_t     *astnode_comma_list;           /* comma_list */
-    AST_Operand_t          *astnode_operand;              /* operand */
     AST_Literal_t          *astnode_literal;              /* literal */
     AST_Identifier_t       *astnode_identifier;           /* identifier */
 }
