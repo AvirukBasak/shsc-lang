@@ -12,52 +12,19 @@
 #include "ast/nodes.h"
 #include "ast/to_json.h"
 
+void AST2JSON_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 void AST2JSON_open_obj(void);
 void AST2JSON_close_obj(void);
 void AST2JSON_open_list(void);
 void AST2JSON_close_list(void);
 void AST2JSON_put_comma(void);
 char *AST2JSON_escape_string(const char *str);
-void AST2JSON_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 
 FILE *AST2JSON_outfile = NULL;
 int AST2JSON_indent_depth = 0;
+bool AST2JSON_format = false;
 
 #define AST2JSON_INDENT_INCR (2)
-
-void AST2JSON_open_obj(void)
-{
-    AST2JSON_printf("{\n");
-    AST2JSON_indent_depth += AST2JSON_INDENT_INCR;
-    AST2JSON_printf("%*s", AST2JSON_indent_depth, "");
-}
-
-void AST2JSON_close_obj(void)
-{
-    AST2JSON_printf("\n");
-    AST2JSON_indent_depth -= AST2JSON_INDENT_INCR;
-    AST2JSON_printf("%*s}", AST2JSON_indent_depth, "");
-}
-
-void AST2JSON_open_list(void)
-{
-    AST2JSON_printf("[\n");
-    AST2JSON_indent_depth += AST2JSON_INDENT_INCR;
-    AST2JSON_printf("%*s", AST2JSON_indent_depth, "");
-}
-
-void AST2JSON_close_list(void)
-{
-    AST2JSON_printf("\n");
-    AST2JSON_indent_depth -= AST2JSON_INDENT_INCR;
-    AST2JSON_printf("%*s]", AST2JSON_indent_depth, "");
-}
-
-void AST2JSON_put_comma(void)
-{
-    AST2JSON_printf(",\n");
-    AST2JSON_printf("%*s", AST2JSON_indent_depth, "");
-}
 
 void AST2JSON_printf(const char *fmt, ...)
 {
@@ -65,6 +32,55 @@ void AST2JSON_printf(const char *fmt, ...)
     va_start(args, fmt);
     vfprintf(AST2JSON_outfile, fmt, args);
     va_end(args);
+}
+
+void AST2JSON_open_obj(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("{");
+        return;
+    }
+    AST2JSON_indent_depth += AST2JSON_INDENT_INCR;
+    AST2JSON_printf("{\n%*s", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_close_obj(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("}");
+        return;
+    }
+    AST2JSON_indent_depth -= AST2JSON_INDENT_INCR;
+    AST2JSON_printf("\n%*s}", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_open_list(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("[");
+        return;
+    }
+    AST2JSON_indent_depth += AST2JSON_INDENT_INCR;
+    AST2JSON_printf("[\n%*s", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_close_list(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("]");
+        return;
+    }
+    AST2JSON_indent_depth -= AST2JSON_INDENT_INCR;
+    AST2JSON_printf("\n%*s]", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_put_comma(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf(", ");
+        return;
+    }
+    AST2JSON_printf(",\n%*s", AST2JSON_indent_depth, "");
 }
 
 /* helper function to escape special characters in a string */
@@ -681,8 +697,9 @@ void AST2JSON_ProcedureMap()
     AST_ProcedureMap_KeyList_free(&lst);
 }
 
-void AST2JSON_convert(const char *filepath)
+void AST2JSON_convert(const char *filepath, bool format)
 {
+    AST2JSON_format = format;
     if (!strcmp(filepath, "-")) AST2JSON_outfile = stdout;
     else AST2JSON_outfile = fopen(filepath, "wb");
     AST2JSON_ProcedureMap();

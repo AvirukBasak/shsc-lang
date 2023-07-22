@@ -1,6 +1,7 @@
 #ifndef AST_AST2JSON_H
 #define AST_AST2JSON_H
 
+#include <stdbool.h>
 #include "ast.h"
 
 void AST2JSON_Statements(const AST_Statements_t* statements);
@@ -18,6 +19,6 @@ void AST2JSON_CommaSepList(const AST_CommaSepList_t* comma_list);
 void AST2JSON_Literal(const AST_Literal_t* literal);
 void AST2JSON_Identifier(const AST_Identifier_t* identifier);
 void AST2JSON_ProcedureMap();
-void AST2JSON_convert(const char *filepath);
+void AST2JSON_convert(const char *filepath, bool format);
 
 #endif
