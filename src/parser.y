@@ -512,10 +512,13 @@ identifier:
 #include "parser/parse_i64.c.h"
 #include "parser/parse_str.c.h"
 
-int yyerror(const char* s)
+int yyerror(const char* msg)
 {
-    parse_throw(s);
-    return 1;
+    if (!msg) abort();
+    int line = lex_line_no;
+    if (lex_currtok == LEXTOK_NEWLINE) --line;
+    io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
+    return ERR_PARSER;
 }
 
 void parse_interpret(FILE *f)
@@ -536,9 +539,5 @@ void parse_interpret(FILE *f)
 
 void parse_throw(const char *msg)
 {
-    if (!msg) abort();
-    int line = lex_line_no;
-    if (lex_currtok == LEXTOK_NEWLINE) --line;
-    io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
-    exit(ERR_PARSER);
+    exit(yyerror(msg));
 }
