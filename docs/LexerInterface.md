@@ -1,4 +1,4 @@
-#p# Lexer Interface
+## Lexer Interface
 The `lexer.h` file provides a bunch of functions to extract tokens from a source file.
 
 The idea is to pass the `FILE*` to the `lex_get_nexttok` function and have it return a `LexToken` enum, which then can be `switch-case`d.

@@ -14,9 +14,9 @@ Before you get started, please take a moment to read and follow these guidelines
 - [Memory Management](#memory-management)
 - [Address Sanitizer](#address-sanitizer)
 - [Contributing Guidelines](#contributing-guidelines)
-- [Lexer Guidelines](docs/LexerInterface.md)
-- [Language Spec](docs/LanguageSpec.md)
-- [Language Syntax](docs/LanguageSyntax.md)
+- [Lexer Guidelines](LexerInterface.md)
+- [Language Spec](LanguageSpec.md)
+- [Language Syntax](LanguageSyntax.md)
 - [Bytecode Spec](https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md)
 
 ## Project Overview
