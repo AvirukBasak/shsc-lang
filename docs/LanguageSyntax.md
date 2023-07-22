@@ -245,7 +245,7 @@ end
 proc main start
     var inp = input("Enter a number: ", i64)
     var res = factorial(inp)
-    print("result = {res}\n")
+    print(f"result = {res}\n")
 end
 ```
 
