@@ -1,4 +1,4 @@
-## The Lexer
+#p# Lexer Interface
 The `lexer.h` file provides a bunch of functions to extract tokens from a source file.
 
 The idea is to pass the `FILE*` to the `lex_get_nexttok` function and have it return a `LexToken` enum, which then can be `switch-case`d.
@@ -13,7 +13,7 @@ The memory of the buffer is managed automatically, so you don't need to worry.
 
 Note that you cannot unget a token to the lexer.
 
-#### External Interface
+## External Interface
 - `LexToken lex_get_nexttok(FILE*)` Get next token
 - `char *lex_get_tokcode(LexToken)` Get string code
 - `char *lex_get_symbol(LexToken)` Get default symbol
@@ -21,7 +21,7 @@ Note that you cannot unget a token to the lexer.
 - `int lex_line_no` Get file line number
 - `int lex_char_no` Get line char number
 
-#### Ignored inputs
+## Ignored inputs
 Any character that the lexer ignores is not put into the buffer.
 
 Exclusive code is used for reading such characters if they are ever used as literals.

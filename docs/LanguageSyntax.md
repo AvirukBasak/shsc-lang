@@ -4,7 +4,7 @@ The following is a specification of the syntax and behaviour of the language.
 
 Majority of this is yet to be implemented.
 
-# Syntax Documentation
+# Language Syntax
 
 ## File Structure
 The interpreter accepts file paths as command-line arguments for the files you want to run. It parses each file and constructs a data structure that maps module names to a list of defined procedures.
