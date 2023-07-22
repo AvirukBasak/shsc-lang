@@ -87,6 +87,7 @@ FILE *yyin = NULL;
 %token TOKOP_FNCALL
 %token TOKOP_INDEXING
 %token TOKOP_TERNARY_COND
+%token TOKOP_FNARGS_INDEXING
 
 %token LEXTOK_NEWLINE                                 "\n"
 
@@ -134,53 +135,14 @@ FILE *yyin = NULL;
 /* identifier */
 %token <identifier_name> LEXTOK_IDENTIFIER            "<identifier>"
 
-%left  LEXTOK_LOGICAL_UNEQUAL
-%left  LEXTOK_LOGICAL_UNIDENTICAL
-%left  LEXTOK_PERCENT
-%left  LEXTOK_LOGICAL_AND
-%left  LEXTOK_ASTERIX
-%left  LEXTOK_PLUS
-%left  LEXTOK_COMMA
-%left  LEXTOK_MINUS
-%left  LEXTOK_SARROW
-%left  LEXTOK_DOT
-%left  LEXTOK_ELIPSIS
-%left  LEXTOK_FSLASH
-%left  LEXTOK_FLOOR_DIVIDE
-%left  LEXTOK_DCOLON
-%left  LEXTOK_BITWISE_LSHIFT
-%left  LEXTOK_LOGICAL_LESSER_EQUAL
-%left  LEXTOK_LOGICAL_EQUAL
-%left  LEXTOK_LOGICAL_IDENTICAL
-%left  LEXTOK_LOGICAL_GREATER_EQUAL
-%left  LEXTOK_BITWISE_RSHIFT
-%left  LEXTOK_ARITH_RSHIFT
-%left  LEXTOK_CARET
-%left  LEXTOK_PIPE
-%left  LEXTOK_PIPEOUT
-%left  LEXTOK_LOGICAL_OR
+%precedence LEXTOK_PERCENT
+%precedence LEXTOK_ASTERIX
+%precedence LEXTOK_EXPONENT
+%precedence LEXTOK_FSLASH
+%precedence LEXTOK_FLOOR_DIVIDE
 
-%right LEXTOK_BANG
-%right LEXTOK_MODULO_ASSIGN
-%right LEXTOK_LOGICAL_AND_ASSIGN
-%right LEXTOK_BITWISE_AND_ASSIGN
-%right LEXTOK_EXPONENT
-%right LEXTOK_EXPONENT_ASSIGN
-%right LEXTOK_MULTIPLY_ASSIGN
-%right LEXTOK_INCREMENT
-%right LEXTOK_ADD_ASSIGN
-%right LEXTOK_DECREMENT
-%right LEXTOK_SUBSTRACT_ASSIGN
-%right LEXTOK_FLOOR_DIVIDE_ASSIGN
-%right LEXTOK_DIVIDE_ASSIGN
-%right LEXTOK_BITWISE_LSHIFT_ASSIGN
-%right LEXTOK_ASSIGN
-%right LEXTOK_BITWISE_RSHIFT_ASSIGN
-%right LEXTOK_ARITH_RSHIFT_ASSIGN
-%right LEXTOK_BITWISE_XOR_ASSIGN
-%right LEXTOK_BITWISE_OR_ASSIGN
-%right LEXTOK_LOGICAL_OR_ASSIGN
-%right LEXTOK_TILDE
+%precedence LEXTOK_KWD_IF
+%precedence LEXTOK_KWD_ELSE
 
 %union
 {
@@ -214,7 +176,6 @@ FILE *yyin = NULL;
     AST_Block_t            *astnode_block;                /* block */
     AST_Expression_t       *astnode_expression;           /* expression */
     AST_CommaSepList_t     *astnode_comma_list;           /* comma_list */
-    AST_Operand_t          *astnode_operand;              /* operand */
     AST_Literal_t          *astnode_literal;              /* literal */
     AST_Identifier_t       *astnode_identifier;           /* identifier */
 }
@@ -254,7 +215,6 @@ FILE *yyin = NULL;
 %type <astnode_expression>         primary_expression
 
 %type <astnode_comma_list>         comma_list
-%type <astnode_operand>            operand
 %type <astnode_literal>            literal
 %type <astnode_identifier>         identifier
 
@@ -340,9 +300,9 @@ while_block:
     ;
 
 for_block:
-    "for" identifier "from" operand "to" operand "do" trm statements "end"                { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
-    | "for" identifier "from" operand "to" operand "by" operand "do" trm statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
-    | "for" identifier "in" operand "do" trm statements "end"                             { $$ = AST_ForBlock_iterate($2, $4, $7); }
+    "for" identifier "from" expression "to" expression "do" trm statements "end"                   { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
+    | "for" identifier "from" expression "to" expression "by" expression "do" trm statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
+    | "for" identifier "in" expression "do" trm statements "end"                                   { $$ = AST_ForBlock_iterate($2, $4, $7); }
     ;
 
 block:
@@ -379,7 +339,7 @@ assignment_expression:
 
 conditional_expression:
     logical_or_expression                               { $$ = $1; }
-    | logical_or_expression "if" condition "else" logical_or_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
+    | conditional_expression "if" condition "else" conditional_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
     ;
 
 logical_or_expression:
@@ -460,6 +420,7 @@ postfix_expression:
                                                             AST_Expression_CommaSepList($4), NULL);
                                                         }
     | postfix_expression "[" nwl expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
+    | "$" "[" nwl expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,
@@ -480,11 +441,6 @@ comma_list:
     expression                                          { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nwl                                { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nwl comma_list                     { $$ = AST_CommaSepList($4, $1); }
-    ;
-
-operand:
-    literal                                             { $$ = AST_Operand_Literal($1); }
-    | identifier                                        { $$ = AST_Operand_Identifier($1); }
     ;
 
 literal:
@@ -516,10 +472,13 @@ identifier:
 #include "parser/parse_i64.c.h"
 #include "parser/parse_str.c.h"
 
-int yyerror(const char* s)
+int yyerror(const char* msg)
 {
-    parse_throw(s);
-    return 1;
+    if (!msg) abort();
+    int line = lex_line_no;
+    if (lex_currtok == LEXTOK_NEWLINE) --line;
+    io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
+    return ERR_PARSER;
 }
 
 void parse_interpret(FILE *f)
@@ -540,9 +499,5 @@ void parse_interpret(FILE *f)
 
 void parse_throw(const char *msg)
 {
-    if (!msg) abort();
-    int line = lex_line_no;
-    if (lex_currtok == LEXTOK_NEWLINE) --line;
-    io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
-    exit(ERR_PARSER);
+    exit(yyerror(msg));
 }

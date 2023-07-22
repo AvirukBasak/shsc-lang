@@ -14,6 +14,10 @@ Before you get started, please take a moment to read and follow these guidelines
 - [Memory Management](#memory-management)
 - [Address Sanitizer](#address-sanitizer)
 - [Contributing Guidelines](#contributing-guidelines)
+- [Lexer Guidelines](LexerInterface.md)
+- [Language Spec](LanguageSpec.md)
+- [Language Syntax](LanguageSyntax.md)
+- [Bytecode Spec](https://github.com/AvirukBasak/scsh-runtime/blob/main/docs/ScshIrSpec.md)
 
 ## Project Overview
 Scheisse Script is an interpreter written in C for a custom-designed programming language.

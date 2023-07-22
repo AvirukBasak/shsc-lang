@@ -1,9 +1,10 @@
-# Scheisse Script
-World's most sh*tty scripting language.
+# Scsh
+World's most sh*tty programming language.
 
 ### Usage
 - Build with `make`
 - Copy the executable from `taget/`.
+- Examples at [`examples/`](examples/).
 
 ```
 USAGE:
@@ -14,14 +15,16 @@ USAGE:
 ```
 
 ### Docs
-- Example code at [`tests/test.txt`](tests/test.txt).
-- Syntax specs at [`docs/Syntax.md`](docs/Syntax.md).
-- Contribution guidelines at [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
+- Lexer interface at [`docs/LexerInterface.md`](docs/LexerInterface.md)
+- Language specs at [`docs/LanguageSpec.md`](docs/LanguageSpec.md)
+- Syntax specs at [`docs/LanguageSyntax.md`](docs/LanguageSyntax.md)
+- Bytecode specs at [`ScshIrSpec.md`](https://github.com/AvirukBasak/scsh-runtime/blob/main/docs/ScshIrSpec.md)
+- Contribution guidelines at [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
 
 ### Tests
 - Tested on [`tests/test.txt`](tests/test.txt).
-- Lexer output at [`docs/TestResult.md`](docs/TestResult.md).
-- AST output at [`docs/SyntaxTree.json`](docs/SyntaxTree.json).
+- Lexer output at [`tests/Tokens.md`](tests/Tokens.md).
+- AST output at [`tests/SyntaxTree.json`](tests/SyntaxTree.json).
 
 ### Todo
 - Build AST management modules.

@@ -91,11 +91,11 @@ struct AST_ForBlock_t {
     AST_Identifier_t *iter;
     union {
         struct {
-            AST_Operand_t *start;
-            AST_Operand_t *end;
-            AST_Operand_t *by;
+            AST_Expression_t *start;
+            AST_Expression_t *end;
+            AST_Expression_t *by;
         } range;
-        AST_Operand_t *oprnd;
+        AST_Expression_t *lst;
     } iterable;
     AST_Statements_t *statements;
     enum AST_ForBlockType_t type;
@@ -134,33 +134,23 @@ struct AST_Expression_t {
     enum AST_ExpressionType_t condition_type;
 };
 
-enum AST_OperandType_t {
-    OPERAND_TYPE_LITERAL,
-    OPERAND_TYPE_IDENTIFIER,
-};
-
 struct AST_CommaSepList_t {
     AST_CommaSepList_t *comma_list;
     AST_Expression_t *expression;
 };
 
-struct AST_Operand_t {
-    union {
-        AST_Literal_t *literal;
-        AST_Identifier_t *variable;
-    } operand;
-    enum AST_OperandType_t type;
-};
-
+/* based on the mapping of datatype IDs provided
+   by the Scsh IR Spec
+   https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md */
 enum AST_DataType_t {
-    DATA_TYPE_BUL,
-    DATA_TYPE_CHR,
-    DATA_TYPE_I64,
-    DATA_TYPE_F64,
-    DATA_TYPE_STR,
-    DATA_TYPE_INTERP_STR,
-    DATA_TYPE_LST,
-    DATA_TYPE_ANY,
+    DATA_TYPE_BUL = 0,        /* boolean        : 1 B */
+    DATA_TYPE_CHR = 1,        /* char           : 1 B */
+    DATA_TYPE_I64 = 2,        /* int64_t        : 8 B */
+    DATA_TYPE_F64 = 3,        /* double         : 8 B */
+    DATA_TYPE_STR = 4,        /* char*          : variable  */
+    DATA_TYPE_INTERP_STR = 5, /* parsable char* : variable  */
+    DATA_TYPE_LST = 6,        /* linked list    : variable  */
+    DATA_TYPE_ANY = 7,        /* void*          : undefined */
 };
 
 struct AST_Literal_t {

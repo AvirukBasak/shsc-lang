@@ -1,15 +1,13 @@
-Here's the refined version of the specs document:
-
-## Specs
+# Language Spec
 
 The syntax of the language is inspired partly by Python, JavaScript, and Go. However, it introduces its own unique features and has a limited set of datatypes.
 
-### Behavior
+## Behavior
 - Execution starts at the `main::main()` procedure of the main module.
 - The `main` procedure receives command-line arguments as function arguments.
 - Function arguments are accessible using the special `$[index]` syntax.
 
-### Modules
+## Modules
 Modules don't need to be explicitly imported; they are declared in the first line of the file.
 
 If a module declaration is absent, the procedures are automatically placed in a module called `main`.
@@ -22,7 +20,7 @@ If the requested module is not loaded, it will raise an error and exit.
 
 Verbose information can be printed to provide initial information on what modules are loaded.
 
-### Policies
+## Policies
 - Dynamically typed (type is inferred at runtime).
 - Weakly typed (sensible type coercion is performed).
 - Error is raised if type coercion is impossible.
@@ -32,27 +30,27 @@ Verbose information can be printed to provide initial information on what module
 - Syntax aims to be sensible and intuitive.
 - Should not resemble JavaScript.
 
-### Coercion Rules
+## Coercion Rules
 - Any primitive can be coerced to a string.
 - Certain string to primitive coercions may fail and raise an error.
 - Any primitive type (except float) can be coerced to a bool.
 - Float, int, and char can be coerced among themselves.
 - Bool can be coerced to any type.
 
-### Expressions
+## Expressions
 Expressions are written using standard mathematical notation, such as:
 ```
 r * (cos(a) + sin(b)) - pow(E, sin(ab))
 ```
 
-### Assignment
+## Assignment
 Variables can be assigned using the following syntax:
 ```
 var x = r * (cos(a) + sin(b)) - pow(E, sin(ab))
 x = x + 11
 ```
 
-### Functions
+## Functions
 Function declarations follow the syntax:
 ```
 proc cos start
@@ -60,7 +58,7 @@ proc cos start
 end
 ```
 
-### Conditional Statements
+## Conditional Statements
 Conditional statements are written using the following syntax:
 ```
 if x == 5 then
@@ -70,7 +68,7 @@ else
 end
 ```
 
-### Loops
+## Loops
 Loops can be implemented using the following constructs:
 ```
 while x < 10 do
@@ -82,11 +80,11 @@ for i from 0 to 17 by 2 do
 end
 ```
 
-### Data Memory Model
+## Data Memory Model
 - Primitives are managed in a pseudo stack, which is a contiguous array-like stack maintained in the heap.
 - Objects are reference counted and automatically managed.
 
-### Datatypes
+## Datatypes
 The language has the following primitive types:
 - bool
 - char
@@ -94,10 +92,10 @@ The language has the following primitive types:
 - float (float64_t)
 - string (immutable)
 
-### Strings
+## Strings
 The current form of strings is purely immutable and may have limited functionality. Template strings can be used to provide some string manipulation features.
 
-### Object-Oriented Programming (if added)
+## OOP Model (if added)
 If object-oriented programming is introduced, the following changes will occur:
 - The `string` primitive type will be replaced by a `string` class.
 - An `array` class will be added for arrays.

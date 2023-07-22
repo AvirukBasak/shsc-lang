@@ -6,12 +6,82 @@
 #include <stdbool.h>
 #include <string.h>
 #include <inttypes.h>
+#include <stdarg.h>
 
 #include "io.h"
 #include "ast/nodes.h"
 #include "ast/to_json.h"
 
+void AST2JSON_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
+void AST2JSON_open_obj(void);
+void AST2JSON_close_obj(void);
+void AST2JSON_open_list(void);
+void AST2JSON_close_list(void);
+void AST2JSON_put_comma(void);
+char *AST2JSON_escape_string(const char *str);
+
 FILE *AST2JSON_outfile = NULL;
+int AST2JSON_indent_depth = 0;
+bool AST2JSON_format = false;
+
+#define AST2JSON_INDENT_INCR (2)
+
+void AST2JSON_printf(const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    vfprintf(AST2JSON_outfile, fmt, args);
+    va_end(args);
+}
+
+void AST2JSON_open_obj(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("{");
+        return;
+    }
+    AST2JSON_indent_depth += AST2JSON_INDENT_INCR;
+    AST2JSON_printf("{\n%*s", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_close_obj(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("}");
+        return;
+    }
+    AST2JSON_indent_depth -= AST2JSON_INDENT_INCR;
+    AST2JSON_printf("\n%*s}", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_open_list(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("[");
+        return;
+    }
+    AST2JSON_indent_depth += AST2JSON_INDENT_INCR;
+    AST2JSON_printf("[\n%*s", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_close_list(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf("]");
+        return;
+    }
+    AST2JSON_indent_depth -= AST2JSON_INDENT_INCR;
+    AST2JSON_printf("\n%*s]", AST2JSON_indent_depth, "");
+}
+
+void AST2JSON_put_comma(void)
+{
+    if (!AST2JSON_format) {
+        AST2JSON_printf(", ");
+        return;
+    }
+    AST2JSON_printf(",\n%*s", AST2JSON_indent_depth, "");
+}
 
 /* helper function to escape special characters in a string */
 char *AST2JSON_escape_string(const char *str)
@@ -81,83 +151,96 @@ char *AST2JSON_escape_string(const char *str)
 void AST2JSON_Statements(const AST_Statements_t *statements)
 {
     if (!statements) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"statements\"");
-    fprintf(AST2JSON_outfile, ", \"statements\": [");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"statements\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"statements\": ");
+    AST2JSON_open_list();
     const AST_Statements_t *st = statements;
     AST2JSON_Statement(st->statement);
     st = st->statements;
     while (st) {
-        fprintf(AST2JSON_outfile, ", ");
+        AST2JSON_put_comma();
         AST2JSON_Statement(st->statement);
         st = st->statements;
     }
-    fprintf(AST2JSON_outfile, "]");
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_list();
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_Statement_t to JSON */
 void AST2JSON_Statement(const AST_Statement_t *statement)
 {
     if (!statement) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"statement\"");
-    fprintf(AST2JSON_outfile, ", \"line_no\": %d", statement->line_no);
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"statement\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"line_no\": %d", statement->line_no);
 
     switch (statement->type) {
         case STATEMENT_TYPE_RETURN:
-            fprintf(AST2JSON_outfile, ", \"type\": \"STATEMENT_TYPE_RETURN\"");
-            fprintf(AST2JSON_outfile, ", \"statement\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_RETURN\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": ");
             AST2JSON_Expression(statement->statement.expression);
             break;
         case STATEMENT_TYPE_ASSIGNMENT:
-            fprintf(AST2JSON_outfile, ", \"type\": \"STATEMENT_TYPE_ASSIGNMENT\"");
-            fprintf(AST2JSON_outfile, ", \"statement\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_ASSIGNMENT\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": ");
             AST2JSON_Assignment(statement->statement.assignment);
             break;
         case STATEMENT_TYPE_COMPOUND:
-            fprintf(AST2JSON_outfile, ", \"type\": \"STATEMENT_TYPE_COMPOUND\"");
-            fprintf(AST2JSON_outfile, ", \"statement\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_COMPOUND\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": ");
             AST2JSON_CompoundSt(statement->statement.compound_statement);
             break;
         case STATEMENT_TYPE_EMPTY:
-            fprintf(AST2JSON_outfile, ", \"type\": \"STATEMENT_TYPE_EMPTY\"");
-            fprintf(AST2JSON_outfile, ", \"statement\": null");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_EMPTY\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": null");
             break;
     }
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_Assignment_t to JSON */
 void AST2JSON_Assignment(const AST_Assignment_t *assignment)
 {
     if (!assignment) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"assignment\"");
-    fprintf(AST2JSON_outfile, ", \"lhs\": ");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"assignment\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"lhs\": ");
     AST2JSON_Identifier(assignment->lhs);
-    fprintf(AST2JSON_outfile, ", \"rhs\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"rhs\": ");
     AST2JSON_Expression(assignment->rhs);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_CompoundSt_t to JSON */
 void AST2JSON_CompoundSt(const AST_CompoundSt_t *compound_statement)
 {
     if (!compound_statement) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
@@ -181,395 +264,442 @@ void AST2JSON_CompoundSt(const AST_CompoundSt_t *compound_statement)
 void AST2JSON_IfBlock(const AST_IfBlock_t *if_block)
 {
     if (!if_block) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"if_block\"");
-    fprintf(AST2JSON_outfile, ", \"condition\": ");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"if_block\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"condition\": ");
     AST2JSON_Expression(if_block->condition);
-    fprintf(AST2JSON_outfile, ", \"if_st\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"if_st\": ");
     AST2JSON_Statements(if_block->if_st);
-    fprintf(AST2JSON_outfile, ", \"else_if_block\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"else_if_block\": ");
     AST2JSON_ElseIfBlock(if_block->else_if_block);
-    fprintf(AST2JSON_outfile, ", \"else_st\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"else_st\": ");
     AST2JSON_Statements(if_block->else_st);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_ElseIfBlock_t to JSON */
 void AST2JSON_ElseIfBlock(const AST_ElseIfBlock_t *else_if_block)
 {
     if (!else_if_block) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"else_if_block\"");
-    fprintf(AST2JSON_outfile, ", \"else_if_block\": ");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"else_if_block\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"else_if_block\": ");
     AST2JSON_ElseIfBlock(else_if_block->else_if_block);
-    fprintf(AST2JSON_outfile, ", \"else_if_st\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"else_if_st\": ");
     AST2JSON_ElseIfSt(else_if_block->else_if_st);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_ElseIfSt_t to JSON */
 void AST2JSON_ElseIfSt(const AST_ElseIfSt_t *else_if_st)
 {
     if (!else_if_st) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"else_if_st\"");
-    fprintf(AST2JSON_outfile, ", \"condition\": ");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"else_if_st\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"condition\": ");
     AST2JSON_Expression(else_if_st->condition);
-    fprintf(AST2JSON_outfile, ", \"statements\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"statements\": ");
     AST2JSON_Statements(else_if_st->statements);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_WhileBlock_t to JSON */
 void AST2JSON_WhileBlock(const AST_WhileBlock_t *while_block)
 {
     if (!while_block) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"while_block\"");
-    fprintf(AST2JSON_outfile, ", \"condition\": ");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"while_block\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"condition\": ");
     AST2JSON_Expression(while_block->condition);
-    fprintf(AST2JSON_outfile, ", \"statements\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"statements\": ");
     AST2JSON_Statements(while_block->statements);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* Function to convert AST_ForBlock_t to JSON */
 void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
 {
     if (!for_block) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"for_block\"");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"for_block\"");
 
     switch (for_block->type) {
         case FORBLOCK_TYPE_RANGE: {
-            fprintf(AST2JSON_outfile, ", \"type\": \"FORBLOCK_TYPE_RANGE\"");
-            fprintf(AST2JSON_outfile, ", \"iter\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"FORBLOCK_TYPE_RANGE\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"iter\": ");
             AST2JSON_Identifier(for_block->iter);
-            fprintf(AST2JSON_outfile, ", \"iterable\": {");
-            fprintf(AST2JSON_outfile, "\"node\": \"iterable\"");
-            fprintf(AST2JSON_outfile, ", \"start\": ");
-            AST2JSON_Operand(for_block->iterable.range.start);
-            fprintf(AST2JSON_outfile, ", \"end\": ");
-            AST2JSON_Operand(for_block->iterable.range.end);
-            fprintf(AST2JSON_outfile, ", \"by\": ");
-            AST2JSON_Operand(for_block->iterable.range.by);
-            fprintf(AST2JSON_outfile, "}");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"iterable\": ");
+            AST2JSON_open_obj();
+            AST2JSON_printf("\"node\": \"iterable\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"start\": ");
+            AST2JSON_Expression(for_block->iterable.range.start);
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"end\": ");
+            AST2JSON_Expression(for_block->iterable.range.end);
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"by\": ");
+            AST2JSON_Expression(for_block->iterable.range.by);
+            AST2JSON_close_obj();
             break;
         }
         case FORBLOCK_TYPE_LIST:
-            fprintf(AST2JSON_outfile, ", \"type\": \"FORBLOCK_TYPE_LIST\"");
-            fprintf(AST2JSON_outfile, ", \"iter\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"FORBLOCK_TYPE_LIST\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"iter\": ");
             AST2JSON_Identifier(for_block->iter);
-            fprintf(AST2JSON_outfile, ", \"iterable\": ");
-            AST2JSON_Operand(for_block->iterable.oprnd);
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"iterable\": ");
+            AST2JSON_Expression(for_block->iterable.lst);
             break;
     }
 
-    fprintf(AST2JSON_outfile, ", \"statements\": ");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"statements\": ");
     AST2JSON_Statements(for_block->statements);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* Function to convert AST_Block_t to JSON */
 void AST2JSON_Block(const AST_Block_t *block)
 {
     if (!block) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"block\"");
-    fprintf(AST2JSON_outfile, ", \"statements\": ");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"block\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"statements\": ");
     AST2JSON_Statements(block->statements);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_Expression_t to JSON */
 void AST2JSON_Expression(const AST_Expression_t *expression)
 {
     if (!expression) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"expression\"");
-    fprintf(AST2JSON_outfile, ", \"op\": \"%s\"", lex_get_symbol(expression->op));
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"expression\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"op\": \"%s\"", lex_get_symbol(expression->op));
 
     switch (expression->lhs_type) {
         case EXPR_TYPE_EXPRESSION:
-            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_EXPRESSION\"");
-            fprintf(AST2JSON_outfile, ", \"lhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs_type\": \"EXPR_TYPE_EXPRESSION\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs\": ");
             AST2JSON_Expression(expression->lhs.expr);
             break;
         case EXPR_TYPE_LITERAL:
-            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_LITERAL\"");
-            fprintf(AST2JSON_outfile, ", \"lhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs_type\": \"EXPR_TYPE_LITERAL\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs\": ");
             AST2JSON_Literal(expression->lhs.literal);
             break;
         case EXPR_TYPE_IDENTIFIER:
-            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_IDENTIFIER\"");
-            fprintf(AST2JSON_outfile, ", \"lhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs_type\": \"EXPR_TYPE_IDENTIFIER\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs\": ");
             AST2JSON_Identifier(expression->lhs.variable);
             break;
         case EXPR_TYPE_LIST:
-            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_LIST\"");
-            fprintf(AST2JSON_outfile, ", \"lhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs_type\": \"EXPR_TYPE_LIST\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs\": ");
             AST2JSON_CommaSepList(expression->lhs.lst);
             break;
         case EXPR_TYPE_NULL:
-            fprintf(AST2JSON_outfile, ", \"lhs_type\": \"EXPR_TYPE_NULL\"");
-            fprintf(AST2JSON_outfile, ", \"lhs\": null");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs_type\": \"EXPR_TYPE_NULL\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"lhs\": null");
             break;
     }
 
     switch (expression->rhs_type) {
         case EXPR_TYPE_EXPRESSION:
-            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_EXPRESSION\"");
-            fprintf(AST2JSON_outfile, ", \"rhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs_type\": \"EXPR_TYPE_EXPRESSION\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs\": ");
             AST2JSON_Expression(expression->rhs.expr);
             break;
         case EXPR_TYPE_LITERAL:
-            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_LITERAL\"");
-            fprintf(AST2JSON_outfile, ", \"rhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs_type\": \"EXPR_TYPE_LITERAL\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs\": ");
             AST2JSON_Literal(expression->rhs.literal);
             break;
         case EXPR_TYPE_IDENTIFIER:
-            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_IDENTIFIER\"");
-            fprintf(AST2JSON_outfile, ", \"rhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs_type\": \"EXPR_TYPE_IDENTIFIER\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs\": ");
             AST2JSON_Identifier(expression->rhs.variable);
             break;
         case EXPR_TYPE_LIST:
-            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_LIST\"");
-            fprintf(AST2JSON_outfile, ", \"rhs\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs_type\": \"EXPR_TYPE_LIST\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs\": ");
             AST2JSON_CommaSepList(expression->rhs.lst);
             break;
         case EXPR_TYPE_NULL:
-            fprintf(AST2JSON_outfile, ", \"rhs_type\": \"EXPR_TYPE_NULL\"");
-            fprintf(AST2JSON_outfile, ", \"rhs\": null");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs_type\": \"EXPR_TYPE_NULL\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"rhs\": null");
             break;
     }
 
     switch (expression->condition_type) {
         case EXPR_TYPE_EXPRESSION:
-            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_EXPRESSION\"");
-            fprintf(AST2JSON_outfile, ", \"condition\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition_type\": \"EXPR_TYPE_EXPRESSION\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition\": ");
             AST2JSON_Expression(expression->condition.expr);
             break;
         case EXPR_TYPE_LITERAL:
-            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_LITERAL\"");
-            fprintf(AST2JSON_outfile, ", \"condition\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition_type\": \"EXPR_TYPE_LITERAL\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition\": ");
             AST2JSON_Literal(expression->condition.literal);
             break;
         case EXPR_TYPE_IDENTIFIER:
-            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_IDENTIFIER\"");
-            fprintf(AST2JSON_outfile, ", \"condition\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition_type\": \"EXPR_TYPE_IDENTIFIER\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition\": ");
             AST2JSON_Identifier(expression->condition.variable);
             break;
         case EXPR_TYPE_LIST:
-            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_LIST\"");
-            fprintf(AST2JSON_outfile, ", \"condition\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition_type\": \"EXPR_TYPE_LIST\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition\": ");
             AST2JSON_CommaSepList(expression->condition.lst);
             break;
         case EXPR_TYPE_NULL:
-            fprintf(AST2JSON_outfile, ", \"condition_type\": \"EXPR_TYPE_NULL\"");
-            fprintf(AST2JSON_outfile, ", \"condition\": null");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition_type\": \"EXPR_TYPE_NULL\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"condition\": null");
             break;
     }
 
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_CommaSepList_t to JSON */
 void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
 {
     if (!comma_list) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"comma_list\"");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"comma_list\"");
 
     const AST_CommaSepList_t *lst = comma_list;
-    fprintf(AST2JSON_outfile, ", \"comma_list\": [");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"comma_list\": ");
+    AST2JSON_open_list();
     AST2JSON_Expression(lst->expression);
     lst = lst->comma_list;
 
     while (lst) {
-        fprintf(AST2JSON_outfile, ", ");
+        AST2JSON_put_comma();
         AST2JSON_Expression(lst->expression);
         lst = lst->comma_list;
     }
 
-    fprintf(AST2JSON_outfile, "]");
-    fprintf(AST2JSON_outfile, "}");
-}
-
-/* function to convert AST_Operand_t to JSON */
-void AST2JSON_Operand(const AST_Operand_t *operand)
-{
-    if (!operand) {
-        fprintf(AST2JSON_outfile, "null");
-        return;
-    }
-
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"operand\"");
-
-    switch (operand->type) {
-        case OPERAND_TYPE_LITERAL:
-            fprintf(AST2JSON_outfile, ", \"type\": \"OPERAND_TYPE_LITERAL\"");
-            fprintf(AST2JSON_outfile, ", \"operand\": ");
-            AST2JSON_Literal(operand->operand.literal);
-            break;
-        case OPERAND_TYPE_IDENTIFIER:
-            fprintf(AST2JSON_outfile, ", \"type\": \"OPERAND_TYPE_IDENTIFIER\"");
-            fprintf(AST2JSON_outfile, ", \"operand\": ");
-            AST2JSON_Identifier(operand->operand.variable);
-            break;
-        default:
-            fprintf(AST2JSON_outfile, ", \"operand\": null");
-            break;
-    }
-
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_list();
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_Literal_t to JSON */
 void AST2JSON_Literal(const AST_Literal_t *literal)
 {
     if (!literal) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"literal\"");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"literal\"");
 
     switch (literal->type) {
         case DATA_TYPE_BUL:
-            fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_BUL\"");
-            fprintf(AST2JSON_outfile, ", \"data\": ");
-            fprintf(AST2JSON_outfile, "%s", literal->data.bul ? "true" : "false");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_BUL\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": ");
+            AST2JSON_printf("%s", literal->data.bul ? "true" : "false");
             break;
         case DATA_TYPE_CHR: {
             char chr[2] = { literal->data.chr, '\0' };
             char *escaped_chr = AST2JSON_escape_string(chr);
-            fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_CHR\"");
-            fprintf(AST2JSON_outfile, ", \"data\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_CHR\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": ");
             if (escaped_chr) {
-                fprintf(AST2JSON_outfile, "\"%s\"", escaped_chr);
+                AST2JSON_printf("\"%s\"", escaped_chr);
                 free(escaped_chr);
             } else {
-                fprintf(AST2JSON_outfile, "null");
+                AST2JSON_printf("null");
             }
             break;
         }
         case DATA_TYPE_I64:
-            fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_I64\"");
-            fprintf(AST2JSON_outfile, ", \"data\": ");
-            fprintf(AST2JSON_outfile, "%" PRId64, literal->data.i64);
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_I64\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": ");
+            AST2JSON_printf("%" PRId64, literal->data.i64);
             break;
         case DATA_TYPE_F64:
-            fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_F64\"");
-            fprintf(AST2JSON_outfile, ", \"data\": ");
-            fprintf(AST2JSON_outfile, "%lf", literal->data.f64);
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_F64\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": ");
+            AST2JSON_printf("%lf", literal->data.f64);
             break;
         case DATA_TYPE_STR:
         case DATA_TYPE_INTERP_STR: {
-            fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_STR\"");
-            fprintf(AST2JSON_outfile, ", \"data\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_STR\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": ");
             char *escaped_str = AST2JSON_escape_string(literal->data.str);
             if (escaped_str) {
-                fprintf(AST2JSON_outfile, "\"%s\"", escaped_str);
+                AST2JSON_printf("\"%s\"", escaped_str);
                 free(escaped_str);
             } else {
-                fprintf(AST2JSON_outfile, "null");
+                AST2JSON_printf("null");
             }
             break;
         }
         case DATA_TYPE_LST:
-            fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_LST\"");
-            fprintf(AST2JSON_outfile, ", \"data\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_LST\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": ");
             AST2JSON_CommaSepList(literal->data.lst);
             break;
         case DATA_TYPE_ANY:
-            fprintf(AST2JSON_outfile, ", \"type\": \"DATA_TYPE_ANY\"");
-            fprintf(AST2JSON_outfile, ", \"data\": null");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_ANY\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": null");
             break;
     }
 
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
 }
 
 /* function to convert AST_Identifier_t to JSON */
 void AST2JSON_Identifier(const AST_Identifier_t *identifier)
 {
     if (!identifier) {
-        fprintf(AST2JSON_outfile, "null");
+        AST2JSON_printf("null");
         return;
     }
 
-    fprintf(AST2JSON_outfile, "{");
-    fprintf(AST2JSON_outfile, "\"node\": \"identifier\"");
-    fprintf(AST2JSON_outfile, ", \"identifier_name\": \"%s\"", identifier->identifier_name);
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"identifier\"");
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"identifier_name\": \"%s\"", identifier->identifier_name);
+    AST2JSON_close_obj();
 }
 
 void AST2JSON_ProcedureMap()
 {
     AST_ProcedureMapKeyList_t lst = AST_ProcedureMap_KeyList_get();
     /* open root */
-    fprintf(AST2JSON_outfile, "{");
+    AST2JSON_open_obj();
     /* node name */
-    fprintf(AST2JSON_outfile, "\"node\": \"root\"");
+    AST2JSON_printf("\"node\": \"root\"");
     for (int i = 0; i < lst.module_cnt; ++i) {
         /* open map of the module name to procedures */
-        fprintf(AST2JSON_outfile, ", \"%s\": {", lst.module[i].module_name->identifier_name);
+        AST2JSON_put_comma();
+        AST2JSON_printf("\"%s\": ", lst.module[i].module_name->identifier_name);
+        AST2JSON_open_obj();
         /* node name */
-        fprintf(AST2JSON_outfile, "\"node\": \"module\"");
+        AST2JSON_printf("\"node\": \"module\"");
         for (int j = 0; j < lst.module[i].proc_cnt; ++j) {
             AST_Identifier_t *key = lst.module[i].lst[j];
             const AST_Statements_t *st = AST_ProcedureMap_get(lst.module[i].module_name, key);
             /* open a procedure node, map it with proc name */
-            fprintf(AST2JSON_outfile, ", \"%s\": {", key->identifier_name);
-            fprintf(AST2JSON_outfile, "\"node\": \"procedure\"");
-            fprintf(AST2JSON_outfile, ", \"statements\": ");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"%s\": ", key->identifier_name);
+            AST2JSON_open_obj();
+            AST2JSON_printf("\"node\": \"procedure\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statements\": ");
             AST2JSON_Statements(st);
             /* close procedure */
-            fprintf(AST2JSON_outfile, "}");
+            AST2JSON_close_obj();
         }
-        fprintf(AST2JSON_outfile, "}");
+        AST2JSON_close_obj();
     }
     /* close root */
-    fprintf(AST2JSON_outfile, "}");
+    AST2JSON_close_obj();
+    AST2JSON_printf("\n");
     AST_ProcedureMap_KeyList_free(&lst);
 }
 
-void AST2JSON_convert(const char *filepath)
+void AST2JSON_convert(const char *filepath, bool format)
 {
+    AST2JSON_format = format;
     if (!strcmp(filepath, "-")) AST2JSON_outfile = stdout;
     else AST2JSON_outfile = fopen(filepath, "wb");
     AST2JSON_ProcedureMap();

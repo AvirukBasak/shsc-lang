@@ -140,7 +140,7 @@ AST_WhileBlock_t *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *w
     return while_block;
 }
 
-AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *iter, AST_Operand_t *start, AST_Operand_t *end, AST_Operand_t *by, AST_Statements_t *for_st)
+AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *iter, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st)
 {
     AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
     for_block->iter = iter;
@@ -152,11 +152,11 @@ AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *iter, AST_Operand_t *start, AST_O
     return for_block;
 }
 
-AST_ForBlock_t *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Operand_t *oprnd, AST_Statements_t *for_st)
+AST_ForBlock_t *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Expression_t *lst, AST_Statements_t *for_st)
 {
     AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
     for_block->iter = iter;
-    for_block->iterable.oprnd = oprnd;
+    for_block->iterable.lst = lst;
     for_block->statements = for_st;
     for_block->type = FORBLOCK_TYPE_LIST;
     return for_block;
@@ -272,22 +272,6 @@ AST_CommaSepList_t *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Express
     comma_sep_list->comma_list = comma_list;
     comma_sep_list->expression = expression;
     return comma_sep_list;
-}
-
-AST_Operand_t *AST_Operand_Literal(AST_Literal_t *literal)
-{
-    AST_Operand_t *operand = (AST_Operand_t*) malloc(sizeof(AST_Operand_t));
-    operand->type = OPERAND_TYPE_LITERAL;
-    operand->operand.literal = literal;
-    return operand;
-}
-
-AST_Operand_t *AST_Operand_Identifier(AST_Identifier_t *identifier)
-{
-    AST_Operand_t *operand = (AST_Operand_t*) malloc(sizeof(AST_Operand_t));
-    operand->type = OPERAND_TYPE_IDENTIFIER;
-    operand->operand.variable = identifier;
-    return operand;
 }
 
 AST_Literal_t *AST_Literal_bul(bool literal)

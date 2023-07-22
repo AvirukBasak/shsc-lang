@@ -19,7 +19,6 @@ typedef struct AST_Expression_t           AST_Expression_t;
 typedef struct AST_Expression_t           AST_Condition_t;
 typedef struct AST_CommaSepList_t         AST_CommaSepList_t;
 
-typedef struct AST_Operand_t              AST_Operand_t;
 typedef struct AST_Literal_t              AST_Literal_t;
 typedef struct AST_Identifier_t           AST_Identifier_t;
 

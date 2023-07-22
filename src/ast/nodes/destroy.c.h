@@ -129,12 +129,12 @@ void AST_ForBlock_free(AST_ForBlock_t **ptr)
     AST_Identifier_free(&for_block->iter);
     switch (for_block->type) {
         case FORBLOCK_TYPE_RANGE:
-            AST_Operand_free(&for_block->iterable.range.start);
-            AST_Operand_free(&for_block->iterable.range.end);
-            AST_Operand_free(&for_block->iterable.range.by);
+            AST_Expression_free(&for_block->iterable.range.start);
+            AST_Expression_free(&for_block->iterable.range.end);
+            AST_Expression_free(&for_block->iterable.range.by);
             break;
         case FORBLOCK_TYPE_LIST:
-            AST_Operand_free(&for_block->iterable.oprnd);
+            AST_Expression_free(&for_block->iterable.lst);
             break;
     }
     AST_Statements_free(&for_block->statements);
@@ -217,23 +217,6 @@ void AST_CommaSepList_free(AST_CommaSepList_t **ptr)
     AST_CommaSepList_free(&comma_list->comma_list);
     AST_Expression_free(&comma_list->expression);
     free(comma_list);
-    *ptr = NULL;
-}
-
-void AST_Operand_free(AST_Operand_t **ptr)
-{
-    if (!ptr) return;
-    AST_Operand_t *operand = *ptr;
-    if (!operand) return;
-    switch (operand->type) {
-        case OPERAND_TYPE_LITERAL:
-            AST_Literal_free(&operand->operand.literal);
-            break;
-        case OPERAND_TYPE_IDENTIFIER:
-            AST_Identifier_free(&operand->operand.variable);
-            break;
-    }
-    free(operand);
     *ptr = NULL;
 }
 

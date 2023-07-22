@@ -31,13 +31,18 @@ typedef union {
     char *idf;
 } VarData;
 
-typedef enum {
-    VARTYPE_BUL,
-    VARTYPE_CHR,
-    VARTYPE_I64,
-    VARTYPE_F64,
-    VARTYPE_STR,
-    VARTYPE_ANY,
-} VarType;
+/* based on the mapping of datatype IDs provided
+   by the Scsh IR Spec
+   https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md */
+enum DataType_t {
+    VAR_TYPE_BUL = 0,        /* boolean        : 1 B */
+    VAR_TYPE_CHR = 1,        /* char           : 1 B */
+    VAR_TYPE_I64 = 2,        /* int64_t        : 8 B */
+    VAR_TYPE_F64 = 3,        /* double         : 8 B */
+    VAR_TYPE_STR = 4,        /* char*          : variable  */
+    VAR_TYPE_INTERP_STR = 5, /* parsable char* : variable  */
+    VAR_TYPE_LST = 6,        /* list           : variable  */
+    VAR_TYPE_ANY = 7,        /* void*          : undefined */
+};
 
 #endif

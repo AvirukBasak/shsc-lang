@@ -19,6 +19,7 @@ int main(int argc, char **argv)
     char **lines = NULL;
     size_t line_cnt = 0;
     char* ast_filename = NULL;
+    bool ast_format = false;
 
     /* start from 1 to skip program name */
     int index = 1;
@@ -29,6 +30,7 @@ int main(int argc, char **argv)
                "  scsh [FILENAMES]               execute files listed as args\n"
                "  scsh -b or --build [FILENAME]  execute files listed in file\n"
                "  scsh -t or --ast [FILENAME]    save AST as JSON to file\n"
+               "  scsh -tf or --astf [FILENAME]  produce formatted JSON\n"
                "  scsh -h or --help              view this message\n"
         );
         exit(0);
@@ -38,6 +40,14 @@ int main(int argc, char **argv)
     if (!strcmp(argv[index], "-t") || !strcmp(argv[index], "--ast")) {
         if (argc < 3) io_errndie("ast file path not provided");
         ast_filename = argv[++index];
+        ++index;
+    }
+
+    /* check if -tf or --astf is present */
+    else if (!strcmp(argv[index], "-tf") || !strcmp(argv[index], "--astf")) {
+        if (argc < 3) io_errndie("ast file path not provided");
+        ast_filename = argv[++index];
+        ast_format = true;
         ++index;
     }
 
@@ -68,7 +78,7 @@ int main(int argc, char **argv)
     }
 
     /* save the AST as JSON */
-    if (ast_filename) AST2JSON_convert(ast_filename);
+    if (ast_filename) AST2JSON_convert(ast_filename, ast_format);
 
     /* clear the entire AST */
     AST_ProcedureMap_clear();
