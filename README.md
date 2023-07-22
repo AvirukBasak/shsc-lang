@@ -11,6 +11,7 @@ USAGE:
   scsh [FILENAMES]               execute files listed as args
   scsh -b or --build [FILENAME]  execute files listed in file
   scsh -t or --ast [FILENAME]    save AST as JSON to file
+  scsh -tf or --astf [FILENAME]  produce formatted JSON
   scsh -h or --help              view this message
 ```
 
