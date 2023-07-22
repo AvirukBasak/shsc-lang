@@ -87,6 +87,7 @@ FILE *yyin = NULL;
 %token TOKOP_FNCALL
 %token TOKOP_INDEXING
 %token TOKOP_TERNARY_COND
+%token TOKOP_FNARGS_INDEXING
 
 %token LEXTOK_NEWLINE                                 "\n"
 
@@ -459,6 +460,7 @@ postfix_expression:
                                                             AST_Expression_CommaSepList($4), NULL);
                                                         }
     | postfix_expression "[" nwl expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
+    | "$" "[" nwl expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,
