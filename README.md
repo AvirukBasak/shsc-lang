@@ -18,7 +18,7 @@ USAGE:
 - Lexer interface at [`docs/LexerInterface.md`](docs/LexerInterface.md)
 - Language specs at [`docs/LanguageSpec.md`](docs/LanguageSpec.md)
 - Syntax specs at [`docs/LanguageSyntax.md`](docs/LanguageSyntax.md)
-- Bytecode specs at [`ScshIrSpec.md`](https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md)
+- Bytecode specs at [`ScshIrSpec.md`](https://github.com/AvirukBasak/scsh-runtime/blob/main/docs/ScshIrSpec.md)
 - Contribution guidelines at [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
 
 ### Tests

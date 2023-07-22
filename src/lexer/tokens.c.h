@@ -80,6 +80,7 @@ const char *lex_get_tokcode(LexToken code)
         case TOKOP_FNCALL:                 return "TOKOP_FNCALL";
         case TOKOP_INDEXING:               return "TOKOP_INDEXING";
         case TOKOP_TERNARY_COND:           return "TOKOP_TERNARY_COND";
+        case TOKOP_FNARGS_INDEXING:        return "TOKOP_FNARGS_INDEXING";
         /* keywords */
         case LEXTOK_KWD_MODULE:            return "LEXTOK_KWD_MODULE";
         case LEXTOK_KWD_PROC:              return "LEXTOK_KWD_PROC";
@@ -200,6 +201,7 @@ const char *lex_get_symbol(LexToken code)
         case TOKOP_FNCALL:                 return "()";
         case TOKOP_INDEXING:               return "[]";
         case TOKOP_TERNARY_COND:           return "?:";
+        case TOKOP_FNARGS_INDEXING:        return "$[]";
         /* keywords */
         case LEXTOK_KWD_MODULE:            return "module";
         case LEXTOK_KWD_PROC:              return "proc";
