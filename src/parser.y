@@ -340,7 +340,7 @@ assignment_expression:
 
 conditional_expression:
     logical_or_expression                               { $$ = $1; }
-    | logical_or_expression "if" condition "else" logical_or_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
+    | conditional_expression "if" condition "else" conditional_expression { $$ = AST_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
     ;
 
 logical_or_expression:
