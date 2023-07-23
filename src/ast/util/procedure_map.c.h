@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include "tlib/khash/khash.h"
 
+#include "globals.h"
 #include "ast/nodes.h"
 #include "ast/util.h"
 #include "parser.h"
@@ -36,6 +37,7 @@ KHASH_MAP_INIT_STR(procedure_t, AST_ProcedureMap_procedure_t)
 typedef struct
 {
     AST_Identifier_t *module_name;
+    char *module_filename;
     /** One module i.e. map of proc_name -> code */
     khash_t(procedure_t) *procmap;
 } AST_ProcedureMap_module_t;
@@ -122,6 +124,7 @@ void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_
         procmap = kh_init(procedure_t);
         k = kh_put(module_t, ast_modulemap, module_name->identifier_name, &ret);
         kh_value(ast_modulemap, k).module_name = module_name;
+        kh_value(ast_modulemap, k).module_filename = strdup(global_currentfile);
         kh_value(ast_modulemap, k).procmap = procmap;
     } else {
         /* Get the existing sub map */
@@ -171,6 +174,7 @@ void AST_ProcedureMap_clear(void)
     for (khint_t k1 = kh_begin(ast_modulemap); k1 != kh_end(ast_modulemap); ++k1) {
         if (!kh_exist(ast_modulemap, k1)) continue;
         AST_Identifier_free(&kh_value(ast_modulemap, k1).module_name);
+        free(kh_value(ast_modulemap, k1).module_filename);
         khash_t(procedure_t) *procmap = kh_value(ast_modulemap, k1).procmap;
         /* Iterate over the sub map */
         for (khint_t k2 = kh_begin(procmap); k2 != kh_end(procmap); ++k2) {

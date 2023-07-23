@@ -77,8 +77,12 @@ int main(int argc, char **argv)
         free(lines);
     }
 
-    /* save the AST as JSON */
-    if (ast_filename) AST2JSON_convert(ast_filename, ast_format);
+    if (ast_filename)
+        /* save the AST as JSON */
+        AST2JSON_convert(ast_filename, ast_format);
+    else
+        /* execute the program */
+        runtime_exec();
 
     /* clear the entire AST */
     AST_ProcedureMap_clear();
