@@ -244,7 +244,9 @@ void AST_Identifier_free(AST_Identifier_t **ptr)
     if (!ptr) return;
     AST_Identifier_t *identifier = *ptr;
     if (!identifier) return;
+    if (!identifier->identifier_name) return;
     free(identifier->identifier_name);
+    identifier->identifier_name = NULL;
     free(identifier);
     *ptr = NULL;
 }

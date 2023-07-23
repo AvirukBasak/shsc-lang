@@ -18,10 +18,10 @@ struct ModuleStack_t *top = NULL;
 /** Push name of current module to module stack */
 void AST_ModuleStack_push(const AST_Identifier_t *module_name)
 {
-    ModuleStack_t *newNode = (ModuleStack_t*) malloc(sizeof(ModuleStack_t));
-    newNode->data = module_name;
-    newNode->next = top;
-    top = newNode;
+    ModuleStack_t *new_node = (ModuleStack_t*) malloc(sizeof(ModuleStack_t));
+    new_node->data = module_name;
+    new_node->next = top;
+    top = new_node;
 }
 
 /** Function to get the top module name from the stack */
@@ -35,13 +35,17 @@ const AST_Identifier_t *AST_ModuleStack_top(void)
 const AST_Identifier_t *AST_ModuleStack_pop(void)
 {
     if (top == NULL) return NULL;
-    const AST_Identifier_t *poppedData = top->data;
     ModuleStack_t *temp = top;
+    const AST_Identifier_t *data = temp->data;
     top = top->next;
-    if (AST_ProcedureMap_empty())
+    if (AST_ProcedureMap_empty()) {
         AST_Identifier_free((AST_Identifier_t**) &temp->data);
+        temp->data = NULL;
+        free(temp);
+        return NULL;
+    }
     free(temp);
-    return poppedData;
+    return data;
 }
 
 /** Empty the stack (doesn't free the (AST_Identifier*)) */

@@ -44,6 +44,7 @@ void lex_buffree()
 {
     if (!lex_buffer) return;
     free(lex_buffer->buffer);
+    lex_buffer->buffer = NULL;
     free(lex_buffer);
     lex_buffer = NULL;
 }
