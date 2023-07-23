@@ -181,7 +181,8 @@ FILE *yyin = NULL;
 }
 
 
-%type <line_count> nwl
+%type <line_count> nws
+%type <line_count> nwp
 %type <line_count> trm
 
 /* semantic types of each parser rule */
@@ -225,11 +226,19 @@ FILE *yyin = NULL;
 
 %%
 
-nwl:
+/* \n* */
+nws:
     %empty     { $$ = 0; }
-    | nwl "\n" { $$ = $1 + 1; }
+    | nws "\n" { $$ = $1 + 1; }
     ;
 
+/* \n+ */
+nwp:
+    "\n"       { $$ = 1; }
+    | nwp "\n" { $$ = $1 + 1; }
+    ;
+
+/* (\n|;)+ */
 trm:
     trm ";"    { $$ = $1; }
     | ";"      { $$ = 0; }
@@ -251,7 +260,7 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" trm statements "end" trm  { AST_ProcedureMap_add((AST_Identifier_t*) AST_ModuleStack_top(), $2, $5); }
+    "proc" identifier "start" nwp statements "end" trm  { AST_ProcedureMap_add((AST_Identifier_t*) AST_ModuleStack_top(), $2, $5); }
     ;
 
 statements:
@@ -279,10 +288,10 @@ compound_statement:
     ;
 
 if_block:
-    "if" condition "then" trm statements "end"                                            { $$ = AST_IfBlock($2, $5, NULL, NULL); }
-    | "if" condition "then" trm statements "else" trm statements "end"                    { $$ = AST_IfBlock($2, $5, NULL, $8); }
-    | "if" condition "then" trm statements else_if_block "end"                            { $$ = AST_IfBlock($2, $5, $6, NULL); }
-    | "if" condition "then" trm statements else_if_block "else" trm statements "end"      { $$ = AST_IfBlock($2, $5, $6, $9); }
+    "if" condition "then" nwp statements "end"                                            { $$ = AST_IfBlock($2, $5, NULL, NULL); }
+    | "if" condition "then" nwp statements "else" nwp statements "end"                    { $$ = AST_IfBlock($2, $5, NULL, $8); }
+    | "if" condition "then" nwp statements else_if_block "end"                            { $$ = AST_IfBlock($2, $5, $6, NULL); }
+    | "if" condition "then" nwp statements else_if_block "else" nwp statements "end"      { $$ = AST_IfBlock($2, $5, $6, $9); }
     ;
 
 else_if_block:
@@ -291,22 +300,22 @@ else_if_block:
     ;
 
 else_if_statement:
-    "else" "if" condition "then" trm statements         { $$ = AST_ElseIfSt($3, $6); }
-    | "elif" condition "then" trm statements            { $$ = AST_ElseIfSt($2, $5); }
+    "else" "if" condition "then" nwp statements         { $$ = AST_ElseIfSt($3, $6); }
+    | "elif" condition "then" nwp statements            { $$ = AST_ElseIfSt($2, $5); }
     ;
 
 while_block:
-    "while" condition "do" trm statements "end"         { $$ = AST_WhileBlock($2, $5); }
+    "while" condition "do" nwp statements "end"         { $$ = AST_WhileBlock($2, $5); }
     ;
 
 for_block:
-    "for" identifier "from" expression "to" expression "do" trm statements "end"                   { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
-    | "for" identifier "from" expression "to" expression "by" expression "do" trm statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
-    | "for" identifier "in" expression "do" trm statements "end"                                   { $$ = AST_ForBlock_iterate($2, $4, $7); }
+    "for" identifier "from" expression "to" expression "do" nwp statements "end"                   { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
+    | "for" identifier "from" expression "to" expression "by" expression "do" nwp statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
+    | "for" identifier "in" expression "do" nwp statements "end"                                   { $$ = AST_ForBlock_iterate($2, $4, $7); }
     ;
 
 block:
-    "block" trm statements "end"                        { $$ = AST_Block($3); }
+    "block" nwp statements "end"                        { $$ = AST_Block($3); }
     ;
 
 condition:
@@ -416,11 +425,11 @@ unary_expression:
 postfix_expression:
     primary_expression                                  { $$ = $1; }
     | postfix_expression "(" ")"                        { $$ = AST_Expression(TOKOP_FNCALL, $1, NULL, NULL); }
-    | postfix_expression "(" nwl comma_list ")"         { $$ = AST_Expression(TOKOP_FNCALL, $1,
+    | postfix_expression "(" nws comma_list ")"         { $$ = AST_Expression(TOKOP_FNCALL, $1,
                                                             AST_Expression_CommaSepList($4), NULL);
                                                         }
-    | postfix_expression "[" nwl expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
-    | "$" "[" nwl expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
+    | postfix_expression "[" nws expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
+    | "$" "[" nws expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,
@@ -439,8 +448,8 @@ primary_expression:
 
 comma_list:
     expression                                          { $$ = AST_CommaSepList(NULL, $1); }
-    | expression "," nwl                                { $$ = AST_CommaSepList(NULL, $1); }
-    | expression "," nwl comma_list                     { $$ = AST_CommaSepList($4, $1); }
+    | expression "," nws                                { $$ = AST_CommaSepList(NULL, $1); }
+    | expression "," nws comma_list                     { $$ = AST_CommaSepList($4, $1); }
     ;
 
 literal:
@@ -457,7 +466,7 @@ literal:
     | LEXTOK_STR_LITERAL                                { $$ = AST_Literal_str($1); }
     | LEXTOK_INTERP_STR_LITERAL                         { $$ = AST_Literal_interp_str($1); }
     | "[" "]"                                           { $$ = AST_Literal_lst(NULL); }
-    | "[" nwl comma_list "]"                            { $$ = AST_Literal_lst($3); }
+    | "[" nws comma_list "]"                            { $$ = AST_Literal_lst($3); }
     ;
 
 identifier:
