@@ -50,7 +50,7 @@ void AST_ModuleStack_clear(void)
     while (top != NULL) {
         ModuleStack_t *temp = top;
         top = top->next;
-        AST_Identifier_free((AST_Identifier_t**) &temp->data);
+        temp->data = NULL;
         free(temp);
     }
 }
