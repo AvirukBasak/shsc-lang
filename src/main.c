@@ -28,33 +28,44 @@ int main(int argc, char **argv)
     /* check if -h or --help is present */
     if (!strcmp(argv[index], "-h") || !strcmp(argv[index], "--help")) {
         printf("USAGE:\n"
-               "  scsh [FILENAMES]               execute files listed as args\n"
-               "  scsh -b or --build [FILENAME]  execute files listed in file\n"
-               "  scsh -t or --ast [FILENAME]    save AST as JSON to file\n"
-               "  scsh -tf or --astf [FILENAME]  produce formatted JSON\n"
-               "  scsh -h or --help              view this message\n"
+               "  scsh [FILENAMES]         execute files listed as args\n"
+               "  scsh <flags> [FILENAMES] provide with additional flags\n"
+               "FLAGS:\n"
+               "  -r  --run  [FILENAME]    run files listed in file\n"
+               "  -t  --ast  [FILENAME]    save AST as JSON to file\n"
+               "  -tf --astf [FILENAME]    produce formatted JSON\n"
+               "  -h  --help               view this message\n"
         );
         exit(0);
     }
 
     /* check if -t or --ast is present */
     if (!strcmp(argv[index], "-t") || !strcmp(argv[index], "--ast")) {
-        if (argc < 3) io_errndie("ast file path not provided");
+        if (argc < 3) io_errndie("no json file provided for '--ast'");
         ast_filename = argv[++index];
         ++index;
     }
 
     /* check if -tf or --astf is present */
     else if (!strcmp(argv[index], "-tf") || !strcmp(argv[index], "--astf")) {
-        if (argc < 3) io_errndie("ast file path not provided");
+        if (argc < 3) io_errndie("no json file provided for '--astf'");
         ast_filename = argv[++index];
         ast_format = true;
         ++index;
     }
 
-    /* check if -b or --build is present */
-    if (!strcmp(argv[index], "-b") || !strcmp(argv[index], "--build")) {
-        if (argc < 3) io_errndie("build file path not provided");
+    /* check if -r or --run is present */
+    if (!strcmp(argv[index], "-r") || !strcmp(argv[index], "--run")) {
+        if (argc < 3) {
+            fprintf(stderr,
+                "List File Syntax:\n"
+                " - Each line of the list file has a single file path\n"
+                " - Spaces in file path is valid and quotes not required\n"
+                " - If scsh fails to read one file, it'll skip to next file\n"
+                " - If scsh fails to parse any file, it'll report error and exit\n"
+            );
+            io_errndie("no list file provided for '--run'");
+        }
         lines = io_read_lines(argv[++index], &line_cnt);
         ++index;
         if (index < argc) io_errndie("too many arguments: '%s' onwards", argv[index]);

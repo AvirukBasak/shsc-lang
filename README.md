@@ -8,11 +8,19 @@ World's most sh*tty programming language.
 
 ```
 USAGE:
-  scsh [FILENAMES]               execute files listed as args
-  scsh -b or --build [FILENAME]  execute files listed in file
-  scsh -t or --ast [FILENAME]    save AST as JSON to file
-  scsh -tf or --astf [FILENAME]  produce formatted JSON
-  scsh -h or --help              view this message
+  scsh [FILENAMES]         execute files listed as args
+  scsh <flags> [FILENAMES] provide with additional flags
+FLAGS:
+  -r  --run  [FILENAME]    run files listed in file
+  -t  --ast  [FILENAME]    save AST as JSON to file
+  -tf --astf [FILENAME]    produce formatted JSON
+  -h  --help               view this message
+```
+
+### Example use
+```
+# tested on examples/factorial.txt
+scsh -tf ast.json examples/factorial.txt
 ```
 
 ### Docs

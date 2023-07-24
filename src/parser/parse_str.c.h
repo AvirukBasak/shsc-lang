@@ -1,6 +1,7 @@
 #ifndef PARSER_PARSE_STR_C_H
 #define PARSER_PARSE_STR_C_H
 
+#include "errcodes.h"
 #include "parser.h"
 
 /** Calls strdup, remember to free */
@@ -8,8 +9,8 @@ char *parse_str(const char *str)
 {
     if (!str || !strcmp(str, "NULL")) str = "\0";
     const size_t len = strlen(str);
-    char *parsed_str = malloc(len +1);
-    if (!parsed_str) parse_throw("memory allocation failed");
+    char *parsed_str = (char*) malloc(len +1);
+    if (!parsed_str) parse_throw("parse_str:" ERR_MSG_MALLOCFAIL);
     int parsed_index = 0;
     for (int i = 0; i < len; ++i) {
         /* if the current character is a backslash, it might be an escape sequence */

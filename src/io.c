@@ -4,8 +4,8 @@
 #include <stdarg.h>
 
 #include "globals.h"
-#include "io.h"
 #include "errcodes.h"
+#include "io.h"
 
 long long io_get_filesize(const char *filepath)
 {
@@ -40,14 +40,14 @@ char **io_read_lines(const char *filepath, size_t *line_cnt)
         if (i >= row_size) {
             row_size = row_size * 2 +1;
 L_BUFFRZ1:  buffer = (char**) realloc(buffer, row_size * sizeof(char*));
-            if (!buffer) io_errndie("io_read_lines: memory reallocation failed");
+            if (!buffer) io_errndie("io_read_lines:" ERR_MSG_REALLOCFAIL);
             /* set garbage to NULL or else realloc will fail at label L_BUFFRZ2 */
             buffer[i] = NULL;
         }
         if (j >= col_size) {
             col_size = col_size * 2 +1;
 L_BUFFRZ2:  buffer[i] = (char*) realloc(buffer[i], col_size * sizeof(char));
-            if (!buffer[i]) io_errndie("io_read_lines: memory reallocation failed");
+            if (!buffer[i]) io_errndie("io_read_lines:" ERR_MSG_REALLOCFAIL);
         }
         if (c == '\n') {
             /* null-terminate the string and reset column size */
@@ -55,8 +55,12 @@ L_BUFFRZ2:  buffer[i] = (char*) realloc(buffer[i], col_size * sizeof(char));
             col_size = j = 0;
             /* set garbage to NULL or else realloc will fail at label L_BUFFRZ2
                the condition ensures is within range coz the buffer isn't resized
-               before L_BUFFRZ1 */
-            if (i < row_size -1) buffer[++i] = NULL;
+               before L_BUFFRZ1
+               additionally, increment i only if current line is not empty */
+            if (i < row_size -1) {
+                if (strlen(buffer[i]) != 0) buffer[++i] = NULL;
+                else buffer[i] = NULL;
+            }
             continue;
         }
         buffer[i][j] = c;
@@ -66,7 +70,7 @@ L_BUFFRZ2:  buffer[i] = (char*) realloc(buffer[i], col_size * sizeof(char));
     /* null-terminate the last string if j is pointing to its end */
     if (j == col_size -1) {
         buffer[i] = (char*) realloc(buffer[i], (j+1) * sizeof(char));
-        if (!buffer[i]) io_errndie("io_read_lines: memory reallocation failed");
+        if (!buffer[i]) io_errndie("io_read_lines:" ERR_MSG_REALLOCFAIL);
         buffer[i][j] = '\0';
     }
     /* update the number of lines */

@@ -14,6 +14,7 @@
 #include "tlib/khash/khash.h"
 
 #include "globals.h"
+#include "errcodes.h"
 #include "ast/nodes.h"
 #include "ast/util.h"
 #include "parser.h"
@@ -70,6 +71,7 @@ AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get()
     key_list.module_cnt = kh_size(ast_modulemap);
     /* Allocate memory for the module array */
     key_list.module = malloc(key_list.module_cnt * sizeof(*key_list.module));
+    if (!key_list.module) parse_throw("AST_ProcedureMap_KeyList_get:" ERR_MSG_MALLOCFAIL);
     /* Iterate over the module map and populate the key list */
     int i = 0;
     for (khiter_t iter = kh_begin(ast_modulemap); iter != kh_end(ast_modulemap); ++iter) {
@@ -82,6 +84,7 @@ AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get()
             key_list.module[i].proc_cnt = kh_size(module->procmap);
             /* Allocate memory for the procedure list */
             key_list.module[i].lst = malloc(key_list.module[i].proc_cnt * sizeof(*key_list.module[i].lst));
+            if (!key_list.module[i].lst) parse_throw("AST_ProcedureMap_KeyList_get:" ERR_MSG_MALLOCFAIL);
             /* Iterate over the procedure map and populate the procedure list */
             int j = 0;
             for (khiter_t p_iter = kh_begin(module->procmap); p_iter != kh_end(module->procmap); ++p_iter) {
@@ -112,9 +115,9 @@ void AST_ProcedureMap_KeyList_free(AST_ProcedureMapKeyList_t *ptr)
 void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_name, AST_Statements_t *code)
 {
     if (!module_name)
-        parse_throw("AST_ProcedureMap_add: null pointer error for `module_name`");
+        parse_throw("AST_ProcedureMap_add:" ERR_MSG_NULLPTR " for `module_name`");
     else if (!proc_name)
-        parse_throw("AST_ProcedureMap_add: null pointer error for `proc_name`");
+        parse_throw("AST_ProcedureMap_add:" ERR_MSG_NULLPTR " for `proc_name`");
     if (!ast_modulemap) AST_ProcedureMap_create();
     int ret;
     khash_t(procedure_t) *procmap;
@@ -141,13 +144,13 @@ void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_
 const AST_Statements_t *AST_ProcedureMap_get(const AST_Identifier_t *module_name, const AST_Identifier_t *proc_name)
 {
     if (!ast_modulemap) {
-        parse_throw("AST_procedure_get: null pointer error for `ast_modulemap`");
+        parse_throw("AST_procedure_get:" ERR_MSG_NULLPTR " for `ast_modulemap`");
         return NULL;
     } else if (!module_name) {
-        parse_throw("AST_procedure_get: null pointer error for `module_name`");
+        parse_throw("AST_procedure_get:" ERR_MSG_NULLPTR " for `module_name`");
         return NULL;
     } else if (!proc_name) {
-        parse_throw("AST_procedure_get: null pointer error for `proc_name`");
+        parse_throw("AST_procedure_get:" ERR_MSG_NULLPTR " for `proc_name`");
         return NULL;
     }
     khash_t(procedure_t) *procmap;
