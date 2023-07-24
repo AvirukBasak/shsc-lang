@@ -2,6 +2,7 @@
   "node": "root",
   "main": {
     "node": "module",
+    "file": "tests/test.txt",
     "main": {
       "node": "procedure",
       "statements": {

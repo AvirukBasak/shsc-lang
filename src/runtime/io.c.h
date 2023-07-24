@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include "runtime.h"
 #include "runtime/io.h"
@@ -10,7 +11,7 @@
 
 void rt_throw(const char *fmt, ...)
 {
-    fprintf(stderr, "scsh: %s:%d: ", rt_currentfile, rt_currentline);
+    fprintf(stderr, "scsh: %s:%d: ", rt_currfile, rt_currline);
     fflush(stderr);
     va_list args;
     va_start(args, fmt);

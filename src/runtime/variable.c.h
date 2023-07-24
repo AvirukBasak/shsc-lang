@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "runtime/variable.h"
 #include "runtime/vartable.h"
@@ -72,24 +73,34 @@ RT_Variable_t rt_variable_any(void *ptr)
     return var;
 }
 
-void rt_variable_destroy(RT_Variable_t var)
+RT_Variable_t rt_variable_null(void)
 {
-    switch (var.type) {
+    return rt_variable_any(NULL);
+}
+
+void rt_variable_destroy(RT_Variable_t *var)
+{
+    switch (var->type) {
         case RT_DATA_TYPE_STR:
         case RT_DATA_TYPE_INTERP_STR:
-            free(var.data.str);
-            var.data.str = NULL;
+            if (var->data.str) free(var->data.str);
+            var->data.str = NULL;
             break;
         case RT_DATA_TYPE_LST:
-            rt_varlist_destroy(&(var.data.lst));
+            rt_varlist_destroy(&var->data.lst);
             break;
         case RT_DATA_TYPE_ANY:
-            if (var.data.any) free(var.data.any);
-            var.data.any = NULL;
+            if (var->data.any) free(var->data.any);
+            var->data.any = NULL;
             break;
         default:
             break;
     }
+}
+
+bool rt_variable_isnull(const RT_Variable_t var)
+{
+    return var.type == RT_DATA_TYPE_ANY && !var.data.any;
 }
 
 bool rt_variable_valid_idf(const char *idf)
@@ -98,7 +109,7 @@ bool rt_variable_valid_idf(const char *idf)
     if (idf[0] != '_' && !isalpha(idf[0])) return false;
     int64_t i = 1;
     while (idf[i] != '\0') {
-        if (!isalnum(idf[i] && idf[i] != '_') return false;
+        if (!isalnum(idf[i]) && idf[i] != '_') return false;
         ++i;
     }
     return idf[i] == '\0';
@@ -107,8 +118,8 @@ bool rt_variable_valid_idf(const char *idf)
 char *rt_varable_parse_interp_str(const char *str_)
 {
     char *str = strdup(str_),
-         *ret = NULL,
-         *p = 0;
+         *ret = NULL;
+    int p = 0;
     size_t ret_sz = 0;
     size_t str_sz = strlen(str);
     for (int64_t i = 0; i < str_sz; ++i) {
@@ -127,7 +138,7 @@ char *rt_varable_parse_interp_str(const char *str_)
         if (!rt_variable_valid_idf(&str[i] +1))
             rt_throw("invalid interpolation identifier: '%s'", &str[i] +1);
         RT_Variable_t var = vartable_get(&str[i] +1);
-        if (var.type = RT_DATA_TYPE_ANY && !var.data.any)
+        if (rt_variable_isnull(var))
             rt_throw("undeclared identifier: '%s'", &str[i] +1);
         char *val = rt_variable_tostr(var);
         size_t sz = strlen(val) +1;
@@ -182,40 +193,15 @@ char *rt_variable_tostr(const RT_Variable_t var)
             return rt_varlist_tostr(var.data.lst);
         }
         case RT_DATA_TYPE_ANY: {
+            if (!var.data.any) return strdup("null");
             char *str = (char*) malloc(16 +1 * sizeof(char));
             if (!str) rt_throw("failed to allocate memory");
-            sprintf(str, "0xxX", var.data.any);
+            sprintf(str, "0x%p", var.data.any);
             return str;
         }
         default:
             return strdup("undefined");
     }
-}
-
-char *rt_varlist_tostr(RT_VarList_t *lst)
-{
-    char *str = (char*) malloc(3 * sizeof(char)),
-         *p = 0;
-    size_t size = 3;
-    sprintf(str + p++, "[");
-    for (int64_t i = 0; i < lst->length; ++i) {
-        char *lst_el = rt_variable_tostr(lst->var[i]);
-        const size_t sz = strlen(lst_el) +1;
-        str = (char*) realloc(str, (size += sz) * sizeof(char));
-        if (!str) rt_throw("failed to allocate memory");
-        sprintf(str + p, "%s", lst_el);
-        free(lst_el);
-        lst_el = NULL;
-        p += sz;
-        if (i != lst->length - 1) {
-            str = (char*) realloc(str, (size += 2) * sizeof(char));
-            if (!str) rt_throw("failed to allocate memory");
-            sprintf(str + p, ", ");
-            p += 2;
-        }
-    }
-    sprintf(str + p++, "]");
-    return str;
 }
 
 void rt_variable_print(RT_Variable_t var)
@@ -234,22 +220,27 @@ RT_VarList_t *rt_varlist_init()
     return lst;
 }
 
+int64_t rt_varlist_length(const RT_VarList_t *lst)
+{
+    return lst->length;
+}
+
 void rt_varlist_destroy(RT_VarList_t **ptr)
 {
-    if (ptr && *ptr) {
-        RT_VarList_t *lst = *ptr;
-        for (int64_t i = 0; i < lst->length; i++) {
-            RT_Variable_t var = lst->var[i];
-            if (var.type == RT_DATA_TYPE_STR || var.type == RT_DATA_TYPE_INTERP_STR) {
-                free(var.data.str);
-                var.data.str = NULL;
-            } else if (old_var.type == RT_DATA_TYPE_LST)
-                rt_varlist_destroy(&old_var.data.lst);
-        }
-        free(lst->var);
-        free(lst);
-        *ptr = NULL;
+    if (!ptr || !*ptr) return;
+    RT_VarList_t *lst = *ptr;
+    for (int64_t i = 0; i < lst->length; i++) {
+        RT_Variable_t var = lst->var[i];
+        if (var.type == RT_DATA_TYPE_STR || var.type == RT_DATA_TYPE_INTERP_STR) {
+            free(var.data.str);
+            var.data.str = NULL;
+            var.type = RT_DATA_TYPE_ANY;
+        } else if (var.type == RT_DATA_TYPE_LST)
+            rt_varlist_destroy(&var.data.lst);
     }
+    free(lst->var);
+    free(lst);
+    *ptr = NULL;
 }
 
 void rt_varlist_append(RT_VarList_t *lst, RT_Variable_t var)
@@ -275,7 +266,7 @@ void rt_varlist_set(RT_VarList_t *lst, int64_t idx, RT_Variable_t var)
     }
 }
 
-RT_Variable_t rt_varlist_get(RT_VarList_t *lst, int64_t idx)
+RT_Variable_t rt_varlist_get(const RT_VarList_t *lst, int64_t idx)
 {
     RT_Variable_t var;
     if (idx >= 0 && idx < lst->length)
@@ -304,6 +295,32 @@ void rt_varlist_del_val(RT_VarList_t *lst, RT_Variable_t var)
             return;
         }
     }
+}
+
+char *rt_varlist_tostr(const RT_VarList_t *lst)
+{
+    char *str = (char*) malloc(3 * sizeof(char));
+    int p = 0;
+    size_t size = 3;
+    sprintf(str + p++, "[");
+    for (int64_t i = 0; i < lst->length; ++i) {
+        char *lst_el = rt_variable_tostr(lst->var[i]);
+        const size_t sz = strlen(lst_el) +1;
+        str = (char*) realloc(str, (size += sz) * sizeof(char));
+        if (!str) rt_throw("failed to allocate memory");
+        sprintf(str + p, "%s", lst_el);
+        free(lst_el);
+        lst_el = NULL;
+        p += sz;
+        if (i != lst->length - 1) {
+            str = (char*) realloc(str, (size += 2) * sizeof(char));
+            if (!str) rt_throw("failed to allocate memory");
+            sprintf(str + p, ", ");
+            p += 2;
+        }
+    }
+    sprintf(str + p++, "]");
+    return str;
 }
 
 #else

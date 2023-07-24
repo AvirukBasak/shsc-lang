@@ -48,19 +48,22 @@ RT_Variable_t rt_variable_str(char *str);
 RT_Variable_t rt_variable_interp_str(char *str);
 RT_Variable_t rt_variable_list(RT_VarList_t *lst);
 RT_Variable_t rt_variable_any(void *ptr);
-void rt_variable_destroy(RT_Variable_t var);
+RT_Variable_t rt_variable_null(void);
+void rt_variable_destroy(RT_Variable_t *var);
 
-char *rt_varable_parse_interp_str(char *str);
-char *rt_variable_tostr(RT_Variable_t var);
-void rt_variable_print_list(RT_VarList_t *lst);
-void rt_variable_print(RT_Variable_t var);
+bool rt_variable_isnull(const RT_Variable_t var);
+char *rt_varable_parse_interp_str(const char *str);
+char *rt_variable_tostr(const RT_Variable_t var);
+void rt_variable_print(const RT_Variable_t var);
 
 RT_VarList_t *rt_varlist_init();
+int64_t rt_varlist_length(const RT_VarList_t *lst);
 void rt_varlist_destroy(RT_VarList_t **ptr);
 void rt_varlist_append(RT_VarList_t *lst, RT_Variable_t var);
 void rt_varlist_set(RT_VarList_t *lst, int64_t idx, RT_Variable_t var);
-RT_Variable_t rt_varlist_get(RT_VarList_t *lst, int64_t idx);
+RT_Variable_t rt_varlist_get(const RT_VarList_t *lst, int64_t idx);
 void rt_varlist_del_index(RT_VarList_t *lst, int64_t idx);
 void rt_varlist_del_val(RT_VarList_t *lst, RT_Variable_t var);
+char *rt_varlist_tostr(const RT_VarList_t *lst);
 
 #endif

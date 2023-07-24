@@ -7,6 +7,7 @@
 #include "io.h"
 #include "ast/util.h"
 #include "parser.h"
+#include "runtime.h"
 
 #include "ast/to_json.h"
 

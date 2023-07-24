@@ -11,7 +11,7 @@
 #include "runtime/vartable.h"
 #include "ast.h"
 
-KHASH_MAP_INIT_STR(var, RT_Variable_t*)
+KHASH_MAP_INIT_STR(var, RT_Variable_t)
 
 typedef struct {
     khash_t(var) *scope;
@@ -32,7 +32,7 @@ RT_Vartable_t *rt_vtable = NULL;
 void vartable_init()
 {
     if (rt_vtable) return;
-    rt_vtable = (Vartable*) malloc(sizeof(RT_Vartable_t));
+    rt_vtable = (RT_Vartable_t*) malloc(sizeof(RT_Vartable_t));
     rt_vtable->scopes = NULL;
     rt_vtable->top = -1;
     rt_vtable->capacity = 0;
@@ -54,7 +54,7 @@ void vartable_destroy()
 }
 
 /** create a new variable or modify an existing one in the current scope */
-void vartable_set(const char *varname, RT_Variable_t *value)
+void vartable_set(const char *varname, RT_Variable_t value)
 {
     if (!rt_vtable) vartable_init();
     if (rt_vtable->top < 0) abort();
@@ -66,16 +66,16 @@ void vartable_set(const char *varname, RT_Variable_t *value)
 }
 
 /** get the variable from the current scope if it exists, else return NULL */
-RT_Variable_t *vartable_get(const char *varname)
+RT_Variable_t vartable_get(const char *varname)
 {
     if (!rt_vtable) vartable_init();
-    if (rt_vtable->top < 0) return NULL;
+    if (rt_vtable->top < 0) return rt_variable_null();
     if (!rt_vtable->scopes) abort();
     RT_VartableScope_t *current_scope = rt_vtable->scopes[rt_vtable->top];
     khint_t k = kh_get(var, current_scope->scope, varname);
     if (k != kh_end(current_scope->scope))
         return kh_value(current_scope->scope, k);
-    return NULL;
+    return rt_variable_null();
 }
 
 /** push a new scope into the stack and store the procedure name and return address */
@@ -105,10 +105,8 @@ const AST_Statement_t *vartable_popscope()
     khash_t(var) *scope_map = current_scope->scope;
     for (khint_t it = kh_begin(scope_map); it != kh_end(scope_map); ++it) {
         if (kh_exist(scope_map, it)) {
-            RT_Variable_t *var = kh_value(scope_map, it);
-            rt_variable_destroy(var);
-            free(var);
-            var = NULL;
+            RT_Variable_t var = kh_value(scope_map, it);
+            rt_variable_destroy(&var);
         }
     }
     kh_destroy(var, scope_map);
@@ -124,14 +122,14 @@ void vartable_test()
     vartable_pushscope("main", NULL);
     /* set a variable in the current scope */
     RT_Variable_t var1 = rt_variable_i64(42);
-    vartable_set("var1", &var1);
+    vartable_set("var1", var1);
     /* get a variable from the current scope */
-    RT_Variable_t *var1_ = vartable_get("var1");
-    if (var1_) rt_variable_print(*var1_);
+    RT_Variable_t var1_ = vartable_get("var1");
+    if (!rt_variable_isnull(var1_))
+        rt_variable_print(var1_);
     /* pop the current scope */
     vartable_popscope();
     vartable_destroy();
-    return 0;
 }
 
 #else

@@ -78,6 +78,7 @@ AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get()
             AST_ProcedureMap_module_t *module = &kh_value(ast_modulemap, iter);
             /* Store the module name and procedure count */
             key_list.module[i].module_name = module->module_name;
+            key_list.module[i].module_filename = module->module_filename;
             key_list.module[i].proc_cnt = kh_size(module->procmap);
             /* Allocate memory for the procedure list */
             key_list.module[i].lst = malloc(key_list.module[i].proc_cnt * sizeof(*key_list.module[i].lst));
@@ -124,7 +125,7 @@ void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_
         procmap = kh_init(procedure_t);
         k = kh_put(module_t, ast_modulemap, module_name->identifier_name, &ret);
         kh_value(ast_modulemap, k).module_name = module_name;
-        kh_value(ast_modulemap, k).module_filename = strdup(global_currentfile);
+        kh_value(ast_modulemap, k).module_filename = strdup(global_currfile);
         kh_value(ast_modulemap, k).procmap = procmap;
     } else {
         /* Get the existing sub map */
