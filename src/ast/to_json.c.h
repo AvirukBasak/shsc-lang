@@ -675,6 +675,8 @@ void AST2JSON_ProcedureMap()
         AST2JSON_open_obj();
         /* node name */
         AST2JSON_printf("\"node\": \"module\"");
+        AST2JSON_put_comma();
+        AST2JSON_printf("\"file\": \"%s\"", lst.module[i].module_filename);
         for (int j = 0; j < lst.module[i].proc_cnt; ++j) {
             AST_Identifier_t *key = lst.module[i].lst[j];
             const AST_Statements_t *st = AST_ProcedureMap_get(lst.module[i].module_name, key);

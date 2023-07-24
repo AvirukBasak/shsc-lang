@@ -7,6 +7,7 @@
 typedef struct {
     struct {
         const AST_Identifier_t *module_name;
+        const char *module_filename;
         AST_Identifier_t **lst;
         int proc_cnt;
     } *module;
