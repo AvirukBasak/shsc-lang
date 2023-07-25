@@ -109,7 +109,7 @@ void main_parsefiles(const char **filepaths, int file_cnt)
         global_currfile = filepaths[i];
         FILE *f = (filepaths[i][0] == '-' && !filepaths[i][1]) ?
             stdin :
-            fopen(filepaths[i], "rb");
+            fopen(filepaths[i], "r");
         if (!f) io_errndie("couldn't read file: '%s'", filepaths[i]);
         /* auto pushes module names to a module stack */
         parse_interpret(f);

@@ -17,6 +17,21 @@ FLAGS:
   -h  --help               view this message
 ```
 
+### List File
+ - Each line of the list file has a single file path
+ - Spaces in file path is valid and quotes not required
+ - If scsh fails to read one file, it'll skip to next file
+ - If scsh fails to parse any file, it'll report error and exit
+
+#### Example
+```
+file1.txt
+file2.txt
+file3.txt
+file name with spaces.txt
+file4.some_extension
+```
+
 ### Example use
 ```
 # tested on examples/factorial.txt
