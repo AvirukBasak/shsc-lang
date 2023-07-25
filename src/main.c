@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "io.h"
 #include "ast/util.h"
+#include "lexer.h"
 #include "parser.h"
 #include "runtime.h"
 
@@ -114,5 +115,7 @@ void main_parsefiles(const char **filepaths, int file_cnt)
         /* auto pushes module names to a module stack */
         parse_interpret(f);
         if (f != stdin) fclose(f);
+        lex_line_no = 1;
+        lex_char_no = 1;
     }
 }
