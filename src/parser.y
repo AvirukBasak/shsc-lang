@@ -483,10 +483,7 @@ identifier:
 
 int yyerror(const char* msg)
 {
-    if (!msg) abort();
-    int line = lex_line_no;
-    if (lex_currtok == LEXTOK_NEWLINE) --line;
-    io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
+    parse_throw(msg, true);
     return ERR_PARSER;
 }
 
@@ -506,7 +503,12 @@ void parse_interpret(FILE *f)
     lex_buffree();
 }
 
-void parse_throw(const char *msg)
+void parse_throw(const char *msg, bool on)
 {
-    exit(yyerror(msg));
+    if (!msg) abort();
+    int line = lex_line_no;
+    if (lex_currtok == LEXTOK_NEWLINE) --line;
+    if (on) io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
+    else io_print_srcerr(line, lex_char_no, "parsing error: %s", msg);
+    exit(ERR_PARSER);
 }

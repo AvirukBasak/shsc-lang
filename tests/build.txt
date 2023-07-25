@@ -1,0 +1,3 @@
+tests/test.txt
+examples/factorial.txt
+examples/helloworld.txt

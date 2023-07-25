@@ -39,7 +39,7 @@ char parse_char(const char *str)
         char* endptr;
         int res = strtol(&str[2], &endptr, 16);
         if (!*endptr && 0 <= res && res <= 255) c = (char) res;
-        else parse_throw("invalid hex escape sequence");
+        else parse_throw("invalid hex escape sequence", true);
     }
 
     /* if the input string starts with '\', it is an octal escape sequence */
@@ -47,11 +47,11 @@ char parse_char(const char *str)
         char* endptr;
         int res = strtol(&str[1], &endptr, 8);
         if (!*endptr && 0 <= res && res <= 255) c = (char) res;
-        else parse_throw("invalid octal escape sequence");
+        else parse_throw("invalid octal escape sequence", true);
     }
 
     /* if the input string has more than two characters, it is an error */
-    else parse_throw("invalid character token");
+    else parse_throw("invalid character token", true);
 
     return c;
 }

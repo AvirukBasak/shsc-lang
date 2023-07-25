@@ -1,15 +1,17 @@
 #ifndef LEXER_BUFFER_C_H
 #define LEXER_BUFFER_C_H
 
+#include "errcodes.h"
 #include "lexer.h"
+#include "io.h"
 
 void lex_buffpush(char ch)
 {
     if (!lex_buffer) lex_buffer = calloc(1, sizeof(LexBuffer));
-    if (!lex_buffer) lex_throw("memory allocation failed");
+    if (!lex_buffer) io_errndie("lex_buffpush:" ERR_MSG_MALLOCFAIL);
     if (lex_buffer->push_i >= lex_buffer->size) {
         lex_buffer->buffer = realloc(lex_buffer->buffer, lex_buffer->size + LEX_MAX_BUFFALLOC_SZ +1);
-        if (!lex_buffer->buffer) lex_throw("memory allocation failed");
+        if (!lex_buffer->buffer) io_errndie("lex_buffpush:" ERR_MSG_REALLOCFAIL);
         lex_buffer->size += LEX_MAX_BUFFALLOC_SZ;
         lex_buffer->buffer[lex_buffer->size -1] = 0;
     }

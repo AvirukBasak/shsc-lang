@@ -9,7 +9,7 @@ extern FILE *yyin;
 int yyerror(const char* s);
 
 void parse_interpret(FILE *f);
-void parse_throw(const char *msg);
+void parse_throw(const char *msg, bool on);
 
 #undef YY_
 #define YY_(Msgid) Msgid

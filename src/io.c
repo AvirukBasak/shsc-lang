@@ -4,8 +4,8 @@
 #include <stdarg.h>
 
 #include "globals.h"
-#include "io.h"
 #include "errcodes.h"
+#include "io.h"
 
 long long io_get_filesize(const char *filepath)
 {
@@ -25,53 +25,25 @@ long long io_get_filesize(const char *filepath)
 
 char **io_read_lines(const char *filepath, size_t *line_cnt)
 {
-    size_t row_size = 0;
-    size_t col_size = 0;
-    int i = 0, j = 0;
-    char c = 0;
-    char **buffer = NULL;
-
-    FILE *f = fopen(filepath, "rb");
+    FILE *f = fopen(filepath, "r");
     if (!f) io_errndie("io_read_lines: couldn't read file: '%s'", filepath);
-
-    /* read characters from the file */
-    while ((c = fgetc(f)) != (char) EOF) {
-        /* check if matrix needs to be resized */
-        if (i >= row_size) {
-            row_size = row_size * 2 +1;
-L_BUFFRZ1:  buffer = (char**) realloc(buffer, row_size * sizeof(char*));
-            if (!buffer) io_errndie("io_read_lines: memory reallocation failed");
-            /* set garbage to NULL or else realloc will fail at label L_BUFFRZ2 */
-            buffer[i] = NULL;
+    char *line = NULL;
+    *line_cnt = 0;
+    size_t list_sz = 0,
+           line_len = 0;
+    char **ret_lines = NULL;
+    while (getline(&line, &line_len, f) != -1) {
+        if (!line) io_errndie("io_read_lines:" ERR_MSG_MALLOCFAIL);
+        const size_t line_len = strlen(line);
+        if (line[line_len -1] == '\n') line[line_len -1] = '\0';
+        if (*line_cnt >= list_sz) {
+            ret_lines = (char**) realloc(ret_lines, (list_sz += list_sz *2 +1) * sizeof(char*));
+            if (!ret_lines) io_errndie("io_read_lines:" ERR_MSG_REALLOCFAIL);
         }
-        if (j >= col_size) {
-            col_size = col_size * 2 +1;
-L_BUFFRZ2:  buffer[i] = (char*) realloc(buffer[i], col_size * sizeof(char));
-            if (!buffer[i]) io_errndie("io_read_lines: memory reallocation failed");
-        }
-        if (c == '\n') {
-            /* null-terminate the string and reset column size */
-            buffer[i][j] = '\0';
-            col_size = j = 0;
-            /* set garbage to NULL or else realloc will fail at label L_BUFFRZ2
-               the condition ensures is within range coz the buffer isn't resized
-               before L_BUFFRZ1 */
-            if (i < row_size -1) buffer[++i] = NULL;
-            continue;
-        }
-        buffer[i][j] = c;
-        ++j;
+        ret_lines[(*line_cnt)++] = line;
+        line = NULL;
     }
-    fclose(f);
-    /* null-terminate the last string if j is pointing to its end */
-    if (j == col_size -1) {
-        buffer[i] = (char*) realloc(buffer[i], (j+1) * sizeof(char));
-        if (!buffer[i]) io_errndie("io_read_lines: memory reallocation failed");
-        buffer[i][j] = '\0';
-    }
-    /* update the number of lines */
-    *line_cnt = i +1;
-    return buffer;
+    return ret_lines;
 }
 
 void io_errndie(const char *fmt, ...)
