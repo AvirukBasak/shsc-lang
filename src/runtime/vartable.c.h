@@ -12,6 +12,7 @@
 #include "runtime/variable.h"
 #include "runtime/vartable.h"
 #include "ast.h"
+#include "io.h"
 
 KHASH_MAP_INIT_STR(var, RT_Variable_t)
 
@@ -35,7 +36,7 @@ void vartable_init()
 {
     if (rt_vtable) return;
     rt_vtable = (RT_Vartable_t*) malloc(sizeof(RT_Vartable_t));
-    if (!rt_vtable) rt_throw("vartable_init:" ERR_MSG_MALLOCFAIL);
+    if (!rt_vtable) io_errndie("vartable_init:" ERR_MSG_MALLOCFAIL);
     rt_vtable->scopes = NULL;
     rt_vtable->top = -1;
     rt_vtable->capacity = 0;
@@ -88,11 +89,11 @@ void vartable_pushscope(const char *procname, const AST_Statement_t *ret_addr)
     if (rt_vtable->top + 1 >= rt_vtable->capacity) {
         rt_vtable->capacity = rt_vtable->capacity * 2 + 1;
         rt_vtable->scopes = (RT_VartableScope_t**) realloc(rt_vtable->scopes, rt_vtable->capacity * sizeof(RT_VartableScope_t*));
-        if (!rt_vtable->scopes) rt_throw("vartable_pushscope:" ERR_MSG_REALLOCFAIL);
+        if (!rt_vtable->scopes) io_errndie("vartable_pushscope:" ERR_MSG_REALLOCFAIL);
     }
     rt_vtable->scopes[++rt_vtable->top] = ({
         RT_VartableScope_t *scope = (RT_VartableScope_t*) malloc(sizeof(RT_VartableScope_t));
-        if (!scope) rt_throw("vartable_pushscope:" ERR_MSG_MALLOCFAIL);
+        if (!scope) io_errndie("vartable_pushscope:" ERR_MSG_MALLOCFAIL);
         scope->scope = kh_init(var);
         scope->procname = procname;
         scope->ret_addr = ret_addr;

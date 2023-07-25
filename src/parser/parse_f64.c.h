@@ -28,19 +28,19 @@ double parse_float(const char *str, int base)
     result = strtol(str, &endptr, base);
     const char *dot_index = endptr;
     if (*endptr == '\0') return sign * result;
-    if (*endptr != '.') parse_throw("invalid float format 1; wtf was the lexer designer doing?");
+    if (*endptr != '.') parse_throw("invalid float format 1; wtf was the lexer designer doing?", true);
 
     /* parse the fraction if available */ 
     const int64_t fraction = strtol(dot_index +1, &endptr, base);
     const char *exp_index = endptr;
     result += (double) fraction / pow(base, exp_index - dot_index -1);
     if (*endptr == '\0') return sign * result;
-    if (*endptr != 'p') parse_throw("invalid float format 2; wtf was the lexer designer doing?");
+    if (*endptr != 'p') parse_throw("invalid float format 2; wtf was the lexer designer doing?", true);
 
     /* parse the exponent if available */
     const int64_t exponent = strtol(exp_index +1, &endptr, base);
     result *= pow(base, exponent);
-    if (*endptr != '\0') parse_throw("invalid float format 3; wtf was the lexer designer doing?");
+    if (*endptr != '\0') parse_throw("invalid float format 3; wtf was the lexer designer doing?", true);
 
     return sign * result;
 }

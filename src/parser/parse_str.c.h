@@ -3,6 +3,7 @@
 
 #include "errcodes.h"
 #include "parser.h"
+#include "io.h"
 
 /** Calls strdup, remember to free */
 char *parse_str(const char *str)
@@ -10,7 +11,7 @@ char *parse_str(const char *str)
     if (!str || !strcmp(str, "NULL")) str = "\0";
     const size_t len = strlen(str);
     char *parsed_str = (char*) malloc(len +1);
-    if (!parsed_str) parse_throw("parse_str:" ERR_MSG_MALLOCFAIL);
+    if (!parsed_str) io_errndie("parse_str:" ERR_MSG_MALLOCFAIL);
     int parsed_index = 0;
     for (int i = 0; i < len; ++i) {
         /* if the current character is a backslash, it might be an escape sequence */
@@ -18,7 +19,7 @@ char *parse_str(const char *str)
             /* move to the next character after the backslash */
             ++i;
             if (i >= len) {
-                parse_throw("incomplete escape sequence");
+                parse_throw("incomplete escape sequence", true);
                 free(parsed_str);
             }
             /* octal escape sequence */
@@ -30,7 +31,7 @@ char *parse_str(const char *str)
                     parsed_str[parsed_index++] = (char) res;
                     /* update the loop index */
                     i += 2;
-                } else parse_throw("invalid octal escape sequence");
+                } else parse_throw("invalid octal escape sequence", true);
             }
             /* hex escape sequence */
             else if ( str[i] == 'x' && len - (i+1) >= 2 && isxdigit(str[i+1]) && isxdigit(str[i+2]) ) {
@@ -41,7 +42,7 @@ char *parse_str(const char *str)
                     parsed_str[parsed_index++] = (char) res;
                     /* update the loop index */
                     i += 2;
-                } else parse_throw("invalid hex escape sequence");
+                } else parse_throw("invalid hex escape sequence", true);
             }
             /* other escape sequences */
             else switch (str[i]) {

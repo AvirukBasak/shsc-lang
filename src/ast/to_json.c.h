@@ -89,7 +89,7 @@ char *AST2JSON_escape_string(const char *str)
     if (!str) return NULL;
     size_t len = strlen(str);
     char *escaped = (char*) malloc((4 * len +1) * sizeof(char));
-    if (!escaped) parse_throw("memory allocation failed");
+    if (!escaped) io_errndie("AST2JSON_escape_string:" ERR_MSG_MALLOCFAIL);
     char *ptr = escaped;
     while (*str != '\0') {
         switch (*str) {

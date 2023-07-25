@@ -5,6 +5,7 @@
 #include "errcodes.h"
 #include "ast/nodes.h"
 #include "ast/util.h"
+#include "io.h"
 
 typedef struct ModuleStack_t ModuleStack_t;
 
@@ -20,7 +21,7 @@ struct ModuleStack_t *top = NULL;
 void AST_ModuleStack_push(const AST_Identifier_t *module_name)
 {
     ModuleStack_t *new_node = (ModuleStack_t*) malloc(sizeof(ModuleStack_t));
-    if (!new_node) parse_throw("AST_ModuleStack_push:" ERR_MSG_MALLOCFAIL);
+    if (!new_node) io_errndie("AST_ModuleStack_push:" ERR_MSG_MALLOCFAIL);
     new_node->data = module_name;
     new_node->next = top;
     top = new_node;

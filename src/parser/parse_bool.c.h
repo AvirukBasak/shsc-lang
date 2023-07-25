@@ -13,7 +13,7 @@ bool parse_bool(const char *str)
 {
     if (!strcmp(lex_get_buffstr(), "true"))  return true;
     if (!strcmp(lex_get_buffstr(), "false")) return false;
-    parse_throw("invalid boolean literal");
+    parse_throw("invalid boolean literal", true);
     return false;
 }
 

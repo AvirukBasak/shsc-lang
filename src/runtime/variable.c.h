@@ -9,6 +9,7 @@
 #include "errcodes.h"
 #include "runtime/variable.h"
 #include "runtime/vartable.h"
+#include "io.h"
 
 RT_Variable_t rt_variable_bul(bool val)
 {
@@ -126,7 +127,7 @@ char *rt_varable_parse_interp_str(const char *str_)
     for (int64_t i = 0; i < str_sz; ++i) {
         if (p >= ret_sz) {
             ret = (char*) realloc(ret, (ret_sz += ret_sz * 2 +1) * sizeof(char));
-            if (!ret) rt_throw("rt_varable_parse_interp_str:" ERR_MSG_REALLOCFAIL);
+            if (!ret) io_errndie("rt_varable_parse_interp_str:" ERR_MSG_REALLOCFAIL);
         }
         if (str[i] != '{') {
             *(ret + p++) = str[i];
@@ -144,7 +145,7 @@ char *rt_varable_parse_interp_str(const char *str_)
         char *val = rt_variable_tostr(var);
         size_t sz = strlen(val) +1;
         ret = (char*) realloc(ret, (ret_sz += sz) * sizeof(char));
-        if (!ret) rt_throw("rt_varable_parse_interp_str:" ERR_MSG_REALLOCFAIL);
+        if (!ret) io_errndie("rt_varable_parse_interp_str:" ERR_MSG_REALLOCFAIL);
         sprintf(ret +p, "%s", val);
         free(val);
         val = NULL;
@@ -161,19 +162,19 @@ char *rt_variable_tostr(const RT_Variable_t var)
     switch (var.type) {
         case RT_DATA_TYPE_BUL: {
             char *str = (char*) malloc(5 +1 * sizeof(char));
-            if (!str) rt_throw("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
+            if (!str) io_errndie("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%s", var.data.bul ? "true" : "false");
             return str;
         }
         case RT_DATA_TYPE_CHR: {
             char *str = (char*) malloc(1 +1 * sizeof(char));
-            if (!str) rt_throw("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
+            if (!str) io_errndie("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%c", var.data.chr);
             return str;
         }
         case RT_DATA_TYPE_I64: {
             char *str = (char*) malloc(20 +1 * sizeof(char));
-            if (!str) rt_throw("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
+            if (!str) io_errndie("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%" PRId64, var.data.i64);
             return str;
         }
@@ -196,7 +197,7 @@ char *rt_variable_tostr(const RT_Variable_t var)
         case RT_DATA_TYPE_ANY: {
             if (!var.data.any) return strdup("null");
             char *str = (char*) malloc(16 +1 * sizeof(char));
-            if (!str) rt_throw("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
+            if (!str) io_errndie("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "0x%p", var.data.any);
             return str;
         }
@@ -215,7 +216,7 @@ void rt_variable_print(RT_Variable_t var)
 RT_VarList_t *rt_varlist_init()
 {
     RT_VarList_t *lst = (RT_VarList_t*) malloc(sizeof(RT_VarList_t));
-    if (!lst) rt_throw("rt_varlist_init:" ERR_MSG_MALLOCFAIL);
+    if (!lst) io_errndie("rt_varlist_init:" ERR_MSG_MALLOCFAIL);
     lst->var = NULL;
     lst->length = 0;
     lst->capacity = 0;
@@ -250,7 +251,7 @@ void rt_varlist_append(RT_VarList_t *lst, RT_Variable_t var)
     if (lst->length >= lst->capacity) {
         lst->capacity = lst->capacity == 0 ? 4 : lst->capacity * 2;
         lst->var = (RT_Variable_t*) realloc(lst->var, lst->capacity * sizeof(RT_Variable_t));
-        if (!lst->var) rt_throw("rt_varlist_append:" ERR_MSG_REALLOCFAIL);
+        if (!lst->var) io_errndie("rt_varlist_append:" ERR_MSG_REALLOCFAIL);
     }
     lst->var[lst->length++] = var;
 }
@@ -302,7 +303,7 @@ void rt_varlist_del_val(RT_VarList_t *lst, RT_Variable_t var)
 char *rt_varlist_tostr(const RT_VarList_t *lst)
 {
     char *str = (char*) malloc(3 * sizeof(char));
-    if (!str) rt_throw("rt_varlist_tostr:" ERR_MSG_MALLOCFAIL);
+    if (!str) io_errndie("rt_varlist_tostr:" ERR_MSG_MALLOCFAIL);
     int p = 0;
     size_t size = 3;
     sprintf(str + p++, "[");
@@ -310,14 +311,14 @@ char *rt_varlist_tostr(const RT_VarList_t *lst)
         char *lst_el = rt_variable_tostr(lst->var[i]);
         const size_t sz = strlen(lst_el) +1;
         str = (char*) realloc(str, (size += sz) * sizeof(char));
-        if (!str) rt_throw("rt_varlist_tostr:" ERR_MSG_REALLOCFAIL);
+        if (!str) io_errndie("rt_varlist_tostr:" ERR_MSG_REALLOCFAIL);
         sprintf(str + p, "%s", lst_el);
         free(lst_el);
         lst_el = NULL;
         p += sz;
         if (i != lst->length - 1) {
             str = (char*) realloc(str, (size += 2) * sizeof(char));
-            if (!str) rt_throw("rt_varlist_tostr:" ERR_MSG_REALLOCFAIL);
+            if (!str) io_errndie("rt_varlist_tostr:" ERR_MSG_REALLOCFAIL);
             sprintf(str + p, ", ");
             p += 2;
         }
