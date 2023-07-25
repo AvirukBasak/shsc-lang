@@ -669,22 +669,23 @@ void AST2JSON_ProcedureMap()
     /* node name */
     AST2JSON_printf("\"node\": \"root\"");
     for (int i = 0; i < lst.module_cnt; ++i) {
+        const AST_Identifier_t *module_name = lst.module[i].module_name;
         /* open map of the module name to procedures */
         AST2JSON_put_comma();
-        AST2JSON_printf("\"%s\": ", lst.module[i].module_name->identifier_name);
+        AST2JSON_printf("\"%s\": ", module_name->identifier_name);
         AST2JSON_open_obj();
         /* node name */
         AST2JSON_printf("\"node\": \"module\"");
-        AST2JSON_put_comma();
-        AST2JSON_printf("\"file\": \"%s\"", lst.module[i].module_filename);
         for (int j = 0; j < lst.module[i].proc_cnt; ++j) {
-            AST_Identifier_t *key = lst.module[i].lst[j];
-            const AST_Statements_t *st = AST_ProcedureMap_get(lst.module[i].module_name, key);
+            const AST_Identifier_t *proc_name = lst.module[i].lst[j];
+            const AST_Statements_t *st = AST_ProcedureMap_get_code(module_name, proc_name);
             /* open a procedure node, map it with proc name */
             AST2JSON_put_comma();
-            AST2JSON_printf("\"%s\": ", key->identifier_name);
+            AST2JSON_printf("\"%s\": ", proc_name->identifier_name);
             AST2JSON_open_obj();
             AST2JSON_printf("\"node\": \"procedure\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"file\": \"%s\"", AST_ProcedureMap_get_filename(module_name, proc_name));
             AST2JSON_put_comma();
             AST2JSON_printf("\"statements\": ");
             AST2JSON_Statements(st);
