@@ -135,6 +135,16 @@ void AST_ProcedureMap_add(AST_Identifier_t *module_name, AST_Identifier_t *proc_
         /* Get the existing sub map */
         procmap = kh_value(ast_modulemap, k).procmap;
     }
+    /* If procedure exists, throw an error and exit */
+    khint_t pk = kh_get(procedure_t, procmap, proc_name->identifier_name);
+    if (pk != kh_end(procmap)) {
+        size_t sz = snprintf(NULL, 0, "duplicate method '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+        char *errmsg = (char*) malloc((sz +1) * sizeof(char));
+        if (!errmsg) io_errndie("AST_ProcedureMap_add:" ERR_MSG_MALLOCFAIL);
+        sprintf(errmsg, "duplicate method '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+        parse_throw(errmsg, false);
+        free(errmsg);
+    }
     /* Insert the proc_name and code into the sub map */
     k = kh_put(procedure_t, procmap, proc_name->identifier_name, &ret);
     kh_value(procmap, k).proc_name = proc_name;
