@@ -179,9 +179,9 @@ char *rt_variable_tostr(const RT_Variable_t var)
             return str;
         }
         case RT_DATA_TYPE_F64: {
-            size_t sz = sprintf(NULL, "%lf", var.data.f64);
-            char *str = (char*) malloc(sz +1 * sizeof(char));
-            if (!str) rt_throw("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
+            size_t sz = snprintf(NULL, 0, "%lf", var.data.f64);
+            char *str = (char*) malloc((sz +1) * sizeof(char));
+            if (!str) io_errndie("rt_variable_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%lf", var.data.f64);
             return str;
         }
