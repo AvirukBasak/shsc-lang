@@ -1,5 +1,11 @@
 module main
 
+proc main start
+    var inp = input("Enter a number: ", i64)
+    var res = factorial(inp)
+    print(f"result = {res}\n")
+end
+
 # factorial(num)
 proc factorial start
     if $[0] <= 1 then
@@ -7,10 +13,4 @@ proc factorial start
     else
         return $[0] * factorial($[0] - 1)
     end
-end
-
-proc main start
-    var inp = input("Enter a number: ", i64)
-    var res = factorial(inp)
-    print(f"result = {res}\n")
 end
