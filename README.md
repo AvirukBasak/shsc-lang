@@ -24,6 +24,7 @@ FLAGS:
  - If scsh fails to parse any file, it'll report error and exit
 
 #### Example
+The file paths should be relative to the directory where `scsh` will be executed.
 ```
 file1.txt
 file2.txt
@@ -33,6 +34,11 @@ file4.some_extension
 ```
 
 ### Example use
+```
+# tested using tests/build.txt
+scsh -tf tests/SyntaxTree.json -r tests/build.txt
+```
+
 ```
 # tested on examples/factorial.txt
 scsh -tf ast.json examples/factorial.txt
@@ -51,6 +57,4 @@ scsh -tf ast.json examples/factorial.txt
 - AST output at [`tests/SyntaxTree.json`](tests/SyntaxTree.json).
 
 ### Todo
-- Build AST management modules.
-- Build the symbols table.
 - Build the runtime.

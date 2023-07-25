@@ -1,6 +1,6 @@
-module main
+module math
 
-proc main start
+proc test start
     var inp = input("Enter a number: ", i64)
     var res = factorial(inp)
     print(f"result = {res}\n")
