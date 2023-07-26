@@ -54,6 +54,12 @@ $(OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 $(TARGET): $(REQ_DIRS) $(LIBRARIES) $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(BUILD_DIR)/*-rel.$(OBJEXT) $(LIB)
 
+# Get the first 27 characters of the PREFIX environment variable
+PREFIX_SUBSTRING := $(shell echo $${PREFIX} | cut -c 1-27)
+
+install: $(TARGET)
+	cp $(TARGET) $(PREFIX_SUBSTRING)/usr/bin/$(EXEC_NAME)
+
 ## debug build
 
 dbg: $(DBG_TARGET)
