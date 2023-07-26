@@ -12,6 +12,8 @@
 
 #include "ast/to_json.h"
 
+#define VERSION "0.1"
+
 void main_parsefiles(const char **filepaths, int file_cnt);
 
 int main(int argc, char **argv)
@@ -26,6 +28,14 @@ int main(int argc, char **argv)
     /* start from 1 to skip program name */
     int index = 1;
 
+    /* check if -v or --version is present */
+    if (!strcmp(argv[index], "-v") || !strcmp(argv[index], "--version")) {
+        printf("Scsh version %s\n"
+               "License: GPL 3.0\n"
+               "Authors: Aviruk Basak\n", VERSION);
+        exit(0);
+    }
+
     /* check if -h or --help is present */
     if (!strcmp(argv[index], "-h") || !strcmp(argv[index], "--help")) {
         printf("USAGE:\n"
@@ -36,6 +46,7 @@ int main(int argc, char **argv)
                "  -t  --ast  [FILENAME]    save AST as JSON to file\n"
                "  -tf --astf [FILENAME]    produce formatted JSON\n"
                "  -h  --help               view this message\n"
+               "  -v  --version            version info\n"
         );
         exit(0);
     }
