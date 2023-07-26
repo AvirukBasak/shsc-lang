@@ -4,19 +4,28 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#include "variable.h"
+#include "data.h"
 #include "ast.h"
 
 /** create a new variable or modify an existing one in the current scope */
-void vartable_set(const char *varname, RT_Variable_t value);
+void RT_VarTable_set(const char *varname, RT_Data_t value);
 
 /** get the variable from the current scope if it exists, else return NULL */
-RT_Variable_t vartable_get(const char *varname);
+RT_Data_t RT_VarTable_get(const char *varname);
 
-/** push a new scope into the stack and store the procedure name and return address */
-void vartable_pushscope(const char *procname, const AST_Statement_t *ret_addr);
+/** push a new function scope into the stack and store the procedure name and return address */
+void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);
 
-/** pop the scope off the stack and return the return address, clear the scope from memory */
-const AST_Statement_t *vartable_popscope();
+/** pop the procedure off the stack, return the return address and clear the scope from memory */
+const AST_Statement_t *RT_VarTable_pop_proc();
+
+/** push a new local scope into the stack */
+void RT_VarTable_push_scope();
+
+/** pop local scope and return result of last expression */
+RT_Data_t RT_VarTable_pop_scope();
+
+/** clear memory of the vartable */
+void RT_VarTable_destroy();
 
 #endif
