@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "ast/api.h"
-#include "ast/to_json.h"
+#include "ast2json.h"
 #include "globals.h"
 #include "io.h"
 #include "lexer.h"

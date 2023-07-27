@@ -1,5 +1,5 @@
-#ifndef AST_AST2JSON_H
-#define AST_AST2JSON_H
+#ifndef AST2JSON_H
+#define AST2JSON_H
 
 #include <stdbool.h>
 #include "ast.h"

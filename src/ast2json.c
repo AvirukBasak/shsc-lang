@@ -1,6 +1,3 @@
-#ifndef AST_AST2JSON_C_H
-#define AST_AST2JSON_C_H
-
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -8,9 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "errcodes.h"
 #include "io.h"
-#include "ast/nodes.h"
-#include "ast/to_json.h"
+#include "ast/api.h"
+#include "ast2json.h"
+#include "lexer.h"
 
 void AST2JSON_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 void AST2JSON_open_obj(void);
@@ -709,7 +708,3 @@ void AST2JSON_convert(const char *filepath, bool format)
     if (AST2JSON_outfile != stdout)
         fclose(AST2JSON_outfile);
 }
-
-#else
-    #warning re-inclusion of module 'ast/to_json.c.h'
-#endif
