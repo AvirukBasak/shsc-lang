@@ -1,21 +1,17 @@
 #ifndef AST_NODES_H
 #define AST_NODES_H
 
-#include "lexer.h"
 #include "ast.h"
+#include "lexer.h"
 #include "nodes/create.h"
 #include "nodes/destroy.h"
+#include "nodes/enums.h"
+
+typedef int AST_Operator_t;
 
 struct AST_Statements_t {
     AST_Statements_t *statements;
     AST_Statement_t *statement;
-};
-
-enum AST_StatementType_t {
-    STATEMENT_TYPE_EMPTY,
-    STATEMENT_TYPE_RETURN,
-    STATEMENT_TYPE_ASSIGNMENT,
-    STATEMENT_TYPE_COMPOUND,
 };
 
 struct AST_Statement_t {
@@ -28,26 +24,10 @@ struct AST_Statement_t {
     enum AST_StatementType_t type;
 };
 
-enum AST_AssignmentType_t {
-    /** Return value of RHS discarded */
-    ASSIGNMENT_TYPE_TOVOID,
-    /** Create or shadow existing variable */
-    ASSIGNMENT_TYPE_CREATE,
-    /** Update existing variable */
-    ASSIGNMENT_TYPE_UPDATE,
-};
-
 struct AST_Assignment_t {
     AST_Identifier_t *lhs;
     AST_Expression_t *rhs;
     enum AST_AssignmentType_t type;
-};
-
-enum AST_CompoundStType_t {
-    COMPOUNDST_TYPE_IF,
-    COMPOUNDST_TYPE_WHILE,
-    COMPOUNDST_TYPE_FOR,
-    COMPOUNDST_TYPE_BLOCK,
 };
 
 struct AST_CompoundSt_t {
@@ -82,11 +62,6 @@ struct AST_WhileBlock_t {
     AST_Statements_t *statements;
 };
 
-enum AST_ForBlockType_t {
-    FORBLOCK_TYPE_RANGE,
-    FORBLOCK_TYPE_LIST,
-};
-
 struct AST_ForBlock_t {
     AST_Identifier_t *iter;
     union {
@@ -103,14 +78,6 @@ struct AST_ForBlock_t {
 
 struct AST_Block_t {
     AST_Statements_t *statements;
-};
-
-enum AST_ExpressionType_t {
-    EXPR_TYPE_EXPRESSION,
-    EXPR_TYPE_LITERAL,
-    EXPR_TYPE_IDENTIFIER,
-    EXPR_TYPE_LIST,
-    EXPR_TYPE_NULL,
 };
 
 union AST_ExpressionUnion_t {
@@ -137,20 +104,6 @@ struct AST_Expression_t {
 struct AST_CommaSepList_t {
     AST_CommaSepList_t *comma_list;
     AST_Expression_t *expression;
-};
-
-/* based on the mapping of datatype IDs provided
-   by the Scsh IR Spec
-   https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md */
-enum AST_DataType_t {
-    DATA_TYPE_BUL = 0,        /* boolean        : 1 B */
-    DATA_TYPE_CHR = 1,        /* char           : 1 B */
-    DATA_TYPE_I64 = 2,        /* int64_t        : 8 B */
-    DATA_TYPE_F64 = 3,        /* double         : 8 B */
-    DATA_TYPE_STR = 4,        /* char*          : variable  */
-    DATA_TYPE_INTERP_STR = 5, /* parsable char* : variable  */
-    DATA_TYPE_LST = 6,        /* linked list    : variable  */
-    DATA_TYPE_ANY = 7,        /* void*          : undefined */
 };
 
 struct AST_Literal_t {

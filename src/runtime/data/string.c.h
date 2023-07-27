@@ -3,6 +3,7 @@
 
 #include "runtime/data.h"
 #include "runtime/data/list.h"
+#include "runtime/io.h"
 
 RT_DataStr_t *RT_DataStr_init()
 {

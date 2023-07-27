@@ -13,12 +13,12 @@
 #include <stdlib.h>
 #include "tlib/khash/khash.h"
 
-#include "globals.h"
-#include "errcodes.h"
 #include "ast/nodes.h"
 #include "ast/util.h"
-#include "parser.h"
+#include "errcodes.h"
+#include "globals.h"
 #include "io.h"
+#include "parser.h"
 
 /* Define the hash map types */
 

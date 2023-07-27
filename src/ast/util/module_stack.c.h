@@ -2,9 +2,9 @@
 #define AST_UTIL_MODULE_STACK_C_H
 
 #include <stdlib.h>
-#include "errcodes.h"
 #include "ast/nodes.h"
 #include "ast/util.h"
+#include "errcodes.h"
 #include "io.h"
 
 typedef struct ModuleStack_t ModuleStack_t;

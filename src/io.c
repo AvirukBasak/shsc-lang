@@ -1,10 +1,10 @@
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <stdarg.h>
 
-#include "globals.h"
 #include "errcodes.h"
+#include "globals.h"
 #include "io.h"
 
 long long io_get_filesize(const char *filepath)
