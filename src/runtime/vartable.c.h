@@ -1,18 +1,18 @@
 #ifndef RT_VARTABLE_C_H
 #define RT_VARTABLE_C_H
 
+#include <inttypes.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <inttypes.h>
-
-#include "errcodes.h"
 #include "tlib/khash/khash.h"
+
+#include "ast/api.h"
+#include "io.h"
+#include "errcodes.h"
 #include "runtime.h"
 #include "runtime/data.h"
 #include "runtime/vartable.h"
-#include "ast.h"
-#include "io.h"
 
 #define RT_VTABLE_TEMPORARY_SIZE (32)
 

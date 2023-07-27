@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#include "data.h"
 #include "ast.h"
+#include "data.h"
 
 /** create a new variable or modify an existing one in the current scope */
 void RT_VarTable_set(const char *varname, RT_Data_t value);

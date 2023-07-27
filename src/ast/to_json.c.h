@@ -1,12 +1,12 @@
 #ifndef AST_AST2JSON_C_H
 #define AST_AST2JSON_C_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include <inttypes.h>
 #include <stdarg.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "io.h"
 #include "ast/nodes.h"

@@ -1,13 +1,13 @@
+#include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <ctype.h>
 
+#include "errcodes.h"
 #include "io.h"
 #include "lexer.h"
 #include "parser.h"
-#include "errcodes.h"
 
 LexBuffer *lex_buffer = NULL;
 LexToken lex_currtok = LEXTOK_INVALID;
@@ -69,10 +69,10 @@ LexToken yylex(void)
 #include "lexer/io.c.h"
 
 // the lexer state machine
-#include "lexer/match_symbols.c.h"
-#include "lexer/match_keywords.c.h"
 #include "lexer/match_identifiers.c.h"
+#include "lexer/match_keywords.c.h"
 #include "lexer/match_literals.c.h"
+#include "lexer/match_symbols.c.h"
 
 LexToken lex_get_nexttok(FILE *f)
 {

@@ -1,16 +1,15 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 
+#include "ast/api.h"
+#include "ast/to_json.h"
 #include "globals.h"
 #include "io.h"
-#include "ast/util.h"
 #include "lexer.h"
 #include "parser.h"
 #include "runtime.h"
-
-#include "ast/to_json.h"
 
 #define VERSION "0.1"
 

@@ -5,12 +5,11 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
+#include "ast/api.h"
+#include "errcodes.h"
 #include "io.h"
 #include "lexer.h"
 #include "parser.h"
-#include "errcodes.h"
-#include "ast/nodes.h"
-#include "ast/util.h"
 
 FILE *yyin = NULL;
 

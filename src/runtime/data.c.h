@@ -1,17 +1,18 @@
 #ifndef RT_DATA_C_H
 #define RT_DATA_C_H
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "errcodes.h"
+#include "io.h"
 #include "runtime/data.h"
 #include "runtime/data/string.h"
 #include "runtime/data/list.h"
+#include "runtime/io.h"
 #include "runtime/vartable.h"
-#include "io.h"
 
 RT_Data_t RT_Data_bul(bool val)
 {
@@ -215,8 +216,8 @@ void RT_Data_print(RT_Data_t var)
     free(str);
 }
 
-#include "data/string.c.h"
 #include "data/list.c.h"
+#include "data/string.c.h"
 
 #else
     #warning re-inclusion of module 'runtime/data.c.h'
