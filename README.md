@@ -1,11 +1,16 @@
 # Scsh
 World's most sh*tty programming language.
 
-### Usage
+### Build
+For Unix and Unix-like OS users:
 - Build with `make`
 - Copy the executable from `taget/`.
-- Examples at [`examples/`](examples/).
+- Alternatively just run `make install`.
+- You might need root privileges to install.
 
+For Windows users, you'll probably need to use `cygwin` or `git bash` to get `make` working.
+
+### Usage
 ```
 USAGE:
   scsh [FILENAMES]         execute files listed as args
@@ -15,7 +20,10 @@ FLAGS:
   -t  --ast  [FILENAME]    save AST as JSON to file
   -tf --astf [FILENAME]    produce formatted JSON
   -h  --help               view this message
+  -v  --version            version info
 ```
+
+Examples at [`examples/`](examples/).
 
 ### List File
  - Each line of the list file has a single file path
