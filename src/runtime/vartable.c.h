@@ -114,7 +114,7 @@ int rt_vtable_get_tempvar(const char *varname)
        pointer after conversion */
     char *endptr;
     int converted_int;
-    /* Convert the string to an integer using strtol */
+    /* convert the string to an integer using strtol */
     errno = 0; /* Set errno to 0 before the call to strtol */
     converted_int = (int)strtol(varname, &endptr, 10);
     /* check if there was an error during conversion */

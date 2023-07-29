@@ -66,3 +66,4 @@ scsh -tf ast.json examples/factorial.txt
 
 ### Todo
 - Build the runtime.
+- Switch `statements` and `comma_list` to left recursive productions.
