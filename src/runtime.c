@@ -107,10 +107,37 @@ void RT_AST_eval(const AST_Statements_t *code)
                 }
                 break;
             }
-            case STACKENTRY_TYPE_ASSIGNMENT: break;
-            case STACKENTRY_TYPE_IF_BLOCK: break;
-            case STACKENTRY_TYPE_ELSE_IF_BLOCK: break;
-            case STACKENTRY_TYPE_ELSE_IF_STATEMENT: break;
+            case STACKENTRY_TYPE_ASSIGNMENT: {
+                switch (pop.node.assignment->type) {
+                    case ASSIGNMENT_TYPE_TOVOID: {
+                        RT_EvalStack_push((const RT_StackEntry_t) {
+                            .node.expression = pop.node.assignment->rhs,
+                            .type = STACKENTRY_TYPE_EXPRESSION
+                        });
+                        RT_VarTable_set("-", RT_Expression_eval());
+                        break;
+                    }
+                    case ASSIGNMENT_TYPE_CREATE: {
+                        const char *idf = pop.node.assignment->lhs->identifier_name;
+                        RT_EvalStack_push((const RT_StackEntry_t) {
+                            .node.expression = pop.node.assignment->rhs,
+                            .type = STACKENTRY_TYPE_EXPRESSION
+                        });
+                        RT_VarTable_new(idf, RT_Expression_eval());
+                        break;
+                    }
+                }
+                break;
+            }
+            case STACKENTRY_TYPE_IF_BLOCK: {
+                break;
+            }
+            case STACKENTRY_TYPE_ELSE_IF_BLOCK: {
+                break;
+            }
+            case STACKENTRY_TYPE_ELSE_IF_STATEMENT: {
+                break;
+            }
             case STACKENTRY_TYPE_WHILE_BLOCK: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .node.expression = pop.node.while_block->condition,
@@ -129,9 +156,13 @@ void RT_AST_eval(const AST_Statements_t *code)
                 });
                 break;
             }
-            case STACKENTRY_TYPE_FOR_BLOCK: break;
-            case STACKENTRY_TYPE_EXPRESSION: break;
-            case STACKENTRY_TYPE_COMMA_SEP_LIST: break;
+            case STACKENTRY_TYPE_FOR_BLOCK: {
+                break;
+            }
+            case STACKENTRY_TYPE_EXPRESSION: {
+                RT_Expression_eval();
+                break;
+            }
             case STACKENTRY_TYPE_PROC_POP: {
                 const AST_Statement_t *st = RT_VarTable_pop_proc();
                 RT_EvalStack_push((const RT_StackEntry_t) {

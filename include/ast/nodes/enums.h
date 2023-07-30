@@ -9,12 +9,10 @@ enum AST_StatementType_t {
 };
 
 enum AST_AssignmentType_t {
-    /** Return value of RHS discarded */
+    /** return value of RHS discarded */
     ASSIGNMENT_TYPE_TOVOID,
-    /** Create or shadow existing variable */
+    /** create or shadow existing variable */
     ASSIGNMENT_TYPE_CREATE,
-    /** Update existing variable */
-    ASSIGNMENT_TYPE_UPDATE,
 };
 
 enum AST_CompoundStType_t {

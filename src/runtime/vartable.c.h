@@ -16,6 +16,10 @@
 
 #define RT_VTABLE_TEMPORARY_SIZE (32)
 
+int rt_vtable_get_tempvar(const char *varname);
+void rt_vtable_ref_incr(RT_Data_t value);
+void rt_vtable_ref_decr(RT_Data_t value);
+
 KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
 
 /** local scope, stores a map of variables */
@@ -39,24 +43,6 @@ typedef struct {
     int64_t top;
     size_t capacity;
 } RT_VarTable_t;
-
-/** create a new variable or modify an existing one in the current scope */
-void RT_VarTable_set(const char *varname, RT_Data_t value);
-
-/** get the variable from the current scope if it exists, else return NULL */
-RT_Data_t RT_VarTable_get(const char *varname);
-
-/** push a new function scope into the stack and store the procedure name and return address */
-void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);
-
-/** pop the procedure off the stack, return the return address and clear the scope from memory */
-const AST_Statement_t *RT_VarTable_pop_proc();
-
-/** push a new local scope into the stack */
-void RT_VarTable_push_scope();
-
-/** pop local scope and return result of last expression */
-RT_Data_t RT_VarTable_pop_scope();
 
 /** gloablly allocated stack pointer */
 RT_VarTable_t *rt_vtable = NULL;
@@ -130,15 +116,43 @@ int rt_vtable_get_tempvar(const char *varname)
     return fully_consumed ? converted_int : -1;
 }
 
+void rt_vtable_ref_incr(RT_Data_t value)
+{
+    if (value.type == RT_DATA_TYPE_STR
+     || value.type == RT_DATA_TYPE_INTERP_STR) {
+        ++value.data.str->rc;
+    } else if (value.type == RT_DATA_TYPE_LST) {
+        ++value.data.lst->rc;
+    }
+}
+
+void rt_vtable_ref_decr(RT_Data_t value)
+{
+    if (value.type == RT_DATA_TYPE_STR
+     || value.type == RT_DATA_TYPE_INTERP_STR) {
+         --value.data.str->rc;
+         if (value.data.str->rc <= 0)
+             RT_Data_destroy(&value);
+    } else if (value.type == RT_DATA_TYPE_LST) {
+        --value.data.lst->rc;
+         if (value.data.lst->rc <= 0)
+             RT_Data_destroy(&value);
+    }
+}
+
 void RT_VarTable_set(const char *varname, RT_Data_t value)
 {
     if (!strcmp(varname, "-")) {
+        rt_vtable_ref_decr(rt_vtable_accumulator);
+        rt_vtable_ref_incr(value);
         rt_vtable_accumulator = value;
         return;
     } else {
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 31) rt_throw("no such location '$[%d]'", tmp);
         if (tmp >= 0) {
+            rt_vtable_ref_decr(rt_vtable_temporary[tmp]);
+            rt_vtable_ref_incr(value);
             rt_vtable_temporary[tmp] = value;
             return;
         }
@@ -150,13 +164,15 @@ void RT_VarTable_set(const char *varname, RT_Data_t value)
     khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
 
     if (iter != kh_end(current_scope->scope)) {
-        /* variable exists, free its value and replace with the new one */
-        RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
+        /* variable exists, free its value / reduce reference and replace with the new one */
+        rt_vtable_ref_decr(kh_value(current_scope->scope, iter));
+        rt_vtable_ref_incr(value);
         kh_value(current_scope->scope, iter) = value;
     } else {
         /* variable doesn't exist, add a new entry */
         int ret;
         iter = kh_put(RT_Data_t, current_scope->scope, strdup(varname), &ret);
+        rt_vtable_ref_incr(value);
         kh_value(current_scope->scope, iter) = value;
     }
 }
@@ -164,6 +180,11 @@ void RT_VarTable_set(const char *varname, RT_Data_t value)
 RT_Data_t RT_VarTable_get(const char *varname)
 {
     if (!strcmp(varname, "-")) return rt_vtable_accumulator;
+    else {
+        int tmp = rt_vtable_get_tempvar(varname);
+        if (tmp >= 31) rt_throw("no such location '$[%d]'", tmp);
+        if (tmp >= 0) return rt_vtable_temporary[tmp];
+    }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     for (int64_t i = current_proc->top; i >= 0; i--) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
@@ -191,7 +212,7 @@ const AST_Statement_t *RT_VarTable_pop_proc()
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
-                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
+                rt_vtable_ref_decr(kh_value(current_scope->scope, iter));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
     }
@@ -210,7 +231,7 @@ RT_Data_t RT_VarTable_pop_scope()
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
-                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
+                rt_vtable_ref_decr(kh_value(current_scope->scope, iter));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
         current_proc->top--;
@@ -224,6 +245,7 @@ RT_Data_t RT_VarTable_pop_scope()
 /** clear memory of the vartable */
 void RT_VarTable_destroy()
 {
+    rt_throw("unimplemented");
     return;
 }
 
