@@ -9,8 +9,8 @@ typedef struct RT_DataStr_t RT_DataStr_t;
 typedef struct RT_DataList_t RT_DataList_t;
 
 /* based on the mapping of datatype IDs provided
-   by the Scsh IR Spec
-   https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md */
+   by the Shsc IR Spec
+   https://github.com/AvirukBasak/shsc-runtime/docs/ShscIrSpec.md */
 enum RT_DataType_t {
     RT_DATA_TYPE_BUL = 0,        /* boolean        : 1 B */
     RT_DATA_TYPE_CHR = 1,        /* char           : 1 B */

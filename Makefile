@@ -15,7 +15,7 @@ REQ_DIRS       := $(BUILD_DIR) $(TARGET_DIR)
 
 ## compiler options
 
-EXEC_NAME      := scsh
+EXEC_NAME      := shsc
 
 CC             := gcc
 CFLAGS         := -Wall -Wno-unused-label -Ofast

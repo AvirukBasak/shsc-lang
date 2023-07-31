@@ -1,4 +1,4 @@
-# Contribute to Scsh
+# Contribute to Shsc
 
 Thank you for your interest in contributing to Scheisse Script!
 We welcome contributions from the community to make Scheisse Script better.
@@ -17,7 +17,7 @@ Before you get started, please take a moment to read and follow these guidelines
 - [Lexer Guidelines](LexerInterface.md)
 - [Language Spec](LanguageSpec.md)
 - [Language Syntax](LanguageSyntax.md)
-- [Bytecode Spec](https://github.com/AvirukBasak/scsh-runtime/blob/main/docs/ScshIrSpec.md)
+- [Bytecode Spec](https://github.com/AvirukBasak/shsc-runtime/blob/main/docs/ShscIrSpec.md)
 
 ## Project Overview
 Scheisse Script is an interpreter written in C for a custom-designed programming language.

@@ -48,7 +48,7 @@ char **io_read_lines(const char *filepath, size_t *line_cnt)
 
 void io_errndie(const char *fmt, ...)
 {
-    fprintf(stderr, "scsh: ");
+    fprintf(stderr, "shsc: ");
     fflush(stderr);
     va_list args;
     va_start(args, fmt);
@@ -61,8 +61,8 @@ void io_errndie(const char *fmt, ...)
 
 void io_print_srcerr(int line_no, int char_no, const char *fmt, ...)
 {
-    /* fprintf(stderr, "scsh: %s:%d:%d: ", global_currfile, line_no, char_no); */
-    fprintf(stderr, "scsh: %s:%d: ", global_currfile, line_no);
+    /* fprintf(stderr, "shsc: %s:%d:%d: ", global_currfile, line_no, char_no); */
+    fprintf(stderr, "shsc: %s:%d: ", global_currfile, line_no);
     fflush(stderr);
     va_list args;
     va_start(args, fmt);
