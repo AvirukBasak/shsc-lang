@@ -9,12 +9,10 @@ enum AST_StatementType_t {
 };
 
 enum AST_AssignmentType_t {
-    /** Return value of RHS discarded */
+    /** return value of RHS discarded */
     ASSIGNMENT_TYPE_TOVOID,
-    /** Create or shadow existing variable */
+    /** create or shadow existing variable */
     ASSIGNMENT_TYPE_CREATE,
-    /** Update existing variable */
-    ASSIGNMENT_TYPE_UPDATE,
 };
 
 enum AST_CompoundStType_t {
@@ -38,8 +36,8 @@ enum AST_ExpressionType_t {
 };
 
 /* based on the mapping of datatype IDs provided
-   by the Scsh IR Spec
-   https://github.com/AvirukBasak/scsh-runtime/docs/ScshIrSpec.md */
+   by the Shsc IR Spec
+   https://github.com/AvirukBasak/shsc-runtime/docs/ShscIrSpec.md */
 enum AST_DataType_t {
     DATA_TYPE_BUL = 0,        /* boolean        : 1 B */
     DATA_TYPE_CHR = 1,        /* char           : 1 B */

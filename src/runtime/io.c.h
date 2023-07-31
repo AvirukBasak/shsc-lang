@@ -11,7 +11,7 @@
 
 void rt_throw(const char *fmt, ...)
 {
-    fprintf(stderr, "scsh: %s:%d: ", rt_currfile, rt_currline);
+    fprintf(stderr, "shsc: %s:%d: ", rt_currfile, rt_currline);
     fflush(stderr);
     va_list args;
     va_start(args, fmt);

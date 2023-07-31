@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
     /* check if -v or --version is present */
     if (!strcmp(argv[index], "-v") || !strcmp(argv[index], "--version")) {
-        printf("Scsh version %s\n"
+        printf("Shsc version %s\n"
                "License: GPL 3.0\n"
                "Authors: Aviruk Basak\n", VERSION);
         exit(0);
@@ -38,8 +38,8 @@ int main(int argc, char **argv)
     /* check if -h or --help is present */
     if (!strcmp(argv[index], "-h") || !strcmp(argv[index], "--help")) {
         printf("USAGE:\n"
-               "  scsh [FILENAMES]         execute files listed as args\n"
-               "  scsh <flags> [FILENAMES] provide with additional flags\n"
+               "  shsc [FILENAMES]         execute files listed as args\n"
+               "  shsc <flags> [FILENAMES] provide with additional flags\n"
                "FLAGS:\n"
                "  -r  --run  [FILENAME]    run files listed in file\n"
                "  -t  --ast  [FILENAME]    save AST as JSON to file\n"
@@ -72,8 +72,8 @@ int main(int argc, char **argv)
                 "List File Syntax:\n"
                 " - Each line of the list file has a single file path\n"
                 " - Spaces in file path is valid and quotes not required\n"
-                " - If scsh fails to read one file, it'll skip to next file\n"
-                " - If scsh fails to parse any file, it'll report error and exit\n"
+                " - If shsc fails to read one file, it'll skip to next file\n"
+                " - If shsc fails to parse any file, it'll report error and exit\n"
             );
             io_errndie("no list file provided for '--run'");
         }
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
         AST2JSON_convert(ast_filename, ast_format);
     else
         /* execute the program */
-        runtime_exec();
+        rt_exec();
 
     /* clear the entire AST */
     AST_ProcedureMap_clear();

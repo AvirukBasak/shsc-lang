@@ -13,7 +13,7 @@ INCLUDE_DIR    := ../include
 
 ## compiler options
 
-EXEC_NAME      := scsh
+EXEC_NAME      := shsc
 
 CC             := gcc
 CFLAGS         := -Wall -Wno-unused-label -Ofast

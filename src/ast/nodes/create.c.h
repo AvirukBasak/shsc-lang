@@ -66,16 +66,6 @@ AST_Assignment_t *AST_Assignment_create(AST_Identifier_t *identifier, AST_Expres
     return assign;
 }
 
-AST_Assignment_t *AST_Assignment_update(AST_Identifier_t *identifier, AST_Expression_t *expression)
-{
-    AST_Assignment_t *assign = (AST_Assignment_t*) malloc(sizeof(AST_Assignment_t));
-    if (!assign) io_errndie("AST_Assignment_update: " ERR_MSG_MALLOCFAIL);
-    assign->lhs = identifier;
-    assign->rhs = expression;
-    assign->type = ASSIGNMENT_TYPE_UPDATE;
-    return assign;
-}
-
 AST_Assignment_t *AST_Assignment_tovoid(AST_Expression_t *expression)
 {
     AST_Assignment_t *assign = (AST_Assignment_t*) malloc(sizeof(AST_Assignment_t));
@@ -122,33 +112,24 @@ AST_CompoundSt_t *AST_CompoundSt_Block(AST_Block_t *block)
     return compound;
 }
 
-AST_IfBlock_t *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseIfBlock_t *else_if_block, AST_Statements_t *else_st)
+AST_IfBlock_t *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseBlock_t *else_block)
 {
     AST_IfBlock_t *if_block = (AST_IfBlock_t*) malloc(sizeof(AST_IfBlock_t));
     if (!if_block) io_errndie("AST_IfBlock: " ERR_MSG_MALLOCFAIL);
     if_block->condition = condition;
     if_block->if_st = if_st;
-    if_block->else_if_block = else_if_block;
-    if_block->else_st = else_st;
+    if_block->else_block = else_block;
     return if_block;
 }
 
-AST_ElseIfBlock_t *AST_ElseIfBlock(AST_ElseIfBlock_t *else_if_block, AST_ElseIfSt_t *else_if_st)
+AST_ElseBlock_t *AST_ElseBlock(AST_Condition_t *condition, AST_Statements_t *else_if_st, AST_ElseBlock_t *else_block)
 {
-    AST_ElseIfBlock_t *block = (AST_ElseIfBlock_t*) malloc(sizeof(AST_ElseIfBlock_t));
-    if (!block) io_errndie("AST_ElseIfBlock: " ERR_MSG_MALLOCFAIL);
-    block->else_if_block = else_if_block;
+    AST_ElseBlock_t *block = (AST_ElseBlock_t*) malloc(sizeof(AST_ElseBlock_t));
+    if (!block) io_errndie("AST_ElseBlock: " ERR_MSG_MALLOCFAIL);
+    block->condition = condition;
     block->else_if_st = else_if_st;
+    block->else_block = else_block;
     return block;
-}
-
-AST_ElseIfSt_t *AST_ElseIfSt(AST_Condition_t *condition, AST_Statements_t *statements)
-{
-    AST_ElseIfSt_t *st = (AST_ElseIfSt_t*) malloc(sizeof(AST_ElseIfSt_t));
-    if (!st) io_errndie("AST_ElseIfSt: " ERR_MSG_MALLOCFAIL);
-    st->condition = condition;
-    st->statements = statements;
-    return st;
 }
 
 AST_WhileBlock_t *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st)

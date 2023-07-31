@@ -7,8 +7,11 @@
 #include "ast.h"
 #include "data.h"
 
-/** create a new variable or modify an existing one in the current scope */
-void RT_VarTable_set(const char *varname, RT_Data_t value);
+/** create a new variable in the current scope */
+void RT_VarTable_create(const char *varname, RT_Data_t value);
+
+/** modify an existing variable in the current or upper scope */
+void RT_VarTable_update(const char *varname, RT_Data_t value);
 
 /** get the variable from the current scope if it exists, else return NULL */
 RT_Data_t RT_VarTable_get(const char *varname);

@@ -82,31 +82,20 @@ void AST_IfBlock_free(AST_IfBlock_t **ptr)
     if (!if_block) return;
     AST_Expression_free(&if_block->condition);
     AST_Statements_free(&if_block->if_st);
-    AST_ElseIfBlock_free(&if_block->else_if_block);
-    AST_Statements_free(&if_block->else_st);
+    AST_ElseBlock_free(&if_block->else_block);
     free(if_block);
     *ptr = NULL;
 }
 
-void AST_ElseIfBlock_free(AST_ElseIfBlock_t **ptr)
+void AST_ElseBlock_free(AST_ElseBlock_t **ptr)
 {
     if (!ptr) return;
-    AST_ElseIfBlock_t *else_if_block = *ptr;
-    if (!else_if_block) return;
-    AST_ElseIfBlock_free(&else_if_block->else_if_block);
-    AST_ElseIfSt_free(&else_if_block->else_if_st);
-    free(else_if_block);
-    *ptr = NULL;
-}
-
-void AST_ElseIfSt_free(AST_ElseIfSt_t **ptr)
-{
-    if (!ptr) return;
-    AST_ElseIfSt_t *else_if_st = *ptr;
-    if (!else_if_st) return;
-    AST_Expression_free(&else_if_st->condition);
-    AST_Statements_free(&else_if_st->statements);
-    free(else_if_st);
+    AST_ElseBlock_t *else_block = *ptr;
+    if (!else_block) return;
+    AST_Expression_free(&else_block->condition);
+    AST_Statements_free(&else_block->else_if_st);
+    AST_ElseBlock_free(&else_block->else_block);
+    free(else_block);
     *ptr = NULL;
 }
 

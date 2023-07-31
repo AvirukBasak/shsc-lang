@@ -65,82 +65,86 @@
                   }
                 ]
               },
-              "else_if_block": null,
-              "else_st": {
-                "node": "statements",
-                "statements": [
-                  {
-                    "node": "statement",
-                    "line_no": 14,
-                    "type": "STATEMENT_TYPE_RETURN",
-                    "statement": {
-                      "node": "expression",
-                      "op": "*",
-                      "lhs_type": "EXPR_TYPE_EXPRESSION",
-                      "lhs": {
+              "else_block": {
+                "node": "else_block",
+                "condition": null,
+                "else_if_st": {
+                  "node": "statements",
+                  "statements": [
+                    {
+                      "node": "statement",
+                      "line_no": 14,
+                      "type": "STATEMENT_TYPE_RETURN",
+                      "statement": {
                         "node": "expression",
-                        "op": "$[]",
-                        "lhs_type": "EXPR_TYPE_NULL",
-                        "lhs": null,
-                        "rhs_type": "EXPR_TYPE_LITERAL",
-                        "rhs": {
-                          "node": "literal",
-                          "type": "DATA_TYPE_I64",
-                          "data": 0
-                        },
-                        "condition_type": "EXPR_TYPE_NULL",
-                        "condition": null
-                      },
-                      "rhs_type": "EXPR_TYPE_EXPRESSION",
-                      "rhs": {
-                        "node": "expression",
-                        "op": "()",
-                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
+                        "op": "*",
+                        "lhs_type": "EXPR_TYPE_EXPRESSION",
                         "lhs": {
-                          "node": "identifier",
-                          "identifier_name": "factorial"
+                          "node": "expression",
+                          "op": "$[]",
+                          "lhs_type": "EXPR_TYPE_NULL",
+                          "lhs": null,
+                          "rhs_type": "EXPR_TYPE_LITERAL",
+                          "rhs": {
+                            "node": "literal",
+                            "type": "DATA_TYPE_I64",
+                            "data": 0
+                          },
+                          "condition_type": "EXPR_TYPE_NULL",
+                          "condition": null
                         },
-                        "rhs_type": "EXPR_TYPE_LIST",
+                        "rhs_type": "EXPR_TYPE_EXPRESSION",
                         "rhs": {
-                          "node": "comma_list",
-                          "comma_list": [
-                            {
-                              "node": "expression",
-                              "op": "-",
-                              "lhs_type": "EXPR_TYPE_EXPRESSION",
-                              "lhs": {
+                          "node": "expression",
+                          "op": "()",
+                          "lhs_type": "EXPR_TYPE_IDENTIFIER",
+                          "lhs": {
+                            "node": "identifier",
+                            "identifier_name": "factorial"
+                          },
+                          "rhs_type": "EXPR_TYPE_LIST",
+                          "rhs": {
+                            "node": "comma_list",
+                            "comma_list": [
+                              {
                                 "node": "expression",
-                                "op": "$[]",
-                                "lhs_type": "EXPR_TYPE_NULL",
-                                "lhs": null,
+                                "op": "-",
+                                "lhs_type": "EXPR_TYPE_EXPRESSION",
+                                "lhs": {
+                                  "node": "expression",
+                                  "op": "$[]",
+                                  "lhs_type": "EXPR_TYPE_NULL",
+                                  "lhs": null,
+                                  "rhs_type": "EXPR_TYPE_LITERAL",
+                                  "rhs": {
+                                    "node": "literal",
+                                    "type": "DATA_TYPE_I64",
+                                    "data": 0
+                                  },
+                                  "condition_type": "EXPR_TYPE_NULL",
+                                  "condition": null
+                                },
                                 "rhs_type": "EXPR_TYPE_LITERAL",
                                 "rhs": {
                                   "node": "literal",
                                   "type": "DATA_TYPE_I64",
-                                  "data": 0
+                                  "data": 1
                                 },
                                 "condition_type": "EXPR_TYPE_NULL",
                                 "condition": null
-                              },
-                              "rhs_type": "EXPR_TYPE_LITERAL",
-                              "rhs": {
-                                "node": "literal",
-                                "type": "DATA_TYPE_I64",
-                                "data": 1
-                              },
-                              "condition_type": "EXPR_TYPE_NULL",
-                              "condition": null
-                            }
-                          ]
+                              }
+                            ]
+                          },
+                          "condition_type": "EXPR_TYPE_NULL",
+                          "condition": null
                         },
                         "condition_type": "EXPR_TYPE_NULL",
                         "condition": null
-                      },
-                      "condition_type": "EXPR_TYPE_NULL",
-                      "condition": null
+                      }
                     }
-                  }
-                ]
+                  ]
+                },
+                "else_block": null
               }
             }
           }
@@ -479,34 +483,92 @@
                   }
                 ]
               },
-              "else_if_block": {
-                "node": "else_if_block",
-                "else_if_block": null,
-                "else_if_st": {
-                  "node": "else_if_st",
-                  "condition": {
-                    "node": "expression",
-                    "op": "==",
-                    "lhs_type": "EXPR_TYPE_IDENTIFIER",
-                    "lhs": {
-                      "node": "identifier",
-                      "identifier_name": "x"
-                    },
-                    "rhs_type": "EXPR_TYPE_LITERAL",
-                    "rhs": {
-                      "node": "literal",
-                      "type": "DATA_TYPE_I64",
-                      "data": 2
-                    },
-                    "condition_type": "EXPR_TYPE_NULL",
-                    "condition": null
+              "else_block": {
+                "node": "else_block",
+                "condition": {
+                  "node": "expression",
+                  "op": "==",
+                  "lhs_type": "EXPR_TYPE_IDENTIFIER",
+                  "lhs": {
+                    "node": "identifier",
+                    "identifier_name": "x"
                   },
-                  "statements": {
+                  "rhs_type": "EXPR_TYPE_LITERAL",
+                  "rhs": {
+                    "node": "literal",
+                    "type": "DATA_TYPE_I64",
+                    "data": 2
+                  },
+                  "condition_type": "EXPR_TYPE_NULL",
+                  "condition": null
+                },
+                "else_if_st": {
+                  "node": "statements",
+                  "statements": [
+                    {
+                      "node": "statement",
+                      "line_no": 11,
+                      "type": "STATEMENT_TYPE_ASSIGNMENT",
+                      "statement": {
+                        "node": "assignment",
+                        "lhs": null,
+                        "rhs": {
+                          "node": "expression",
+                          "op": "()",
+                          "lhs_type": "EXPR_TYPE_IDENTIFIER",
+                          "lhs": {
+                            "node": "identifier",
+                            "identifier_name": "print"
+                          },
+                          "rhs_type": "EXPR_TYPE_LIST",
+                          "rhs": {
+                            "node": "comma_list",
+                            "comma_list": [
+                              {
+                                "node": "expression",
+                                "op": "NOP",
+                                "lhs_type": "EXPR_TYPE_LITERAL",
+                                "lhs": {
+                                  "node": "literal",
+                                  "type": "DATA_TYPE_STR",
+                                  "data": "entered 2"
+                                },
+                                "rhs_type": "EXPR_TYPE_NULL",
+                                "rhs": null,
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                              },
+                              {
+                                "node": "expression",
+                                "op": "NOP",
+                                "lhs_type": "EXPR_TYPE_IDENTIFIER",
+                                "lhs": {
+                                  "node": "identifier",
+                                  "identifier_name": "lf"
+                                },
+                                "rhs_type": "EXPR_TYPE_NULL",
+                                "rhs": null,
+                                "condition_type": "EXPR_TYPE_NULL",
+                                "condition": null
+                              }
+                            ]
+                          },
+                          "condition_type": "EXPR_TYPE_NULL",
+                          "condition": null
+                        }
+                      }
+                    }
+                  ]
+                },
+                "else_block": {
+                  "node": "else_block",
+                  "condition": null,
+                  "else_if_st": {
                     "node": "statements",
                     "statements": [
                       {
                         "node": "statement",
-                        "line_no": 11,
+                        "line_no": 13,
                         "type": "STATEMENT_TYPE_ASSIGNMENT",
                         "statement": {
                           "node": "assignment",
@@ -530,7 +592,7 @@
                                   "lhs": {
                                     "node": "literal",
                                     "type": "DATA_TYPE_STR",
-                                    "data": "entered 2"
+                                    "data": "entered {x}"
                                   },
                                   "rhs_type": "EXPR_TYPE_NULL",
                                   "rhs": null,
@@ -558,66 +620,9 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "else_block": null
                 }
-              },
-              "else_st": {
-                "node": "statements",
-                "statements": [
-                  {
-                    "node": "statement",
-                    "line_no": 13,
-                    "type": "STATEMENT_TYPE_ASSIGNMENT",
-                    "statement": {
-                      "node": "assignment",
-                      "lhs": null,
-                      "rhs": {
-                        "node": "expression",
-                        "op": "()",
-                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
-                        "lhs": {
-                          "node": "identifier",
-                          "identifier_name": "print"
-                        },
-                        "rhs_type": "EXPR_TYPE_LIST",
-                        "rhs": {
-                          "node": "comma_list",
-                          "comma_list": [
-                            {
-                              "node": "expression",
-                              "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_LITERAL",
-                              "lhs": {
-                                "node": "literal",
-                                "type": "DATA_TYPE_STR",
-                                "data": "entered {x}"
-                              },
-                              "rhs_type": "EXPR_TYPE_NULL",
-                              "rhs": null,
-                              "condition_type": "EXPR_TYPE_NULL",
-                              "condition": null
-                            },
-                            {
-                              "node": "expression",
-                              "op": "NOP",
-                              "lhs_type": "EXPR_TYPE_IDENTIFIER",
-                              "lhs": {
-                                "node": "identifier",
-                                "identifier_name": "lf"
-                              },
-                              "rhs_type": "EXPR_TYPE_NULL",
-                              "rhs": null,
-                              "condition_type": "EXPR_TYPE_NULL",
-                              "condition": null
-                            }
-                          ]
-                        },
-                        "condition_type": "EXPR_TYPE_NULL",
-                        "condition": null
-                      }
-                    }
-                  }
-                ]
               }
             }
           },
@@ -1053,8 +1058,7 @@
                   }
                 ]
               },
-              "else_if_block": null,
-              "else_st": null
+              "else_block": null
             }
           }
         ]

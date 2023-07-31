@@ -1,4 +1,4 @@
-# Scsh
+# Shsc
 World's most sh*tty programming language.
 
 ### Build
@@ -13,8 +13,8 @@ For Windows users, you'll probably need to use `cygwin` or `git bash` to get `ma
 ### Usage
 ```
 USAGE:
-  scsh [FILENAMES]         execute files listed as args
-  scsh <flags> [FILENAMES] provide with additional flags
+  shsc [FILENAMES]         execute files listed as args
+  shsc <flags> [FILENAMES] provide with additional flags
 FLAGS:
   -r  --run  [FILENAME]    run files listed in file
   -t  --ast  [FILENAME]    save AST as JSON to file
@@ -28,11 +28,11 @@ Examples at [`examples/`](examples/).
 ### List File
  - Each line of the list file has a single file path
  - Spaces in file path is valid and quotes not required
- - If scsh fails to read one file, it'll skip to next file
- - If scsh fails to parse any file, it'll report error and exit
+ - If shsc fails to read one file, it'll skip to next file
+ - If shsc fails to parse any file, it'll report error and exit
 
 #### Example
-The file paths should be relative to the directory where `scsh` will be executed.
+The file paths should be relative to the directory where `shsc` will be executed.
 ```
 file1.txt
 file2.txt
@@ -44,19 +44,19 @@ file4.some_extension
 ### Example use
 ```
 # tested using tests/build.txt
-scsh -tf tests/SyntaxTree.json -r tests/build.txt
+shsc -tf tests/SyntaxTree.json -r tests/build.txt
 ```
 
 ```
 # tested on examples/factorial.txt
-scsh -tf ast.json examples/factorial.txt
+shsc -tf ast.json examples/factorial.txt
 ```
 
 ### Docs
 - Lexer interface at [`docs/LexerInterface.md`](docs/LexerInterface.md)
 - Language specs at [`docs/LanguageSpec.md`](docs/LanguageSpec.md)
 - Syntax specs at [`docs/LanguageSyntax.md`](docs/LanguageSyntax.md)
-- Bytecode specs at [`ScshIrSpec.md`](https://github.com/AvirukBasak/scsh-runtime/blob/main/docs/ScshIrSpec.md)
+- Bytecode specs at [`ShscIrSpec.md`](https://github.com/AvirukBasak/shsc-runtime/blob/main/docs/ShscIrSpec.md)
 - Contribution guidelines at [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
 
 ### Tests
@@ -66,3 +66,4 @@ scsh -tf ast.json examples/factorial.txt
 
 ### Todo
 - Build the runtime.
+- Switch `statements` and `comma_list` to left recursive productions.

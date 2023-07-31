@@ -13,7 +13,6 @@ AST_Statement_t     *AST_Statement_Assignment(AST_Assignment_t *assignment, int 
 AST_Statement_t     *AST_Statement_CompoundSt(AST_CompoundSt_t *compund, int line_no);
 
 AST_Assignment_t    *AST_Assignment_create(AST_Identifier_t *identifier, AST_Expression_t *expression);
-AST_Assignment_t    *AST_Assignment_update(AST_Identifier_t *identifier, AST_Expression_t *expression);
 AST_Assignment_t    *AST_Assignment_tovoid(AST_Expression_t *expression);
 
 AST_CompoundSt_t    *AST_CompoundSt_IfBlock(AST_IfBlock_t *block);
@@ -21,9 +20,8 @@ AST_CompoundSt_t    *AST_CompoundSt_WhileBlock(AST_WhileBlock_t *block);
 AST_CompoundSt_t    *AST_CompoundSt_ForBlock(AST_ForBlock_t *block);
 AST_CompoundSt_t    *AST_CompoundSt_Block(AST_Block_t *block);
 
-AST_IfBlock_t       *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseIfBlock_t *else_if_block, AST_Statements_t *else_st);
-AST_ElseIfBlock_t   *AST_ElseIfBlock(AST_ElseIfBlock_t *else_if_block, AST_ElseIfSt_t *else_if_st);
-AST_ElseIfSt_t      *AST_ElseIfSt(AST_Condition_t *condition, AST_Statements_t *statements);
+AST_IfBlock_t       *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseBlock_t *else_block);
+AST_ElseBlock_t     *AST_ElseBlock(AST_Condition_t *condition, AST_Statements_t *else_if_st, AST_ElseBlock_t *else_block);
 
 AST_WhileBlock_t    *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st);
 AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *iter, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st);
