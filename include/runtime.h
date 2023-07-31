@@ -8,8 +8,7 @@ enum RT_StackEntryType_t {
     STACKENTRY_TYPE_STATEMENT,
     STACKENTRY_TYPE_ASSIGNMENT,
     STACKENTRY_TYPE_IF_BLOCK,
-    STACKENTRY_TYPE_ELSE_IF_BLOCK,
-    STACKENTRY_TYPE_ELSE_IF_STATEMENT,
+    STACKENTRY_TYPE_ELSE_BLOCK,
     STACKENTRY_TYPE_WHILE_BLOCK,
     STACKENTRY_TYPE_FOR_BLOCK,
     STACKENTRY_TYPE_EXPRESSION,
@@ -28,8 +27,7 @@ struct RT_StackEntry_t {
         const AST_Assignment_t   *assignment;
         const AST_CompoundSt_t   *compound_st;
         const AST_IfBlock_t      *if_block;
-        const AST_ElseIfBlock_t  *else_if_block;
-        const AST_ElseIfSt_t     *else_if_st;
+        const AST_ElseBlock_t    *else_block;
         const AST_WhileBlock_t   *while_block;
         const AST_ForBlock_t     *for_block;
         const AST_Block_t        *block;

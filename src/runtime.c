@@ -130,12 +130,19 @@ void RT_AST_eval(const AST_Statements_t *code)
                 break;
             }
             case STACKENTRY_TYPE_IF_BLOCK: {
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .node.expression = pop.node.if_block->condition,
+                    .type = STACKENTRY_TYPE_EXPRESSION
+                });
+                bool cond =  RT_Data_tobool(RT_Expression_eval());
+                if (cond) {
+                    /* TODO */
+                } else {
+                    /* TODO */
+                }
                 break;
             }
-            case STACKENTRY_TYPE_ELSE_IF_BLOCK: {
-                break;
-            }
-            case STACKENTRY_TYPE_ELSE_IF_STATEMENT: {
+            case STACKENTRY_TYPE_ELSE_BLOCK: {
                 break;
             }
             case STACKENTRY_TYPE_WHILE_BLOCK: {
