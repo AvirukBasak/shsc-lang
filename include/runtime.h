@@ -36,6 +36,11 @@ struct RT_StackEntry_t {
         const AST_Literal_t      *literal;
         const AST_Identifier_t   *identifier;
     } node;
+    /** used by loops in runtime to maintain counter state */
+    struct {
+        int64_t counter;
+        bool is_running;
+    } loop;
     enum RT_StackEntryType_t type;
 };
 
