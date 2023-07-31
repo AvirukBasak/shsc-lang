@@ -168,8 +168,7 @@ FILE *yyin = NULL;
     AST_Assignment_t       *astnode_assignment;           /* assignment */
     AST_CompoundSt_t       *astnode_compound_statement;   /* compound_statement */
     AST_IfBlock_t          *astnode_if_block;             /* if_block */
-    AST_ElseIfBlock_t      *astnode_else_if_block;        /* else_if_block */
-    AST_ElseIfSt_t         *astnode_else_if_statement;    /* else_if_statement */
+    AST_ElseBlock_t        *astnode_else_block;           /* else_block */
     AST_WhileBlock_t       *astnode_while_block;          /* while_block */
     AST_ForBlock_t         *astnode_for_block;            /* for_block */
     AST_Block_t            *astnode_block;                /* block */
@@ -190,8 +189,7 @@ FILE *yyin = NULL;
 %type <astnode_assignment>         assignment
 %type <astnode_compound_statement> compound_statement
 %type <astnode_if_block>           if_block
-%type <astnode_else_if_block>      else_if_block
-%type <astnode_else_if_statement>  else_if_statement
+%type <astnode_else_block>         else_block
 %type <astnode_while_block>        while_block
 %type <astnode_for_block>          for_block
 %type <astnode_block>              block
@@ -287,20 +285,16 @@ compound_statement:
     ;
 
 if_block:
-    "if" condition "then" nwp statements "end"                                            { $$ = AST_IfBlock($2, $5, NULL, NULL); }
-    | "if" condition "then" nwp statements "else" nwp statements "end"                    { $$ = AST_IfBlock($2, $5, NULL, $8); }
-    | "if" condition "then" nwp statements else_if_block "end"                            { $$ = AST_IfBlock($2, $5, $6, NULL); }
-    | "if" condition "then" nwp statements else_if_block "else" nwp statements "end"      { $$ = AST_IfBlock($2, $5, $6, $9); }
+    "if" condition "then" nwp statements "end"          { $$ = AST_IfBlock($2, $5, NULL); }
+    | "if" condition "then" nwp statements else_block   { $$ = AST_IfBlock($2, $5, $6); }
     ;
 
-else_if_block:
-    else_if_statement                                   { $$ = AST_ElseIfBlock(NULL, $1); }
-    | else_if_block else_if_statement                   { $$ = AST_ElseIfBlock($1, $2); }
-    ;
-
-else_if_statement:
-    "else" "if" condition "then" nwp statements         { $$ = AST_ElseIfSt($3, $6); }
-    | "elif" condition "then" nwp statements            { $$ = AST_ElseIfSt($2, $5); }
+else_block:
+    "else" nwp statements "end"                              { $$ = AST_ElseBlock(NULL, $3, NULL); }
+    | "else" "if" condition "then" nwp statements "end"      { $$ = AST_ElseBlock($3, $6, NULL); }
+    | "else" "if" condition "then" nwp statements else_block { $$ = AST_ElseBlock($3, $6, $7); }
+    | "elif" condition "then" nwp statements "end"           { $$ = AST_ElseBlock($2, $5, NULL); }
+    | "elif" condition "then" nwp statements else_block      { $$ = AST_ElseBlock($2, $5, $6); }
     ;
 
 while_block:

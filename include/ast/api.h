@@ -51,18 +51,17 @@ struct AST_CompoundSt_t {
 struct AST_IfBlock_t {
     const AST_Condition_t *condition;
     const AST_Statements_t *if_st;
-    const AST_ElseIfBlock_t *else_if_block;
-    const AST_Statements_t *else_st;
+    const AST_ElseBlock_t *else_block;
 };
 
-struct AST_ElseIfBlock_t {
-    const AST_ElseIfBlock_t *else_if_block;
-    const AST_ElseIfSt_t *else_if_st;
-};
-
-struct AST_ElseIfSt_t {
+struct AST_ElseBlock_t {
+    /** if condition is not NULL, it's an
+        else if block, otherwise it's an else block */
     const AST_Condition_t *condition;
-    const AST_Statements_t *statements;
+    /** if condition is NULL, it's an else block
+        else it's an if else block */
+    const AST_Statements_t *else_if_st;
+    const AST_ElseBlock_t *else_block;
 };
 
 struct AST_WhileBlock_t {

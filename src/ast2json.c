@@ -276,49 +276,30 @@ void AST2JSON_IfBlock(const AST_IfBlock_t *if_block)
     AST2JSON_printf("\"if_st\": ");
     AST2JSON_Statements(if_block->if_st);
     AST2JSON_put_comma();
-    AST2JSON_printf("\"else_if_block\": ");
-    AST2JSON_ElseIfBlock(if_block->else_if_block);
-    AST2JSON_put_comma();
-    AST2JSON_printf("\"else_st\": ");
-    AST2JSON_Statements(if_block->else_st);
+    AST2JSON_printf("\"else_block\": ");
+    AST2JSON_ElseBlock(if_block->else_block);
     AST2JSON_close_obj();
 }
 
 /* function to convert AST_ElseIfBlock_t to JSON */
-void AST2JSON_ElseIfBlock(const AST_ElseIfBlock_t *else_if_block)
+void AST2JSON_ElseBlock(const AST_ElseBlock_t *else_block)
 {
-    if (!else_if_block) {
+    if (!else_block) {
         AST2JSON_printf("null");
         return;
     }
 
     AST2JSON_open_obj();
-    AST2JSON_printf("\"node\": \"else_if_block\"");
-    AST2JSON_put_comma();
-    AST2JSON_printf("\"else_if_block\": ");
-    AST2JSON_ElseIfBlock(else_if_block->else_if_block);
-    AST2JSON_put_comma();
-    AST2JSON_printf("\"else_if_st\": ");
-    AST2JSON_ElseIfSt(else_if_block->else_if_st);
-    AST2JSON_close_obj();
-}
-
-/* function to convert AST_ElseIfSt_t to JSON */
-void AST2JSON_ElseIfSt(const AST_ElseIfSt_t *else_if_st)
-{
-    if (!else_if_st) {
-        AST2JSON_printf("null");
-        return;
-    }
-
-    AST2JSON_open_obj();
-    AST2JSON_printf("\"node\": \"else_if_st\"");
+    AST2JSON_printf("\"node\": \"else_block\"");
     AST2JSON_put_comma();
     AST2JSON_printf("\"condition\": ");
-    AST2JSON_Expression(else_if_st->condition);
+    AST2JSON_Expression(else_block->condition);
     AST2JSON_put_comma();
-    AST2JSON_printf("\"statements\": ");
-    AST2JSON_Statements(else_if_st->statements);
+    AST2JSON_printf("\"else_if_st\": ");
+    AST2JSON_Statements(else_block->else_if_st);
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"else_block\": ");
+    AST2JSON_ElseBlock(else_block->else_block);
     AST2JSON_close_obj();
 }
 
