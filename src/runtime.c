@@ -57,7 +57,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .node.expression = st->statement.expression,
                             .type = STACKENTRY_TYPE_EXPRESSION
                         });
-                        RT_VarTable_set("-", RT_Expression_eval());
+                        RT_VarTable_update("-", RT_Expression_eval());
                         break;
                     }
                     case STATEMENT_TYPE_ASSIGNMENT: {
@@ -114,7 +114,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .node.expression = pop.node.assignment->rhs,
                             .type = STACKENTRY_TYPE_EXPRESSION
                         });
-                        RT_VarTable_set("-", RT_Expression_eval());
+                        RT_VarTable_update("-", RT_Expression_eval());
                         break;
                     }
                     case ASSIGNMENT_TYPE_CREATE: {
@@ -123,7 +123,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .node.expression = pop.node.assignment->rhs,
                             .type = STACKENTRY_TYPE_EXPRESSION
                         });
-                        RT_VarTable_new(idf, RT_Expression_eval());
+                        RT_VarTable_create(idf, RT_Expression_eval());
                         break;
                     }
                 }
@@ -172,7 +172,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                 break;
             }
             case STACKENTRY_TYPE_SCOPE_POP: {
-                RT_VarTable_set("-", RT_VarTable_pop_scope());
+                RT_VarTable_update("-", RT_VarTable_pop_scope());
                 break;
             }
         }

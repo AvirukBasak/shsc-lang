@@ -17,8 +17,8 @@
 #define RT_VTABLE_TEMPORARY_SIZE (32)
 
 int rt_vtable_get_tempvar(const char *varname);
-void rt_vtable_ref_incr(RT_Data_t value);
-void rt_vtable_ref_decr(RT_Data_t value);
+void rt_vtable_refcnt_incr(RT_Data_t *value);
+void rt_vtable_refcnt_decr(RT_Data_t *value);
 
 KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
 
@@ -94,6 +94,7 @@ void RT_VarTable_push_scope()
 
 #include <errno.h>
 
+/** convert an integer variable name to an index */
 int rt_vtable_get_tempvar(const char *varname)
 {
     /* variables to store the converted integer and the end
@@ -116,65 +117,87 @@ int rt_vtable_get_tempvar(const char *varname)
     return fully_consumed ? converted_int : -1;
 }
 
-void rt_vtable_ref_incr(RT_Data_t value)
+/** increment reference count of composite data */
+void rt_vtable_refcnt_incr(RT_Data_t *value)
 {
-    if (value.type == RT_DATA_TYPE_STR
-     || value.type == RT_DATA_TYPE_INTERP_STR) {
-        ++value.data.str->rc;
-    } else if (value.type == RT_DATA_TYPE_LST) {
-        ++value.data.lst->rc;
+    if (value->type == RT_DATA_TYPE_STR
+     || value->type == RT_DATA_TYPE_INTERP_STR) {
+        ++value->data.str->rc;
+    } else if (value->type == RT_DATA_TYPE_LST) {
+        ++value->data.lst->rc;
     }
 }
 
-void rt_vtable_ref_decr(RT_Data_t value)
+/** decrement reference count of composite data
+    and free data if rc is 0 */
+void rt_vtable_refcnt_decr(RT_Data_t *value)
 {
-    if (value.type == RT_DATA_TYPE_STR
-     || value.type == RT_DATA_TYPE_INTERP_STR) {
-         --value.data.str->rc;
-         if (value.data.str->rc <= 0)
-             RT_Data_destroy(&value);
+    if (value->type == RT_DATA_TYPE_STR
+     || value->type == RT_DATA_TYPE_INTERP_STR) {
+         --value->data.str->rc;
+         if (value->data.str->rc <= 0)
+             RT_Data_destroy(value);
     } else if (value.type == RT_DATA_TYPE_LST) {
-        --value.data.lst->rc;
-         if (value.data.lst->rc <= 0)
-             RT_Data_destroy(&value);
+        --value->data.lst->rc;
+         if (value->data.lst->rc <= 0)
+             RT_Data_destroy(value);
     }
 }
 
-void RT_VarTable_set(const char *varname, RT_Data_t value)
+void RT_VarTable_create(const char *varname, RT_Data_t value)
+{
+    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
+    RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
+    khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
+    /* variable exists, reduce reference count and replace
+       it with the new data */
+    if (iter != kh_end(current_scope->scope)) {
+        rt_vtable_refcnt_decr(&kh_value(current_scope->scope, iter));
+        rt_vtable_refcnt_incr(&value);
+        kh_value(current_scope->scope, iter) = value;
+    } else {
+        /* variable doesn't exist, add a new entry */
+        int ret;
+        iter = kh_put(RT_Data_t, current_scope->scope, strdup(varname), &ret);
+        /* create variable, increase reference count to 1 and set new data */
+        rt_vtable_refcnt_incr(&value);
+        kh_value(current_scope->scope, iter) = value;
+    }
+}
+
+void RT_VarTable_update(const char *varname, RT_Data_t value)
 {
     if (!strcmp(varname, "-")) {
-        rt_vtable_ref_decr(rt_vtable_accumulator);
-        rt_vtable_ref_incr(value);
+        rt_vtable_refcnt_decr(&rt_vtable_accumulator);
+        rt_vtable_refcnt_incr(&value);
         rt_vtable_accumulator = value;
         return;
     } else {
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 31) rt_throw("no such location '$[%d]'", tmp);
         if (tmp >= 0) {
-            rt_vtable_ref_decr(rt_vtable_temporary[tmp]);
-            rt_vtable_ref_incr(value);
+            rt_vtable_refcnt_decr(&rt_vtable_temporary[tmp]);
+            rt_vtable_refcnt_incr(&value);
             rt_vtable_temporary[tmp] = value;
             return;
         }
     }
-
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
-    RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-
-    khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
-
-    if (iter != kh_end(current_scope->scope)) {
-        /* variable exists, free its value / reduce reference and replace with the new one */
-        rt_vtable_ref_decr(kh_value(current_scope->scope, iter));
-        rt_vtable_ref_incr(value);
-        kh_value(current_scope->scope, iter) = value;
-    } else {
-        /* variable doesn't exist, add a new entry */
-        int ret;
-        iter = kh_put(RT_Data_t, current_scope->scope, strdup(varname), &ret);
-        rt_vtable_ref_incr(value);
-        kh_value(current_scope->scope, iter) = value;
+    /* search for variable in current and higher scopes and
+       update its value (and reference counts) */
+    for (int64_t i = current_proc->top; i >= 0; i--) {
+        RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
+        khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
+        /* variable found, update its value */
+        if (iter != kh_end(current_scope->scope)) {
+            rt_vtable_refcnt_decr(&kh_value(current_scope->scope, iter));
+            rt_vtable_refcnt_incr(&value);
+            kh_value(current_scope->scope, iter) = value;
+            return;
+        }
     }
+    /* variable not found, throw an error */
+    rt_throw("undefined variable '%s'", varname);
 }
 
 RT_Data_t RT_VarTable_get(const char *varname)
@@ -189,9 +212,8 @@ RT_Data_t RT_VarTable_get(const char *varname)
     for (int64_t i = current_proc->top; i >= 0; i--) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
         khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
-
+        /* variable found, return its value */
         if (iter != kh_end(current_scope->scope)) {
-            /* variable found, return its value */
             return kh_value(current_scope->scope, iter);
         }
     }
@@ -212,7 +234,8 @@ const AST_Statement_t *RT_VarTable_pop_proc()
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
-                rt_vtable_ref_decr(kh_value(current_scope->scope, iter));
+                /* decrement refcnt, if 0, data gets destroyed */
+                rt_vtable_refcnt_decr(&(kh_value(current_scope->scope, iter)));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
     }
@@ -231,7 +254,8 @@ RT_Data_t RT_VarTable_pop_scope()
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
-                rt_vtable_ref_decr(kh_value(current_scope->scope, iter));
+                /* decrement refcnt, if 0, data gets destroyed */
+                rt_vtable_refcnt_decr(&(kh_value(current_scope->scope, iter)));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
         current_proc->top--;
