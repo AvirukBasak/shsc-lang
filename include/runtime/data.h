@@ -48,6 +48,7 @@ void RT_Data_destroy(RT_Data_t *var);
 
 bool RT_Data_isnull(const RT_Data_t var);
 char *RT_Data_interp_str_parse(const char *str);
+bool RT_Data_tobool(const RT_Data_t var);
 char *RT_Data_tostr(const RT_Data_t var);
 void RT_Data_print(const RT_Data_t var);
 

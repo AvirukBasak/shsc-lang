@@ -2,6 +2,7 @@
 #define RT_DATA_C_H
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -159,7 +160,31 @@ char *RT_Data_interp_str_parse(const char *str_)
     return ret;
 }
 
-/** Used to convert a Data object to a printable char* */
+/** convert any data to truthy or falsy value */
+bool RT_Data_tobool(const RT_Data_t var)
+{
+    switch (var.type) {
+        case RT_DATA_TYPE_BUL:
+            return var.data.bul;
+        case RT_DATA_TYPE_CHR:
+            return !!var.data.chr;
+        case RT_DATA_TYPE_I64:
+            return !!var.data.i64;
+        case RT_DATA_TYPE_F64:
+            return !!var.data.f64;
+        case RT_DATA_TYPE_STR:
+        case RT_DATA_TYPE_INTERP_STR:
+            return !!var.data.str->var && !!var.data.str->length;
+        case RT_DATA_TYPE_LST:
+            return !!var.data.lst->var && !!var.data.lst->length;
+        case RT_DATA_TYPE_ANY:
+            return !!var.data.any;
+        default:
+            return false;
+    }
+}
+
+/** used to convert a Data object to a printable char* */
 char *RT_Data_tostr(const RT_Data_t var)
 {
     switch (var.type) {

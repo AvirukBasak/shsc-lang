@@ -137,7 +137,7 @@ void rt_vtable_refcnt_decr(RT_Data_t *value)
          --value->data.str->rc;
          if (value->data.str->rc <= 0)
              RT_Data_destroy(value);
-    } else if (value.type == RT_DATA_TYPE_LST) {
+    } else if (value->type == RT_DATA_TYPE_LST) {
         --value->data.lst->rc;
          if (value->data.lst->rc <= 0)
              RT_Data_destroy(value);
@@ -279,7 +279,7 @@ void RT_VarTable_test()
     RT_VarTable_push_proc("main", NULL);
     /* set a variable in the current scope */
     RT_Data_t var1 = RT_Data_i64(42);
-    RT_VarTable_set("var1", var1);
+    RT_VarTable_create("var1", var1);
     /* get a variable from the current scope */
     RT_Data_t var1_ = RT_VarTable_get("var1");
     if (!RT_Data_isnull(var1_))

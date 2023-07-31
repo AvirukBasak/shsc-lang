@@ -13,7 +13,6 @@ AST_Statement_t     *AST_Statement_Assignment(AST_Assignment_t *assignment, int 
 AST_Statement_t     *AST_Statement_CompoundSt(AST_CompoundSt_t *compund, int line_no);
 
 AST_Assignment_t    *AST_Assignment_create(AST_Identifier_t *identifier, AST_Expression_t *expression);
-AST_Assignment_t    *AST_Assignment_update(AST_Identifier_t *identifier, AST_Expression_t *expression);
 AST_Assignment_t    *AST_Assignment_tovoid(AST_Expression_t *expression);
 
 AST_CompoundSt_t    *AST_CompoundSt_IfBlock(AST_IfBlock_t *block);

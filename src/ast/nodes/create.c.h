@@ -66,16 +66,6 @@ AST_Assignment_t *AST_Assignment_create(AST_Identifier_t *identifier, AST_Expres
     return assign;
 }
 
-AST_Assignment_t *AST_Assignment_update(AST_Identifier_t *identifier, AST_Expression_t *expression)
-{
-    AST_Assignment_t *assign = (AST_Assignment_t*) malloc(sizeof(AST_Assignment_t));
-    if (!assign) io_errndie("AST_Assignment_update: " ERR_MSG_MALLOCFAIL);
-    assign->lhs = identifier;
-    assign->rhs = expression;
-    assign->type = ASSIGNMENT_TYPE_UPDATE;
-    return assign;
-}
-
 AST_Assignment_t *AST_Assignment_tovoid(AST_Expression_t *expression)
 {
     AST_Assignment_t *assign = (AST_Assignment_t*) malloc(sizeof(AST_Assignment_t));
