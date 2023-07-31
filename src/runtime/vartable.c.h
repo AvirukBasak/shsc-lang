@@ -103,18 +103,18 @@ int rt_vtable_get_tempvar(const char *varname)
     int converted_int;
     /* convert the string to an integer using strtol */
     errno = 0; /* Set errno to 0 before the call to strtol */
-    converted_int = (int)strtol(varname, &endptr, 10);
+    converted_int = (int) strtol(varname, &endptr, 10);
     /* check if there was an error during conversion */
     if ((errno == ERANGE && (converted_int == INT_MAX
         || converted_int == INT_MIN))
         || (errno != 0 && converted_int == 0)) {
-        /* Conversion error occurred */
+        /* conversion error occurred */
         return -1;
     }
     /* check if the string is fully consumed (i.e., there are no
        non-integer characters after the number) */
     bool fully_consumed = (*endptr == '\0');
-    return fully_consumed ? converted_int : -1;
+    return fully_consumed && (converted_int >= 0) ? converted_int : -1;
 }
 
 /** increment reference count of composite data */
@@ -146,6 +146,12 @@ void rt_vtable_refcnt_decr(RT_Data_t *value)
 
 void RT_VarTable_create(const char *varname, RT_Data_t value)
 {
+    if (!strcmp(varname, "-"))
+        rt_throw("RT_VarTable_create: invalid new variable name '%s'", varname);
+    else {
+        int tmp = rt_vtable_get_tempvar(varname);
+        if (tmp >= 0) rt_throw("RT_VarTable_create: invalid new variable name '%s'", varname);
+    }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
     khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
@@ -174,7 +180,7 @@ void RT_VarTable_update(const char *varname, RT_Data_t value)
         return;
     } else {
         int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 31) rt_throw("no such location '$[%d]'", tmp);
+        if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
         if (tmp >= 0) {
             rt_vtable_refcnt_decr(&rt_vtable_temporary[tmp]);
             rt_vtable_refcnt_incr(&value);
@@ -205,7 +211,7 @@ RT_Data_t RT_VarTable_get(const char *varname)
     if (!strcmp(varname, "-")) return rt_vtable_accumulator;
     else {
         int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 31) rt_throw("no such location '$[%d]'", tmp);
+        if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
         if (tmp >= 0) return rt_vtable_temporary[tmp];
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
