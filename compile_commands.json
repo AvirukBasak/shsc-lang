@@ -4,19 +4,40 @@
             "cc",
             "-c",
             "-Wall",
+            "-Wno-unused-label",
             "-Ofast",
             "-I",
             "../include",
             "-I",
+            "../lib",
+            "-I",
             "../src",
+            "-o",
+            "globals-rel.o",
+            "globals.c"
+        ],
+        "directory": "/home/aviruk/git/shsc-lang/src",
+        "file": "globals.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Wno-unused-label",
+            "-Ofast",
+            "-I",
+            "../include",
             "-I",
             "../lib",
+            "-I",
+            "../src",
             "-o",
-            "balancer-rel.o",
-            "balancer.c"
+            "runtime-rel.o",
+            "runtime.c"
         ],
-        "directory": "/home/aviruk/git/scheisse-script/lib/libavl/src",
-        "file": "balancer.c"
+        "directory": "/home/aviruk/git/shsc-lang/src",
+        "file": "runtime.c"
     },
     {
         "arguments": [
@@ -27,90 +48,32 @@
             "-I",
             "../include",
             "-I",
-            "../src",
-            "-I",
             "../lib",
             "-o",
-            "stack-int-rel.o",
-            "stack-int.c"
+            "avl-rel.o",
+            "avl.c"
         ],
-        "directory": "/home/aviruk/git/scheisse-script/src",
-        "file": "stack-int.c"
+        "directory": "/home/aviruk/git/shsc-lang/lib/libavl/src",
+        "file": "avl.c"
     },
     {
         "arguments": [
             "cc",
             "-c",
             "-Wall",
+            "-Wno-unused-label",
             "-Ofast",
             "-I",
             "../include",
             "-I",
-            "../src",
-            "-I",
             "../lib",
-            "-o",
-            "parser-rel.o",
-            "parser.c"
-        ],
-        "directory": "/home/aviruk/git/scheisse-script/src",
-        "file": "parser.c"
-    },
-    {
-        "arguments": [
-            "cc",
-            "-c",
-            "-Wall",
-            "-Ofast",
-            "-I",
-            "../include",
             "-I",
             "../src",
-            "-I",
-            "../lib",
-            "-o",
-            "lexer-rel.o",
-            "lexer.c"
-        ],
-        "directory": "/home/aviruk/git/scheisse-script/src",
-        "file": "lexer.c"
-    },
-    {
-        "arguments": [
-            "cc",
-            "-c",
-            "-Wall",
-            "-Ofast",
-            "-I",
-            "../include",
-            "-I",
-            "../src",
-            "-I",
-            "../lib",
-            "-o",
-            "helperfn-rel.o",
-            "helperfn.c"
-        ],
-        "directory": "/home/aviruk/git/scheisse-script/lib/libavl/src",
-        "file": "helperfn.c"
-    },
-    {
-        "arguments": [
-            "cc",
-            "-c",
-            "-Wall",
-            "-Ofast",
-            "-I",
-            "../include",
-            "-I",
-            "../src",
-            "-I",
-            "../lib",
             "-o",
             "io-rel.o",
             "io.c"
         ],
-        "directory": "/home/aviruk/git/scheisse-script/src",
+        "directory": "/home/aviruk/git/shsc-lang/src",
         "file": "io.c"
     },
     {
@@ -122,14 +85,129 @@
             "-I",
             "../include",
             "-I",
+            "../lib",
+            "-o",
+            "helperfn-rel.o",
+            "helperfn.c"
+        ],
+        "directory": "/home/aviruk/git/shsc-lang/lib/libavl/src",
+        "file": "helperfn.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Wno-unused-label",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../lib",
+            "-I",
             "../src",
+            "-o",
+            "ast2json-rel.o",
+            "ast2json.c"
+        ],
+        "directory": "/home/aviruk/git/shsc-lang/src",
+        "file": "ast2json.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Wno-unused-label",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../lib",
+            "-I",
+            "../src",
+            "-o",
+            "lexer-rel.o",
+            "lexer.c"
+        ],
+        "directory": "/home/aviruk/git/shsc-lang/src",
+        "file": "lexer.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Wno-unused-label",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../lib",
+            "-I",
+            "../src",
+            "-o",
+            "ast-rel.o",
+            "ast.c"
+        ],
+        "directory": "/home/aviruk/git/shsc-lang/src",
+        "file": "ast.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Wno-unused-label",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../lib",
+            "-I",
+            "../src",
+            "-o",
+            "parser.yy-rel.o",
+            "parser.yy.c"
+        ],
+        "directory": "/home/aviruk/git/shsc-lang/src",
+        "file": "parser.yy.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Wno-unused-label",
+            "-Ofast",
+            "-I",
+            "../include",
+            "-I",
+            "../lib",
+            "-I",
+            "../src",
+            "-o",
+            "main-rel.o",
+            "main.c"
+        ],
+        "directory": "/home/aviruk/git/shsc-lang/src",
+        "file": "main.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-Wall",
+            "-Ofast",
+            "-I",
+            "../include",
             "-I",
             "../lib",
             "-o",
-            "avl-rel.o",
-            "avl.c"
+            "balancer-rel.o",
+            "balancer.c"
         ],
-        "directory": "/home/aviruk/git/scheisse-script/lib/libavl/src",
-        "file": "avl.c"
+        "directory": "/home/aviruk/git/shsc-lang/lib/libavl/src",
+        "file": "balancer.c"
     }
 ]
