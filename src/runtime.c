@@ -255,7 +255,8 @@ void RT_AST_eval(const AST_Statements_t *code)
                             break;
                         }
                         if (!pop.loop.is_running) break;
-                        RT_VarTable_create(pop.node.for_block->iter->identifier_name, RT_Data_i64(pop.loop.counter));
+                        RT_VarTable_create(pop.node.for_block->iter->identifier_name,
+                            RT_Data_i64(pop.loop.counter));
                         RT_EvalStack_push(pop);
                         RT_EvalStack_push((const RT_StackEntry_t) {
                             .node.code = pop.node.for_block->statements,
@@ -264,7 +265,23 @@ void RT_AST_eval(const AST_Statements_t *code)
                         break;
                     }
                     case FORBLOCK_TYPE_LIST: {
-                        
+                        /* if (!pop.loop.is_running) {
+                            pop.loop.counter = 0;
+                            pop.loop.is_running = true;
+                        } else pop.loop.counter += 1;
+                        if (pop.loop.counter >= length) {
+                            pop.loop.is_running = false;
+                            pop.loop.counter = 0;
+                            break;
+                        }
+                        if (!pop.loop.is_running) break;
+                        RT_VarTable_create(pop.node.for_block->iter->identifier_name,
+                            RT_DataList_get(list, pop.loop.counter));
+                        RT_EvalStack_push(pop);
+                        RT_EvalStack_push((const RT_StackEntry_t) {
+                            .node.code = pop.node.for_block->statements,
+                            .type = STACKENTRY_TYPE_STATEMENTS
+                        }); */
                         break;
                     }
                 }
