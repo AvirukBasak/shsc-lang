@@ -1,6 +1,8 @@
 #ifndef RUNTIME_H
 #define RUNTIME_H
 
+#include "runtime/data.h"
+#include "runtime/data/list.h"
 typedef struct RT_StackEntry_t RT_StackEntry_t;
 
 enum RT_StackEntryType_t {
@@ -38,7 +40,19 @@ struct RT_StackEntry_t {
     } node;
     /** used by loops in runtime to maintain counter state */
     struct {
-        int64_t counter;
+        union {
+            struct {
+                int64_t start;
+                int64_t end;
+                int64_t by;
+            } range;
+            struct {
+                RT_DataList_t *lst;
+                RT_DataStr_t *str;
+                enum RT_DataType_t type;
+            } iter;
+        } iterable;
+        int64_t i;
         bool is_running;
     } loop;
     enum RT_StackEntryType_t type;

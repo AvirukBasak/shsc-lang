@@ -3,6 +3,9 @@
 
 #include "ast/api.h"
 #include "runtime.h"
+#include "runtime/data.h"
+#include "runtime/data/list.h"
+#include "runtime/io.h"
 #include "runtime/util/evalstack.h"
 
 #include "runtime/data.c.h"
@@ -75,8 +78,8 @@ void RT_AST_eval(const AST_Statements_t *code)
                         const AST_CompoundSt_t *cmpd = st->statement.compound_statement;
                         RT_VarTable_push_scope();
                         RT_EvalStack_push((const RT_StackEntry_t) {
-                            { NULL }, { 0, false }, 
-                            STACKENTRY_TYPE_SCOPE_POP
+                            .node.code = NULL,
+                            .type = STACKENTRY_TYPE_SCOPE_POP
                         });
                         switch (cmpd->type) {
                             case COMPOUNDST_TYPE_IF: {
@@ -89,7 +92,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             case COMPOUNDST_TYPE_WHILE: {
                                 RT_EvalStack_push((const RT_StackEntry_t) {
                                     .node.while_block = cmpd->compound_statement.while_block,
-                                    .loop.counter = 0,
+                                    .loop.i = 0,
                                     .loop.is_running = false,
                                     .type = STACKENTRY_TYPE_WHILE_BLOCK
                                 });
@@ -98,7 +101,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             case COMPOUNDST_TYPE_FOR: {
                                 RT_EvalStack_push((const RT_StackEntry_t) {
                                     .node.for_block = cmpd->compound_statement.for_block,
-                                    .loop.counter = 0,
+                                    .loop.i = 0,
                                     .loop.is_running = false,
                                     .type = STACKENTRY_TYPE_FOR_BLOCK
                                 });
@@ -214,49 +217,60 @@ void RT_AST_eval(const AST_Statements_t *code)
             case STACKENTRY_TYPE_FOR_BLOCK: {
                 switch (pop.node.for_block->type) {
                     case FORBLOCK_TYPE_RANGE: {
-                        RT_EvalStack_push((const RT_StackEntry_t) {
-                            .node.expression = pop.node.for_block->iterable.range.start,
-                            .type = STACKENTRY_TYPE_EXPRESSION
-                        });
-                        RT_Data_t start = RT_Expression_eval();
-                        if (start.type != RT_DATA_TYPE_I64)
-                            rt_throw("for loop range start should be an i64");
-                        RT_EvalStack_push((const RT_StackEntry_t) {
-                            .node.expression = pop.node.for_block->iterable.range.end,
-                            .type = STACKENTRY_TYPE_EXPRESSION
-                        });
-                        RT_Data_t end = RT_Expression_eval();
-                        if (end.type != RT_DATA_TYPE_I64)
-                            rt_throw("for loop range end should be an i64");
-                        RT_Data_t by = RT_Data_null();
-                        if (pop.node.for_block->iterable.range.by) {
+                        /* if loop not running, start it and eval range */
+                        if (!pop.loop.is_running) {
+                            /* calculate start, end and by */
                             RT_EvalStack_push((const RT_StackEntry_t) {
-                                .node.expression = pop.node.for_block->iterable.range.by,
+                                .node.expression = pop.node.for_block->iterable.range.start,
                                 .type = STACKENTRY_TYPE_EXPRESSION
                             });
-                            by = RT_Expression_eval();
-                            if (by.type != RT_DATA_TYPE_I64)
-                                rt_throw("for loop by value should be an i64");
-                        }
-                        const int64_t start_i = start.data.i64;
-                        const int64_t end_i = end.data.i64;
-                        const int64_t by_i = RT_Data_isnull(by) ?
-                            (start_i <= end_i ? +1 : -1) : by.data.i64;
-                        if (!by_i) rt_throw("for loop by value cannot be 0");
-                        if ( (start_i < end_i && by_i < 0) || (start_i > end_i && by_i > 0) )
-                            rt_throw("possible infinite for loop for by value '%" PRId64 "'", by_i);
-                        if (!pop.loop.is_running) {
-                            pop.loop.counter = start_i;
+                            RT_Data_t start = RT_Expression_eval();
+                            if (start.type != RT_DATA_TYPE_I64)
+                                rt_throw("for loop range start should be an i64");
+                            RT_EvalStack_push((const RT_StackEntry_t) {
+                                .node.expression = pop.node.for_block->iterable.range.end,
+                                .type = STACKENTRY_TYPE_EXPRESSION
+                            });
+                            RT_Data_t end = RT_Expression_eval();
+                            if (end.type != RT_DATA_TYPE_I64)
+                                rt_throw("for loop range end should be an i64");
+                            RT_Data_t by = RT_Data_null();
+                            if (pop.node.for_block->iterable.range.by) {
+                                RT_EvalStack_push((const RT_StackEntry_t) {
+                                    .node.expression = pop.node.for_block->iterable.range.by,
+                                    .type = STACKENTRY_TYPE_EXPRESSION
+                                });
+                                by = RT_Expression_eval();
+                                if (by.type != RT_DATA_TYPE_I64)
+                                    rt_throw("for loop by value should be an i64");
+                            }
+                            const int64_t start_i = start.data.i64;
+                            const int64_t end_i = end.data.i64;
+                            const int64_t by_i = RT_Data_isnull(by) ?
+                                (start_i <= end_i ? +1 : -1) : by.data.i64;
+                            if (!by_i) rt_throw("for loop by value cannot be 0");
+                            if ( (start_i < end_i && by_i < 0) || (start_i > end_i && by_i > 0) )
+                                rt_throw("possible infinite for loop for by value '%" PRId64 "'", by_i);
+                            /* add loop info to for loop stack entry */
+                            pop.loop.iterable.range.start = start_i;
+                            pop.loop.iterable.range.end = end_i;
+                            pop.loop.iterable.range.by = by_i;
+                            /* set i to start of range */
+                            pop.loop.i = start_i;
+                            /* start loop */
                             pop.loop.is_running = true;
-                        } else pop.loop.counter += by_i;
-                        if (pop.loop.counter >= end_i) {
+                        }
+                        else pop.loop.i += pop.loop.iterable.range.by;
+                        if ( (pop.loop.iterable.range.by > 0 && pop.loop.i >= pop.loop.iterable.range.end)
+                          || (pop.loop.iterable.range.by < 0 && pop.loop.i <= pop.loop.iterable.range.end) ) {
                             pop.loop.is_running = false;
-                            pop.loop.counter = 0;
                             break;
                         }
+                        /* break, i.e. don't push new loop state */
                         if (!pop.loop.is_running) break;
                         RT_VarTable_create(pop.node.for_block->iter->identifier_name,
-                            RT_Data_i64(pop.loop.counter));
+                            RT_Data_i64(pop.loop.i));
+                        /* push newly modified loop state */
                         RT_EvalStack_push(pop);
                         RT_EvalStack_push((const RT_StackEntry_t) {
                             .node.code = pop.node.for_block->statements,
@@ -265,23 +279,81 @@ void RT_AST_eval(const AST_Statements_t *code)
                         break;
                     }
                     case FORBLOCK_TYPE_LIST: {
-                        /* if (!pop.loop.is_running) {
-                            pop.loop.counter = 0;
+                        /* if loop not running, start it and eval list */
+                        if (!pop.loop.is_running) {
+                            /* convert expression to a data list */
+                            RT_EvalStack_push((const RT_StackEntry_t) {
+                                .node.expression = pop.node.for_block->iterable.lst,
+                                .type = STACKENTRY_TYPE_EXPRESSION
+                            });
+                            RT_Data_t data = RT_Expression_eval();
+                            switch (data.type) {
+                                case RT_DATA_TYPE_LST:
+                                    pop.loop.iterable.iter.type = RT_DATA_TYPE_LST;
+                                    pop.loop.iterable.iter.lst = data.data.lst;
+                                    break;
+                                case RT_DATA_TYPE_STR:
+                                    pop.loop.iterable.iter.type = RT_DATA_TYPE_STR;
+                                    pop.loop.iterable.iter.str = data.data.str;
+                                    break;
+                                default:
+                                    rt_throw("unsupported data type in iterator type for loop");
+                            }
+                            pop.loop.i = 0;
                             pop.loop.is_running = true;
-                        } else pop.loop.counter += 1;
-                        if (pop.loop.counter >= length) {
+                        }
+                        else pop.loop.i += 1;
+                        /* calc lis length */
+                        int64_t length = 0;
+                        switch (pop.loop.iterable.iter.type) {
+                            case RT_DATA_TYPE_LST:
+                                length = RT_DataList_length(pop.loop.iterable.iter.lst);
+                                break;
+                            case RT_DATA_TYPE_STR:
+                                length = RT_DataStr_length(pop.loop.iterable.iter.str);
+                                break;
+                            default:
+                                rt_throw("unsupported data type in iterator type for loop");
+                        }
+                        /* stop loop */
+                        if (pop.loop.i >= length) {
+                            /* destroy list if rc is 0 */
+                            switch (pop.loop.iterable.iter.type) {
+                                case RT_DATA_TYPE_LST:
+                                    if (pop.loop.iterable.iter.lst->rc == 0)
+                                        RT_DataList_destroy(&pop.loop.iterable.iter.lst);
+                                    break;
+                                case RT_DATA_TYPE_STR:
+                                    if (pop.loop.iterable.iter.str->rc == 0)
+                                        RT_DataStr_destroy(&pop.loop.iterable.iter.str);
+                                    break;
+                                default:
+                                    rt_throw("unsupported data type in iterator type for loop");
+                            }
                             pop.loop.is_running = false;
-                            pop.loop.counter = 0;
                             break;
                         }
+                        /* break, i.e. don't push new loop state */
                         if (!pop.loop.is_running) break;
-                        RT_VarTable_create(pop.node.for_block->iter->identifier_name,
-                            RT_DataList_get(list, pop.loop.counter));
+                        /* store current iteration element in loop variable */
+                        switch (pop.loop.iterable.iter.type) {
+                            case RT_DATA_TYPE_LST: RT_VarTable_create(pop.node.for_block->iter->identifier_name,
+                                    RT_DataList_get(pop.loop.iterable.iter.lst, pop.loop.i)
+                                );
+                                break;
+                            case RT_DATA_TYPE_STR: RT_VarTable_create(pop.node.for_block->iter->identifier_name,
+                                    RT_Data_chr(RT_DataStr_get(pop.loop.iterable.iter.str, pop.loop.i))
+                                );
+                                break;
+                            default:
+                                rt_throw("unsupported data type in iterator type for loop");
+                        }
+                        /* push newly modified loop state */
                         RT_EvalStack_push(pop);
                         RT_EvalStack_push((const RT_StackEntry_t) {
                             .node.code = pop.node.for_block->statements,
                             .type = STACKENTRY_TYPE_STATEMENTS
-                        }); */
+                        });
                         break;
                     }
                 }
@@ -293,14 +365,6 @@ void RT_AST_eval(const AST_Statements_t *code)
                     .type = STACKENTRY_TYPE_EXPRESSION
                 });
                 RT_Expression_eval();
-                break;
-            }
-            case STACKENTRY_TYPE_PROC_POP: {
-                const AST_Statement_t *st = RT_VarTable_pop_proc();
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .node.statement = st,
-                    .type = STACKENTRY_TYPE_STATEMENT
-                });
                 break;
             }
             case STACKENTRY_TYPE_SCOPE_POP: {
