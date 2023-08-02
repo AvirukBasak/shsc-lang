@@ -1,0 +1,3 @@
+-I ../include
+-I ../src
+-I ../lib
