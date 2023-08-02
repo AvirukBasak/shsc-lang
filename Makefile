@@ -38,8 +38,8 @@ else
 endif
 
 TARGET_NAME    := $(EXEC_NAME)
-TARGET         := $(TARGET_DIR)/$(TARGET_NAME)-rel.$(EXE_EXTENSION)
-DBG_TARGET     := $(TARGET_DIR)/$(TARGET_NAME)-dbg.$(EXE_EXTENSION)
+TARGET         := $(TARGET_DIR)/$(TARGET_NAME)-rel$(EXE_EXTENSION)
+DBG_TARGET     := $(TARGET_DIR)/$(TARGET_NAME)-dbg$(EXE_EXTENSION)
 
 SOURCES        := $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)) $(shell find $(SRC_DIR)/ -name "*".$(SRCEXT).$(HEADEREXT))
 HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
