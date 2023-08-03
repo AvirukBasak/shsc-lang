@@ -2,8 +2,9 @@
 #define AST_NODES_CREATE_H
 
 #include "ast.h"
+#include "lexer.h"
 
-typedef int AST_Operator_t;
+typedef LexToken AST_Operator_t;
 
 AST_Statements_t    *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement);
 

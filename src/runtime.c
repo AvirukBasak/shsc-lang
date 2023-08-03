@@ -385,5 +385,59 @@ RT_Data_t RT_Expression_eval(void)
         return RT_Data_null();
     }
     const AST_Expression_t *expr = RT_EvalStack_pop().node.expression;
+    switch (expr->op) {
+        case LEXTOK_BANG:
+        case LEXTOK_LOGICAL_UNEQUAL:
+        case LEXTOK_LOGICAL_UNIDENTICAL:
+        case LEXTOK_PERCENT:
+        case LEXTOK_MODULO_ASSIGN:
+        case LEXTOK_AMPERSAND:
+        case LEXTOK_LOGICAL_AND:
+        case LEXTOK_LOGICAL_AND_ASSIGN:
+        case LEXTOK_BITWISE_AND_ASSIGN:
+        case LEXTOK_ASTERIX:
+        case LEXTOK_EXPONENT:
+        case LEXTOK_EXPONENT_ASSIGN:
+        case LEXTOK_MULTIPLY_ASSIGN:
+        case LEXTOK_PLUS:
+        case LEXTOK_INCREMENT:
+        case LEXTOK_ADD_ASSIGN:
+        case LEXTOK_MINUS:
+        case LEXTOK_DECREMENT:
+        case LEXTOK_SUBSTRACT_ASSIGN:
+        case LEXTOK_SARROW:
+        case LEXTOK_DOT:
+        case LEXTOK_FSLASH:
+        case LEXTOK_FLOOR_DIVIDE:
+        case LEXTOK_FLOOR_DIVIDE_ASSIGN:
+        case LEXTOK_DIVIDE_ASSIGN:
+        case LEXTOK_DCOLON:
+        case LEXTOK_LBRACE_ANGULAR:
+        case LEXTOK_BITWISE_LSHIFT:
+        case LEXTOK_BITWISE_LSHIFT_ASSIGN:
+        case LEXTOK_LOGICAL_LESSER_EQUAL:
+        case LEXTOK_ASSIGN:
+        case LEXTOK_LOGICAL_EQUAL:
+        case LEXTOK_LOGICAL_IDENTICAL:
+        case LEXTOK_RBRACE_ANGULAR:
+        case LEXTOK_LOGICAL_GREATER_EQUAL:
+        case LEXTOK_BITWISE_RSHIFT:
+        case LEXTOK_BITWISE_RSHIFT_ASSIGN:
+        case LEXTOK_ARITH_RSHIFT:
+        case LEXTOK_ARITH_RSHIFT_ASSIGN:
+        case LEXTOK_CARET:
+        case LEXTOK_BITWISE_XOR_ASSIGN:
+        case LEXTOK_PIPE:
+        case LEXTOK_BITWISE_OR_ASSIGN:
+        case LEXTOK_PIPEOUT:
+        case LEXTOK_LOGICAL_OR:
+        case LEXTOK_LOGICAL_OR_ASSIGN:
+        case LEXTOK_TILDE:
+        case TOKOP_NOP:
+        case TOKOP_FNCALL:
+        case TOKOP_INDEXING:
+        case TOKOP_TERNARY_COND:
+        case TOKOP_FNARGS_INDEXING:
+    }
     return RT_Data_null();
 }
