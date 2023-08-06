@@ -2,7 +2,9 @@
 #define RT_EVALSTACK_H
 
 #include <stdbool.h>
+
 #include "ast/api.h"
+#include "runtime.h"
 
 /** function to push a entry onto the stack */
 void RT_EvalStack_push(const RT_StackEntry_t entry);

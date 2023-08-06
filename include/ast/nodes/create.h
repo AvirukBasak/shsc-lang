@@ -1,6 +1,8 @@
 #ifndef AST_NODES_CREATE_H
 #define AST_NODES_CREATE_H
 
+#include <stdint.h>
+
 #include "ast.h"
 #include "lexer.h"
 

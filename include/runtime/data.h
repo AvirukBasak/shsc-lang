@@ -2,7 +2,9 @@
 #define RT_DATA_H
 
 #include <stdbool.h>
-#include <inttypes.h>
+#include <stdint.h>
+
+#include "ast.h"
 
 typedef struct RT_Data_t RT_Data_t;
 typedef struct RT_DataStr_t RT_DataStr_t;
