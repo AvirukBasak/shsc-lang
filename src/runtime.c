@@ -65,6 +65,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                     case STATEMENT_TYPE_RETURN: {
                         RT_EvalStack_push((const RT_StackEntry_t) {
                             .entry.state.xp.expr = st->statement.expression,
+                            .entry.state.xp.lhs = RT_Data_null(),
+                            .entry.state.xp.rhs = RT_Data_null(),
+                            .entry.state.xp.extra = RT_Data_null(),
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
                         RT_VarTable_update("-", RT_Expression_eval());
@@ -127,6 +130,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                     case ASSIGNMENT_TYPE_TOVOID: {
                         RT_EvalStack_push((const RT_StackEntry_t) {
                             .entry.state.xp.expr = pop.entry.node.assignment->rhs,
+                            .entry.state.xp.lhs = RT_Data_null(),
+                            .entry.state.xp.rhs = RT_Data_null(),
+                            .entry.state.xp.extra = RT_Data_null(),
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
                         RT_VarTable_update("-", RT_Expression_eval());
@@ -136,6 +142,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                         const char *idf = pop.entry.node.assignment->lhs->identifier_name;
                         RT_EvalStack_push((const RT_StackEntry_t) {
                             .entry.state.xp.expr = pop.entry.node.assignment->rhs,
+                            .entry.state.xp.lhs = RT_Data_null(),
+                            .entry.state.xp.rhs = RT_Data_null(),
+                            .entry.state.xp.extra = RT_Data_null(),
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
                         RT_VarTable_create(idf, RT_Expression_eval());
@@ -147,6 +156,9 @@ void RT_AST_eval(const AST_Statements_t *code)
             case STACKENTRY_ASTNODE_TYPE_IF_BLOCK: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = pop.entry.node.if_block->condition,
+                    .entry.state.xp.lhs = RT_Data_null(),
+                    .entry.state.xp.rhs = RT_Data_null(),
+                    .entry.state.xp.extra = RT_Data_null(),
                     .type = STACKENTRY_STATES_TYPE_EXPR
                 });
                 bool cond =  RT_Data_tobool(RT_Expression_eval());
@@ -177,6 +189,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                 /* takes care of [ else if condition then nwp statements ] */
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = pop.entry.node.else_block->condition,
+                    .entry.state.xp.lhs = RT_Data_null(),
+                    .entry.state.xp.rhs = RT_Data_null(),
+                    .entry.state.xp.extra = RT_Data_null(),
                     .type = STACKENTRY_STATES_TYPE_EXPR
                 });
                 bool cond = RT_Data_tobool(RT_Expression_eval());
@@ -203,6 +218,9 @@ void RT_AST_eval(const AST_Statements_t *code)
             case STACKENTRY_ASTNODE_TYPE_WHILE_BLOCK: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = pop.entry.node.while_block->condition,
+                    .entry.state.xp.lhs = RT_Data_null(),
+                    .entry.state.xp.rhs = RT_Data_null(),
+                    .entry.state.xp.extra = RT_Data_null(),
                     .type = STACKENTRY_STATES_TYPE_EXPR
                 });
                 bool cond = RT_Data_tobool(RT_Expression_eval());
@@ -223,6 +241,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                             /* calculate start, end and by */
                             RT_EvalStack_push((const RT_StackEntry_t) {
                                 .entry.state.xp.expr = pop.entry.node.for_block->iterable.range.start,
+                                .entry.state.xp.lhs = RT_Data_null(),
+                                .entry.state.xp.rhs = RT_Data_null(),
+                                .entry.state.xp.extra = RT_Data_null(),
                                 .type = STACKENTRY_STATES_TYPE_EXPR
                             });
                             RT_Data_t start = RT_Expression_eval();
@@ -230,6 +251,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                                 rt_throw("for loop range start should be an i64");
                             RT_EvalStack_push((const RT_StackEntry_t) {
                                 .entry.state.xp.expr = pop.entry.node.for_block->iterable.range.end,
+                                .entry.state.xp.lhs = RT_Data_null(),
+                                .entry.state.xp.rhs = RT_Data_null(),
+                                .entry.state.xp.extra = RT_Data_null(),
                                 .type = STACKENTRY_STATES_TYPE_EXPR
                             });
                             RT_Data_t end = RT_Expression_eval();
@@ -239,6 +263,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                             if (pop.entry.node.for_block->iterable.range.by) {
                                 RT_EvalStack_push((const RT_StackEntry_t) {
                                     .entry.state.xp.expr = pop.entry.node.for_block->iterable.range.by,
+                                    .entry.state.xp.lhs = RT_Data_null(),
+                                    .entry.state.xp.rhs = RT_Data_null(),
+                                    .entry.state.xp.extra = RT_Data_null(),
                                     .type = STACKENTRY_STATES_TYPE_EXPR
                                 });
                                 by = RT_Expression_eval();
@@ -285,6 +312,9 @@ void RT_AST_eval(const AST_Statements_t *code)
                             /* convert expression to a data list */
                             RT_EvalStack_push((const RT_StackEntry_t) {
                                 .entry.state.xp.expr = pop.entry.node.for_block->iterable.lst,
+                                .entry.state.xp.lhs = RT_Data_null(),
+                                .entry.state.xp.rhs = RT_Data_null(),
+                                .entry.state.xp.extra = RT_Data_null(),
                                 .type = STACKENTRY_STATES_TYPE_EXPR
                             });
                             RT_Data_t data = RT_Expression_eval();
@@ -363,6 +393,9 @@ void RT_AST_eval(const AST_Statements_t *code)
             case STACKENTRY_STATES_TYPE_EXPR: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = pop.entry.node.expression,
+                    .entry.state.xp.lhs = RT_Data_null(),
+                    .entry.state.xp.rhs = RT_Data_null(),
+                    .entry.state.xp.extra = RT_Data_null(),
                     .type = STACKENTRY_STATES_TYPE_EXPR
                 });
                 RT_Expression_eval();
@@ -400,7 +433,10 @@ RT_Data_t RT_Expression_eval(void)
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
         switch (expr->op) {
-            case LEXTOK_BANG:
+            case LEXTOK_BANG: {
+
+                break;
+            }
             case LEXTOK_LOGICAL_UNEQUAL:
             case LEXTOK_PERCENT:
             case LEXTOK_MODULO_ASSIGN:
