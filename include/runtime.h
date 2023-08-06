@@ -1,8 +1,8 @@
 #ifndef RUNTIME_H
 #define RUNTIME_H
 
+#include "ast.h"
 #include "runtime/data.h"
-#include "runtime/data/list.h"
 
 typedef struct RT_StackEntry_t RT_StackEntry_t;
 
@@ -76,8 +76,8 @@ union RT_StackEntry_States_t {
 /* specialised union of types to be pushed in runtime stack */
 struct RT_StackEntry_t {
     union {
-        struct RT_StackEntry_AST_Node_t node;
-        struct RT_StackEntry_States_t state;
+        union RT_StackEntry_AST_Node_t node;
+        union RT_StackEntry_States_t state;
     } entry;
     enum RT_StackEntryType_t type;
 };

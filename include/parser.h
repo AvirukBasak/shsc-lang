@@ -1,8 +1,9 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
-#include <inttypes.h>
 
 extern FILE *yyin;
 

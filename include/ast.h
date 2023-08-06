@@ -1,7 +1,6 @@
 #ifndef AST_H
 #define AST_H
 
-#include <inttypes.h>
 #include <stdbool.h>
 
 typedef struct AST_Statements_t           AST_Statements_t;

@@ -2,12 +2,8 @@
 #define LEXER_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
 
-#include "ast.h"
 #include "parser.yy.h"
 
 #define LEX_MAX_BUFFALLOC_SZ   (64)
