@@ -8,7 +8,7 @@ struct RT_DataStr_t {
     int64_t rc;
 };
 
-RT_DataStr_t *RT_DataStr_init();
+RT_DataStr_t *RT_DataStr_init(const char *s)
 int64_t RT_DataStr_length(const RT_DataStr_t *str);
 void RT_DataStr_destroy(RT_DataStr_t **ptr);
 void RT_DataStr_append(RT_DataStr_t *str, char ch);

@@ -4,13 +4,13 @@
 #include <stdbool.h>
 #include "ast/api.h"
 
-/** function to push a node onto the stack */
-void RT_EvalStack_push(const RT_StackEntry_t node);
+/** function to push a entry onto the stack */
+void RT_EvalStack_push(const RT_StackEntry_t entry);
 
-/** function to pop a node from the stack */
+/** function to pop a entry from the stack */
 RT_StackEntry_t RT_EvalStack_pop();
 
-/** function to get the top node from the stack without popping it */
+/** function to get the top entry from the stack without popping it */
 RT_StackEntry_t RT_EvalStack_top();
 
 /** function to check if the stack is empty */

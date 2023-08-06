@@ -44,6 +44,7 @@ RT_Data_t RT_Data_interp_str(RT_DataStr_t *str);
 RT_Data_t RT_Data_list(RT_DataList_t *lst);
 RT_Data_t RT_Data_any(void *ptr);
 RT_Data_t RT_Data_null(void);
+RT_Data_t RT_Data_Literal(const AST_Literal_t *lit);
 void RT_Data_destroy(RT_Data_t *var);
 
 bool RT_Data_isnull(const RT_Data_t var);
