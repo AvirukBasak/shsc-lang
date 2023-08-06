@@ -1,9 +1,19 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+/* the following includes are absolutely needed as this
+   file acts as an all-in-one header for all ast functions
+   - #include <stdbool.h>
+   - #include <stdint.h>
+   - #include "ast.h"
+   - #include "parser.yy.h"
+   even if your IDE screams of unused-includes, DO NOT remove them */
+
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 
+#include "ast.h"
 #include "parser.yy.h"
 
 #define LEX_MAX_BUFFALLOC_SZ   (64)
