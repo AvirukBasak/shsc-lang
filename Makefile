@@ -76,6 +76,7 @@ $(DBG_OBJECTS): $(SOURCES) $(HEADERS) $(PARSER)
 	@cd $(SRC_DIR) && $(MAKE) dbg
 
 ## parser source
+bison: $(PARSER)
 $(PARSER): $(SRC_DIR)/parser.y
 	bison --defines=$(INCLUDE_DIR)/parser.yy.h -o $(SRC_DIR)/parser.yy.c $(SRC_DIR)/parser.y
 
