@@ -1,11 +1,10 @@
 #ifndef PARSER_PARSE_CHR_C_H
 #define PARSER_PARSE_CHR_C_H
 
-#include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "globals.h"
 #include "parser.h"
 
 char parse_char(const char *str)

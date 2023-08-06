@@ -1,6 +1,9 @@
 #ifndef LEXER_MATCH_KEYWORDS_C_H
 #define LEXER_MATCH_KEYWORDS_C_H
 
+#include <ctype.h>
+#include <string.h>
+
 #include "lexer.h"
 
 LexToken lex_match_keywords(FILE *f, char ch)

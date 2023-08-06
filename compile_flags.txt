@@ -1,0 +1,6 @@
+-Wall
+-Wno-unused-label
+-Ofast
+-Iinclude
+-Ilib
+-Isrc

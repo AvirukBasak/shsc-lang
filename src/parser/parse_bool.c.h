@@ -1,12 +1,10 @@
 #ifndef PARSER_PARSE_BOOL_C_H
 #define PARSER_PARSE_BOOL_C_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
-#include "globals.h"
+#include "lexer.h"
 #include "parser.h"
 
 bool parse_bool(const char *str)

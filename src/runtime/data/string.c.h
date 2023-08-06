@@ -1,17 +1,26 @@
 #ifndef RT_DATA_STRING_C_H
 #define RT_DATA_STRING_C_H
 
+#include <inttypes.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "io.h"
+#include "errcodes.h"
 #include "runtime/data.h"
-#include "runtime/data/list.h"
+#include "runtime/data/string.h"
 #include "runtime/io.h"
 
-RT_DataStr_t *RT_DataStr_init()
+RT_DataStr_t *RT_DataStr_init(const char *s)
 {
     RT_DataStr_t *str = (RT_DataStr_t*) malloc(sizeof(RT_DataStr_t));
     if (!str) io_errndie("RT_DataStr_init:" ERR_MSG_MALLOCFAIL);
-    str->var = NULL;
-    str->length = 0;
-    str->capacity = 0;
+    size_t len = !s ? 0 : strlen(s);
+    str->var = !s ? NULL : (char*) malloc(len * sizeof(char));
+    str->length = !s ? 0 : len;
+    str->capacity = !s ?  0 : len;
     /* rc is kept at 0 unless the runtime assigns
        a variable to the data */
     str->rc = 0;

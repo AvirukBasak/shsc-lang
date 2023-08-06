@@ -30,10 +30,16 @@ LIBRARIES      := $(LIB_DIR)/libavl.a
 DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a
 
 ## targets
+# Detect the operating system
+ifeq ($(OS),Windows_NT)
+	EXE_EXTENSION := .exe
+else
+	EXE_EXTENSION :=
+endif
 
 TARGET_NAME    := $(EXEC_NAME)
-TARGET         := $(TARGET_DIR)/$(TARGET_NAME)-rel
-DBG_TARGET     := $(TARGET_DIR)/$(TARGET_NAME)-dbg
+TARGET         := $(TARGET_DIR)/$(TARGET_NAME)-rel$(EXE_EXTENSION)
+DBG_TARGET     := $(TARGET_DIR)/$(TARGET_NAME)-dbg$(EXE_EXTENSION)
 
 SOURCES        := $(shell find $(SRC_DIR)/ -name "*."$(SRCEXT)) $(shell find $(SRC_DIR)/ -name "*".$(SRCEXT).$(HEADEREXT))
 HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
@@ -58,7 +64,7 @@ $(TARGET): $(REQ_DIRS) $(LIBRARIES) $(OBJECTS)
 PREFIX_SUBSTRING := $(shell echo $${PREFIX} | cut -c 1-27)
 
 install: $(TARGET)
-	cp $(TARGET) $(PREFIX_SUBSTRING)/usr/bin/$(EXEC_NAME)
+	cp $(TARGET) $(PREFIX_SUBSTRING)/usr/bin/$(EXEC_NAME)$(EXE_EXTENSION)
 
 ## debug build
 

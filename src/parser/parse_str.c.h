@@ -1,9 +1,13 @@
 #ifndef PARSER_PARSE_STR_C_H
 #define PARSER_PARSE_STR_C_H
 
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "io.h"
 #include "errcodes.h"
 #include "parser.h"
-#include "io.h"
 
 /** Calls strdup, remember to free */
 char *parse_str(const char *str)

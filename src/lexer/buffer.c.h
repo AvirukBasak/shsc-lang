@@ -1,6 +1,8 @@
 #ifndef LEXER_BUFFER_C_H
 #define LEXER_BUFFER_C_H
 
+#include <stdlib.h>
+
 #include "errcodes.h"
 #include "lexer.h"
 #include "io.h"

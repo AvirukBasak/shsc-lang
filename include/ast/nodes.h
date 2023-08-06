@@ -1,13 +1,21 @@
 #ifndef AST_NODES_H
 #define AST_NODES_H
 
+/* the following includes are absolutely needed
+   - #include "ast.h"
+   - #include "lexer.h"
+   - #include "nodes/create.h"
+   - #include "nodes/destroy.h"
+   - #include "nodes/enums.h"
+   even if your IDE screams of unused-includes, DO NOT remove them */
+
 #include "ast.h"
 #include "lexer.h"
 #include "nodes/create.h"
 #include "nodes/destroy.h"
 #include "nodes/enums.h"
 
-typedef int AST_Operator_t;
+typedef LexToken AST_Operator_t;
 
 struct AST_Statements_t {
     AST_Statements_t *statements;

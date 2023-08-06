@@ -2,7 +2,6 @@
 #define RT_VARTABLE_H
 
 #include <stdbool.h>
-#include <inttypes.h>
 
 #include "ast.h"
 #include "data.h"

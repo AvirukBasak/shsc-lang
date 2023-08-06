@@ -2,8 +2,10 @@
 #define AST_UTIL_MODULE_STACK_C_H
 
 #include <stdlib.h>
-#include "ast/nodes.h"
-#include "ast/util.h"
+
+#include "ast.h"
+#include "ast/nodes/destroy.h"
+#include "ast/util/procedure_map.h"
 #include "errcodes.h"
 #include "io.h"
 

@@ -11,14 +11,15 @@
 #define AST_UTIL_PROCEDURE_MAP_C_H
 
 #include <stdlib.h>
-#include "tlib/khash/khash.h"
 
 #include "ast/nodes.h"
-#include "ast/util.h"
+#include "ast/util/module_stack.h"
+#include "ast/util/procedure_map.h"
 #include "errcodes.h"
 #include "globals.h"
 #include "io.h"
 #include "parser.h"
+#include "tlib/khash/khash.h"
 
 /* Define the hash map types */
 
@@ -83,7 +84,7 @@ AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get()
             key_list.module[i].module_name = module->module_name;
             key_list.module[i].proc_cnt = kh_size(module->procmap);
             /* Allocate memory for the procedure list */
-            key_list.module[i].lst = malloc(key_list.module[i].proc_cnt * sizeof(*key_list.module[i].lst));
+            key_list.module[i].lst = malloc(key_list.module[i].proc_cnt * sizeof(key_list.module[i].lst));
             if (!key_list.module[i].lst) io_errndie("AST_ProcedureMap_KeyList_get:" ERR_MSG_MALLOCFAIL);
             /* Iterate over the procedure map and populate the procedure list */
             int j = 0;

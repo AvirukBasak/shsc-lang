@@ -1,7 +1,7 @@
 #ifndef IO_H
 #define IO_H
 
-#include <stdio.h>
+#include <stddef.h>
 
 long long io_get_filesize(const char *filepath);
 char **io_read_lines(const char *filepath, size_t *line_cnt);

@@ -1,7 +1,6 @@
 #ifndef RT_VARTABLE_C_H
 #define RT_VARTABLE_C_H
 
-#include <inttypes.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -10,8 +9,10 @@
 #include "ast/api.h"
 #include "io.h"
 #include "errcodes.h"
-#include "runtime.h"
 #include "runtime/data.h"
+#include "runtime/data/list.h"
+#include "runtime/data/string.h"
+#include "runtime/io.h"
 #include "runtime/vartable.h"
 
 #define RT_VTABLE_TEMPORARY_SIZE (32)

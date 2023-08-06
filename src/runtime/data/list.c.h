@@ -1,8 +1,17 @@
 #ifndef RT_DATA_LIST_C_H
 #define RT_DATA_LIST_C_H
 
+#include <inttypes.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "io.h"
+#include "errcodes.h"
 #include "runtime/data.h"
 #include "runtime/data/list.h"
+#include "runtime/data/string.h"
 #include "runtime/io.h"
 
 RT_DataList_t *RT_DataList_init()

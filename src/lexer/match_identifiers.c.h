@@ -1,6 +1,7 @@
 #ifndef LEXER_MATCH_IDENTIFIERS_C_H
 #define LEXER_MATCH_IDENTIFIERS_C_H
 
+#include <ctype.h>
 #include "lexer.h"
 
 LexToken lex_match_identifiers(FILE *f, char ch)

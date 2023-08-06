@@ -5,17 +5,28 @@
 #ifndef AST_API_H
 #define AST_API_H
 
-#include <inttypes.h>
 #include <stdbool.h>
 
+/* the following includes are absolutely needed as this
+   file acts as an all-in-one header for all ast functions
+   - #include "ast.h"
+   - #include "lexer.h"
+   - #include "nodes/create.h"
+   - #include "nodes/destroy.h"
+   - #include "nodes/enums.h"
+   - #include "util/module_stack.h"
+   - #include "util/procedure_map.h"
+   even if your IDE screams of unused-includes, DO NOT remove them */
+
 #include "ast.h"
+#include "lexer.h"
 #include "nodes/create.h"
 #include "nodes/destroy.h"
 #include "nodes/enums.h"
 #include "util/module_stack.h"
 #include "util/procedure_map.h"
 
-typedef int AST_Operator_t;
+typedef LexToken AST_Operator_t;
 
 struct AST_Statements_t {
     const AST_Statements_t *statements;
