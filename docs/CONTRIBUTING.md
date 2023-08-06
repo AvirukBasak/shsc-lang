@@ -13,6 +13,7 @@ Before you get started, please take a moment to read and follow these guidelines
 - [Naming Conventions](#naming-conventions)
 - [Memory Management](#memory-management)
 - [Address Sanitizer](#address-sanitizer)
+- [Clangd LSP](#clangd)
 - [Contributing Guidelines](#contributing-guidelines)
 - [Lexer Guidelines](LexerInterface.md)
 - [Language Spec](LanguageSpec.md)
@@ -70,6 +71,14 @@ Make sure to run the address sanitizer during development and testing.
 The Makefile has a target `run-sanitize` for this purpose.
 
 Debug builds are built with `-fsanitize=address`.
+
+Notes that you cannot run the address sanitizer on Windows.
+
+## Clangd
+This section will apply to you only if you're using `clangd` LSP.
+
+You'll need to ignore clangd errors and warnings in `bison` generated files.
+Clangd will use the `compile_flags.txt` file.
 
 ## Contributing Guidelines
 To contribute to Scheisse Script, please follow these guidelines:
