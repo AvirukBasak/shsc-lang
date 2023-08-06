@@ -1,8 +1,16 @@
 #ifndef RT_DATA_STRING_C_H
 #define RT_DATA_STRING_C_H
 
+#include <inttypes.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "io.h"
+#include "errcodes.h"
 #include "runtime/data.h"
-#include "runtime/data/list.h"
+#include "runtime/data/string.h"
 #include "runtime/io.h"
 
 RT_DataStr_t *RT_DataStr_init(const char *s)

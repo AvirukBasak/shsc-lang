@@ -1,7 +1,6 @@
 #ifndef PARSER_PARSE_F64_C_H
 #define PARSER_PARSE_F64_C_H
 
-#include <ctype.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>

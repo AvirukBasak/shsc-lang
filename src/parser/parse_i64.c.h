@@ -1,12 +1,11 @@
 #ifndef PARSER_PARSE_I64_C_H
 #define PARSER_PARSE_I64_C_H
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <errno.h>
-#include <inttypes.h>
 
 #include "parser.h"
 

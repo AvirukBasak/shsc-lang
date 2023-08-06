@@ -1,6 +1,7 @@
 #ifndef LEXER_IO_C_H
 #define LEXER_IO_C_H
 
+#include <ctype.h>
 #include "lexer.h"
 
 char lex_getc(FILE *f)

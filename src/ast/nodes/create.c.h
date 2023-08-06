@@ -6,7 +6,6 @@
 #include "ast/nodes.h"
 #include "errcodes.h"
 #include "io.h"
-#include "parser.h"
 
 AST_Statements_t *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement)
 {

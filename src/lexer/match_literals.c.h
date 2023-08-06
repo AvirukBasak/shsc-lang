@@ -1,6 +1,9 @@
 #ifndef LEXER_MATCH_LITERALS_C_H
 #define LEXER_MATCH_LITERALS_C_H
 
+#include <ctype.h>
+#include <string.h>
+
 #include "lexer.h"
 
 LexToken lex_match_bool(FILE *f, char ch)
