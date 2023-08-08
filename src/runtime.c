@@ -432,11 +432,9 @@ RT_Data_t RT_Expression_eval(void)
     while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
+        /* all operands evaluated, now perform operations */
         switch (expr->op) {
-            case LEXTOK_BANG: {
-
-                break;
-            }
+            case LEXTOK_BANG:
             case LEXTOK_LOGICAL_UNEQUAL:
             case LEXTOK_PERCENT:
             case LEXTOK_MODULO_ASSIGN:
@@ -479,15 +477,6 @@ RT_Data_t RT_Expression_eval(void)
             case LEXTOK_LOGICAL_OR:
             case LEXTOK_LOGICAL_OR_ASSIGN:
             case LEXTOK_TILDE:
-            case TOKOP_NOP: {
-                switch (expr->lhs_type) {
-                    case EXPR_TYPE_LITERAL:
-                        RT_VarTable_update("-", RT_Data_Literal(expr->lhs.literal));
-                    case EXPR_TYPE_IDENTIFIER:
-                        RT_VarTable_update("-", RT_VarTable_get(expr->lhs.variable->identifier_name));
-                    default: rt_throw("RT_Expression_eval: invalid `lhs_type` for NOP");
-                }
-            }
             case TOKOP_FNCALL:
             case TOKOP_INDEXING:
             case TOKOP_TERNARY_COND:

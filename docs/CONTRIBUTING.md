@@ -80,6 +80,13 @@ This section will apply to you only if you're using `clangd` LSP.
 You'll need to ignore clangd errors and warnings in `bison` generated files.
 Clangd will use the `compile_flags.txt` file.
 
+## Expression AST
+The functions `AST_Expression_Literal()`, `AST_Expression_Identifier()` and `AST_Expression_CommaSepList()` produce an `AST_Expression_t` with `op` set to `TOKOP_NOP`.
+
+However `AST_Expression()` extracts out the data from the returned `AST_Expression_t` and stores it inside the internal union `AST_ExpressionUnion_t`.
+
+Therefore, There's absolutely no way you'll ever find the `TOKOP_NOP` in any `AST_Expression_t` in the finally generated AST.
+
 ## Contributing Guidelines
 To contribute to Scheisse Script, please follow these guidelines:
 1. Fork the repository and create a new branch for your contribution.
