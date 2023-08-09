@@ -432,9 +432,76 @@ RT_Data_t RT_Expression_eval(void)
     while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
+        /* lhs exists but is not evaluated yet */
+        if (expr->lhs_type != EXPR_TYPE_NULL
+                && RT_Data_isnull(pop.entry.state.xp.lhs)) {
+            /* if accumulator has data, store it in operand */
+            if (!RT_Data_isnull(RT_VarTable_get("-"))) {
+                pop.entry.state.xp.lhs = RT_VarTable_get("-");
+                RT_VarTable_update("-", RT_Data_null());
+                /* ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯ */
+                goto RT_Expression_eval_rhs;
+            }
+            /* if accumulator is null, push lhs for evaluation */
+            RT_EvalStack_push((const RT_StackEntry_t) {
+                .entry.state.xp.expr = expr->lhs.expr,
+                .entry.state.xp.lhs = RT_Data_null(),
+                .entry.state.xp.rhs = RT_Data_null(),
+                .entry.state.xp.extra = RT_Data_null(),
+                .type = STACKENTRY_STATES_TYPE_EXPR
+            });
+            continue;
+        }
+RT_Expression_eval_rhs:
+        /* rhs exists but is not evaluated yet */
+        if (expr->rhs_type != EXPR_TYPE_NULL
+                && RT_Data_isnull(pop.entry.state.xp.rhs)) {
+            /* if accumulator has data, store it in operand */
+            if (!RT_Data_isnull(RT_VarTable_get("-"))) {
+                pop.entry.state.xp.rhs = RT_VarTable_get("-");
+                RT_VarTable_update("-", RT_Data_null());
+                /* ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯ */
+                goto RT_Expression_eval_extra;
+            }
+            /* if accumulator is null, push rhs for evaluation */
+            RT_EvalStack_push((const RT_StackEntry_t) {
+                .entry.state.xp.expr = expr->rhs.expr,
+                .entry.state.xp.lhs = RT_Data_null(),
+                .entry.state.xp.rhs = RT_Data_null(),
+                .entry.state.xp.extra = RT_Data_null(),
+                .type = STACKENTRY_STATES_TYPE_EXPR
+            });
+            continue;
+        }
+RT_Expression_eval_extra:
+        /* extra operand exists but is not evaluated yet */
+        if (expr->condition_type != EXPR_TYPE_NULL
+                && RT_Data_isnull(pop.entry.state.xp.extra)) {
+            /* if accumulator has data, store it in operand */
+            if (!RT_Data_isnull(RT_VarTable_get("-"))) {
+                pop.entry.state.xp.extra = RT_VarTable_get("-");
+                RT_VarTable_update("-", RT_Data_null());
+                /* ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯ */
+                goto RT_Expression_eval_switch;
+            }
+            /* if accumulator is null, push extra operand for evaluation */
+            RT_EvalStack_push((const RT_StackEntry_t) {
+                .entry.state.xp.expr = expr->condition.expr,
+                .entry.state.xp.lhs = RT_Data_null(),
+                .entry.state.xp.rhs = RT_Data_null(),
+                .entry.state.xp.extra = RT_Data_null(),
+                .type = STACKENTRY_STATES_TYPE_EXPR
+            });
+            continue;
+        }
+RT_Expression_eval_switch:
         /* all operands evaluated, now perform operations */
         switch (expr->op) {
-            case LEXTOK_BANG:
+            case LEXTOK_BANG: {
+                switch (pop.entry.state.xp.lhs.type) {
+                }
+                break;
+            }
             case LEXTOK_LOGICAL_UNEQUAL:
             case LEXTOK_PERCENT:
             case LEXTOK_MODULO_ASSIGN:
@@ -486,6 +553,7 @@ RT_Data_t RT_Expression_eval(void)
             case LEXTOK_EOF:
             case YYerror:
             case YYUNDEF:
+            case TOKOP_NOP:
             case LEXTOK_LOGICAL_UNIDENTICAL:
             case LEXTOK_DQUOTE:
             case LEXTOK_DOLLAR:
