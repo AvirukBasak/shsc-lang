@@ -3,6 +3,7 @@
 
 #include "ast/api.h"
 #include "runtime.h"
+#include "ast/nodes/enums.h"
 #include "lexer.h"
 #include "runtime/data.h"
 #include "runtime/data/list.h"
@@ -21,7 +22,7 @@ int rt_currline = 0;
 
 void RT_AST_eval(const AST_Statements_t *code);
 RT_Data_t RT_Expression_eval(void);
-void RT_Expression_eval_data(const AST_Expression_t *expr, RT_StackEntry_t *pop);
+bool RT_Expression_eval_data(const AST_Expression_t *expr, RT_StackEntry_t *pop);
 
 void rt_exec(void)
 {
@@ -494,121 +495,51 @@ RT_Data_t RT_Expression_eval(void)
     return RT_VarTable_get("-");
 }
 
-RT_EXPRESSION_EVAL_LITERAL(operand, pop, next) do {
-    /* operand exists but is not evaluated yet */
-    if (expr->operand##_type != EXPR_TYPE_NULL
-            && RT_Data_isnull(pop->entry.state.xp.##operand)) {
-        /* if accumulator has data, store it in operand */
-        if (!RT_Data_isnull(RT_VarTable_get("-"))) {
-            pop->entry.state.xp.##rhs = RT_VarTable_get("-");
-            RT_VarTable_update("-", RT_Data_null());
-            /* ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯ */
-            goto RT_Expression_eval_##next;
-        }
-        RT_EvalStack_push(*pop);
-        /* if accumulator is null, push rhs for evaluation */
-        switch (expr->operand##_type) {
-            case EXPR_TYPE_EXPRESSION:
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = expr->##operand##.expr,
-                    .entry.state.xp.lhs = RT_Data_null(),
-                    .entry.state.xp.rhs = RT_Data_null(),
-                    .entry.state.xp.extra = RT_Data_null(),
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                break;
-            case EXPR_TYPE_LITERAL:
-                if (expr->rhs.literal->type != RT_DATA_TYPE_LST)
-                    RT_VarTable_update("-", RT_Data_Literal(expr->rhs.literal));
-                else RT_VarTable_update("-", RT_Expression_eval_lst(expr->rhs.literal->data.lst));
-                break;
-            case EXPR_TYPE_IDENTIFIER:
-                RT_VarTable_get(expr->rhs.variable->indentifier_name);
-                break;
-        }
-        return true;
-    }
+#define RT_EXPRESSION_EVAL_LITERAL(oprnd, oprnd_type, pop, pop_oprnd) do { \
+    /* operand exists but is not evaluated yet */                          \
+    if (oprnd_type != EXPR_TYPE_NULL && RT_Data_isnull(pop_oprnd)) {       \
+        /* if accumulator has data, store it in operand */                 \
+        if (!RT_Data_isnull(RT_VarTable_get("-"))) {                       \
+            pop_oprnd = RT_VarTable_get("-");                              \
+            RT_VarTable_update("-", RT_Data_null());                       \
+            break;                                                         \
+        }                                                                  \
+        RT_EvalStack_push(*pop);                                           \
+        /* if accumulator is null, push rhs for evaluation */              \
+        switch (oprnd_type) {                                              \
+            case EXPR_TYPE_EXPRESSION:                                     \
+                RT_EvalStack_push((const RT_StackEntry_t) {                \
+                    .entry.state.xp.expr = oprnd.expr,                     \
+                    .entry.state.xp.lhs = RT_Data_null(),                  \
+                    .entry.state.xp.rhs = RT_Data_null(),                  \
+                    .entry.state.xp.extra = RT_Data_null(),                \
+                    .type = STACKENTRY_STATES_TYPE_EXPR                    \
+                });                                                        \
+                break;                                                     \
+            case EXPR_TYPE_LITERAL:                                        \
+                if (oprnd.literal->type != RT_DATA_TYPE_LST)               \
+                    RT_VarTable_update("-", RT_Data_Literal(               \
+                        oprnd.literal));                                   \
+                else                                                       \
+                    RT_VarTable_update("-", RT_Expression_eval_lst(        \
+                        oprnd.literal->data.lst));                         \
+                break;                                                     \
+            case EXPR_TYPE_IDENTIFIER:                                     \
+                RT_VarTable_get(oprnd.variable->identifier_name);          \
+                break;                                                     \
+            default: break;                                                \
+        }                                                                  \
+        return true;                                                       \
+    }                                                                      \
 } while (0)
 
 bool RT_Expression_eval_data(const AST_Expression_t *expr, RT_StackEntry_t *pop)
 {
     /* lhs exists but is not evaluated yet */
-    if (expr->lhs_type != EXPR_TYPE_NULL
-            && RT_Data_isnull(pop->entry.state.xp.lhs)) {
-        /* if accumulator has data, store it in operand */
-        if (!RT_Data_isnull(RT_VarTable_get("-"))) {
-            pop->entry.state.xp.lhs = RT_VarTable_get("-");
-            RT_VarTable_update("-", RT_Data_null());
-            /* ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯ */
-            goto RT_Expression_eval_rhs;
-        }
-        RT_EvalStack_push(*pop);
-        /* if accumulator is null, push lhs for evaluation */
-        if (expr->lhs_type == EXPR_TYPE_EXPRESSION) RT_EvalStack_push((const RT_StackEntry_t) {
-            .entry.state.xp.expr = expr->lhs.expr,
-            .entry.state.xp.lhs = RT_Data_null(),
-            .entry.state.xp.rhs = RT_Data_null(),
-            .entry.state.xp.extra = RT_Data_null(),
-            .type = STACKENTRY_STATES_TYPE_EXPR
-        });
-        return true;
-    }
-RT_Expression_eval_rhs:
+    RT_EXPRESSION_EVAL_LITERAL(expr->lhs, expr->lhs_type, pop, pop->entry.state.xp.lhs);
     /* rhs exists but is not evaluated yet */
-    if (expr->rhs_type != EXPR_TYPE_NULL
-            && RT_Data_isnull(pop->entry.state.xp.rhs)) {
-        /* if accumulator has data, store it in operand */
-        if (!RT_Data_isnull(RT_VarTable_get("-"))) {
-            pop->entry.state.xp.rhs = RT_VarTable_get("-");
-            RT_VarTable_update("-", RT_Data_null());
-            /* ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯ */
-            goto RT_Expression_eval_extra;
-        }
-        RT_EvalStack_push(*pop);
-        /* if accumulator is null, push rhs for evaluation */
-        switch (expr->rhs_type) {
-            case EXPR_TYPE_EXPRESSION:
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = expr->rhs.expr,
-                    .entry.state.xp.lhs = RT_Data_null(),
-                    .entry.state.xp.rhs = RT_Data_null(),
-                    .entry.state.xp.extra = RT_Data_null(),
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                break;
-            case EXPR_TYPE_LITERAL:
-                if (expr->rhs.literal->type != RT_DATA_TYPE_LST)
-                    RT_VarTable_update("-", RT_Data_Literal(expr->rhs.literal));
-                else RT_VarTable_update("-", RT_Expression_eval_lst(expr->rhs.literal->data.lst));
-                break;
-            case EXPR_TYPE_IDENTIFIER:
-                RT_VarTable_get(expr->rhs.variable->indentifier_name);
-                break;
-        }
-        return true;
-    }
-RT_Expression_eval_extra:
+    RT_EXPRESSION_EVAL_LITERAL(expr->rhs, expr->rhs_type, pop, pop->entry.state.xp.rhs);
     /* extra operand exists but is not evaluated yet */
-    if (expr->condition_type != EXPR_TYPE_NULL
-            && RT_Data_isnull(pop->entry.state.xp.extra)) {
-        /* if accumulator has data, store it in operand */
-        if (!RT_Data_isnull(RT_VarTable_get("-"))) {
-            pop->entry.state.xp.extra = RT_VarTable_get("-");
-            RT_VarTable_update("-", RT_Data_null());
-            /* ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯ */
-            goto RT_Expression_eval_switch;
-        }
-        RT_EvalStack_push(*pop);
-        /* if accumulator is null, push extra operand for evaluation */
-        if (expr->condition_type == EXPR_TYPE_EXPRESSION) RT_EvalStack_push((const RT_StackEntry_t) {
-            .entry.state.xp.expr = expr->condition.expr,
-            .entry.state.xp.lhs = RT_Data_null(),
-            .entry.state.xp.rhs = RT_Data_null(),
-            .entry.state.xp.extra = RT_Data_null(),
-            .type = STACKENTRY_STATES_TYPE_EXPR
-        });
-        return true;
-    }
-RT_Expression_eval_switch:
+    RT_EXPRESSION_EVAL_LITERAL(expr->condition, expr->condition_type, pop, pop->entry.state.xp.extra);
     return false;
 }
