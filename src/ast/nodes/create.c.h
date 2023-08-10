@@ -181,21 +181,13 @@ AST_Block_t *AST_Block(AST_Statements_t *statements)
          && expr->condition_type == EXPR_TYPE_NULL;    \
 })
 
-#define AST_EXPRESSION_ISCOMMALIST(expr_) ({           \
-    AST_Expression_t *expr = expr_;                    \
-    expr && expr->op == TOKOP_NOP                      \
-         && expr->lhs_type == EXPR_TYPE_LIST           \
-         && expr->rhs_type == EXPR_TYPE_NULL           \
-         && expr->condition_type == EXPR_TYPE_NULL;    \
-})
-
 AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition)
 {
     AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
     if (!expression) io_errndie("AST_Expression: " ERR_MSG_MALLOCFAIL);
     expression->op = op;
 
-    if ( AST_EXPRESSION_ISOPERAND(lhs) || AST_EXPRESSION_ISCOMMALIST(lhs) ) {
+    if (AST_EXPRESSION_ISOPERAND(lhs)) {
         expression->lhs_type = lhs->lhs_type;
         expression->lhs = lhs->lhs;
         lhs->lhs.expr = NULL;
@@ -206,7 +198,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
         expression->lhs.expr = lhs;
     }
 
-    if ( AST_EXPRESSION_ISOPERAND(rhs) || AST_EXPRESSION_ISCOMMALIST(rhs) ) {
+    if (AST_EXPRESSION_ISOPERAND(rhs)) {
         expression->rhs_type = rhs->lhs_type;
         expression->rhs = rhs->lhs;
         rhs->lhs.expr = NULL;
@@ -217,7 +209,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
         expression->rhs.expr = rhs;
     }
 
-    if ( AST_EXPRESSION_ISOPERAND(condition) || AST_EXPRESSION_ISCOMMALIST(condition) ) {
+    if (AST_EXPRESSION_ISOPERAND(condition)) {
         expression->condition_type = condition->lhs_type;
         expression->condition = condition->lhs;
         condition->lhs.expr = NULL;
@@ -264,8 +256,8 @@ AST_Expression_t *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list)
     AST_Expression_t *expression = (AST_Expression_t*) malloc(sizeof(AST_Expression_t));
     if (!expression) io_errndie("AST_Expression_CommaSepList: " ERR_MSG_MALLOCFAIL);
     expression->op = TOKOP_NOP;
-    expression->lhs_type = EXPR_TYPE_LIST;
-    expression->lhs.lst = comma_list;
+    expression->lhs_type = EXPR_TYPE_LITERAL;
+    expression->lhs.literal = AST_Literal_lst(comma_list);
     expression->rhs_type = EXPR_TYPE_NULL;
     expression->rhs.expr = NULL;
     expression->condition_type = EXPR_TYPE_NULL;

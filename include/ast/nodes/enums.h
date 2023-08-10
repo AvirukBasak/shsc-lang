@@ -31,7 +31,6 @@ enum AST_ExpressionType_t {
     EXPR_TYPE_EXPRESSION,
     EXPR_TYPE_LITERAL,
     EXPR_TYPE_IDENTIFIER,
-    EXPR_TYPE_LIST,
     EXPR_TYPE_NULL,
 };
 
