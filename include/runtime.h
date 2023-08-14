@@ -67,9 +67,9 @@ union RT_StackEntry_States_t {
     struct {
         /* eval the ast node and produce RT_Data_t */
         const AST_Expression_t *expr;
-        RT_Data_t lhs;
-        RT_Data_t rhs;
-        RT_Data_t extra;
+        RT_Data_t *lhs;
+        RT_Data_t *rhs;
+        RT_Data_t *extra;
     } xp;
 };
 

@@ -12,6 +12,9 @@ void RT_VarTable_create(const char *varname, RT_Data_t value);
 /** modify an existing variable in the current or upper scope */
 void RT_VarTable_update(const char *varname, RT_Data_t value);
 
+/** modify data directly by address instead of querying via identifier */
+void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
+
 /** get the variable from the current scope if it exists, else return NULL */
 RT_Data_t RT_VarTable_get(const char *varname);
 

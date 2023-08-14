@@ -432,122 +432,28 @@ RT_Data_t RT_Expression_eval(void)
     while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
-        if (RT_Expression_eval_data(expr, &pop)) continue;
         /* all operands evaluated, now perform operations */
         switch (expr->op) {
             case LEXTOK_BANG:
-                RT_VarTable_update("-", RT_Operation_not(pop.entry.state.xp.lhs));
-                break;
             case LEXTOK_LOGICAL_UNEQUAL:
-                RT_VarTable_update("-", RT_Operation_unequal(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                break;
             case LEXTOK_PERCENT:
-                RT_VarTable_update("-", RT_Operation_mod(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                break;
             case LEXTOK_MODULO_ASSIGN:
-                RT_VarTable_update("-", RT_Operation_mod(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_AMPERSAND:
-                RT_VarTable_update("-", RT_Operation_bitand(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                break;
             case LEXTOK_LOGICAL_AND:
-                RT_VarTable_update("-", RT_Operation_and(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                break;
             case LEXTOK_LOGICAL_AND_ASSIGN:
-                RT_VarTable_update("-", RT_Operation_and(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_BITWISE_AND_ASSIGN:
-                RT_VarTable_update("-", RT_Operation_bitand(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_ASTERIX:
-                RT_VarTable_update("-", RT_Operation_mul(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                break;
             case LEXTOK_EXPONENT:
-                RT_VarTable_update("-", RT_Operation_pow(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                break;
             case LEXTOK_EXPONENT_ASSIGN:
-                RT_VarTable_update("-", RT_Operation_pow(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_MULTIPLY_ASSIGN:
-                RT_VarTable_update("-", RT_Operation_mul(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_PLUS:
-                RT_VarTable_update("-", RT_Operation_add(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                break;
-            case LEXTOK_INCREMENT: {
+            case LEXTOK_INCREMENT:
                 rt_throw("unary increment operator is not yet supported");
                 break;
-            }
             case LEXTOK_ADD_ASSIGN:
-                RT_VarTable_update("-", RT_Operation_add(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_MINUS:
-                RT_VarTable_update("-", RT_Operation_sub(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
             case LEXTOK_DECREMENT:
-                rt_throw("unary decrement operator is not yet supported");
-                break;
             case LEXTOK_SUBSTRACT_ASSIGN:
-                RT_VarTable_update("-", RT_Operation_sub(
-                    pop.entry.state.xp.lhs,
-                    pop.entry.state.xp.rhs
-                ));
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_DOT:
                 rt_throw("memebership operator is not yet supported");
                 break;
@@ -561,10 +467,6 @@ RT_Data_t RT_Expression_eval(void)
             case LEXTOK_BITWISE_LSHIFT_ASSIGN:
             case LEXTOK_LOGICAL_LESSER_EQUAL:
             case LEXTOK_ASSIGN:
-                RT_VarTable_update("-", pop.entry.state.xp.rhs);
-                RT_VarTable_update(
-                    expr->lhs.variable->identifier_name, RT_VarTable_get("-"));
-                break;
             case LEXTOK_LOGICAL_EQUAL:
             case LEXTOK_RBRACE_ANGULAR:
             case LEXTOK_LOGICAL_GREATER_EQUAL:
@@ -588,58 +490,4 @@ RT_Data_t RT_Expression_eval(void)
         }
     }
     return RT_VarTable_get("-");
-}
-
-#define RT_EXPRESSION_EVAL_LITERAL(oprnd, oprnd_type, pop, pop_oprnd) do { \
-    /* operand exists but is not evaluated yet */                          \
-    if (oprnd_type != EXPR_TYPE_NULL && RT_Data_isnull(pop_oprnd)) {       \
-        /* if accumulator has data, store it in operand */                 \
-        if (!RT_Data_isnull(RT_VarTable_get("-"))) {                       \
-            pop_oprnd = RT_VarTable_get("-");                              \
-            RT_VarTable_update("-", RT_Data_null());                       \
-            break;                                                         \
-        }                                                                  \
-        RT_EvalStack_push(*pop);                                           \
-        /* if accumulator is null, push rhs for evaluation */              \
-        switch (oprnd_type) {                                              \
-            case EXPR_TYPE_EXPRESSION:                                     \
-                RT_EvalStack_push((const RT_StackEntry_t) {                \
-                    .entry.state.xp.expr = oprnd.expr,                     \
-                    .entry.state.xp.lhs = RT_Data_null(),                  \
-                    .entry.state.xp.rhs = RT_Data_null(),                  \
-                    .entry.state.xp.extra = RT_Data_null(),                \
-                    .type = STACKENTRY_STATES_TYPE_EXPR                    \
-                });                                                        \
-                break;                                                     \
-            case EXPR_TYPE_LITERAL:                                        \
-                if (oprnd.literal->type != RT_DATA_TYPE_LST)               \
-                    RT_VarTable_update("-", RT_Data_Literal(               \
-                        oprnd.literal));                                   \
-                else                                                       \
-                    RT_VarTable_update("-", RT_Expression_eval_lst(        \
-                        oprnd.literal->data.lst));                         \
-                break;                                                     \
-            case EXPR_TYPE_IDENTIFIER:                                     \
-                RT_VarTable_get(oprnd.variable->identifier_name);          \
-                break;                                                     \
-            default: break;                                                \
-        }                                                                  \
-        return true;                                                       \
-    }                                                                      \
-} while (0)
-
-bool RT_Expression_eval_data(const AST_Expression_t *expr, RT_StackEntry_t *pop)
-{
-    /* lhs exists but is not evaluated yet */
-    RT_EXPRESSION_EVAL_LITERAL(expr->lhs, expr->lhs_type, pop, pop->entry.state.xp.lhs);
-    /* rhs exists but is not evaluated yet */
-    RT_EXPRESSION_EVAL_LITERAL(expr->rhs, expr->rhs_type, pop, pop->entry.state.xp.rhs);
-    /* extra operand exists but is not evaluated yet */
-    RT_EXPRESSION_EVAL_LITERAL(expr->condition, expr->condition_type, pop, pop->entry.state.xp.extra);
-    return false;
-}
-
-RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst)
-{
-    return RT_Data_null();
 }
