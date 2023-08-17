@@ -22,8 +22,8 @@ int rt_currline = 0;
 
 void RT_AST_eval(const AST_Statements_t *code);
 RT_Data_t *RT_Expression_eval(void);
-bool RT_Expression_eval_data(const AST_Expression_t *expr, RT_StackEntry_t *pop);
-RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst);
+RT_Data_t *RT_Expression_eval_literal(void);
+RT_Data_t *RT_Expression_eval_lst(const AST_CommaSepList_t *lst);
 
 void rt_exec(void)
 {
@@ -432,6 +432,24 @@ RT_Data_t *RT_Expression_eval(void)
     while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
+        /* eval lhs operand */
+        switch (expr->lhs_type) {
+            case EXPR_TYPE_EXPRESSION:
+                break;
+            case EXPR_TYPE_LITERAL:
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.node.literal = expr->lhs.literal,
+                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
+                });
+                // pop.entry.state.xp.lhs = RT_Expression_eval_literal();
+                break;
+            case EXPR_TYPE_IDENTIFIER:
+                pop.entry.state.xp.lhs = RT_VarTable_get(expr->lhs.variable->identifier_name);
+                break;
+            case EXPR_TYPE_NULL: break;
+        }
+        /* eval rhs operand */
+        /* eval condition operand */
         /* all operands evaluated, now perform operations */
         switch (expr->op) {
             case LEXTOK_BANG:
