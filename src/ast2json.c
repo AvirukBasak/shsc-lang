@@ -425,13 +425,6 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
             AST2JSON_printf("\"lhs\": ");
             AST2JSON_Identifier(expression->lhs.variable);
             break;
-        case EXPR_TYPE_LIST:
-            AST2JSON_put_comma();
-            AST2JSON_printf("\"lhs_type\": \"EXPR_TYPE_LIST\"");
-            AST2JSON_put_comma();
-            AST2JSON_printf("\"lhs\": ");
-            AST2JSON_CommaSepList(expression->lhs.lst);
-            break;
         case EXPR_TYPE_NULL:
             AST2JSON_put_comma();
             AST2JSON_printf("\"lhs_type\": \"EXPR_TYPE_NULL\"");
@@ -462,13 +455,6 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
             AST2JSON_printf("\"rhs\": ");
             AST2JSON_Identifier(expression->rhs.variable);
             break;
-        case EXPR_TYPE_LIST:
-            AST2JSON_put_comma();
-            AST2JSON_printf("\"rhs_type\": \"EXPR_TYPE_LIST\"");
-            AST2JSON_put_comma();
-            AST2JSON_printf("\"rhs\": ");
-            AST2JSON_CommaSepList(expression->rhs.lst);
-            break;
         case EXPR_TYPE_NULL:
             AST2JSON_put_comma();
             AST2JSON_printf("\"rhs_type\": \"EXPR_TYPE_NULL\"");
@@ -498,13 +484,6 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
             AST2JSON_put_comma();
             AST2JSON_printf("\"condition\": ");
             AST2JSON_Identifier(expression->condition.variable);
-            break;
-        case EXPR_TYPE_LIST:
-            AST2JSON_put_comma();
-            AST2JSON_printf("\"condition_type\": \"EXPR_TYPE_LIST\"");
-            AST2JSON_put_comma();
-            AST2JSON_printf("\"condition\": ");
-            AST2JSON_CommaSepList(expression->condition.lst);
             break;
         case EXPR_TYPE_NULL:
             AST2JSON_put_comma();

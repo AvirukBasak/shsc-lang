@@ -166,7 +166,7 @@ char *RT_Data_interp_str_parse(const char *str_)
         *(closing++) = '\0';
         if (!RT_Data_Identifier_isvalid(&str[i] +1))
             rt_throw("invalid interpolation identifier: '%s'", &str[i] +1);
-        RT_Data_t var = RT_VarTable_get(&str[i] +1);
+        RT_Data_t var = *RT_VarTable_get(&str[i] +1);
         if (RT_Data_isnull(var))
             rt_throw("undeclared identifier: '%s'", &str[i] +1);
         char *val = RT_Data_tostr(var);

@@ -16,7 +16,7 @@ void RT_VarTable_update(const char *varname, RT_Data_t value);
 void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
 
 /** get the variable from the current scope if it exists, else return NULL */
-RT_Data_t RT_VarTable_get(const char *varname);
+RT_Data_t *RT_VarTable_get(const char *varname);
 
 /** push a new function scope into the stack and store the procedure name and return address */
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);

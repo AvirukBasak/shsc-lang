@@ -266,7 +266,7 @@ RT_Data_t RT_VarTable_pop_scope()
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     if (current_proc->top >= 0) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-        RT_Data_t last_expr = RT_VarTable_get("-");
+        RT_Data_t last_expr = *RT_VarTable_get("-");
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
@@ -279,7 +279,7 @@ RT_Data_t RT_VarTable_pop_scope()
     }
     /* if there are no scopes left in the current procedure, pop the procedure */
     RT_VarTable_pop_proc();
-    return RT_VarTable_get("-");
+    return *RT_VarTable_get("-");
 }
 
 /** clear memory of the vartable */
@@ -297,7 +297,7 @@ void RT_VarTable_test()
     RT_Data_t var1 = RT_Data_i64(42);
     RT_VarTable_create("var1", var1);
     /* get a variable from the current scope */
-    RT_Data_t var1_ = RT_VarTable_get("var1");
+    RT_Data_t var1_ = *RT_VarTable_get("var1");
     if (!RT_Data_isnull(var1_))
         RT_Data_print(var1_);
     /* pop the current scope */
