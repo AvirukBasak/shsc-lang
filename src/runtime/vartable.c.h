@@ -143,6 +143,8 @@ void rt_vtable_refcnt_decr(RT_Data_t *value)
          if (value->data.lst->rc <= 0)
              RT_Data_destroy(value);
     }
+    if (value->data.lst->rc < 0)
+        value->data.lst->rc = 0;
 }
 
 void RT_VarTable_create(const char *varname, RT_Data_t value)
@@ -207,13 +209,20 @@ void RT_VarTable_update(const char *varname, RT_Data_t value)
     rt_throw("undefined variable '%s'", varname);
 }
 
-RT_Data_t RT_VarTable_get(const char *varname)
+void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 {
-    if (!strcmp(varname, "-")) return rt_vtable_accumulator;
+    rt_vtable_refcnt_decr(dest);
+    rt_vtable_refcnt_incr(&src);
+    *dest = src;
+}
+
+RT_Data_t *RT_VarTable_get(const char *varname)
+{
+    if (!strcmp(varname, "-")) return &rt_vtable_accumulator;
     else {
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
-        if (tmp >= 0) return rt_vtable_temporary[tmp];
+        if (tmp >= 0) return &rt_vtable_temporary[tmp];
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     for (int64_t i = current_proc->top; i >= 0; i--) {
@@ -221,12 +230,12 @@ RT_Data_t RT_VarTable_get(const char *varname)
         khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
         /* variable found, return its value */
         if (iter != kh_end(current_scope->scope)) {
-            return kh_value(current_scope->scope, iter);
+            return &kh_value(current_scope->scope, iter);
         }
     }
     /* variable not found, throw an error */
     rt_throw("undefined variable '%s'", varname);
-    return RT_Data_null();
+    return NULL;
 }
 
 const AST_Statement_t *RT_VarTable_pop_proc()
@@ -257,7 +266,7 @@ RT_Data_t RT_VarTable_pop_scope()
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     if (current_proc->top >= 0) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-        RT_Data_t last_expr = RT_VarTable_get("-");
+        RT_Data_t last_expr = *RT_VarTable_get("-");
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
@@ -270,7 +279,7 @@ RT_Data_t RT_VarTable_pop_scope()
     }
     /* if there are no scopes left in the current procedure, pop the procedure */
     RT_VarTable_pop_proc();
-    return RT_VarTable_get("-");
+    return *RT_VarTable_get("-");
 }
 
 /** clear memory of the vartable */
@@ -288,7 +297,7 @@ void RT_VarTable_test()
     RT_Data_t var1 = RT_Data_i64(42);
     RT_VarTable_create("var1", var1);
     /* get a variable from the current scope */
-    RT_Data_t var1_ = RT_VarTable_get("var1");
+    RT_Data_t var1_ = *RT_VarTable_get("var1");
     if (!RT_Data_isnull(var1_))
         RT_Data_print(var1_);
     /* pop the current scope */

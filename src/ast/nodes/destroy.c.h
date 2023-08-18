@@ -156,9 +156,6 @@ void AST_Expression_free(AST_Expression_t **ptr)
         case EXPR_TYPE_IDENTIFIER:
             AST_Identifier_free(&expression->lhs.variable);
             break;
-        case EXPR_TYPE_LIST:
-            AST_CommaSepList_free(&expression->lhs.lst);
-            break;
         case EXPR_TYPE_NULL:
             break;
     }
@@ -172,9 +169,6 @@ void AST_Expression_free(AST_Expression_t **ptr)
         case EXPR_TYPE_IDENTIFIER:
             AST_Identifier_free(&expression->rhs.variable);
             break;
-        case EXPR_TYPE_LIST:
-            AST_CommaSepList_free(&expression->rhs.lst);
-            break;
         case EXPR_TYPE_NULL:
             break;
     }
@@ -187,9 +181,6 @@ void AST_Expression_free(AST_Expression_t **ptr)
             break;
         case EXPR_TYPE_IDENTIFIER:
             AST_Identifier_free(&expression->condition.variable);
-            break;
-        case EXPR_TYPE_LIST:
-            AST_CommaSepList_free(&expression->condition.lst);
             break;
         case EXPR_TYPE_NULL:
             break;

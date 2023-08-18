@@ -102,7 +102,6 @@ union AST_ExpressionUnion_t {
     const AST_Expression_t *expr;
     const AST_Literal_t *literal;
     const AST_Identifier_t *variable;
-    const AST_CommaSepList_t *lst;
 };
 
 struct AST_Expression_t {
