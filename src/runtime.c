@@ -73,7 +73,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .entry.state.xp.extra = NULL,
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
-                        RT_VarTable_update("-", *RT_Expression_eval());
+                        RT_VarTable_modf(RT_VarTable_getref("-"), *RT_Expression_eval());
                         break;
                     }
                     case STATEMENT_TYPE_ASSIGNMENT: {
@@ -138,7 +138,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .entry.state.xp.extra = NULL,
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
-                        RT_VarTable_update("-", *RT_Expression_eval());
+                        RT_VarTable_modf(RT_VarTable_getref("-"), *RT_Expression_eval());
                         break;
                     }
                     case ASSIGNMENT_TYPE_CREATE: {
@@ -372,11 +372,11 @@ void RT_AST_eval(const AST_Statements_t *code)
                         /* store current iteration element in loop variable */
                         switch (pop.entry.state.lp.it.iter.type) {
                             case RT_DATA_TYPE_LST: RT_VarTable_create(pop.entry.node.for_block->iter->identifier_name,
-                                    RT_DataList_get(pop.entry.state.lp.it.iter.lst, pop.entry.state.lp.i)
+                                    *RT_DataList_getref(pop.entry.state.lp.it.iter.lst, pop.entry.state.lp.i)
                                 );
                                 break;
                             case RT_DATA_TYPE_STR: RT_VarTable_create(pop.entry.node.for_block->iter->identifier_name,
-                                    RT_Data_chr(RT_DataStr_get(pop.entry.state.lp.it.iter.str, pop.entry.state.lp.i))
+                                    RT_Data_chr(*RT_DataStr_getref(pop.entry.state.lp.it.iter.str, pop.entry.state.lp.i))
                                 );
                                 break;
                             default:
@@ -427,7 +427,7 @@ RT_Data_t *RT_Expression_eval(void)
     else if (RT_EvalStack_top().type != STACKENTRY_STATES_TYPE_EXPR)
         rt_throw("RT_Expression_eval: no expression at stack top");
     /* set accumulator to null */
-    RT_VarTable_update("-", RT_Data_null());
+    RT_VarTable_modf(RT_VarTable_getref("-"), RT_Data_null());
     /* dfs the expression tree and evaluate */
     while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
@@ -444,7 +444,7 @@ RT_Data_t *RT_Expression_eval(void)
                 // pop.entry.state.xp.lhs = RT_Expression_eval_literal();
                 break;
             case EXPR_TYPE_IDENTIFIER:
-                pop.entry.state.xp.lhs = RT_VarTable_get(expr->lhs.variable->identifier_name);
+                pop.entry.state.xp.lhs = RT_VarTable_getref(expr->lhs.variable->identifier_name);
                 break;
             case EXPR_TYPE_NULL: break;
         }
@@ -507,5 +507,5 @@ RT_Data_t *RT_Expression_eval(void)
             default: rt_throw("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
         }
     }
-    return RT_VarTable_get("-");
+    return RT_VarTable_getref("-");
 }
