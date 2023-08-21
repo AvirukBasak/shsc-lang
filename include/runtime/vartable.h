@@ -13,10 +13,13 @@ void RT_VarTable_create(const char *varname, RT_Data_t value);
 RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
 
 /** get the variable from the current scope if it exists, else return NULL.
-    data should be updated only by calling
+    other than the accumulator, data should be updated only by calling
     `void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)`
     on the returned data pointer, that'll take care of reference counts */
 RT_Data_t *RT_VarTable_getref(const char *varname);
+
+/** this is used to update the accumulator */
+void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr);
 
 /** push a new function scope into the stack and store the procedure name and return address */
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);

@@ -427,29 +427,92 @@ RT_Data_t *RT_Expression_eval(void)
     else if (RT_EvalStack_top().type != STACKENTRY_STATES_TYPE_EXPR)
         rt_throw("RT_Expression_eval: no expression at stack top");
     /* set accumulator to null */
-    RT_VarTable_modf(RT_VarTable_getref("-"), RT_Data_null());
+    RT_VarTable_acc_set(RT_Data_null(), NULL);
     /* dfs the expression tree and evaluate */
     while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
         /* eval lhs operand */
-        switch (expr->lhs_type) {
-            case EXPR_TYPE_EXPRESSION:
+        if (RT_Data_isnull(*RT_VarTable_getref("-"))) switch (expr->lhs_type) {
+            case EXPR_TYPE_EXPRESSION: {
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.state.xp.expr = expr->lhs.expr,
+                    .entry.state.xp.lhs = NULL,
+                    .entry.state.xp.rhs = NULL,
+                    .entry.state.xp.extra = NULL,
+                    .type = STACKENTRY_STATES_TYPE_EXPR
+                });
                 break;
+            }
             case EXPR_TYPE_LITERAL:
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.node.literal = expr->lhs.literal,
                     .type = STACKENTRY_ASTNODE_TYPE_LITERAL
                 });
-                // pop.entry.state.xp.lhs = RT_Expression_eval_literal();
+                // TODO: pop.entry.state.xp.lhs = RT_Expression_eval_literal();
                 break;
             case EXPR_TYPE_IDENTIFIER:
                 pop.entry.state.xp.lhs = RT_VarTable_getref(expr->lhs.variable->identifier_name);
                 break;
             case EXPR_TYPE_NULL: break;
+        } else {
+            pop.entry.state.xp.lhs = RT_VarTable_getref("-");
+            RT_VarTable_acc_set(RT_Data_null(), NULL);
         }
         /* eval rhs operand */
+        if (RT_Data_isnull(*RT_VarTable_getref("-"))) switch (expr->rhs_type) {
+            case EXPR_TYPE_EXPRESSION: {
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.state.xp.expr = expr->rhs.expr,
+                    .entry.state.xp.lhs = NULL,
+                    .entry.state.xp.rhs = NULL,
+                    .entry.state.xp.extra = NULL,
+                    .type = STACKENTRY_STATES_TYPE_EXPR
+                });
+                break;
+            }
+            case EXPR_TYPE_LITERAL:
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.node.literal = expr->rhs.literal,
+                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
+                });
+                // TODO: pop.entry.state.xp.rhs = RT_Expression_eval_literal();
+                break;
+            case EXPR_TYPE_IDENTIFIER:
+                pop.entry.state.xp.rhs = RT_VarTable_getref(expr->rhs.variable->identifier_name);
+                break;
+            case EXPR_TYPE_NULL: break;
+        } else {
+            pop.entry.state.xp.rhs = RT_VarTable_getref("-");
+            RT_VarTable_acc_set(RT_Data_null(), NULL);
+        }
         /* eval condition operand */
+        if (RT_Data_isnull(*RT_VarTable_getref("-"))) switch (expr->condition_type) {
+            case EXPR_TYPE_EXPRESSION: {
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.state.xp.expr = expr->condition.expr,
+                    .entry.state.xp.lhs = NULL,
+                    .entry.state.xp.rhs = NULL,
+                    .entry.state.xp.extra = NULL,
+                    .type = STACKENTRY_STATES_TYPE_EXPR
+                });
+                break;
+            }
+            case EXPR_TYPE_LITERAL:
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.node.literal = expr->condition.literal,
+                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
+                });
+                // TODO: pop.entry.state.xp.extra = RT_Expression_eval_literal();
+                break;
+            case EXPR_TYPE_IDENTIFIER:
+                pop.entry.state.xp.extra = RT_VarTable_getref(expr->condition.variable->identifier_name);
+                break;
+            case EXPR_TYPE_NULL: break;
+        } else {
+            pop.entry.state.xp.extra = RT_VarTable_getref("-");
+            RT_VarTable_acc_set(RT_Data_null(), NULL);
+        }
         /* all operands evaluated, now perform operations */
         switch (expr->op) {
             case LEXTOK_BANG:
@@ -484,7 +547,10 @@ RT_Data_t *RT_Expression_eval(void)
             case LEXTOK_BITWISE_LSHIFT:
             case LEXTOK_BITWISE_LSHIFT_ASSIGN:
             case LEXTOK_LOGICAL_LESSER_EQUAL:
-            case LEXTOK_ASSIGN:
+            case LEXTOK_ASSIGN: {
+                RT_VarTable_modf(pop.entry.state.xp.lhs, *pop.entry.state.xp.rhs);
+                break;
+            }
             case LEXTOK_LOGICAL_EQUAL:
             case LEXTOK_RBRACE_ANGULAR:
             case LEXTOK_LOGICAL_GREATER_EQUAL:

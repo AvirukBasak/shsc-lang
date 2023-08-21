@@ -217,6 +217,12 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     return NULL;
 }
 
+void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr)
+{
+    rt_vtable_accumulator.val = val;
+    rt_vtable_accumulator.adr = adr;
+}
+
 const AST_Statement_t *RT_VarTable_pop_proc()
 {
     if (rt_vtable == NULL || rt_vtable->top == -1)
