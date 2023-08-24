@@ -23,7 +23,7 @@ int rt_currline = 0;
 void RT_AST_eval(const AST_Statements_t *code);
 RT_Data_t *RT_Expression_eval(void);
 RT_Data_t *RT_Expression_eval_literal(void);
-RT_Data_t *RT_Expression_eval_lst(void);
+RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst);
 
 void rt_exec(void)
 {
@@ -580,7 +580,7 @@ RT_Data_t *RT_Expression_eval_literal(void)
 {
     if (RT_EvalStack_isempty())
         rt_throw("RT_Expression_eval_literal: stack underflow");
-    else if (RT_EvalStack_top().type != STACKENTRY_STATES_TYPE_EXPR)
+    else if (RT_EvalStack_top().type != STACKENTRY_ASTNODE_TYPE_LITERAL)
         rt_throw("RT_Expression_eval_literal: no literal at stack top");
     RT_VarTable_acc_set(RT_Data_null(), NULL);
     RT_StackEntry_t pop = RT_EvalStack_pop();
@@ -615,8 +615,20 @@ RT_Data_t *RT_Expression_eval_literal(void)
     return RT_VarTable_acc_get().adr;
 }
 
-RT_Data_t *RT_Expression_eval_lst(void)
+RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst)
 {
-    // TODO:
-    return NULL;
+    const AST_CommaSepList_t *ptr = lst;
+    RT_DataList_t *new_list = RT_DataList_init();
+    while (ptr) {
+        RT_EvalStack_push((const RT_StackEntry_t) {
+            .entry.state.xp.expr = ptr->expression,
+            .entry.state.xp.lhs = NULL,
+            .entry.state.xp.rhs = NULL,
+            .entry.state.xp.extra = NULL,
+            .type = STACKENTRY_STATES_TYPE_EXPR
+        });
+        RT_DataList_append(new_list, *RT_Expression_eval());
+        ptr = ptr->comma_list;
+    }
+    return RT_Data_list(new_list);
 }
