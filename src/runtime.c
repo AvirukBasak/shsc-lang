@@ -73,7 +73,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .entry.state.xp.extra = NULL,
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
-                        RT_VarTable_modf(RT_VarTable_getref("-"), *RT_Expression_eval());
+                        RT_VarTable_acc_set(*RT_Expression_eval(), NULL);
                         break;
                     }
                     case STATEMENT_TYPE_ASSIGNMENT: {
@@ -138,7 +138,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .entry.state.xp.extra = NULL,
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
-                        RT_VarTable_modf(RT_VarTable_getref("-"), *RT_Expression_eval());
+                        RT_VarTable_acc_set(*RT_Expression_eval(), NULL);
                         break;
                     }
                     case ASSIGNMENT_TYPE_CREATE: {
@@ -433,7 +433,7 @@ RT_Data_t *RT_Expression_eval(void)
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
         /* eval lhs operand */
-        if (RT_Data_isnull(*RT_VarTable_getref("-"))) switch (expr->lhs_type) {
+        if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->lhs_type) {
             case EXPR_TYPE_EXPRESSION: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = expr->lhs.expr,
@@ -456,11 +456,11 @@ RT_Data_t *RT_Expression_eval(void)
                 break;
             case EXPR_TYPE_NULL: break;
         } else {
-            pop.entry.state.xp.lhs = RT_VarTable_getref("-");
+            pop.entry.state.xp.lhs = RT_VarTable_acc_get().adr;
             RT_VarTable_acc_set(RT_Data_null(), NULL);
         }
         /* eval rhs operand */
-        if (RT_Data_isnull(*RT_VarTable_getref("-"))) switch (expr->rhs_type) {
+        if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->rhs_type) {
             case EXPR_TYPE_EXPRESSION: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = expr->rhs.expr,
@@ -483,11 +483,11 @@ RT_Data_t *RT_Expression_eval(void)
                 break;
             case EXPR_TYPE_NULL: break;
         } else {
-            pop.entry.state.xp.rhs = RT_VarTable_getref("-");
+            pop.entry.state.xp.rhs = RT_VarTable_acc_get().adr;
             RT_VarTable_acc_set(RT_Data_null(), NULL);
         }
         /* eval condition operand */
-        if (RT_Data_isnull(*RT_VarTable_getref("-"))) switch (expr->condition_type) {
+        if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->condition_type) {
             case EXPR_TYPE_EXPRESSION: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = expr->condition.expr,
@@ -510,7 +510,7 @@ RT_Data_t *RT_Expression_eval(void)
                 break;
             case EXPR_TYPE_NULL: break;
         } else {
-            pop.entry.state.xp.extra = RT_VarTable_getref("-");
+            pop.entry.state.xp.extra = RT_VarTable_acc_get().adr;
             RT_VarTable_acc_set(RT_Data_null(), NULL);
         }
         /* all operands evaluated, now perform operations */
@@ -573,7 +573,7 @@ RT_Data_t *RT_Expression_eval(void)
             default: rt_throw("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
         }
     }
-    return RT_VarTable_getref("-");
+    return RT_VarTable_acc_get().adr;
 }
 
 RT_Data_t *RT_Expression_eval_literal(void)
@@ -605,14 +605,14 @@ RT_Data_t *RT_Expression_eval_literal(void)
             RT_VarTable_acc_set(RT_Data_interp_str(RT_DataStr_init(lit->data.str)), NULL);
             break;
         case DATA_TYPE_LST:
-            RT_VarTable_acc_set(RT_Data_null(), NULL);
+            RT_VarTable_acc_set(RT_Expression_eval_lst(lit->data.lst), NULL);
             break;
         case DATA_TYPE_ANY:
             /* void* must be explicitly casted */
             RT_VarTable_acc_set(RT_Data_any((void*) lit->data.any), NULL);
             break;
     }
-    return RT_VarTable_getref("-");
+    return RT_VarTable_acc_get().adr;
 }
 
 RT_Data_t *RT_Expression_eval_lst(void)

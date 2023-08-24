@@ -48,14 +48,7 @@ typedef struct {
 /** gloablly allocated stack pointer */
 RT_VarTable_t *rt_vtable = NULL;
 
-/** accumulator stores procedure return values
-    and also the address from which the value was obtained
-    if the value is temporary (no place in variable), it's set
-    to .adr = NULL */
-struct {
-    RT_Data_t val;
-    RT_Data_t *adr;
-} rt_vtable_accumulator = { 
+RT_VarTable_Acc_t rt_vtable_accumulator = {
     .val = { .data.any = NULL, RT_DATA_TYPE_ANY },
     .adr = NULL
 };
@@ -196,8 +189,7 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 RT_Data_t *RT_VarTable_getref(const char *varname)
 {
     if (!strcmp(varname, "-"))
-        return rt_vtable_accumulator.adr ?
-            rt_vtable_accumulator.adr : &rt_vtable_accumulator.val;
+        rt_throw("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
     else {
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
@@ -215,6 +207,11 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     /* variable not found, throw an error */
     rt_throw("undefined variable '%s'", varname);
     return NULL;
+}
+
+RT_VarTable_Acc_t RT_VarTable_acc_get(void)
+{
+    return rt_vtable_accumulator;
 }
 
 void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr)
@@ -251,7 +248,7 @@ RT_Data_t RT_VarTable_pop_scope()
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     if (current_proc->top >= 0) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-        RT_Data_t last_expr = *RT_VarTable_getref("-");
+        RT_Data_t last_expr = RT_VarTable_acc_get().val;
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
@@ -264,7 +261,7 @@ RT_Data_t RT_VarTable_pop_scope()
     }
     /* if there are no scopes left in the current procedure, pop the procedure */
     RT_VarTable_pop_proc();
-    return *RT_VarTable_getref("-");
+    return RT_VarTable_acc_get().val;
 }
 
 /** clear memory of the vartable */
