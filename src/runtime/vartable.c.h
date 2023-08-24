@@ -48,8 +48,11 @@ typedef struct {
 /** gloablly allocated stack pointer */
 RT_VarTable_t *rt_vtable = NULL;
 
-/** accumulator stores procedure return values */
-RT_Data_t rt_vtable_accumulator = { .data.any = NULL, RT_DATA_TYPE_ANY };
+RT_VarTable_Acc_t rt_vtable_accumulator = {
+    .val = { .data.any = NULL, RT_DATA_TYPE_ANY },
+    .adr = NULL
+};
+
 RT_Data_t rt_vtable_temporary[RT_VTABLE_TEMPORARY_SIZE];
 
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr)
@@ -174,51 +177,19 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
     }
 }
 
-void RT_VarTable_update(const char *varname, RT_Data_t value)
+RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 {
-    if (!strcmp(varname, "-")) {
-        rt_vtable_refcnt_decr(&rt_vtable_accumulator);
-        rt_vtable_refcnt_incr(&value);
-        rt_vtable_accumulator = value;
-        return;
-    } else {
-        int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
-        if (tmp >= 0) {
-            rt_vtable_refcnt_decr(&rt_vtable_temporary[tmp]);
-            rt_vtable_refcnt_incr(&value);
-            rt_vtable_temporary[tmp] = value;
-            return;
-        }
-    }
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
-    /* search for variable in current and higher scopes and
-       update its value (and reference counts) */
-    for (int64_t i = current_proc->top; i >= 0; i--) {
-        RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
-        khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
-        /* variable found, update its value */
-        if (iter != kh_end(current_scope->scope)) {
-            rt_vtable_refcnt_decr(&kh_value(current_scope->scope, iter));
-            rt_vtable_refcnt_incr(&value);
-            kh_value(current_scope->scope, iter) = value;
-            return;
-        }
-    }
-    /* variable not found, throw an error */
-    rt_throw("undefined variable '%s'", varname);
-}
-
-void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
-{
+    if (!dest) return NULL;
     rt_vtable_refcnt_decr(dest);
     rt_vtable_refcnt_incr(&src);
     *dest = src;
+    return dest;
 }
 
-RT_Data_t *RT_VarTable_get(const char *varname)
+RT_Data_t *RT_VarTable_getref(const char *varname)
 {
-    if (!strcmp(varname, "-")) return &rt_vtable_accumulator;
+    if (!strcmp(varname, "-"))
+        rt_throw("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
     else {
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
@@ -236,6 +207,17 @@ RT_Data_t *RT_VarTable_get(const char *varname)
     /* variable not found, throw an error */
     rt_throw("undefined variable '%s'", varname);
     return NULL;
+}
+
+RT_VarTable_Acc_t RT_VarTable_acc_get(void)
+{
+    return rt_vtable_accumulator;
+}
+
+void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr)
+{
+    rt_vtable_accumulator.val = val;
+    rt_vtable_accumulator.adr = adr;
 }
 
 const AST_Statement_t *RT_VarTable_pop_proc()
@@ -266,7 +248,7 @@ RT_Data_t RT_VarTable_pop_scope()
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     if (current_proc->top >= 0) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-        RT_Data_t last_expr = *RT_VarTable_get("-");
+        RT_Data_t last_expr = RT_VarTable_acc_get().val;
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
@@ -279,13 +261,13 @@ RT_Data_t RT_VarTable_pop_scope()
     }
     /* if there are no scopes left in the current procedure, pop the procedure */
     RT_VarTable_pop_proc();
-    return *RT_VarTable_get("-");
+    return RT_VarTable_acc_get().val;
 }
 
 /** clear memory of the vartable */
 void RT_VarTable_destroy()
 {
-    rt_throw("unimplemented");
+    rt_throw("RT_VarTable_destroy: unimplemented");
     return;
 }
 
@@ -297,7 +279,7 @@ void RT_VarTable_test()
     RT_Data_t var1 = RT_Data_i64(42);
     RT_VarTable_create("var1", var1);
     /* get a variable from the current scope */
-    RT_Data_t var1_ = *RT_VarTable_get("var1");
+    RT_Data_t var1_ = *RT_VarTable_getref("var1");
     if (!RT_Data_isnull(var1_))
         RT_Data_print(var1_);
     /* pop the current scope */

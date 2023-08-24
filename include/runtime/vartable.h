@@ -6,17 +6,32 @@
 #include "ast.h"
 #include "data.h"
 
+/** accumulator stores procedure return values
+    and also the address from which the value was obtained
+    if the value is temporary (no place in variable), it's set
+    to .adr = NULL */
+typedef struct {
+    RT_Data_t val;
+    RT_Data_t *adr;
+} RT_VarTable_Acc_t;
+
 /** create a new variable in the current scope */
 void RT_VarTable_create(const char *varname, RT_Data_t value);
 
-/** modify an existing variable in the current or upper scope */
-void RT_VarTable_update(const char *varname, RT_Data_t value);
-
 /** modify data directly by address instead of querying via identifier */
-void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
+RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
 
-/** get the variable from the current scope if it exists, else return NULL */
-RT_Data_t *RT_VarTable_get(const char *varname);
+/** get the variable from the current scope if it exists, else return NULL.
+    other than the accumulator, data should be updated only by calling
+    `void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)`
+    on the returned data pointer, that'll take care of reference counts */
+RT_Data_t *RT_VarTable_getref(const char *varname);
+
+/** this is used to get the accumulator data and address */
+RT_VarTable_Acc_t RT_VarTable_acc_get(void);
+
+/** this is used to update the accumulator */
+void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr);
 
 /** push a new function scope into the stack and store the procedure name and return address */
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);

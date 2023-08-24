@@ -61,25 +61,12 @@ void RT_DataList_append(RT_DataList_t *lst, RT_Data_t var)
     lst->var[lst->length++] = var;
 }
 
-void RT_DataList_set(RT_DataList_t *lst, int64_t idx, RT_Data_t var)
+RT_Data_t *RT_DataList_getref(const RT_DataList_t *lst, int64_t idx)
 {
-    if (idx >= 0 && idx < lst->length) {
-        RT_Data_t old_var = lst->var[idx];
-        if (old_var.type == RT_DATA_TYPE_STR || old_var.type == RT_DATA_TYPE_INTERP_STR)
-            RT_DataStr_destroy(&old_var.data.str);
-        else if (old_var.type == RT_DATA_TYPE_LST)
-            RT_DataList_destroy(&old_var.data.lst);
-        lst->var[idx] = var;
-    } else rt_throw("list out of bounds for index '%" PRId64 "'", idx);
-}
-
-RT_Data_t RT_DataList_get(const RT_DataList_t *lst, int64_t idx)
-{
-    RT_Data_t var = RT_Data_null();
     if (idx >= 0 && idx < lst->length)
-        var = lst->var[idx];
+        return &lst->var[idx];
     else rt_throw("list out of bounds for index '%" PRId64 "'", idx);
-    return var;
+    return NULL;
 }
 
 void RT_DataList_del_index(RT_DataList_t *lst, int64_t idx)

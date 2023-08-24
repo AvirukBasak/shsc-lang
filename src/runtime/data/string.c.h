@@ -53,20 +53,12 @@ void RT_DataStr_append(RT_DataStr_t *str, char var)
     str->var[str->length] = '\0';
 }
 
-void RT_DataStr_set(RT_DataStr_t *str, int64_t idx, char var)
+char *RT_DataStr_getref(const RT_DataStr_t *str, int64_t idx)
 {
     if (idx >= 0 && idx < str->length)
-        str->var[idx] = var;
+        return &str->var[idx];
     else rt_throw("string out of bounds for index '%" PRId64 "'", idx);
-}
-
-char RT_DataStr_get(const RT_DataStr_t *str, int64_t idx)
-{
-    char var = '\0';
-    if (idx >= 0 && idx < str->length)
-        var = str->var[idx];
-    else rt_throw("string out of bounds for index '%" PRId64 "'", idx);
-    return var;
+    return NULL;
 }
 
 void RT_DataStr_del_index(RT_DataStr_t *str, int64_t idx)
