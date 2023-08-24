@@ -270,7 +270,7 @@ RT_Data_t RT_VarTable_pop_scope()
 /** clear memory of the vartable */
 void RT_VarTable_destroy()
 {
-    rt_throw("unimplemented");
+    rt_throw("RT_VarTable_destroy: unimplemented");
     return;
 }
 

@@ -23,7 +23,7 @@ int rt_currline = 0;
 void RT_AST_eval(const AST_Statements_t *code);
 RT_Data_t *RT_Expression_eval(void);
 RT_Data_t *RT_Expression_eval_literal(void);
-RT_Data_t *RT_Expression_eval_lst(const AST_CommaSepList_t *lst);
+RT_Data_t *RT_Expression_eval_lst(void);
 
 void rt_exec(void)
 {
@@ -449,7 +449,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .entry.node.literal = expr->lhs.literal,
                     .type = STACKENTRY_ASTNODE_TYPE_LITERAL
                 });
-                // TODO: pop.entry.state.xp.lhs = RT_Expression_eval_literal();
+                pop.entry.state.xp.lhs = RT_Expression_eval_literal();
                 break;
             case EXPR_TYPE_IDENTIFIER:
                 pop.entry.state.xp.lhs = RT_VarTable_getref(expr->lhs.variable->identifier_name);
@@ -476,7 +476,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .entry.node.literal = expr->rhs.literal,
                     .type = STACKENTRY_ASTNODE_TYPE_LITERAL
                 });
-                // TODO: pop.entry.state.xp.rhs = RT_Expression_eval_literal();
+                pop.entry.state.xp.rhs = RT_Expression_eval_literal();
                 break;
             case EXPR_TYPE_IDENTIFIER:
                 pop.entry.state.xp.rhs = RT_VarTable_getref(expr->rhs.variable->identifier_name);
@@ -503,7 +503,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .entry.node.literal = expr->condition.literal,
                     .type = STACKENTRY_ASTNODE_TYPE_LITERAL
                 });
-                // TODO: pop.entry.state.xp.extra = RT_Expression_eval_literal();
+                pop.entry.state.xp.extra = RT_Expression_eval_literal();
                 break;
             case EXPR_TYPE_IDENTIFIER:
                 pop.entry.state.xp.extra = RT_VarTable_getref(expr->condition.variable->identifier_name);
@@ -574,4 +574,49 @@ RT_Data_t *RT_Expression_eval(void)
         }
     }
     return RT_VarTable_getref("-");
+}
+
+RT_Data_t *RT_Expression_eval_literal(void)
+{
+    if (RT_EvalStack_isempty())
+        rt_throw("RT_Expression_eval_literal: stack underflow");
+    else if (RT_EvalStack_top().type != STACKENTRY_STATES_TYPE_EXPR)
+        rt_throw("RT_Expression_eval_literal: no literal at stack top");
+    RT_VarTable_acc_set(RT_Data_null(), NULL);
+    RT_StackEntry_t pop = RT_EvalStack_pop();
+    const AST_Literal_t *lit = pop.entry.node.literal;
+    switch (lit->type) {
+        case DATA_TYPE_BUL:
+            RT_VarTable_acc_set(RT_Data_bul(lit->data.bul), NULL);
+            break;
+        case DATA_TYPE_CHR:
+            RT_VarTable_acc_set(RT_Data_chr(lit->data.chr), NULL);
+            break;
+        case DATA_TYPE_I64:
+            RT_VarTable_acc_set(RT_Data_i64(lit->data.i64), NULL);
+            break;
+        case DATA_TYPE_F64:
+            RT_VarTable_acc_set(RT_Data_f64(lit->data.f64), NULL);
+            break;
+        case DATA_TYPE_STR:
+            RT_VarTable_acc_set(RT_Data_str(RT_DataStr_init(lit->data.str)), NULL);
+            break;
+        case DATA_TYPE_INTERP_STR:
+            RT_VarTable_acc_set(RT_Data_interp_str(RT_DataStr_init(lit->data.str)), NULL);
+            break;
+        case DATA_TYPE_LST:
+            RT_VarTable_acc_set(RT_Data_null(), NULL);
+            break;
+        case DATA_TYPE_ANY:
+            /* void* must be explicitly casted */
+            RT_VarTable_acc_set(RT_Data_any((void*) lit->data.any), NULL);
+            break;
+    }
+    return RT_VarTable_getref("-");
+}
+
+RT_Data_t *RT_Expression_eval_lst(void)
+{
+    // TODO:
+    return NULL;
 }
