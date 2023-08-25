@@ -83,6 +83,9 @@ end
 ## Data Memory Model
 - Primitives are managed in a pseudo stack, which is a contiguous array-like stack maintained in the heap.
 - Objects are reference counted and automatically managed.
+- An object is said to be owned by a variable if reference count was changed due to that variable.
+- Temporary data and return values are stored in an accumulator.
+- Note that the accumulator and temporary variables MUST take ownership of data, i.e. must change the reference count when needed.
 
 ## Datatypes
 The language has the following primitive types:

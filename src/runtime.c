@@ -73,7 +73,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .entry.state.xp.extra = NULL,
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
-                        RT_VarTable_acc_set(*RT_Expression_eval(), NULL);
+                        RT_VarTable_acc_setval(*RT_Expression_eval());
                         break;
                     }
                     case STATEMENT_TYPE_ASSIGNMENT: {
@@ -138,7 +138,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                             .entry.state.xp.extra = NULL,
                             .type = STACKENTRY_STATES_TYPE_EXPR
                         });
-                        RT_VarTable_acc_set(*RT_Expression_eval(), NULL);
+                        RT_VarTable_acc_setval(*RT_Expression_eval());
                         break;
                     }
                     case ASSIGNMENT_TYPE_CREATE: {
@@ -427,7 +427,7 @@ RT_Data_t *RT_Expression_eval(void)
     else if (RT_EvalStack_top().type != STACKENTRY_STATES_TYPE_EXPR)
         rt_throw("RT_Expression_eval: no expression at stack top");
     /* set accumulator to null */
-    RT_VarTable_acc_set(RT_Data_null(), NULL);
+    RT_VarTable_acc_setval(RT_Data_null());
     /* dfs the expression tree and evaluate */
     while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
@@ -457,7 +457,7 @@ RT_Data_t *RT_Expression_eval(void)
             case EXPR_TYPE_NULL: break;
         } else {
             pop.entry.state.xp.lhs = RT_VarTable_acc_get().adr;
-            RT_VarTable_acc_set(RT_Data_null(), NULL);
+            RT_VarTable_acc_setval(RT_Data_null());
         }
         /* eval rhs operand */
         if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->rhs_type) {
@@ -484,7 +484,7 @@ RT_Data_t *RT_Expression_eval(void)
             case EXPR_TYPE_NULL: break;
         } else {
             pop.entry.state.xp.rhs = RT_VarTable_acc_get().adr;
-            RT_VarTable_acc_set(RT_Data_null(), NULL);
+            RT_VarTable_acc_setval(RT_Data_null());
         }
         /* eval condition operand */
         if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->condition_type) {
@@ -511,7 +511,7 @@ RT_Data_t *RT_Expression_eval(void)
             case EXPR_TYPE_NULL: break;
         } else {
             pop.entry.state.xp.extra = RT_VarTable_acc_get().adr;
-            RT_VarTable_acc_set(RT_Data_null(), NULL);
+            RT_VarTable_acc_setval(RT_Data_null());
         }
         /* all operands evaluated, now perform operations */
         switch (expr->op) {
@@ -582,34 +582,34 @@ RT_Data_t *RT_Expression_eval_literal(void)
         rt_throw("RT_Expression_eval_literal: stack underflow");
     else if (RT_EvalStack_top().type != STACKENTRY_ASTNODE_TYPE_LITERAL)
         rt_throw("RT_Expression_eval_literal: no literal at stack top");
-    RT_VarTable_acc_set(RT_Data_null(), NULL);
+    RT_VarTable_acc_setval(RT_Data_null());
     RT_StackEntry_t pop = RT_EvalStack_pop();
     const AST_Literal_t *lit = pop.entry.node.literal;
     switch (lit->type) {
         case DATA_TYPE_BUL:
-            RT_VarTable_acc_set(RT_Data_bul(lit->data.bul), NULL);
+            RT_VarTable_acc_setval(RT_Data_bul(lit->data.bul));
             break;
         case DATA_TYPE_CHR:
-            RT_VarTable_acc_set(RT_Data_chr(lit->data.chr), NULL);
+            RT_VarTable_acc_setval(RT_Data_chr(lit->data.chr));
             break;
         case DATA_TYPE_I64:
-            RT_VarTable_acc_set(RT_Data_i64(lit->data.i64), NULL);
+            RT_VarTable_acc_setval(RT_Data_i64(lit->data.i64));
             break;
         case DATA_TYPE_F64:
-            RT_VarTable_acc_set(RT_Data_f64(lit->data.f64), NULL);
+            RT_VarTable_acc_setval(RT_Data_f64(lit->data.f64));
             break;
         case DATA_TYPE_STR:
-            RT_VarTable_acc_set(RT_Data_str(RT_DataStr_init(lit->data.str)), NULL);
+            RT_VarTable_acc_setval(RT_Data_str(RT_DataStr_init(lit->data.str)));
             break;
         case DATA_TYPE_INTERP_STR:
-            RT_VarTable_acc_set(RT_Data_interp_str(RT_DataStr_init(lit->data.str)), NULL);
+            RT_VarTable_acc_setval(RT_Data_interp_str(RT_DataStr_init(lit->data.str)));
             break;
         case DATA_TYPE_LST:
-            RT_VarTable_acc_set(RT_Expression_eval_lst(lit->data.lst), NULL);
+            RT_VarTable_acc_setval(RT_Expression_eval_lst(lit->data.lst));
             break;
         case DATA_TYPE_ANY:
             /* void* must be explicitly casted */
-            RT_VarTable_acc_set(RT_Data_any((void*) lit->data.any), NULL);
+            RT_VarTable_acc_setval(RT_Data_any((void*) lit->data.any));
             break;
     }
     return RT_VarTable_acc_get().adr;
