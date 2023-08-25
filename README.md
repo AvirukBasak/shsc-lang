@@ -65,5 +65,5 @@ shsc -tf ast.json examples/factorial.txt
 - AST output at [`tests/SyntaxTree.json`](tests/SyntaxTree.json).
 
 ### Todo
-- Build the runtime.
-- Switch `statements` and `comma_list` to left recursive productions.
+- Implement various operators and type coercion systems.
+- Switch `statements` to left recursive productions.

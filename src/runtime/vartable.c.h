@@ -72,7 +72,7 @@ void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr
         if (!rt_vtable->procs) io_errndie("RT_VarTable_push_proc:" ERR_MSG_REALLOCFAIL);
     }
     /* push the new procedure scope */
-    rt_vtable->top++;
+    ++rt_vtable->top;
     rt_vtable->procs[rt_vtable->top].scopes = NULL;
     rt_vtable->procs[rt_vtable->top].top = -1;
     rt_vtable->procs[rt_vtable->top].capacity = 0;
@@ -92,7 +92,7 @@ void RT_VarTable_push_scope()
         if (!current_proc->scopes) io_errndie("RT_VarTable_push_scope:" ERR_MSG_REALLOCFAIL);
     }
     /* push the new local scope */
-    current_proc->top++;
+    ++current_proc->top;
     current_proc->scopes[current_proc->top].scope = kh_init(RT_Data_t);
 }
 
@@ -214,9 +214,22 @@ RT_VarTable_Acc_t RT_VarTable_acc_get(void)
     return rt_vtable_accumulator;
 }
 
-void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr)
+void RT_VarTable_acc_setval(RT_Data_t val)
 {
+    rt_vtable_refcnt_incr(&val);
+    if (!rt_vtable_accumulator.adr) rt_vtable_refcnt_decr(&rt_vtable_accumulator.val);
+    else rt_vtable_refcnt_decr(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = val;
+    rt_vtable_accumulator.adr = NULL;
+}
+
+void RT_VarTable_acc_setadr(RT_Data_t *adr)
+{
+    if (!adr) io_errndie("RT_VarTable_acc_setadr:" ERR_MSG_NULLPTR);
+    rt_vtable_refcnt_incr(adr);
+    if (!rt_vtable_accumulator.adr) rt_vtable_refcnt_decr(&rt_vtable_accumulator.val);
+    else rt_vtable_refcnt_decr(rt_vtable_accumulator.adr);
+    rt_vtable_accumulator.val = RT_Data_null();
     rt_vtable_accumulator.adr = adr;
 }
 
@@ -237,7 +250,7 @@ const AST_Statement_t *RT_VarTable_pop_proc()
         }
         kh_destroy(RT_Data_t, current_scope->scope);
     }
-    rt_vtable->top--;
+    --rt_vtable->top;
     return current_proc->ret_addr;
 }
 
@@ -256,7 +269,7 @@ RT_Data_t RT_VarTable_pop_scope()
                 rt_vtable_refcnt_decr(&(kh_value(current_scope->scope, iter)));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
-        current_proc->top--;
+        --current_proc->top;
         return last_expr;
     }
     /* if there are no scopes left in the current procedure, pop the procedure */
