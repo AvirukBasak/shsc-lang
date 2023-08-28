@@ -424,9 +424,9 @@ void RT_AST_eval(const AST_Statements_t *code)
 RT_Data_t *RT_Expression_eval(void)
 {
     if (RT_EvalStack_isempty())
-        rt_throw("RT_Expression_eval: stack underflow");
+        io_errndie("RT_Expression_eval: stack underflow");
     else if (RT_EvalStack_top().type != STACKENTRY_STATES_TYPE_EXPR)
-        rt_throw("RT_Expression_eval: no expression at stack top");
+        io_errndie("RT_Expression_eval: no expression at stack top");
     /* set accumulator to null */
     RT_VarTable_acc_setval(RT_Data_null());
     /* dfs the expression tree and evaluate */
@@ -572,12 +572,20 @@ RT_Data_t *RT_Expression_eval(void)
             case LEXTOK_LOGICAL_OR:
             case LEXTOK_LOGICAL_OR_ASSIGN:
             case LEXTOK_TILDE:
+            case TOKOP_NOP: {
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.node.literal = expr->lhs.literal,
+                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
+                });
+                RT_VarTable_acc_setadr(RT_Expression_eval_literal());
+                break;
+            }
             case TOKOP_FNCALL:
             case TOKOP_INDEXING:
             case TOKOP_TERNARY_COND:
             case TOKOP_FNARGS_INDEXING: break;
             /* stuff that doesn't form an operation */
-            default: rt_throw("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
+            default: io_errndie("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
         }
     }
     return RT_VarTable_acc_get()->adr ?
@@ -587,9 +595,9 @@ RT_Data_t *RT_Expression_eval(void)
 RT_Data_t *RT_Expression_eval_literal(void)
 {
     if (RT_EvalStack_isempty())
-        rt_throw("RT_Expression_eval_literal: stack underflow");
+        io_errndie("RT_Expression_eval_literal: stack underflow");
     else if (RT_EvalStack_top().type != STACKENTRY_ASTNODE_TYPE_LITERAL)
-        rt_throw("RT_Expression_eval_literal: no literal at stack top");
+        io_errndie("RT_Expression_eval_literal: no literal at stack top");
     RT_VarTable_acc_setval(RT_Data_null());
     RT_StackEntry_t pop = RT_EvalStack_pop();
     const AST_Literal_t *lit = pop.entry.node.literal;

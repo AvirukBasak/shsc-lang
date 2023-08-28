@@ -17,7 +17,7 @@ void main_parsefiles(const char **filepaths, int file_cnt);
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) io_errndie("no args provided");
+    if (argc < 2) io_errnexit("no args provided");
 
     char **lines = NULL;
     size_t line_cnt = 0;
@@ -52,20 +52,20 @@ int main(int argc, char **argv)
 
     /* check if -t or --ast is present */
     if (!strcmp(argv[index], "-t") || !strcmp(argv[index], "--ast")) {
-        if (argc < 3) io_errndie("no json file provided for '--ast'");
+        if (argc < 3) io_errnexit("no json file provided for '--ast'");
         ast_filename = argv[++index];
         ++index;
     }
 
     /* check if -tf or --astf is present */
     else if (!strcmp(argv[index], "-tf") || !strcmp(argv[index], "--astf")) {
-        if (argc < 3) io_errndie("no json file provided for '--astf'");
+        if (argc < 3) io_errnexit("no json file provided for '--astf'");
         ast_filename = argv[++index];
         ast_format = true;
         ++index;
     }
 
-    if (index >= argc) io_errndie("too few arguments: '%s' onwards", argv[index-1]);
+    if (index >= argc) io_errnexit("too few arguments: '%s' onwards", argv[index-1]);
 
     /* check if -r or --run is present */
     if (!strcmp(argv[index], "-r") || !strcmp(argv[index], "--run")) {
@@ -77,17 +77,17 @@ int main(int argc, char **argv)
                 " - If shsc fails to read one file, it'll skip to next file\n"
                 " - If shsc fails to parse any file, it'll report error and exit\n"
             );
-            io_errndie("no list file provided for '--run'");
+            io_errnexit("no list file provided for '--run'");
         }
         lines = io_read_lines(argv[++index], &line_cnt);
         ++index;
-        if (index < argc) io_errndie("too many arguments: '%s' onwards", argv[index]);
+        if (index < argc) io_errnexit("too many arguments: '%s' onwards", argv[index]);
     }
 
     /* if file paths are taken from argv, don't free lines */
     bool from_argv = false;
 
-    if (index >= argc) io_errndie("too few arguments: '%s' onwards", argv[index-1]);
+    if (index >= argc) io_errnexit("too few arguments: '%s' onwards", argv[index-1]);
 
     /* if no --build set lines = &argv[index] */
     if (!lines) {
@@ -119,13 +119,13 @@ int main(int argc, char **argv)
 
 void main_parsefiles(const char **filepaths, int file_cnt)
 {
-    if (file_cnt < 1) io_errndie("no file paths provided");
+    if (file_cnt < 1) io_errnexit("no file paths provided");
     for (int i = 0; i < file_cnt; ++i) {
         global_currfile = filepaths[i];
         FILE *f = (filepaths[i][0] == '-' && !filepaths[i][1]) ?
             stdin :
             fopen(filepaths[i], "r");
-        if (!f) io_errndie("couldn't read file: '%s'", filepaths[i]);
+        if (!f) io_errnexit("couldn't read file: '%s'", filepaths[i]);
         /* auto pushes module names to a module stack */
         parse_interpret(f);
         if (f != stdin) fclose(f);

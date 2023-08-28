@@ -90,7 +90,7 @@ RT_Data_t RT_Data_Literal(const AST_Literal_t *lit)
 {
     switch (lit->type) {
         case RT_DATA_TYPE_LST:
-            rt_throw("RT_Data_Literal: can't create a list directly from AST");
+            io_errndie("RT_Data_Literal: can't create a list directly from AST");
         case RT_DATA_TYPE_INTERP_STR:
             return RT_Data_interp_str(RT_DataStr_init(lit->data.str));
         case RT_DATA_TYPE_STR:

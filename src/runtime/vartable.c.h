@@ -155,10 +155,10 @@ void rt_vtable_refcnt_decr(RT_Data_t *value)
 void RT_VarTable_create(const char *varname, RT_Data_t value)
 {
     if (!strcmp(varname, "-"))
-        rt_throw("RT_VarTable_create: invalid new variable name '%s'", varname);
+        io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     else {
         int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 0) rt_throw("RT_VarTable_create: invalid new variable name '%s'", varname);
+        if (tmp >= 0) io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
@@ -191,7 +191,7 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 RT_Data_t *RT_VarTable_getref(const char *varname)
 {
     if (!strcmp(varname, "-"))
-        rt_throw("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
+        io_errndie("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
     else {
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
@@ -282,7 +282,7 @@ RT_Data_t RT_VarTable_pop_scope()
 /** clear memory of the vartable */
 void RT_VarTable_destroy()
 {
-    rt_throw("RT_VarTable_destroy: unimplemented");
+    io_errndie("RT_VarTable_destroy: unimplemented");
     return;
 }
 
