@@ -209,9 +209,9 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     return NULL;
 }
 
-RT_VarTable_Acc_t RT_VarTable_acc_get(void)
+RT_VarTable_Acc_t *RT_VarTable_acc_get(void)
 {
-    return rt_vtable_accumulator;
+    return &rt_vtable_accumulator;
 }
 
 void RT_VarTable_acc_setval(RT_Data_t val)
@@ -261,7 +261,7 @@ RT_Data_t RT_VarTable_pop_scope()
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     if (current_proc->top >= 0) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-        RT_Data_t last_expr = RT_VarTable_acc_get().val;
+        RT_Data_t last_expr = RT_VarTable_acc_get()->val;
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
@@ -274,7 +274,7 @@ RT_Data_t RT_VarTable_pop_scope()
     }
     /* if there are no scopes left in the current procedure, pop the procedure */
     RT_VarTable_pop_proc();
-    return RT_VarTable_acc_get().val;
+    return RT_VarTable_acc_get()->val;
 }
 
 /** clear memory of the vartable */

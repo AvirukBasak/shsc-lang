@@ -433,7 +433,8 @@ RT_Data_t *RT_Expression_eval(void)
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
         /* eval lhs operand */
-        if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->lhs_type) {
+        if (RT_Data_isnull(RT_VarTable_acc_get()->val)
+         && !RT_VarTable_acc_get()->adr) switch (expr->lhs_type) {
             case EXPR_TYPE_EXPRESSION: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = expr->lhs.expr,
@@ -442,7 +443,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .entry.state.xp.extra = NULL,
                     .type = STACKENTRY_STATES_TYPE_EXPR
                 });
-                break;
+                continue;
             }
             case EXPR_TYPE_LITERAL:
                 RT_EvalStack_push((const RT_StackEntry_t) {
@@ -456,11 +457,13 @@ RT_Data_t *RT_Expression_eval(void)
                 break;
             case EXPR_TYPE_NULL: break;
         } else {
-            pop.entry.state.xp.lhs = RT_VarTable_acc_get().adr;
+            pop.entry.state.xp.lhs = RT_VarTable_acc_get()->adr ?
+                RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
             RT_VarTable_acc_setval(RT_Data_null());
         }
         /* eval rhs operand */
-        if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->rhs_type) {
+        if (RT_Data_isnull(RT_VarTable_acc_get()->val)
+         && !RT_VarTable_acc_get()->adr) switch (expr->rhs_type) {
             case EXPR_TYPE_EXPRESSION: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = expr->rhs.expr,
@@ -469,7 +472,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .entry.state.xp.extra = NULL,
                     .type = STACKENTRY_STATES_TYPE_EXPR
                 });
-                break;
+                continue;
             }
             case EXPR_TYPE_LITERAL:
                 RT_EvalStack_push((const RT_StackEntry_t) {
@@ -483,11 +486,13 @@ RT_Data_t *RT_Expression_eval(void)
                 break;
             case EXPR_TYPE_NULL: break;
         } else {
-            pop.entry.state.xp.rhs = RT_VarTable_acc_get().adr;
+            pop.entry.state.xp.rhs = RT_VarTable_acc_get()->adr ?
+                RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
             RT_VarTable_acc_setval(RT_Data_null());
         }
         /* eval condition operand */
-        if (RT_Data_isnull(RT_VarTable_acc_get().val)) switch (expr->condition_type) {
+        if (RT_Data_isnull(RT_VarTable_acc_get()->val)
+         && !RT_VarTable_acc_get()->adr) switch (expr->condition_type) {
             case EXPR_TYPE_EXPRESSION: {
                 RT_EvalStack_push((const RT_StackEntry_t) {
                     .entry.state.xp.expr = expr->condition.expr,
@@ -496,7 +501,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .entry.state.xp.extra = NULL,
                     .type = STACKENTRY_STATES_TYPE_EXPR
                 });
-                break;
+                continue;
             }
             case EXPR_TYPE_LITERAL:
                 RT_EvalStack_push((const RT_StackEntry_t) {
@@ -510,7 +515,8 @@ RT_Data_t *RT_Expression_eval(void)
                 break;
             case EXPR_TYPE_NULL: break;
         } else {
-            pop.entry.state.xp.extra = RT_VarTable_acc_get().adr;
+            pop.entry.state.xp.extra = RT_VarTable_acc_get()->adr ?
+                RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
             RT_VarTable_acc_setval(RT_Data_null());
         }
         /* all operands evaluated, now perform operations */
@@ -573,7 +579,8 @@ RT_Data_t *RT_Expression_eval(void)
             default: rt_throw("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
         }
     }
-    return RT_VarTable_acc_get().adr;
+    return RT_VarTable_acc_get()->adr ?
+        RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
 }
 
 RT_Data_t *RT_Expression_eval_literal(void)
@@ -612,7 +619,8 @@ RT_Data_t *RT_Expression_eval_literal(void)
             RT_VarTable_acc_setval(RT_Data_any((void*) lit->data.any));
             break;
     }
-    return RT_VarTable_acc_get().adr;
+    return RT_VarTable_acc_get()->adr ?
+        RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
 }
 
 RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst)
