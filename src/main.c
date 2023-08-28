@@ -65,6 +65,8 @@ int main(int argc, char **argv)
         ++index;
     }
 
+    if (index >= argc) io_errndie("too few arguments: '%s' onwards", argv[index-1]);
+
     /* check if -r or --run is present */
     if (!strcmp(argv[index], "-r") || !strcmp(argv[index], "--run")) {
         if (argc < 3) {
@@ -84,6 +86,8 @@ int main(int argc, char **argv)
 
     /* if file paths are taken from argv, don't free lines */
     bool from_argv = false;
+
+    if (index >= argc) io_errndie("too few arguments: '%s' onwards", argv[index-1]);
 
     /* if no --build set lines = &argv[index] */
     if (!lines) {
