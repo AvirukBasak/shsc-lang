@@ -31,6 +31,7 @@ void rt_exec(void)
     const AST_Identifier_t proc = { .identifier_name = "main" };
     const AST_Statements_t *code = AST_ProcedureMap_get_code(&module, &proc);
     rt_currfile = AST_ProcedureMap_get_filename(&module, &proc);
+    RT_VarTable_push_proc("main", NULL);
     RT_AST_eval(code);
 }
 

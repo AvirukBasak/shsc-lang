@@ -66,8 +66,8 @@ void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr
         rt_vtable->capacity = 0;
     }
     /* increase the capacity if needed */
-    if (rt_vtable->top == rt_vtable->capacity - 1) {
-        rt_vtable->capacity = rt_vtable->capacity == rt_vtable->capacity * 2 +1;
+    if (rt_vtable->top >= rt_vtable->capacity -1) {
+        rt_vtable->capacity = rt_vtable->capacity * 2 +1;
         rt_vtable->procs = (RT_VarTable_Proc_t*) realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(RT_VarTable_Proc_t));
         if (!rt_vtable->procs) io_errndie("RT_VarTable_push_proc:" ERR_MSG_REALLOCFAIL);
     }
@@ -86,8 +86,8 @@ void RT_VarTable_push_scope()
 {
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     /* increase the capacity if needed */
-    if (current_proc->top == current_proc->capacity - 1) {
-        current_proc->capacity = current_proc->capacity == current_proc->capacity * 2 +1;
+    if (current_proc->top >= current_proc->capacity -1) {
+        current_proc->capacity = current_proc->capacity * 2 +1;
         current_proc->scopes = (RT_VarTable_Scope_t*) realloc(current_proc->scopes, current_proc->capacity * sizeof(RT_VarTable_Scope_t));
         if (!current_proc->scopes) io_errndie("RT_VarTable_push_scope:" ERR_MSG_REALLOCFAIL);
     }
@@ -139,15 +139,17 @@ void rt_vtable_refcnt_decr(RT_Data_t *value)
     if (value->type == RT_DATA_TYPE_STR
      || value->type == RT_DATA_TYPE_INTERP_STR) {
          --value->data.str->rc;
-         if (value->data.str->rc <= 0)
+         if (value->data.str->rc < 0)
+             value->data.str->rc = 0;
+         if (value->data.str->rc == 0)
              RT_Data_destroy(value);
     } else if (value->type == RT_DATA_TYPE_LST) {
         --value->data.lst->rc;
-         if (value->data.lst->rc <= 0)
-             RT_Data_destroy(value);
+        if (value->data.lst->rc < 0)
+            value->data.lst->rc = 0;
+        if (value->data.lst->rc == 0)
+            RT_Data_destroy(value);
     }
-    if (value->data.lst->rc < 0)
-        value->data.lst->rc = 0;
 }
 
 void RT_VarTable_create(const char *varname, RT_Data_t value)
