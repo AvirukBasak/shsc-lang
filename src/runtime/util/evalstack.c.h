@@ -20,8 +20,8 @@ RT_EvalStack_t rt_eval_stack = { NULL, -1, 0 };
 /** function to push a entry onto the stack */
 void RT_EvalStack_push(const RT_StackEntry_t entry)
 {
-    if (rt_eval_stack.top + 1 >= rt_eval_stack.capacity) {
-        rt_eval_stack.capacity = rt_eval_stack.capacity * 2 + 1;
+    if (rt_eval_stack.top >= rt_eval_stack.capacity -1) {
+        rt_eval_stack.capacity = rt_eval_stack.capacity * 2 +1;
         RT_StackEntry_t *new_entries = (RT_StackEntry_t*) realloc(rt_eval_stack.entries, rt_eval_stack.capacity * sizeof(RT_StackEntry_t));
         if (!new_entries) io_errndie("RT_EvalStack_push:" ERR_MSG_REALLOCFAIL);
         rt_eval_stack.entries = new_entries;
