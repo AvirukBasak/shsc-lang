@@ -106,6 +106,7 @@ RT_Data_t RT_Data_Literal(const AST_Literal_t *lit)
         case RT_DATA_TYPE_ANY:
             return RT_Data_null();
     }
+    return RT_Data_null();
 }
 
 void RT_Data_destroy(RT_Data_t *var)

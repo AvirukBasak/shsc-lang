@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "errcodes.h"
+#include "io.h"
 #include "runtime.h"
 #include "runtime/util/evalstack.h"
 

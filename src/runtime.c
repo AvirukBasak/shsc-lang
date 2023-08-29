@@ -430,7 +430,7 @@ RT_Data_t *RT_Expression_eval(void)
     /* set accumulator to null */
     RT_VarTable_acc_setval(RT_Data_null());
     /* dfs the expression tree and evaluate */
-    while (RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
+    while (!RT_EvalStack_isempty() && RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
         /* eval lhs operand */
@@ -452,6 +452,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .type = STACKENTRY_ASTNODE_TYPE_LITERAL
                 });
                 pop.entry.state.xp.lhs = RT_Expression_eval_literal();
+                RT_VarTable_acc_setval(RT_Data_null());
                 break;
             case EXPR_TYPE_IDENTIFIER:
                 pop.entry.state.xp.lhs = RT_VarTable_getref(expr->lhs.variable->identifier_name);
@@ -481,6 +482,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .type = STACKENTRY_ASTNODE_TYPE_LITERAL
                 });
                 pop.entry.state.xp.rhs = RT_Expression_eval_literal();
+                RT_VarTable_acc_setval(RT_Data_null());
                 break;
             case EXPR_TYPE_IDENTIFIER:
                 pop.entry.state.xp.rhs = RT_VarTable_getref(expr->rhs.variable->identifier_name);
@@ -510,6 +512,7 @@ RT_Data_t *RT_Expression_eval(void)
                     .type = STACKENTRY_ASTNODE_TYPE_LITERAL
                 });
                 pop.entry.state.xp.extra = RT_Expression_eval_literal();
+                RT_VarTable_acc_setval(RT_Data_null());
                 break;
             case EXPR_TYPE_IDENTIFIER:
                 pop.entry.state.xp.extra = RT_VarTable_getref(expr->condition.variable->identifier_name);
@@ -572,18 +575,11 @@ RT_Data_t *RT_Expression_eval(void)
             case LEXTOK_LOGICAL_OR:
             case LEXTOK_LOGICAL_OR_ASSIGN:
             case LEXTOK_TILDE:
-            case TOKOP_NOP: {
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.node.literal = expr->lhs.literal,
-                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
-                });
-                RT_VarTable_acc_setadr(RT_Expression_eval_literal());
-                break;
-            }
             case TOKOP_FNCALL:
             case TOKOP_INDEXING:
             case TOKOP_TERNARY_COND:
             case TOKOP_FNARGS_INDEXING: break;
+            case TOKOP_NOP: break;
             /* stuff that doesn't form an operation */
             default: io_errndie("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
         }
