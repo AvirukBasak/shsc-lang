@@ -28,7 +28,7 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
 RT_Data_t *RT_VarTable_getref(const char *varname);
 
 /** this is used to get the accumulator data and address */
-RT_VarTable_Acc_t RT_VarTable_acc_get(void);
+RT_VarTable_Acc_t *RT_VarTable_acc_get(void);
 
 /** this is used to update the accumulator */
 void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr);

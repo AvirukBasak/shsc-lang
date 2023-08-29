@@ -66,8 +66,8 @@ void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr
         rt_vtable->capacity = 0;
     }
     /* increase the capacity if needed */
-    if (rt_vtable->top == rt_vtable->capacity - 1) {
-        rt_vtable->capacity = rt_vtable->capacity == rt_vtable->capacity * 2 +1;
+    if (rt_vtable->top >= rt_vtable->capacity -1) {
+        rt_vtable->capacity = rt_vtable->capacity * 2 +1;
         rt_vtable->procs = (RT_VarTable_Proc_t*) realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(RT_VarTable_Proc_t));
         if (!rt_vtable->procs) io_errndie("RT_VarTable_push_proc:" ERR_MSG_REALLOCFAIL);
     }
@@ -86,8 +86,8 @@ void RT_VarTable_push_scope()
 {
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     /* increase the capacity if needed */
-    if (current_proc->top == current_proc->capacity - 1) {
-        current_proc->capacity = current_proc->capacity == current_proc->capacity * 2 +1;
+    if (current_proc->top >= current_proc->capacity -1) {
+        current_proc->capacity = current_proc->capacity * 2 +1;
         current_proc->scopes = (RT_VarTable_Scope_t*) realloc(current_proc->scopes, current_proc->capacity * sizeof(RT_VarTable_Scope_t));
         if (!current_proc->scopes) io_errndie("RT_VarTable_push_scope:" ERR_MSG_REALLOCFAIL);
     }
@@ -139,24 +139,26 @@ void rt_vtable_refcnt_decr(RT_Data_t *value)
     if (value->type == RT_DATA_TYPE_STR
      || value->type == RT_DATA_TYPE_INTERP_STR) {
          --value->data.str->rc;
-         if (value->data.str->rc <= 0)
+         if (value->data.str->rc < 0)
+             value->data.str->rc = 0;
+         if (value->data.str->rc == 0)
              RT_Data_destroy(value);
     } else if (value->type == RT_DATA_TYPE_LST) {
         --value->data.lst->rc;
-         if (value->data.lst->rc <= 0)
-             RT_Data_destroy(value);
+        if (value->data.lst->rc < 0)
+            value->data.lst->rc = 0;
+        if (value->data.lst->rc == 0)
+            RT_Data_destroy(value);
     }
-    if (value->data.lst->rc < 0)
-        value->data.lst->rc = 0;
 }
 
 void RT_VarTable_create(const char *varname, RT_Data_t value)
 {
     if (!strcmp(varname, "-"))
-        rt_throw("RT_VarTable_create: invalid new variable name '%s'", varname);
+        io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     else {
         int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 0) rt_throw("RT_VarTable_create: invalid new variable name '%s'", varname);
+        if (tmp >= 0) io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
@@ -189,7 +191,7 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 RT_Data_t *RT_VarTable_getref(const char *varname)
 {
     if (!strcmp(varname, "-"))
-        rt_throw("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
+        io_errndie("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
     else {
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
@@ -209,9 +211,9 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     return NULL;
 }
 
-RT_VarTable_Acc_t RT_VarTable_acc_get(void)
+RT_VarTable_Acc_t *RT_VarTable_acc_get(void)
 {
-    return rt_vtable_accumulator;
+    return &rt_vtable_accumulator;
 }
 
 void RT_VarTable_acc_setval(RT_Data_t val)
@@ -261,7 +263,7 @@ RT_Data_t RT_VarTable_pop_scope()
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     if (current_proc->top >= 0) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-        RT_Data_t last_expr = RT_VarTable_acc_get().val;
+        RT_Data_t last_expr = RT_VarTable_acc_get()->val;
         khiter_t iter;
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
@@ -274,13 +276,13 @@ RT_Data_t RT_VarTable_pop_scope()
     }
     /* if there are no scopes left in the current procedure, pop the procedure */
     RT_VarTable_pop_proc();
-    return RT_VarTable_acc_get().val;
+    return RT_VarTable_acc_get()->val;
 }
 
 /** clear memory of the vartable */
 void RT_VarTable_destroy()
 {
-    rt_throw("RT_VarTable_destroy: unimplemented");
+    io_errndie("RT_VarTable_destroy: unimplemented");
     return;
 }
 

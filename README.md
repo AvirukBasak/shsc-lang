@@ -66,4 +66,3 @@ shsc -tf ast.json examples/factorial.txt
 
 ### Todo
 - Implement various operators and type coercion systems.
-- Switch `statements` to left recursive productions.

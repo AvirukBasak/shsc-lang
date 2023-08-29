@@ -76,15 +76,15 @@ ssize_t io_getline(char **lineptr, size_t *n, FILE *stream) {
 long long io_get_filesize(const char *filepath)
 {
     FILE *file = fopen(filepath, "rb");
-    if (!file) io_errndie("io_get_filesize: couldn't read file: '%s'", filepath);
+    if (!file) io_errnexit("io_get_filesize: couldn't read file: '%s'", filepath);
     long long filesz = -1LL;
     if (fseek(file, 0, SEEK_END) != 0)
-        io_errndie("io_get_filesize: error seeking to end of file");
+        io_errnexit("io_get_filesize: error seeking to end of file");
     filesz = ftell(file);
     if (filesz == -1LL)
-        io_errndie("io_get_filesize: error getting the file size");
+        io_errnexit("io_get_filesize: error getting the file size");
     if (fseek(file, 0, SEEK_SET) != 0)
-        io_errndie("io_get_filesize: error seeking to the beginning of the file");
+        io_errnexit("io_get_filesize: error seeking to the beginning of the file");
     fclose(file);
     return filesz;
 }
@@ -92,7 +92,7 @@ long long io_get_filesize(const char *filepath)
 char **io_read_lines(const char *filepath, size_t *line_cnt)
 {
     FILE *f = fopen(filepath, "r");
-    if (!f) io_errndie("io_read_lines: couldn't read file: '%s'", filepath);
+    if (!f) io_errnexit("io_read_lines: couldn't read file: '%s'", filepath);
     char *line = NULL;
     *line_cnt = 0;
     size_t list_sz = 0,
@@ -112,7 +112,7 @@ char **io_read_lines(const char *filepath, size_t *line_cnt)
     return ret_lines;
 }
 
-void io_errndie(const char *fmt, ...)
+void io_errnexit(const char *fmt, ...)
 {
     fprintf(stderr, "shsc: ");
     fflush(stderr);
@@ -123,6 +123,19 @@ void io_errndie(const char *fmt, ...)
     fflush(stderr);
     fprintf(stderr, "\n");
     exit(ERR_DIE);
+}
+
+void io_errndie(const char *fmt, ...)
+{
+    fprintf(stderr, "shsc: ");
+    fflush(stderr);
+    va_list args;
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
+    fflush(stderr);
+    fprintf(stderr, "\n");
+    abort();
 }
 
 void io_print_srcerr(int line_no, int char_no, const char *fmt, ...)

@@ -263,7 +263,7 @@ procedure:
 
 statements:
     %empty                                              { $$ = NULL; }
-    | statement statements                              { $$ = AST_Statements($2, $1); }
+    | statements statement                              { $$ = AST_Statements($1, $2); }
     ;
 
 statement:
