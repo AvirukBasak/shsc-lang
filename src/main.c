@@ -87,8 +87,6 @@ int main(int argc, char **argv)
     /* if file paths are taken from argv, don't free lines */
     bool from_argv = false;
 
-    if (index >= argc) io_errnexit("too few arguments: '%s' onwards", argv[index-1]);
-
     /* if no --build set lines = &argv[index] */
     if (!lines) {
         lines = &argv[index];
