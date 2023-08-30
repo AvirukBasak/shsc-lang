@@ -433,6 +433,11 @@ RT_Data_t *RT_Expression_eval(void)
     while (!RT_EvalStack_isempty() && RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
+        /* if operator is membership or fn call, jump directly to operation,
+           i.e. skip the evaluation step, coz there's nothing to evaluate */
+        if (expr->op == LEXTOK_DOT
+         || expr->op == LEXTOK_DCOLON
+         || expr->op == TOKOP_FNCALL) goto eval_operation;
         /* eval lhs operand */
         if (RT_Data_isnull(RT_VarTable_acc_get()->val)
          && !RT_VarTable_acc_get()->adr) switch (expr->lhs_type) {
@@ -523,6 +528,8 @@ RT_Data_t *RT_Expression_eval(void)
                 RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
             RT_VarTable_acc_setval(RT_Data_null());
         }
+eval_operation:
+        io_errndie("RT_Expression_eval: label 'eval_operation' unimplemented");
         /* all operands evaluated, now perform operations */
         switch (expr->op) {
             case LEXTOK_BANG:
@@ -544,23 +551,26 @@ RT_Data_t *RT_Expression_eval(void)
             case LEXTOK_ADD_ASSIGN:
             case LEXTOK_MINUS:
             case LEXTOK_DECREMENT:
+                rt_throw("unary decrement operator is not yet supported");
+                break;
             case LEXTOK_SUBSTRACT_ASSIGN:
             case LEXTOK_DOT:
-                rt_throw("memebership operator is not yet supported");
+                rt_throw("memebership operator '.' is not yet supported");
                 break;
             case LEXTOK_FSLASH:
             case LEXTOK_FLOOR_DIVIDE:
             case LEXTOK_FLOOR_DIVIDE_ASSIGN:
             case LEXTOK_DIVIDE_ASSIGN:
             case LEXTOK_DCOLON:
+                rt_throw("memebership operator '::' is not yet supported");
+                break;
             case LEXTOK_LBRACE_ANGULAR:
             case LEXTOK_BITWISE_LSHIFT:
             case LEXTOK_BITWISE_LSHIFT_ASSIGN:
             case LEXTOK_LOGICAL_LESSER_EQUAL:
-            case LEXTOK_ASSIGN: {
+            case LEXTOK_ASSIGN:
                 RT_VarTable_modf(pop.entry.state.xp.lhs, *pop.entry.state.xp.rhs);
                 break;
-            }
             case LEXTOK_LOGICAL_EQUAL:
             case LEXTOK_RBRACE_ANGULAR:
             case LEXTOK_LOGICAL_GREATER_EQUAL:
