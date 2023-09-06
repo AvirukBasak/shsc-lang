@@ -1,10 +1,13 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
+#include "ast.h"
 #include "ast/api.h"
 #include "runtime.h"
 #include "ast/nodes/enums.h"
+#include "ast/util/procedure_map.h"
 #include "lexer.h"
+#include "parser.yy.h"
 #include "runtime/data.h"
 #include "runtime/data/list.h"
 #include "runtime/data/string.h"
@@ -433,11 +436,38 @@ RT_Data_t *RT_Expression_eval(void)
     while (!RT_EvalStack_isempty() && RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
         RT_StackEntry_t pop = RT_EvalStack_pop();
         const AST_Expression_t *expr = pop.entry.state.xp.expr;
-        /* if operator is membership or fn call, jump directly to operation,
-           i.e. skip the evaluation step, coz there's nothing to evaluate */
-        if (expr->op == LEXTOK_DOT
-         || expr->op == LEXTOK_DCOLON
-         || expr->op == TOKOP_FNCALL) goto eval_operation;
+        /* if operator is membership or fn call, resolve it into the code
+           and push the code in the stack, and jump to evaluation step */
+        switch (expr->op) {
+            case LEXTOK_DOT:
+                goto eval_operation;
+            case LEXTOK_DCOLON:
+                goto eval_operation;
+            case TOKOP_FNCALL: {
+                const AST_CommaSepList_t *ptr = expr->rhs.literal->data.lst;
+                for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
+                    if (!ptr) break;
+                    const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
+                    RT_EvalStack_push((const RT_StackEntry_t) {
+                        .entry.state.xp.expr = ptr->expression,
+                        .entry.state.xp.lhs = NULL,
+                        .entry.state.xp.rhs = NULL,
+                        .entry.state.xp.extra = NULL,
+                        .type = STACKENTRY_STATES_TYPE_EXPR
+                    });
+                    RT_Data_t data = RT_Expression_eval();
+                    RT_VarTable_modf(RT_VarTable_getref(var), data);
+                    ptr = ptr->comma_list;
+                }
+                const AST_Statements_t *code = AST_ProcedureMap_get_code(RT_VarTable_get_currmodule(), expr->lhs.variable);
+                RT_EvalStack_push((const RT_StackEntry_t) {
+                    .entry.node.code = code,
+                    .type = STACKENTRY_ASTNODE_TYPE_STATEMENTS
+                });
+                goto eval_operation;
+            }
+            default: break;
+        }
         /* eval lhs operand */
         if (RT_Data_isnull(RT_VarTable_acc_get()->val)
          && !RT_VarTable_acc_get()->adr) switch (expr->lhs_type) {
@@ -585,7 +615,7 @@ eval_operation:
             case LEXTOK_LOGICAL_OR:
             case LEXTOK_LOGICAL_OR_ASSIGN:
             case LEXTOK_TILDE:
-            case TOKOP_FNCALL:
+            case TOKOP_FNCALL: break;
             case TOKOP_INDEXING:
             case TOKOP_TERNARY_COND:
             case TOKOP_FNARGS_INDEXING: break;
