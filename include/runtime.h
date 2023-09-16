@@ -63,14 +63,6 @@ union RT_StackEntry_States_t {
         int64_t i;
         bool is_running;
     } lp;
-    /* used during expression evaluation to store temporary data */
-    struct {
-        /* eval the ast node and produce RT_Data_t */
-        const AST_Expression_t *expr;
-        RT_Data_t *lhs;
-        RT_Data_t *rhs;
-        RT_Data_t *extra;
-    } xp;
 };
 
 /* specialised union of types to be pushed in runtime stack */
@@ -85,6 +77,6 @@ struct RT_StackEntry_t {
 extern const char *rt_currfile;
 extern int rt_currline;
 
-void rt_exec(void);
+void RT_exec(void);
 
 #endif

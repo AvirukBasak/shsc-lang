@@ -6,6 +6,8 @@
 #include "ast.h"
 #include "data.h"
 
+#define RT_TMPVAR_CNT (32)
+
 /** accumulator stores procedure return values
     and also the address from which the value was obtained
     if the value is temporary (no place in variable), it's set
