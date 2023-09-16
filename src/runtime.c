@@ -23,22 +23,40 @@
 const char *rt_currfile = NULL;
 int rt_currline = 0;
 
-void RT_AST_eval(const AST_Statements_t *code);
-RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr);
-RT_Data_t *RT_Expression_eval_literal(const AST_Literal_t *lit);
-RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst);
+const AST_Identifier_t *rt_current_module = NULL;
+const AST_Identifier_t *rt_current_proc = NULL;
 
-void rt_exec(void)
+const AST_Identifier_t *rt_modulename_get(void);
+const AST_Identifier_t *rt_procname_get(void);
+
+void rt_AST_eval(const AST_Statements_t *code);
+RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr);
+RT_Data_t *rt_Expression_eval_literal(const AST_Literal_t *lit);
+RT_Data_t rt_Expression_eval_lst(const AST_CommaSepList_t *lst);
+
+void RT_exec(void)
 {
-    const AST_Identifier_t module = { .identifier_name = "main" };
-    const AST_Identifier_t proc = { .identifier_name = "main" };
-    const AST_Statements_t *code = AST_ProcedureMap_get_code(&module, &proc);
-    rt_currfile = AST_ProcedureMap_get_filename(&module, &proc);
-    RT_VarTable_push_proc("main", NULL);
-    RT_AST_eval(code);
+    const AST_Identifier_t *module = AST_ProcedureMap_main();
+    const AST_Identifier_t *proc = AST_ProcedureMap_main();
+    const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
+    rt_currfile = AST_ProcedureMap_get_filename(module, proc);
+    RT_VarTable_push_proc(proc->identifier_name, NULL);
+    rt_AST_eval(code);
 }
 
-void RT_AST_eval(const AST_Statements_t *code)
+const AST_Identifier_t *rt_modulename_get(void)
+{
+    if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
+    return rt_current_module;
+}
+
+const AST_Identifier_t *rt_procname_get(void)
+{
+    if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
+    return rt_current_module;
+}
+
+void rt_AST_eval(const AST_Statements_t *code)
 {
     /* push first statements */
     RT_EvalStack_push((const RT_StackEntry_t) {
@@ -70,7 +88,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                 switch (st->type) {
                     case STATEMENT_TYPE_EMPTY: break;
                     case STATEMENT_TYPE_RETURN: {
-                        RT_VarTable_acc_setval(*RT_Expression_eval(st->statement.expression));
+                        RT_VarTable_acc_setval(*rt_Expression_eval(st->statement.expression));
                         break;
                     }
                     case STATEMENT_TYPE_ASSIGNMENT: {
@@ -128,19 +146,19 @@ void RT_AST_eval(const AST_Statements_t *code)
             case STACKENTRY_ASTNODE_TYPE_ASSIGNMENT: {
                 switch (pop.entry.node.assignment->type) {
                     case ASSIGNMENT_TYPE_TOVOID: {
-                        RT_VarTable_acc_setval(*RT_Expression_eval(pop.entry.node.assignment->rhs));
+                        RT_VarTable_acc_setval(*rt_Expression_eval(pop.entry.node.assignment->rhs));
                         break;
                     }
                     case ASSIGNMENT_TYPE_CREATE: {
                         const char *idf = pop.entry.node.assignment->lhs->identifier_name;
-                        RT_VarTable_create(idf, *RT_Expression_eval(pop.entry.node.assignment->rhs));
+                        RT_VarTable_create(idf, *rt_Expression_eval(pop.entry.node.assignment->rhs));
                         break;
                     }
                 }
                 break;
             }
             case STACKENTRY_ASTNODE_TYPE_IF_BLOCK: {
-                bool cond =  RT_Data_tobool(*RT_Expression_eval(pop.entry.node.if_block->condition));
+                bool cond =  RT_Data_tobool(*rt_Expression_eval(pop.entry.node.if_block->condition));
                 if (cond) {
                     RT_EvalStack_push((const RT_StackEntry_t) {
                         .entry.node.code = pop.entry.node.if_block->if_st,
@@ -166,7 +184,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                     break;
                 }
                 /* takes care of [ else if condition then nwp statements ] */
-                bool cond = RT_Data_tobool(*RT_Expression_eval(pop.entry.node.else_block->condition));
+                bool cond = RT_Data_tobool(*rt_Expression_eval(pop.entry.node.else_block->condition));
                 if (cond) {
                     /* if condition true, execute statements and don't go
                        any further down the else if ladder */
@@ -188,7 +206,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                 break;
             }
             case STACKENTRY_ASTNODE_TYPE_WHILE_BLOCK: {
-                bool cond = RT_Data_tobool(*RT_Expression_eval(pop.entry.node.while_block->condition));
+                bool cond = RT_Data_tobool(*rt_Expression_eval(pop.entry.node.while_block->condition));
                 /* if condition is true, don't let the while be removed from stack
                    i.e. push it back into the stack coz it was popped earlier */
                 if (cond) RT_EvalStack_push(pop);
@@ -204,15 +222,15 @@ void RT_AST_eval(const AST_Statements_t *code)
                         /* if loop not running, start it and eval range */
                         if (!pop.entry.state.lp.is_running) {
                             /* calculate start, end and by */
-                            RT_Data_t start = *RT_Expression_eval(pop.entry.node.for_block->iterable.range.start);
+                            RT_Data_t start = *rt_Expression_eval(pop.entry.node.for_block->iterable.range.start);
                             if (start.type != RT_DATA_TYPE_I64)
                                 rt_throw("for loop range start should be an i64");
-                            RT_Data_t end = *RT_Expression_eval(pop.entry.node.for_block->iterable.range.end);
+                            RT_Data_t end = *rt_Expression_eval(pop.entry.node.for_block->iterable.range.end);
                             if (end.type != RT_DATA_TYPE_I64)
                                 rt_throw("for loop range end should be an i64");
                             RT_Data_t by = RT_Data_null();
                             if (pop.entry.node.for_block->iterable.range.by) {
-                                by = *RT_Expression_eval(pop.entry.node.for_block->iterable.range.by);
+                                by = *rt_Expression_eval(pop.entry.node.for_block->iterable.range.by);
                                 if (by.type != RT_DATA_TYPE_I64)
                                     rt_throw("for loop by value should be an i64");
                             }
@@ -254,7 +272,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                         /* if loop not running, start it and eval list */
                         if (!pop.entry.state.lp.is_running) {
                             /* convert expression to a data list */
-                            RT_Data_t data = *RT_Expression_eval(pop.entry.node.for_block->iterable.lst);
+                            RT_Data_t data = *rt_Expression_eval(pop.entry.node.for_block->iterable.lst);
                             switch (data.type) {
                                 case RT_DATA_TYPE_LST:
                                     pop.entry.state.lp.it.iter.type = RT_DATA_TYPE_LST;
@@ -328,7 +346,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                 break;
             }
             case STACKENTRY_STATES_TYPE_EXPR: {
-                RT_Expression_eval(pop.entry.node.expression);
+                rt_Expression_eval(pop.entry.node.expression);
                 break;
             }
             case STACKENTRY_TYPE_SCOPE_POP: {
@@ -347,7 +365,7 @@ void RT_AST_eval(const AST_Statements_t *code)
     }
 }
 
-RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr)
+RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr)
 {
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
@@ -361,12 +379,12 @@ RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr)
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
                 if (!ptr) break;
                 const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                RT_Data_t *data = RT_Expression_eval(ptr->expression);
+                RT_Data_t *data = rt_Expression_eval(ptr->expression);
                 RT_VarTable_modf(RT_VarTable_getref(var), *data);
                 ptr = ptr->comma_list;
             }
             /* get fn code and push code to stack */
-            const AST_Statements_t *code = AST_ProcedureMap_get_code(RT_VarTable_get_currmodule(), expr->lhs.variable);
+            const AST_Statements_t *code = AST_ProcedureMap_get_code(rt_modulename_get(), expr->lhs.variable);
             RT_EvalStack_push((const RT_StackEntry_t) {
                 .entry.node.code = code,
                 .type = STACKENTRY_ASTNODE_TYPE_STATEMENTS
@@ -380,10 +398,10 @@ RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr)
     RT_Data_t *lhs = NULL;
     switch (expr->lhs_type) {
         case EXPR_TYPE_EXPRESSION:
-            lhs = RT_Expression_eval(expr->lhs.expr);
+            lhs = rt_Expression_eval(expr->lhs.expr);
             break;
         case EXPR_TYPE_LITERAL:
-            lhs = RT_Expression_eval_literal(expr->lhs.literal);
+            lhs = rt_Expression_eval_literal(expr->lhs.literal);
             break;
         case EXPR_TYPE_IDENTIFIER:
             lhs = RT_VarTable_getref(expr->lhs.variable->identifier_name);
@@ -395,10 +413,10 @@ RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr)
     RT_Data_t *rhs = NULL;
     switch (expr->rhs_type) {
         case EXPR_TYPE_EXPRESSION:
-            rhs = RT_Expression_eval(expr->rhs.expr);
+            rhs = rt_Expression_eval(expr->rhs.expr);
             break;
         case EXPR_TYPE_LITERAL:
-            rhs = RT_Expression_eval_literal(expr->rhs.literal);
+            rhs = rt_Expression_eval_literal(expr->rhs.literal);
             break;
         case EXPR_TYPE_IDENTIFIER:
             rhs = RT_VarTable_getref(expr->rhs.variable->identifier_name);
@@ -410,10 +428,10 @@ RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr)
     RT_Data_t *condition = NULL;
     switch (expr->condition_type) {
         case EXPR_TYPE_EXPRESSION:
-            condition = RT_Expression_eval(expr->condition.expr);
+            condition = rt_Expression_eval(expr->condition.expr);
             break;
         case EXPR_TYPE_LITERAL:
-            condition = RT_Expression_eval_literal(expr->condition.literal);
+            condition = rt_Expression_eval_literal(expr->condition.literal);
             break;
         case EXPR_TYPE_IDENTIFIER:
             condition = RT_VarTable_getref(expr->condition.variable->identifier_name);
@@ -481,13 +499,13 @@ RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr)
         case TOKOP_FNARGS_INDEXING: break;
         case TOKOP_NOP: break;
         /* stuff that doesn't form an operation */
-        default: io_errndie("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
+        default: io_errndie("rt_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
     }
     return RT_VarTable_acc_get()->adr ?
         RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
 }
 
-RT_Data_t *RT_Expression_eval_literal(const AST_Literal_t *lit)
+RT_Data_t *rt_Expression_eval_literal(const AST_Literal_t *lit)
 {
     switch (lit->type) {
         case DATA_TYPE_BUL:
@@ -509,7 +527,7 @@ RT_Data_t *RT_Expression_eval_literal(const AST_Literal_t *lit)
             RT_VarTable_acc_setval(RT_Data_interp_str(RT_DataStr_init(lit->data.str)));
             break;
         case DATA_TYPE_LST:
-            RT_VarTable_acc_setval(RT_Expression_eval_lst(lit->data.lst));
+            RT_VarTable_acc_setval(rt_Expression_eval_lst(lit->data.lst));
             break;
         case DATA_TYPE_ANY:
             /* void* must be explicitly casted */
@@ -520,12 +538,12 @@ RT_Data_t *RT_Expression_eval_literal(const AST_Literal_t *lit)
         RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
 }
 
-RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst)
+RT_Data_t rt_Expression_eval_lst(const AST_CommaSepList_t *lst)
 {
     const AST_CommaSepList_t *ptr = lst;
     RT_DataList_t *new_list = RT_DataList_init();
     while (ptr) {
-        RT_DataList_append(new_list, *RT_Expression_eval(ptr->expression));
+        RT_DataList_append(new_list, *rt_Expression_eval(ptr->expression));
         ptr = ptr->comma_list;
     }
     return RT_Data_list(new_list);

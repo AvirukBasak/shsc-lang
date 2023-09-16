@@ -15,6 +15,8 @@ typedef struct {
 
 bool AST_ProcedureMap_empty(void);
 
+const AST_Identifier_t *AST_ProcedureMap_main(void);
+
 /** Get a list of map keys */
 AST_ProcedureMapKeyList_t AST_ProcedureMap_KeyList_get();
 

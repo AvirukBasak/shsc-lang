@@ -77,6 +77,6 @@ struct RT_StackEntry_t {
 extern const char *rt_currfile;
 extern int rt_currline;
 
-void rt_exec(void);
+void RT_exec(void);
 
 #endif
