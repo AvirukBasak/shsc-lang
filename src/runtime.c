@@ -20,6 +20,8 @@
 #include "runtime/vartable.c.h"
 #include "runtime/vartable.h"
 
+#define RT_ACC_DATA (RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val)
+
 const char *rt_currfile = NULL;
 int rt_currline = 0;
 
@@ -146,7 +148,8 @@ void rt_AST_eval(const AST_Statements_t *code)
             case STACKENTRY_ASTNODE_TYPE_ASSIGNMENT: {
                 switch (pop.entry.node.assignment->type) {
                     case ASSIGNMENT_TYPE_TOVOID: {
-                        RT_VarTable_acc_setval(*rt_Expression_eval(pop.entry.node.assignment->rhs));
+                        RT_VarTable_acc_setval(*rt_Expression_eval(
+                            pop.entry.node.assignment->rhs));
                         break;
                     }
                     case ASSIGNMENT_TYPE_CREATE: {
@@ -370,9 +373,9 @@ RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr)
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
         case LEXTOK_DOT:
-            return NULL;
+            return RT_ACC_DATA;
         case LEXTOK_DCOLON:
-            return NULL;
+            return RT_ACC_DATA;
         case TOKOP_FNCALL: {
             const AST_CommaSepList_t *ptr = expr->rhs.literal->data.lst;
             /* copy fn args into temporary location */
@@ -389,7 +392,7 @@ RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr)
                 .entry.node.code = code,
                 .type = STACKENTRY_ASTNODE_TYPE_STATEMENTS
             });
-            return NULL;
+            return RT_ACC_DATA;
         }
         default: break;
     }
@@ -501,8 +504,7 @@ RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr)
         /* stuff that doesn't form an operation */
         default: io_errndie("rt_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
     }
-    return RT_VarTable_acc_get()->adr ?
-        RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
+    return RT_ACC_DATA;
 }
 
 RT_Data_t *rt_Expression_eval_literal(const AST_Literal_t *lit)
@@ -534,8 +536,7 @@ RT_Data_t *rt_Expression_eval_literal(const AST_Literal_t *lit)
             RT_VarTable_acc_setval(RT_Data_any((void*) lit->data.any));
             break;
     }
-    return RT_VarTable_acc_get()->adr ?
-        RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
+    return RT_ACC_DATA;
 }
 
 RT_Data_t rt_Expression_eval_lst(const AST_CommaSepList_t *lst)

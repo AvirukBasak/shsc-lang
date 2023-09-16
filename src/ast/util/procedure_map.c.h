@@ -22,6 +22,7 @@
 #include "globals.h"
 #include "io.h"
 #include "parser.h"
+#include "runtime/io.h"
 #include "tlib/khash/khash.h"
 
 /* Define the hash map types */
@@ -187,13 +188,19 @@ const AST_ProcedureMap_procedure_t AST_ProcedureMap_get(const AST_Identifier_t *
 /** Get code by a module and a procedure name */
 const AST_Statements_t *AST_ProcedureMap_get_code(const AST_Identifier_t *module_name, const AST_Identifier_t *proc_name)
 {
-    return AST_ProcedureMap_get(module_name, proc_name).code;
+    const AST_ProcedureMap_procedure_t proc = AST_ProcedureMap_get(module_name, proc_name);
+    if (!proc.proc_name)
+        rt_throw("undefined procedure '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+    return proc.code;
 }
 
 /** Get filename by a module and a procedure name */
 const char *AST_ProcedureMap_get_filename(const AST_Identifier_t *module_name, const AST_Identifier_t *proc_name)
 {
-    return AST_ProcedureMap_get(module_name, proc_name).src_filename;
+    const AST_ProcedureMap_procedure_t proc = AST_ProcedureMap_get(module_name, proc_name);
+    if (!proc.proc_name)
+        rt_throw("AST_ProcedureMap_get_filename: undefined procedure '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+    return proc.src_filename;
 }
 
 /** Clears the entire runtime representation of code,
