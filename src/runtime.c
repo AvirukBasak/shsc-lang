@@ -24,8 +24,8 @@ const char *rt_currfile = NULL;
 int rt_currline = 0;
 
 void RT_AST_eval(const AST_Statements_t *code);
-RT_Data_t *RT_Expression_eval(void);
-RT_Data_t *RT_Expression_eval_literal(void);
+RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr);
+RT_Data_t *RT_Expression_eval_literal(const AST_Literal_t *lit);
 RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst);
 
 void rt_exec(void)
@@ -70,14 +70,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                 switch (st->type) {
                     case STATEMENT_TYPE_EMPTY: break;
                     case STATEMENT_TYPE_RETURN: {
-                        RT_EvalStack_push((const RT_StackEntry_t) {
-                            .entry.state.xp.expr = st->statement.expression,
-                            .entry.state.xp.lhs = NULL,
-                            .entry.state.xp.rhs = NULL,
-                            .entry.state.xp.extra = NULL,
-                            .type = STACKENTRY_STATES_TYPE_EXPR
-                        });
-                        RT_VarTable_acc_setval(*RT_Expression_eval());
+                        RT_VarTable_acc_setval(*RT_Expression_eval(st->statement.expression));
                         break;
                     }
                     case STATEMENT_TYPE_ASSIGNMENT: {
@@ -135,40 +128,19 @@ void RT_AST_eval(const AST_Statements_t *code)
             case STACKENTRY_ASTNODE_TYPE_ASSIGNMENT: {
                 switch (pop.entry.node.assignment->type) {
                     case ASSIGNMENT_TYPE_TOVOID: {
-                        RT_EvalStack_push((const RT_StackEntry_t) {
-                            .entry.state.xp.expr = pop.entry.node.assignment->rhs,
-                            .entry.state.xp.lhs = NULL,
-                            .entry.state.xp.rhs = NULL,
-                            .entry.state.xp.extra = NULL,
-                            .type = STACKENTRY_STATES_TYPE_EXPR
-                        });
-                        RT_VarTable_acc_setval(*RT_Expression_eval());
+                        RT_VarTable_acc_setval(*RT_Expression_eval(pop.entry.node.assignment->rhs));
                         break;
                     }
                     case ASSIGNMENT_TYPE_CREATE: {
                         const char *idf = pop.entry.node.assignment->lhs->identifier_name;
-                        RT_EvalStack_push((const RT_StackEntry_t) {
-                            .entry.state.xp.expr = pop.entry.node.assignment->rhs,
-                            .entry.state.xp.lhs = NULL,
-                            .entry.state.xp.rhs = NULL,
-                            .entry.state.xp.extra = NULL,
-                            .type = STACKENTRY_STATES_TYPE_EXPR
-                        });
-                        RT_VarTable_create(idf, *RT_Expression_eval());
+                        RT_VarTable_create(idf, *RT_Expression_eval(pop.entry.node.assignment->rhs));
                         break;
                     }
                 }
                 break;
             }
             case STACKENTRY_ASTNODE_TYPE_IF_BLOCK: {
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = pop.entry.node.if_block->condition,
-                    .entry.state.xp.lhs = NULL,
-                    .entry.state.xp.rhs = NULL,
-                    .entry.state.xp.extra = NULL,
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                bool cond =  RT_Data_tobool(*RT_Expression_eval());
+                bool cond =  RT_Data_tobool(*RT_Expression_eval(pop.entry.node.if_block->condition));
                 if (cond) {
                     RT_EvalStack_push((const RT_StackEntry_t) {
                         .entry.node.code = pop.entry.node.if_block->if_st,
@@ -194,14 +166,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                     break;
                 }
                 /* takes care of [ else if condition then nwp statements ] */
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = pop.entry.node.else_block->condition,
-                    .entry.state.xp.lhs = NULL,
-                    .entry.state.xp.rhs = NULL,
-                    .entry.state.xp.extra = NULL,
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                bool cond = RT_Data_tobool(*RT_Expression_eval());
+                bool cond = RT_Data_tobool(*RT_Expression_eval(pop.entry.node.else_block->condition));
                 if (cond) {
                     /* if condition true, execute statements and don't go
                        any further down the else if ladder */
@@ -223,14 +188,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                 break;
             }
             case STACKENTRY_ASTNODE_TYPE_WHILE_BLOCK: {
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = pop.entry.node.while_block->condition,
-                    .entry.state.xp.lhs = NULL,
-                    .entry.state.xp.rhs = NULL,
-                    .entry.state.xp.extra = NULL,
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                bool cond = RT_Data_tobool(*RT_Expression_eval());
+                bool cond = RT_Data_tobool(*RT_Expression_eval(pop.entry.node.while_block->condition));
                 /* if condition is true, don't let the while be removed from stack
                    i.e. push it back into the stack coz it was popped earlier */
                 if (cond) RT_EvalStack_push(pop);
@@ -246,36 +204,15 @@ void RT_AST_eval(const AST_Statements_t *code)
                         /* if loop not running, start it and eval range */
                         if (!pop.entry.state.lp.is_running) {
                             /* calculate start, end and by */
-                            RT_EvalStack_push((const RT_StackEntry_t) {
-                                .entry.state.xp.expr = pop.entry.node.for_block->iterable.range.start,
-                                .entry.state.xp.lhs = NULL,
-                                .entry.state.xp.rhs = NULL,
-                                .entry.state.xp.extra = NULL,
-                                .type = STACKENTRY_STATES_TYPE_EXPR
-                            });
-                            RT_Data_t start = *RT_Expression_eval();
+                            RT_Data_t start = *RT_Expression_eval(pop.entry.node.for_block->iterable.range.start);
                             if (start.type != RT_DATA_TYPE_I64)
                                 rt_throw("for loop range start should be an i64");
-                            RT_EvalStack_push((const RT_StackEntry_t) {
-                                .entry.state.xp.expr = pop.entry.node.for_block->iterable.range.end,
-                                .entry.state.xp.lhs = NULL,
-                                .entry.state.xp.rhs = NULL,
-                                .entry.state.xp.extra = NULL,
-                                .type = STACKENTRY_STATES_TYPE_EXPR
-                            });
-                            RT_Data_t end = *RT_Expression_eval();
+                            RT_Data_t end = *RT_Expression_eval(pop.entry.node.for_block->iterable.range.end);
                             if (end.type != RT_DATA_TYPE_I64)
                                 rt_throw("for loop range end should be an i64");
                             RT_Data_t by = RT_Data_null();
                             if (pop.entry.node.for_block->iterable.range.by) {
-                                RT_EvalStack_push((const RT_StackEntry_t) {
-                                    .entry.state.xp.expr = pop.entry.node.for_block->iterable.range.by,
-                                    .entry.state.xp.lhs = NULL,
-                                    .entry.state.xp.rhs = NULL,
-                                    .entry.state.xp.extra = NULL,
-                                    .type = STACKENTRY_STATES_TYPE_EXPR
-                                });
-                                by = *RT_Expression_eval();
+                                by = *RT_Expression_eval(pop.entry.node.for_block->iterable.range.by);
                                 if (by.type != RT_DATA_TYPE_I64)
                                     rt_throw("for loop by value should be an i64");
                             }
@@ -317,14 +254,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                         /* if loop not running, start it and eval list */
                         if (!pop.entry.state.lp.is_running) {
                             /* convert expression to a data list */
-                            RT_EvalStack_push((const RT_StackEntry_t) {
-                                .entry.state.xp.expr = pop.entry.node.for_block->iterable.lst,
-                                .entry.state.xp.lhs = NULL,
-                                .entry.state.xp.rhs = NULL,
-                                .entry.state.xp.extra = NULL,
-                                .type = STACKENTRY_STATES_TYPE_EXPR
-                            });
-                            RT_Data_t data = *RT_Expression_eval();
+                            RT_Data_t data = *RT_Expression_eval(pop.entry.node.for_block->iterable.lst);
                             switch (data.type) {
                                 case RT_DATA_TYPE_LST:
                                     pop.entry.state.lp.it.iter.type = RT_DATA_TYPE_LST;
@@ -398,14 +328,7 @@ void RT_AST_eval(const AST_Statements_t *code)
                 break;
             }
             case STACKENTRY_STATES_TYPE_EXPR: {
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = pop.entry.node.expression,
-                    .entry.state.xp.lhs = NULL,
-                    .entry.state.xp.rhs = NULL,
-                    .entry.state.xp.extra = NULL,
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                RT_Expression_eval();
+                RT_Expression_eval(pop.entry.node.expression);
                 break;
             }
             case STACKENTRY_TYPE_SCOPE_POP: {
@@ -424,219 +347,148 @@ void RT_AST_eval(const AST_Statements_t *code)
     }
 }
 
-RT_Data_t *RT_Expression_eval(void)
+RT_Data_t *RT_Expression_eval(const AST_Expression_t *expr)
 {
-    if (RT_EvalStack_isempty())
-        io_errndie("RT_Expression_eval: stack underflow");
-    else if (RT_EvalStack_top().type != STACKENTRY_STATES_TYPE_EXPR)
-        io_errndie("RT_Expression_eval: no expression at stack top");
-    /* set accumulator to null */
-    RT_VarTable_acc_setval(RT_Data_null());
-    /* dfs the expression tree and evaluate */
-    while (!RT_EvalStack_isempty() && RT_EvalStack_top().type == STACKENTRY_STATES_TYPE_EXPR) {
-        RT_StackEntry_t pop = RT_EvalStack_pop();
-        const AST_Expression_t *expr = pop.entry.state.xp.expr;
-        /* if operator is membership or fn call, resolve it into the code
-           and push the code in the stack, and jump to evaluation step */
-        switch (expr->op) {
-            case LEXTOK_DOT:
-                goto eval_operation;
-            case LEXTOK_DCOLON:
-                goto eval_operation;
-            case TOKOP_FNCALL: {
-                const AST_CommaSepList_t *ptr = expr->rhs.literal->data.lst;
-                for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                    if (!ptr) break;
-                    const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                    RT_EvalStack_push((const RT_StackEntry_t) {
-                        .entry.state.xp.expr = ptr->expression,
-                        .entry.state.xp.lhs = NULL,
-                        .entry.state.xp.rhs = NULL,
-                        .entry.state.xp.extra = NULL,
-                        .type = STACKENTRY_STATES_TYPE_EXPR
-                    });
-                    RT_Data_t data = RT_Expression_eval();
-                    RT_VarTable_modf(RT_VarTable_getref(var), data);
-                    ptr = ptr->comma_list;
-                }
-                const AST_Statements_t *code = AST_ProcedureMap_get_code(RT_VarTable_get_currmodule(), expr->lhs.variable);
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.node.code = code,
-                    .type = STACKENTRY_ASTNODE_TYPE_STATEMENTS
-                });
-                goto eval_operation;
+    /* take care pf fn calls and membership operations */
+    switch (expr->op) {
+        case LEXTOK_DOT:
+            return NULL;
+        case LEXTOK_DCOLON:
+            return NULL;
+        case TOKOP_FNCALL: {
+            const AST_CommaSepList_t *ptr = expr->rhs.literal->data.lst;
+            /* copy fn args into temporary location */
+            for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
+                if (!ptr) break;
+                const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
+                RT_Data_t *data = RT_Expression_eval(ptr->expression);
+                RT_VarTable_modf(RT_VarTable_getref(var), *data);
+                ptr = ptr->comma_list;
             }
-            default: break;
+            /* get fn code and push code to stack */
+            const AST_Statements_t *code = AST_ProcedureMap_get_code(RT_VarTable_get_currmodule(), expr->lhs.variable);
+            RT_EvalStack_push((const RT_StackEntry_t) {
+                .entry.node.code = code,
+                .type = STACKENTRY_ASTNODE_TYPE_STATEMENTS
+            });
+            return NULL;
         }
-        /* eval lhs operand */
-        if (RT_Data_isnull(RT_VarTable_acc_get()->val)
-         && !RT_VarTable_acc_get()->adr) switch (expr->lhs_type) {
-            case EXPR_TYPE_EXPRESSION: {
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = expr->lhs.expr,
-                    .entry.state.xp.lhs = NULL,
-                    .entry.state.xp.rhs = NULL,
-                    .entry.state.xp.extra = NULL,
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                continue;
-            }
-            case EXPR_TYPE_LITERAL:
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.node.literal = expr->lhs.literal,
-                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
-                });
-                pop.entry.state.xp.lhs = RT_Expression_eval_literal();
-                RT_VarTable_acc_setval(RT_Data_null());
-                break;
-            case EXPR_TYPE_IDENTIFIER:
-                pop.entry.state.xp.lhs = RT_VarTable_getref(expr->lhs.variable->identifier_name);
-                break;
-            case EXPR_TYPE_NULL: break;
-        } else {
-            pop.entry.state.xp.lhs = RT_VarTable_acc_get()->adr ?
-                RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
-            RT_VarTable_acc_setval(RT_Data_null());
-        }
-        /* eval rhs operand */
-        if (RT_Data_isnull(RT_VarTable_acc_get()->val)
-         && !RT_VarTable_acc_get()->adr) switch (expr->rhs_type) {
-            case EXPR_TYPE_EXPRESSION: {
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = expr->rhs.expr,
-                    .entry.state.xp.lhs = NULL,
-                    .entry.state.xp.rhs = NULL,
-                    .entry.state.xp.extra = NULL,
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                continue;
-            }
-            case EXPR_TYPE_LITERAL:
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.node.literal = expr->rhs.literal,
-                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
-                });
-                pop.entry.state.xp.rhs = RT_Expression_eval_literal();
-                RT_VarTable_acc_setval(RT_Data_null());
-                break;
-            case EXPR_TYPE_IDENTIFIER:
-                pop.entry.state.xp.rhs = RT_VarTable_getref(expr->rhs.variable->identifier_name);
-                break;
-            case EXPR_TYPE_NULL: break;
-        } else {
-            pop.entry.state.xp.rhs = RT_VarTable_acc_get()->adr ?
-                RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
-            RT_VarTable_acc_setval(RT_Data_null());
-        }
-        /* eval condition operand */
-        if (RT_Data_isnull(RT_VarTable_acc_get()->val)
-         && !RT_VarTable_acc_get()->adr) switch (expr->condition_type) {
-            case EXPR_TYPE_EXPRESSION: {
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.state.xp.expr = expr->condition.expr,
-                    .entry.state.xp.lhs = NULL,
-                    .entry.state.xp.rhs = NULL,
-                    .entry.state.xp.extra = NULL,
-                    .type = STACKENTRY_STATES_TYPE_EXPR
-                });
-                continue;
-            }
-            case EXPR_TYPE_LITERAL:
-                RT_EvalStack_push((const RT_StackEntry_t) {
-                    .entry.node.literal = expr->condition.literal,
-                    .type = STACKENTRY_ASTNODE_TYPE_LITERAL
-                });
-                pop.entry.state.xp.extra = RT_Expression_eval_literal();
-                RT_VarTable_acc_setval(RT_Data_null());
-                break;
-            case EXPR_TYPE_IDENTIFIER:
-                pop.entry.state.xp.extra = RT_VarTable_getref(expr->condition.variable->identifier_name);
-                break;
-            case EXPR_TYPE_NULL: break;
-        } else {
-            pop.entry.state.xp.extra = RT_VarTable_acc_get()->adr ?
-                RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
-            RT_VarTable_acc_setval(RT_Data_null());
-        }
-eval_operation:
-        io_errndie("RT_Expression_eval: label 'eval_operation' unimplemented");
-        /* all operands evaluated, now perform operations */
-        switch (expr->op) {
-            case LEXTOK_BANG:
-            case LEXTOK_LOGICAL_UNEQUAL:
-            case LEXTOK_PERCENT:
-            case LEXTOK_MODULO_ASSIGN:
-            case LEXTOK_AMPERSAND:
-            case LEXTOK_LOGICAL_AND:
-            case LEXTOK_LOGICAL_AND_ASSIGN:
-            case LEXTOK_BITWISE_AND_ASSIGN:
-            case LEXTOK_ASTERIX:
-            case LEXTOK_EXPONENT:
-            case LEXTOK_EXPONENT_ASSIGN:
-            case LEXTOK_MULTIPLY_ASSIGN:
-            case LEXTOK_PLUS:
-            case LEXTOK_INCREMENT:
-                rt_throw("unary increment operator is not yet supported");
-                break;
-            case LEXTOK_ADD_ASSIGN:
-            case LEXTOK_MINUS:
-            case LEXTOK_DECREMENT:
-                rt_throw("unary decrement operator is not yet supported");
-                break;
-            case LEXTOK_SUBSTRACT_ASSIGN:
-            case LEXTOK_DOT:
-                rt_throw("memebership operator '.' is not yet supported");
-                break;
-            case LEXTOK_FSLASH:
-            case LEXTOK_FLOOR_DIVIDE:
-            case LEXTOK_FLOOR_DIVIDE_ASSIGN:
-            case LEXTOK_DIVIDE_ASSIGN:
-            case LEXTOK_DCOLON:
-                rt_throw("memebership operator '::' is not yet supported");
-                break;
-            case LEXTOK_LBRACE_ANGULAR:
-            case LEXTOK_BITWISE_LSHIFT:
-            case LEXTOK_BITWISE_LSHIFT_ASSIGN:
-            case LEXTOK_LOGICAL_LESSER_EQUAL:
-            case LEXTOK_ASSIGN:
-                RT_VarTable_modf(pop.entry.state.xp.lhs, *pop.entry.state.xp.rhs);
-                break;
-            case LEXTOK_LOGICAL_EQUAL:
-            case LEXTOK_RBRACE_ANGULAR:
-            case LEXTOK_LOGICAL_GREATER_EQUAL:
-            case LEXTOK_BITWISE_RSHIFT:
-            case LEXTOK_BITWISE_RSHIFT_ASSIGN:
-            case LEXTOK_ARITH_RSHIFT:
-            case LEXTOK_ARITH_RSHIFT_ASSIGN:
-            case LEXTOK_CARET:
-            case LEXTOK_BITWISE_XOR_ASSIGN:
-            case LEXTOK_PIPE:
-            case LEXTOK_BITWISE_OR_ASSIGN:
-            case LEXTOK_LOGICAL_OR:
-            case LEXTOK_LOGICAL_OR_ASSIGN:
-            case LEXTOK_TILDE:
-            case TOKOP_FNCALL: break;
-            case TOKOP_INDEXING:
-            case TOKOP_TERNARY_COND:
-            case TOKOP_FNARGS_INDEXING: break;
-            case TOKOP_NOP: break;
-            /* stuff that doesn't form an operation */
-            default: io_errndie("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
-        }
+        default: break;
+    }
+
+    /* handle lhs and evaluate it */
+    RT_Data_t *lhs = NULL;
+    switch (expr->lhs_type) {
+        case EXPR_TYPE_EXPRESSION:
+            lhs = RT_Expression_eval(expr->lhs.expr);
+            break;
+        case EXPR_TYPE_LITERAL:
+            lhs = RT_Expression_eval_literal(expr->lhs.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            lhs = RT_VarTable_getref(expr->lhs.variable->identifier_name);
+            break;
+        case EXPR_TYPE_NULL: break;
+    }
+
+    /* handle rhs and evaluate it */
+    RT_Data_t *rhs = NULL;
+    switch (expr->rhs_type) {
+        case EXPR_TYPE_EXPRESSION:
+            rhs = RT_Expression_eval(expr->rhs.expr);
+            break;
+        case EXPR_TYPE_LITERAL:
+            rhs = RT_Expression_eval_literal(expr->rhs.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            rhs = RT_VarTable_getref(expr->rhs.variable->identifier_name);
+            break;
+        case EXPR_TYPE_NULL: break;
+    }
+
+    /* handle condition and evaluate it */
+    RT_Data_t *condition = NULL;
+    switch (expr->condition_type) {
+        case EXPR_TYPE_EXPRESSION:
+            condition = RT_Expression_eval(expr->condition.expr);
+            break;
+        case EXPR_TYPE_LITERAL:
+            condition = RT_Expression_eval_literal(expr->condition.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            condition = RT_VarTable_getref(expr->condition.variable->identifier_name);
+            break;
+        case EXPR_TYPE_NULL: break;
+    }
+
+    switch (expr->op) {
+        case LEXTOK_BANG:
+        case LEXTOK_LOGICAL_UNEQUAL:
+        case LEXTOK_PERCENT:
+        case LEXTOK_MODULO_ASSIGN:
+        case LEXTOK_AMPERSAND:
+        case LEXTOK_LOGICAL_AND:
+        case LEXTOK_LOGICAL_AND_ASSIGN:
+        case LEXTOK_BITWISE_AND_ASSIGN:
+        case LEXTOK_ASTERIX:
+        case LEXTOK_EXPONENT:
+        case LEXTOK_EXPONENT_ASSIGN:
+        case LEXTOK_MULTIPLY_ASSIGN:
+        case LEXTOK_PLUS:
+        case LEXTOK_INCREMENT:
+            rt_throw("unary increment operator is not yet supported");
+            break;
+        case LEXTOK_ADD_ASSIGN:
+        case LEXTOK_MINUS:
+        case LEXTOK_DECREMENT:
+            rt_throw("unary decrement operator is not yet supported");
+            break;
+        case LEXTOK_SUBSTRACT_ASSIGN:
+        case LEXTOK_DOT:
+            rt_throw("memebership operator '.' is not yet supported");
+            break;
+        case LEXTOK_FSLASH:
+        case LEXTOK_FLOOR_DIVIDE:
+        case LEXTOK_FLOOR_DIVIDE_ASSIGN:
+        case LEXTOK_DIVIDE_ASSIGN:
+        case LEXTOK_DCOLON:
+            rt_throw("memebership operator '::' is not yet supported");
+            break;
+        case LEXTOK_LBRACE_ANGULAR:
+        case LEXTOK_BITWISE_LSHIFT:
+        case LEXTOK_BITWISE_LSHIFT_ASSIGN:
+        case LEXTOK_LOGICAL_LESSER_EQUAL:
+        case LEXTOK_ASSIGN:
+            RT_VarTable_acc_setval(*RT_VarTable_modf(lhs, *rhs));
+            break;
+        case LEXTOK_LOGICAL_EQUAL:
+        case LEXTOK_RBRACE_ANGULAR:
+        case LEXTOK_LOGICAL_GREATER_EQUAL:
+        case LEXTOK_BITWISE_RSHIFT:
+        case LEXTOK_BITWISE_RSHIFT_ASSIGN:
+        case LEXTOK_ARITH_RSHIFT:
+        case LEXTOK_ARITH_RSHIFT_ASSIGN:
+        case LEXTOK_CARET:
+        case LEXTOK_BITWISE_XOR_ASSIGN:
+        case LEXTOK_PIPE:
+        case LEXTOK_BITWISE_OR_ASSIGN:
+        case LEXTOK_LOGICAL_OR:
+        case LEXTOK_LOGICAL_OR_ASSIGN:
+        case LEXTOK_TILDE:
+        case TOKOP_FNCALL: break;
+        case TOKOP_INDEXING:
+        case TOKOP_TERNARY_COND:
+        case TOKOP_FNARGS_INDEXING: break;
+        case TOKOP_NOP: break;
+        /* stuff that doesn't form an operation */
+        default: io_errndie("RT_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
     }
     return RT_VarTable_acc_get()->adr ?
         RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val;
 }
 
-RT_Data_t *RT_Expression_eval_literal(void)
+RT_Data_t *RT_Expression_eval_literal(const AST_Literal_t *lit)
 {
-    if (RT_EvalStack_isempty())
-        io_errndie("RT_Expression_eval_literal: stack underflow");
-    else if (RT_EvalStack_top().type != STACKENTRY_ASTNODE_TYPE_LITERAL)
-        io_errndie("RT_Expression_eval_literal: no literal at stack top");
-    RT_VarTable_acc_setval(RT_Data_null());
-    RT_StackEntry_t pop = RT_EvalStack_pop();
-    const AST_Literal_t *lit = pop.entry.node.literal;
     switch (lit->type) {
         case DATA_TYPE_BUL:
             RT_VarTable_acc_setval(RT_Data_bul(lit->data.bul));
@@ -673,14 +525,7 @@ RT_Data_t RT_Expression_eval_lst(const AST_CommaSepList_t *lst)
     const AST_CommaSepList_t *ptr = lst;
     RT_DataList_t *new_list = RT_DataList_init();
     while (ptr) {
-        RT_EvalStack_push((const RT_StackEntry_t) {
-            .entry.state.xp.expr = ptr->expression,
-            .entry.state.xp.lhs = NULL,
-            .entry.state.xp.rhs = NULL,
-            .entry.state.xp.extra = NULL,
-            .type = STACKENTRY_STATES_TYPE_EXPR
-        });
-        RT_DataList_append(new_list, *RT_Expression_eval());
+        RT_DataList_append(new_list, *RT_Expression_eval(ptr->expression));
         ptr = ptr->comma_list;
     }
     return RT_Data_list(new_list);
