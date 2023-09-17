@@ -383,11 +383,10 @@ RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr)
             const AST_CommaSepList_t *ptr = expr->rhs.literal->data.lst;
             /* copy fn args into temporary location */
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                if (!ptr) break;
                 const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                RT_Data_t *data = rt_Expression_eval(ptr->expression);
-                RT_VarTable_modf(RT_VarTable_getref(var), *data);
-                ptr = ptr->comma_list;
+                RT_Data_t data = ptr ? *rt_Expression_eval(ptr->expression) : RT_Data_null();
+                RT_VarTable_modf(RT_VarTable_getref(var), data);
+                ptr = ptr ? ptr->comma_list : ptr;
             }
             /* get fn code and push code to stack */
             rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);

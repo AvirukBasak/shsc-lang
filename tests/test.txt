@@ -1,7 +1,7 @@
 module main
 
 proc main start
-    print("Hello world!", lf)
+    print("Hello world!", "lf")
 
     var x = input(i64)
     

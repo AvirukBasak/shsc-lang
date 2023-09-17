@@ -259,11 +259,12 @@ char *RT_Data_tostr(const RT_Data_t var)
     }
 }
 
-void RT_Data_print(RT_Data_t var)
+int RT_Data_print(RT_Data_t var)
 {
     char *str = RT_Data_tostr(var);
-    printf("%s", str);
+    int bytes = printf("%s", str);
     free(str);
+    return bytes;
 }
 
 #include "data/list.c.h"
