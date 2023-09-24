@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "ast/nodes/enums.h"
 #include "tlib/khash/khash.h"
 
 #include "ast/api.h"
@@ -54,6 +55,18 @@ RT_VarTable_Acc_t rt_vtable_accumulator = {
 };
 
 RT_Data_t rt_vtable_temporary[RT_VTABLE_TEMPORARY_SIZE];
+
+/* few globally defined variables */
+RT_Data_t rt_vtable_lf         = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
+/* list of globally defined typename variables */
+          rt_vtable_bul        = { .data.chr = RT_DATA_TYPE_BUL,        .type = RT_DATA_TYPE_I64 },
+          rt_vtable_chr        = { .data.chr = RT_DATA_TYPE_CHR,        .type = RT_DATA_TYPE_I64 },
+          rt_vtable_i64        = { .data.chr = RT_DATA_TYPE_I64,        .type = RT_DATA_TYPE_I64 },
+          rt_vtable_f64        = { .data.chr = RT_DATA_TYPE_F64,        .type = RT_DATA_TYPE_I64 },
+          rt_vtable_str        = { .data.chr = RT_DATA_TYPE_STR,        .type = RT_DATA_TYPE_I64 },
+          rt_vtable_interp_str = { .data.chr = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
+          rt_vtable_lst        = { .data.chr = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
+          rt_vtable_any        = { .data.chr = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 };
 
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr)
 {
@@ -121,6 +134,19 @@ int rt_vtable_get_tempvar(const char *varname)
     return fully_consumed && (converted_int >= 0) ? converted_int : -1;
 }
 
+RT_Data_t *rt_vtable_get_globvar(const char *varname)
+{
+    if (!strcmp("lf", varname))         return &rt_vtable_lf;
+    if (!strcmp("bul", varname))        return &rt_vtable_bul;
+    if (!strcmp("chr", varname))        return &rt_vtable_chr;
+    if (!strcmp("i64", varname))        return &rt_vtable_i64;
+    if (!strcmp("f64", varname))        return &rt_vtable_f64;
+    if (!strcmp("str", varname))        return &rt_vtable_str;
+    if (!strcmp("interp_str", varname)) return &rt_vtable_interp_str;
+    if (!strcmp("lst", varname))        return &rt_vtable_lst;
+    return NULL;
+}
+
 /** increment reference count of composite data */
 void rt_vtable_refcnt_incr(RT_Data_t *value)
 {
@@ -157,6 +183,8 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
     if (!strcmp(varname, "-"))
         io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     else {
+        RT_Data_t *globvar = rt_vtable_get_globvar(varname);
+        if (globvar) rt_throw("cannot use 'var' with reserved identifier '%s'", varname);
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 0) io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     }
@@ -193,6 +221,8 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     if (!strcmp(varname, "-"))
         io_errndie("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
     else {
+        RT_Data_t *globvar = rt_vtable_get_globvar(varname);
+        if (globvar) return globvar;
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
         if (tmp >= 0) return &rt_vtable_temporary[tmp];

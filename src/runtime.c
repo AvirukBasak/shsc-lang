@@ -498,7 +498,9 @@ RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr)
         case TOKOP_INDEXING:
         case TOKOP_TERNARY_COND:
         case TOKOP_FNARGS_INDEXING: break;
-        case TOKOP_NOP: break;
+        case TOKOP_NOP:
+            RT_VarTable_acc_setval(*lhs);
+            break;
         /* stuff that doesn't form an operation */
         default: io_errndie("rt_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
     }
