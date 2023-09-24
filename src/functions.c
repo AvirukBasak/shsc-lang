@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "functions.h"
@@ -26,6 +27,7 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                 const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
                 const RT_Data_t data = *RT_VarTable_getref(var);
                 if (RT_Data_isnull(data)) continue;
+                if (i > 0) printf(" ");
                 bytes += RT_Data_print(data);
             }
             ret = RT_Data_i64(bytes);

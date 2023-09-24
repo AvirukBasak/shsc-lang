@@ -177,11 +177,12 @@ char *RT_Data_interp_str_parse(const char *str_)
         sprintf(ret +p, "%s", val);
         free(val);
         val = NULL;
-        p += sz;
-        i += idflen -1;
+        p += sz -1;
+        i += idflen +1;
     }
     free(str);
     str = NULL;
+    ret[p] = 0;
     return ret;
 }
 

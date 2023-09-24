@@ -1,6 +1,6 @@
 module main
 
 proc main start
-    var x = "World"
-    print(f"Hello, {x}", "!\n")
+    var text = "There"
+    print(f"Hello {text}!", "It's a beautiful world!", "\n")
 end
