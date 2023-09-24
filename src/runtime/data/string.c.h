@@ -17,10 +17,11 @@ RT_DataStr_t *RT_DataStr_init(const char *s)
 {
     RT_DataStr_t *str = (RT_DataStr_t*) malloc(sizeof(RT_DataStr_t));
     if (!str) io_errndie("RT_DataStr_init:" ERR_MSG_MALLOCFAIL);
-    size_t len = !s ? 0 : strlen(s);
-    str->var = !s ? NULL : (char*) malloc(len * sizeof(char));
-    str->length = !s ? 0 : len;
-    str->capacity = !s ?  0 : len;
+    str->length = !s ? 0 : strlen(s);
+    str->capacity = !s ? 0 : str->length +1;
+    str->var = !s ? NULL : (char*) malloc(str->capacity * sizeof(char) +1);
+    if (str->var) strncpy(str->var, s, str->length);
+    str->var[str->length] = 0;
     /* rc is kept at 0 unless the runtime assigns
        a variable to the data */
     str->rc = 0;
