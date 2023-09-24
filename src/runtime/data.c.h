@@ -2,7 +2,7 @@
 #define RT_DATA_C_H
 
 #include <ctype.h>
-#include "inttypes.h"
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
