@@ -2,5 +2,6 @@ module main
 
 proc main start
     var text = "There"
-    print(f"Hello {text}!", "It's a beautiful world!", lf)
+    var bytes = print(f"Hello {text}!", "It's a beautiful world!", lf)
+    print(f"Printed: {bytes} Bytes", lf)
 end
