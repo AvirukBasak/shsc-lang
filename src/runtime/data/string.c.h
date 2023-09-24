@@ -18,10 +18,15 @@ RT_DataStr_t *RT_DataStr_init(const char *s)
     RT_DataStr_t *str = (RT_DataStr_t*) malloc(sizeof(RT_DataStr_t));
     if (!str) io_errndie("RT_DataStr_init:" ERR_MSG_MALLOCFAIL);
     str->length = !s ? 0 : strlen(s);
-    str->capacity = !s ? 0 : str->length +1;
-    str->var = !s ? NULL : (char*) malloc(str->capacity * sizeof(char) +1);
-    if (str->var) strncpy(str->var, s, str->length);
-    str->var[str->length] = 0;
+    str->capacity = !s ? 0 : (str->length +1);
+    if (s) {
+        str->var = (char*) malloc(str->capacity * sizeof(char) +1);
+        if (!str->var) io_errndie("RT_DataStr_init:" ERR_MSG_MALLOCFAIL);
+        strncpy(str->var, s, str->length);
+        str->var[str->length] = 0;
+    } else {
+        str->var = NULL;
+    }
     /* rc is kept at 0 unless the runtime assigns
        a variable to the data */
     str->rc = 0;
