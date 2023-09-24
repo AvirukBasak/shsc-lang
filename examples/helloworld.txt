@@ -1,3 +1,6 @@
-proc hello start
-    print("Hello, world!", lf)
+module main
+
+proc main start
+    var x = "World"
+    print(f"Hello, {x}", "!\n")
 end

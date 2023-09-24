@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"pro",
+				"proc_name"
+			],
+			[
+				"i",
+				"identifier_name"
+			],
+			[
+				"mo",
+				"module_name"
+			],
+			[
+				"AST_St",
+				"AST_Statements_t"
+			],
+			[
 				"rt_cu",
 				"rt_current_module"
 			],
@@ -164,10 +180,6 @@
 				"RT_DATA_TYPE_BUL"
 			],
 			[
-				"i",
-				"iterable"
-			],
-			[
 				"for",
 				"for_block"
 			],
@@ -192,38 +204,10 @@
 	"buffers":
 	[
 		{
-			"contents": "module main\n\nproc main start\n    print(\"Hello world!\", lf)\n\n    var x = input(i64)\n    \n    if x == 1 then\n        print(\"entered 1\", lf)\n    elif x == 2 then\n        print(\"entered 2\", lf)\n    else\n        print(f\"entered {x}\", lf)\n    end\n\n    while x >= 0 do\n        print(f\"x = {x}\")\n        x = x - 1\n    end\n\n    x = input(\"prompt: \", str)\n    print(f\"entered {x}\", lf)\n\n    # test bool\n    var x = true\n    print(f\"bool value = {x}\", lf)\n    var y = 5 if x == false else 7\n    if y == 5 then\n        print(\"x was false\", lf)\n    end\nend\n",
-			"file": "tests/test.txt",
-			"file_size": 546,
-			"file_write_time": 133393571760987313,
-			"redo_stack":
-			[
-				[
-					8,
-					1,
-					"insert_snippet",
-					{
-						"contents": "\"${0:$SELECTION}\""
-					},
-					"AgAAADcAAAAAAAAANwAAAAAAAAAEAAAAImxmIjcAAAAAAAAAOQAAAAAAAAAAAAAA",
-					"AQAAAAAAAAABAAAAOAAAAAAAAAA6AAAAAAAAAAAAAAAAAPC/"
-				]
-			],
-			"settings":
-			{
-				"buffer_size": 544,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			},
-			"undo_stack":
-			[
-			]
-		},
-		{
 			"file": "src/runtime.c",
 			"settings":
 			{
-				"buffer_size": 25154,
+				"buffer_size": 25149,
 				"line_ending": "Unix"
 			},
 			"undo_stack":
@@ -484,16 +468,16 @@
 	"expanded_folders":
 	[
 		"/home/aviruk/git/shsc-lang",
-		"/home/aviruk/git/shsc-lang/src",
-		"/home/aviruk/git/shsc-lang/tests"
+		"/home/aviruk/git/shsc-lang/src"
 	],
 	"file_history":
 	[
+		"/home/aviruk/git/shsc-lang/src/runtime.c",
+		"/home/aviruk/git/shsc-lang/src/ast/util/procedure_map.c.h",
+		"/home/aviruk/git/shsc-lang/tests/test.txt",
 		"/home/aviruk/git/shsc-lang/include/parser.h",
 		"/home/aviruk/git/shsc-lang/include/io.h",
-		"/home/aviruk/git/shsc-lang/src/runtime.c",
 		"/home/aviruk/git/shsc-lang/include/runtime.h",
-		"/home/aviruk/git/shsc-lang/src/ast/util/procedure_map.c.h",
 		"/home/aviruk/git/shsc-lang/src/main.c",
 		"/home/aviruk/git/shsc-lang/src/parser.y",
 		"/home/aviruk/git/shsc-lang/include/ast/util/procedure_map.h",
@@ -646,126 +630,20 @@
 			[
 				{
 					"buffer": 0,
-					"file": "tests/test.txt",
+					"file": "src/runtime.c",
 					"selected": true,
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 544,
+						"buffer_size": 25149,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								544,
-								544
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content"
-							],
-							"lsp_uri": "file:///home/aviruk/git/shsc-lang/tests/test.txt",
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"stack_multiselect": false,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/runtime.c",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 25154,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6224,
-								6224
+								19472,
+								19472
 							]
 						],
 						"settings":
@@ -789,8 +667,8 @@
 								{
 									"1":
 									[
-										6276,
-										6277
+										19471,
+										19472
 									]
 								},
 								"icon":
@@ -805,8 +683,8 @@
 								{
 									"1":
 									[
-										6122,
-										6123
+										19162,
+										19163
 									]
 								},
 								"unmatched":
@@ -815,61 +693,61 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
-								"bh_double_quote_content"
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
 							],
 							"lsp_active": true,
 							"lsp_hover_provider_count": 1,
@@ -880,10 +758,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2747.0,
+						"translation.y": 7423.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"stack_multiselect": false,
 					"type": "text"
 				}
@@ -946,7 +824,7 @@
 	},
 	"output.Terminus":
 	{
-		"height": 212.0
+		"height": 244.0
 	},
 	"output.diagnostics":
 	{
@@ -972,7 +850,7 @@
 	"project": "shsc-lang.sublime-project",
 	"replace":
 	{
-		"height": 74.0
+		"height": 54.0
 	},
 	"save_all_on_build": true,
 	"select_file":

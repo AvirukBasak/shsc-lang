@@ -189,8 +189,8 @@ const AST_ProcedureMap_procedure_t AST_ProcedureMap_get(const AST_Identifier_t *
 const AST_Statements_t *AST_ProcedureMap_get_code(const AST_Identifier_t *module_name, const AST_Identifier_t *proc_name)
 {
     const AST_ProcedureMap_procedure_t proc = AST_ProcedureMap_get(module_name, proc_name);
-    if (!proc.proc_name)
-        rt_throw("undefined procedure '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+    /* if (!proc.proc_name)
+        rt_throw("undefined procedure '%s::%s'", module_name->identifier_name, proc_name->identifier_name); */
     return proc.code;
 }
 

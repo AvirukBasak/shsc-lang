@@ -25,6 +25,11 @@ FLAGS:
 
 Examples at [`examples/`](examples/).
 
+### Run Hello World
+```
+make run ARGS="examples/helloworld.txt"
+```
+
 ### List File
  - Each line of the list file has a single file path
  - Spaces in file path is valid and quotes not required

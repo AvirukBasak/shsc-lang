@@ -6,6 +6,7 @@
 #include "runtime.h"
 #include "ast/nodes/enums.h"
 #include "ast/util/procedure_map.h"
+#include "functions.h"
 #include "lexer.h"
 #include "parser.yy.h"
 #include "runtime/data.h"
@@ -35,6 +36,8 @@ void rt_AST_eval(const AST_Statements_t *code);
 RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr);
 RT_Data_t *rt_Expression_eval_literal(const AST_Literal_t *lit);
 RT_Data_t rt_Expression_eval_lst(const AST_CommaSepList_t *lst);
+
+void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *proc);
 
 void RT_exec(void)
 {
@@ -380,18 +383,13 @@ RT_Data_t *rt_Expression_eval(const AST_Expression_t *expr)
             const AST_CommaSepList_t *ptr = expr->rhs.literal->data.lst;
             /* copy fn args into temporary location */
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                if (!ptr) break;
                 const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                RT_Data_t *data = rt_Expression_eval(ptr->expression);
-                RT_VarTable_modf(RT_VarTable_getref(var), *data);
-                ptr = ptr->comma_list;
+                RT_Data_t data = ptr ? *rt_Expression_eval(ptr->expression) : RT_Data_null();
+                RT_VarTable_modf(RT_VarTable_getref(var), data);
+                ptr = ptr ? ptr->comma_list : ptr;
             }
             /* get fn code and push code to stack */
-            const AST_Statements_t *code = AST_ProcedureMap_get_code(rt_modulename_get(), expr->lhs.variable);
-            RT_EvalStack_push((const RT_StackEntry_t) {
-                .entry.node.code = code,
-                .type = STACKENTRY_ASTNODE_TYPE_STATEMENTS
-            });
+            rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);
             return RT_ACC_DATA;
         }
         default: break;
@@ -548,4 +546,20 @@ RT_Data_t rt_Expression_eval_lst(const AST_CommaSepList_t *lst)
         ptr = ptr->comma_list;
     }
     return RT_Data_list(new_list);
+}
+
+void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *proc)
+{
+    const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
+    if (code) {
+        RT_EvalStack_push((const RT_StackEntry_t) {
+            .entry.node.code = code,
+            .type = STACKENTRY_ASTNODE_TYPE_STATEMENTS
+        });
+        return;
+    }
+    FN_FunctionDescriptor_t fn = FN_FunctionsList_getfn(proc->identifier_name);
+    if (fn == FN_UNDEFINED)
+        rt_throw("undefined procedure '%s::%s'", module->identifier_name, proc->identifier_name);
+    RT_VarTable_acc_setval(FN_FunctionsList_call(fn));
 }
