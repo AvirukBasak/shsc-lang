@@ -2,7 +2,5 @@ module main
 
 proc main start
     var text = "There"
-    var some_text = "Whatever"
-    i64 = lf; var x = f"{some_text}.{i64}"
-    print(f"Hello {text}!", f"It's a beautiful world! {x}")
+    print(f"Hello {text}!", "It's a beautiful world!", lf)
 end
