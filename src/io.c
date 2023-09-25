@@ -23,6 +23,9 @@
 // if typedef doesn't exist (msvc, blah)
 typedef intptr_t ssize_t;
 
+/** read string contains trailing new line.
+    size_t n is the number of bytes allocated.
+    return value is the length of string read. */
 ssize_t io_getline(char **lineptr, size_t *n, FILE *stream) {
     size_t pos;
     int c;

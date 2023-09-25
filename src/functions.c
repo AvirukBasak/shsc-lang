@@ -1,14 +1,29 @@
+#include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
+#include "errcodes.h"
 #include "functions.h"
-#include "runtime/data.h"
+#include "io.h"
 #include "runtime/io.h"
+#include "runtime/data.h"
+#include "runtime/data/string.h"
 #include "runtime/vartable.h"
 
 /*
 - print
 - input */
+
+bool fn_isvalid_input_type(int64_t type);
+
+void fn_input_bul(bool *val);
+void fn_input_chr(char *val);
+void fn_input_i64(int64_t *val);
+void fn_input_f64(double *val);
+int fn_input_str(char **val);
 
 FN_FunctionDescriptor_t FN_FunctionsList_getfn(const char *fname)
 {
@@ -21,7 +36,7 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
 {
     RT_Data_t ret = RT_Data_null();
     switch (fn) {
-        case FN_PRINT:{
+        case FN_PRINT: {
             int bytes = 0;
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
                 const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
@@ -33,10 +48,146 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             ret = RT_Data_i64(bytes);
             break;
         }
-        case FN_INPUT:
+        case FN_INPUT: {
+            const RT_Data_t prompt = *RT_VarTable_getref("0");
+            const RT_Data_t type_ = *RT_VarTable_getref("1");
+            if (type_.type != RT_DATA_TYPE_I64) {
+                char *s = RT_Data_tostr(type_);
+                rt_throw(
+                    "input: invalid type parameter: '%s'\n"
+                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`"
+                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively", s,
+                    RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
+                free(s);
+            }
+            enum RT_DataType_t type = type_.data.i64;
+            if (!fn_isvalid_input_type(type_.data.i64))
+                rt_throw(
+                    "input: invalid type parameter\n"
+                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`\n"
+                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively",
+                    RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
+            RT_Data_print(prompt);
+            switch (type) {
+                case RT_DATA_TYPE_BUL: {
+                    bool val;
+                    fn_input_bul(&val);
+                    ret = RT_Data_bul(val);
+                    break;
+                }
+                case RT_DATA_TYPE_CHR: {
+                    char val;
+                    fn_input_chr(&val);
+                    ret = RT_Data_chr(val);
+                    break;
+                }
+                case RT_DATA_TYPE_I64: {
+                    int64_t val;
+                    fn_input_i64(&val);
+                    ret = RT_Data_i64(val);
+                    break;
+                }
+                case RT_DATA_TYPE_F64: {
+                    double val;
+                    fn_input_f64(&val);
+                    ret = RT_Data_f64(val);
+                    break;
+                }
+                case RT_DATA_TYPE_STR: {
+                    char *val = NULL;
+                    fn_input_str(&val);
+                    ret = RT_Data_str(RT_DataStr_init(val));
+                    free(val);
+                    break;
+                }
+                default: rt_throw(
+                    "input: invalid type parameter\n"
+                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`\n"
+                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively",
+                    RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
+                    break;
+            }
+            break;
+        }
         case FN_UNDEFINED:
-            rt_throw("undefined procedure");
+            io_errndie("FN_FunctionsList_call: undefined procedure for desc: '%d'", fn);
             break;
     }
     return ret;
+}
+
+bool fn_isvalid_input_type(int64_t type)
+{
+    switch (type) {
+        case RT_DATA_TYPE_BUL:
+        case RT_DATA_TYPE_CHR:
+        case RT_DATA_TYPE_I64:
+        case RT_DATA_TYPE_F64:
+        case RT_DATA_TYPE_STR:
+            return true;
+        default: return false;
+    }
+    return false;
+}
+
+void fn_input_bul(bool *val)
+{
+    if (!val) io_errndie("fn_input_bul:" ERR_MSG_NULLPTR);
+    char *str;
+    int len = fn_input_str(&str);
+    if (!strncmp("1", str, len)) *val = true;
+    else if (!strncmp("0", str, len)) *val = false;
+    else if (!strncmp("true", str, len)) *val = true;
+    else if (!strncmp("false", str, len)) *val = false;
+    else rt_throw("input: invalid input for type `bul`: '%s'", str);
+    free(str);
+}
+
+void fn_input_chr(char *val)
+{
+    if (!val) io_errndie("fn_input_chr:" ERR_MSG_NULLPTR);
+    char *str;
+    int len = fn_input_str(&str);
+    if (len == 1) *val = str[0];
+    else if (len == 0) *val = 0;
+    else rt_throw("input: invalid input for type `chr`: '%s'", str);
+    free(str);
+}
+
+void fn_input_i64(int64_t *val)
+{
+    if (!val) io_errndie("fn_input_i64:" ERR_MSG_NULLPTR);
+    char *str;
+    int len = fn_input_str(&str);
+    char *endptr;
+    errno = 0;
+    *val = (int64_t) strtoll(str, &endptr, 10);
+    if (errno || *endptr != '\0')
+        rt_throw("input: invalid input for type `i64`: '%s'", str);
+    free(str);
+}
+
+void fn_input_f64(double *val)
+{
+    if (!val) io_errndie("fn_input_f64:" ERR_MSG_NULLPTR);
+    char *str;
+    int len = fn_input_str(&str);
+    char *endptr;
+    errno = 0;
+    *val = (double) strtod(str, &endptr);
+    if (errno || *endptr != '\0')
+        rt_throw("input: invalid input for type `f64`: '%s'", str);
+    free(str);
+}
+
+int fn_input_str(char **val)
+{
+    if (!val) io_errndie("fn_input_str:" ERR_MSG_NULLPTR);
+    *val = NULL;
+    size_t bufsize = 0;
+    int len = io_getline(val, &bufsize, stdin);
+    /* remove the newline from result */
+    (*val)[len-1] = 0; len--;
+    if (len < 0) rt_throw("input: unknown error occurred");
+    return len;
 }
