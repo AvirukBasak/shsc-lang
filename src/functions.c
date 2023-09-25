@@ -187,6 +187,7 @@ int fn_input_str(char **val)
     size_t bufsize = 0;
     int len = io_getline(val, &bufsize, stdin);
     /* remove the newline from result */
+    fprintf(stderr, "%c", '\n');
     if (len < 0) rt_throw("input: unknown error occurred");
     (*val)[len-1] = 0; len--;
     return len;
