@@ -252,7 +252,7 @@ char *RT_Data_tostr(const RT_Data_t var)
             if (!var.data.any) return strdup("null");
             char *str = (char*) malloc(16 +1 * sizeof(char));
             if (!str) io_errndie("RT_Data_tostr:" ERR_MSG_MALLOCFAIL);
-            sprintf(str, "0x%p", var.data.any);
+            sprintf(str, "0x%x", var.data.any);
             return str;
         }
         default:

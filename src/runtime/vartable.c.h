@@ -66,7 +66,8 @@ RT_Data_t rt_vtable_lf         = { .data.chr = '\n',                    .type = 
           rt_vtable_str        = { .data.chr = RT_DATA_TYPE_STR,        .type = RT_DATA_TYPE_I64 },
           rt_vtable_interp_str = { .data.chr = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
           rt_vtable_lst        = { .data.chr = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_any        = { .data.chr = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 };
+          rt_vtable_any        = { .data.chr = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
+          rt_vtable_null       = { .data.any = NULL ,                   .type = RT_DATA_TYPE_ANY };
 
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr)
 {
@@ -144,6 +145,7 @@ RT_Data_t *rt_vtable_get_globvar(const char *varname)
     if (!strcmp("str", varname))        return &rt_vtable_str;
     if (!strcmp("interp_str", varname)) return &rt_vtable_interp_str;
     if (!strcmp("lst", varname))        return &rt_vtable_lst;
+    if (!strcmp("null", varname))       return &rt_vtable_null;
     return NULL;
 }
 
@@ -210,6 +212,7 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
 RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 {
     if (!dest) return NULL;
+    if (dest == &rt_vtable_null) rt_throw("cannot assign to reserved identifier 'null'");
     rt_vtable_refcnt_decr(dest);
     rt_vtable_refcnt_incr(&src);
     *dest = src;
