@@ -1,7 +1,12 @@
 module main
 
-proc main start
+proc test start
     var text = input("Enter you name: ", str)
     var bytes = print(f"Hello {text}!", "It's a beautiful world!", lf)
-    print(f"Printed: {bytes} Bytes", lf)
+    return f"Printed: {bytes} Bytes"
+end
+
+proc main start
+    var x = test()
+    print(x, lf)
 end
