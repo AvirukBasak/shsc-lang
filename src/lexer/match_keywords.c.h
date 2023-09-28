@@ -34,6 +34,7 @@ LexToken lex_match_keywords(FILE *f, char ch)
     if (!strcmp(lex_get_buffstr(), "continue"))  return LEXTOK_KWD_CONTINUE;
     if (!strcmp(lex_get_buffstr(), "for"))       return LEXTOK_KWD_FOR;
     if (!strcmp(lex_get_buffstr(), "from"))      return LEXTOK_KWD_FROM;
+    if (!strcmp(lex_get_buffstr(), "in"))        return LEXTOK_KWD_IN;
     if (!strcmp(lex_get_buffstr(), "to"))        return LEXTOK_KWD_TO;
     if (!strcmp(lex_get_buffstr(), "by"))        return LEXTOK_KWD_BY;
     if (!strcmp(lex_get_buffstr(), "do"))        return LEXTOK_KWD_DO;
