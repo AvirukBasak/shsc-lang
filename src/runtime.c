@@ -398,7 +398,12 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case TOKOP_FNCALL: break;
         case TOKOP_INDEXING:
         case TOKOP_TERNARY_COND:
-        case TOKOP_FNARGS_INDEXING: break;
+        case TOKOP_FNARGS_INDEXING:
+            if (!rhs || rhs->type != RT_DATA_TYPE_I64)
+                rt_throw("argument index should evaluate to an `i64`");
+            RT_VarTable_acc_setadr(
+                RT_VarTable_getref_tmpvar(rhs->data.i64));
+            break;
         case TOKOP_NOP:
             RT_VarTable_acc_setval(*lhs);
             break;
