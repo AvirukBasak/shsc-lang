@@ -6,6 +6,9 @@
 typedef enum {
     FN_PRINT,
     FN_INPUT,
+    FN_TYPE,
+    FN_LEN,
+    FN_REFCNT,
     FN_UNDEFINED,
 } FN_FunctionDescriptor_t;
 

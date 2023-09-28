@@ -17,6 +17,20 @@ typedef struct {
     RT_Data_t *adr;
 } RT_VarTable_Acc_t;
 
+/* few globally defined variables */
+extern
+RT_Data_t RT_VarTable_rsv_lf,
+/* list of globally defined typename variables */
+          RT_VarTable_typeid_bul,
+          RT_VarTable_typeid_chr,
+          RT_VarTable_typeid_i64,
+          RT_VarTable_typeid_f64,
+          RT_VarTable_typeid_str,
+          RT_VarTable_typeid_interp_str,
+          RT_VarTable_typeid_lst,
+          RT_VarTable_typeid_any,
+          RT_VarTable_rsv_null;
+
 /** create a new variable in the current scope */
 void RT_VarTable_create(const char *varname, RT_Data_t value);
 
@@ -28,6 +42,8 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
     `void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)`
     on the returned data pointer, that'll take care of reference counts */
 RT_Data_t *RT_VarTable_getref(const char *varname);
+
+RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar);
 
 /** this is used to get the accumulator data and address */
 RT_VarTable_Acc_t *RT_VarTable_acc_get(void);

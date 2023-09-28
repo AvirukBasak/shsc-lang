@@ -32,10 +32,20 @@ int64_t RT_DataList_length(const RT_DataList_t *lst)
     return lst->length;
 }
 
+void RT_DataList_copy(RT_DataList_t *lst)
+{
+    ++lst->rc;
+}
+
 void RT_DataList_destroy(RT_DataList_t **ptr)
 {
     if (!ptr || !*ptr) return;
     RT_DataList_t *lst = *ptr;
+    /* ref counting */
+    --lst->rc;
+    if (lst->rc < 0) lst->rc = 0;
+    if (lst->rc > 0) return;
+    /* free if rc 0 */
     for (int64_t i = 0; i < lst->length; i++) {
         RT_Data_t var = lst->var[i];
         if (var.type == RT_DATA_TYPE_STR || var.type == RT_DATA_TYPE_INTERP_STR) {

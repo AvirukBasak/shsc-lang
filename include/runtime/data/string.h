@@ -1,6 +1,7 @@
 #ifndef RT_DATA_STRING_H
 #define RT_DATA_STRING_H
 
+#include <stddef.h>
 #include <stdint.h>
 #include "runtime/data.h"
 
@@ -13,6 +14,7 @@ struct RT_DataStr_t {
 
 RT_DataStr_t *RT_DataStr_init(const char *s);
 int64_t RT_DataStr_length(const RT_DataStr_t *str);
+void RT_DataStr_copy(RT_DataStr_t *str);
 void RT_DataStr_destroy(RT_DataStr_t **ptr);
 void RT_DataStr_append(RT_DataStr_t *str, char ch);
 void RT_DataStr_set(RT_DataStr_t *str, int64_t idx, char var);

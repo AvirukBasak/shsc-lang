@@ -263,12 +263,13 @@ procedure:
 
 statements:
     %empty                                              { $$ = NULL; }
-    | statements statement                              { $$ = AST_Statements($1, $2); }
+    | statement statements                              { $$ = AST_Statements($2, $1); }
     ;
 
 statement:
     "pass" trm                                          { $$ = AST_Statement_empty(lex_line_no - $2); }
     | "return" expression trm                           { $$ = AST_Statement_return($2, lex_line_no - $3); }
+    | "return" trm                                      { $$ = AST_Statement_return(NULL, lex_line_no - $2); }
     | assignment trm                                    { $$ = AST_Statement_Assignment($1, lex_line_no - $2); }
     | compound_statement trm                            { $$ = AST_Statement_CompoundSt($1, lex_line_no - $2); }
     ;
@@ -424,6 +425,11 @@ postfix_expression:
                                                         }
     | postfix_expression "[" nws expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
     | "$" "[" nws expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
+    | "$" "(" nws expression ")"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
+    | "$" LEXTOK_DECINT_LITERAL                         { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
+                                                            AST_Expression_Literal(
+                                                                AST_Literal_i64($2)), NULL);
+                                                        }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,

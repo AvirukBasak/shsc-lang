@@ -87,6 +87,21 @@ RT_Data_t RT_Data_null(void)
     return RT_Data_any(NULL);
 }
 
+void RT_Data_copy(RT_Data_t *var)
+{
+    switch (var->type) {
+        case RT_DATA_TYPE_STR:
+        case RT_DATA_TYPE_INTERP_STR:
+            RT_DataStr_copy(var->data.str);
+            break;
+        case RT_DATA_TYPE_LST:
+            RT_DataList_copy(var->data.lst);
+            break;
+        default:
+            break;
+    }
+}
+
 void RT_Data_destroy(RT_Data_t *var)
 {
     switch (var->type) {

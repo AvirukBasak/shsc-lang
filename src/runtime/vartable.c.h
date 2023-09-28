@@ -19,8 +19,6 @@
 #define RT_VTABLE_TEMPORARY_SIZE (32)
 
 int rt_vtable_get_tempvar(const char *varname);
-void rt_vtable_refcnt_incr(RT_Data_t *value);
-void rt_vtable_refcnt_decr(RT_Data_t *value);
 
 KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
 
@@ -57,17 +55,17 @@ RT_VarTable_Acc_t rt_vtable_accumulator = {
 RT_Data_t rt_vtable_temporary[RT_VTABLE_TEMPORARY_SIZE];
 
 /* few globally defined variables */
-RT_Data_t rt_vtable_lf         = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
+RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
 /* list of globally defined typename variables */
-          rt_vtable_bul        = { .data.chr = RT_DATA_TYPE_BUL,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_chr        = { .data.chr = RT_DATA_TYPE_CHR,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_i64        = { .data.chr = RT_DATA_TYPE_I64,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_f64        = { .data.chr = RT_DATA_TYPE_F64,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_str        = { .data.chr = RT_DATA_TYPE_STR,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_interp_str = { .data.chr = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
-          rt_vtable_lst        = { .data.chr = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_any        = { .data.chr = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_null       = { .data.any = NULL ,                   .type = RT_DATA_TYPE_ANY };
+          RT_VarTable_typeid_bul        = { .data.i64 = RT_DATA_TYPE_BUL,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_chr        = { .data.i64 = RT_DATA_TYPE_CHR,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_i64        = { .data.i64 = RT_DATA_TYPE_I64,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_f64        = { .data.i64 = RT_DATA_TYPE_F64,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_str        = { .data.i64 = RT_DATA_TYPE_STR,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_interp_str = { .data.i64 = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_lst        = { .data.i64 = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_any        = { .data.i64 = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_rsv_null          = { .data.any = NULL,                    .type = RT_DATA_TYPE_ANY };
 
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr)
 {
@@ -137,47 +135,16 @@ int rt_vtable_get_tempvar(const char *varname)
 
 RT_Data_t *rt_vtable_get_globvar(const char *varname)
 {
-    if (!strcmp("lf", varname))         return &rt_vtable_lf;
-    if (!strcmp("bul", varname))        return &rt_vtable_bul;
-    if (!strcmp("chr", varname))        return &rt_vtable_chr;
-    if (!strcmp("i64", varname))        return &rt_vtable_i64;
-    if (!strcmp("f64", varname))        return &rt_vtable_f64;
-    if (!strcmp("str", varname))        return &rt_vtable_str;
-    if (!strcmp("interp_str", varname)) return &rt_vtable_interp_str;
-    if (!strcmp("lst", varname))        return &rt_vtable_lst;
-    if (!strcmp("null", varname))       return &rt_vtable_null;
+    if (!strcmp("lf", varname))         return &RT_VarTable_rsv_lf;
+    if (!strcmp("bul", varname))        return &RT_VarTable_typeid_bul;
+    if (!strcmp("chr", varname))        return &RT_VarTable_typeid_chr;
+    if (!strcmp("i64", varname))        return &RT_VarTable_typeid_i64;
+    if (!strcmp("f64", varname))        return &RT_VarTable_typeid_f64;
+    if (!strcmp("str", varname))        return &RT_VarTable_typeid_str;
+    if (!strcmp("interp_str", varname)) return &RT_VarTable_typeid_interp_str;
+    if (!strcmp("lst", varname))        return &RT_VarTable_typeid_lst;
+    if (!strcmp("null", varname))       return &RT_VarTable_rsv_null;
     return NULL;
-}
-
-/** increment reference count of composite data */
-void rt_vtable_refcnt_incr(RT_Data_t *value)
-{
-    if (value->type == RT_DATA_TYPE_STR
-     || value->type == RT_DATA_TYPE_INTERP_STR) {
-        ++value->data.str->rc;
-    } else if (value->type == RT_DATA_TYPE_LST) {
-        ++value->data.lst->rc;
-    }
-}
-
-/** decrement reference count of composite data
-    and free data if rc is 0 */
-void rt_vtable_refcnt_decr(RT_Data_t *value)
-{
-    if (value->type == RT_DATA_TYPE_STR
-     || value->type == RT_DATA_TYPE_INTERP_STR) {
-         --value->data.str->rc;
-         if (value->data.str->rc < 0)
-             value->data.str->rc = 0;
-         if (value->data.str->rc == 0)
-             RT_Data_destroy(value);
-    } else if (value->type == RT_DATA_TYPE_LST) {
-        --value->data.lst->rc;
-        if (value->data.lst->rc < 0)
-            value->data.lst->rc = 0;
-        if (value->data.lst->rc == 0)
-            RT_Data_destroy(value);
-    }
 }
 
 void RT_VarTable_create(const char *varname, RT_Data_t value)
@@ -196,15 +163,15 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
     /* variable exists, reduce reference count and replace
        it with the new data */
     if (iter != kh_end(current_scope->scope)) {
-        rt_vtable_refcnt_decr(&kh_value(current_scope->scope, iter));
-        rt_vtable_refcnt_incr(&value);
+        RT_Data_destroy(&kh_value(current_scope->scope, iter));
+        RT_Data_copy(&value);
         kh_value(current_scope->scope, iter) = value;
     } else {
         /* variable doesn't exist, add a new entry */
         int ret;
-        iter = kh_put(RT_Data_t, current_scope->scope, strdup(varname), &ret);
+        iter = kh_put(RT_Data_t, current_scope->scope, varname, &ret);
         /* create variable, increase reference count to 1 and set new data */
-        rt_vtable_refcnt_incr(&value);
+        RT_Data_copy(&value);
         kh_value(current_scope->scope, iter) = value;
     }
 }
@@ -212,9 +179,9 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
 RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 {
     if (!dest) return NULL;
-    if (dest == &rt_vtable_null) rt_throw("cannot assign to reserved identifier 'null'");
-    rt_vtable_refcnt_decr(dest);
-    rt_vtable_refcnt_incr(&src);
+    if (dest == &RT_VarTable_rsv_null) rt_throw("cannot assign to reserved identifier 'null'");
+    RT_Data_destroy(dest);
+    RT_Data_copy(&src);
     *dest = src;
     return dest;
 }
@@ -229,6 +196,7 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
         if (tmp >= 0) return &rt_vtable_temporary[tmp];
+        /* else fall back to code outside if-else ladder */
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     for (int64_t i = current_proc->top; i >= 0; i--) {
@@ -244,6 +212,14 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     return NULL;
 }
 
+RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar)
+{
+    if (tmpvar >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
+    if (tmpvar >= 0) return &rt_vtable_temporary[tmpvar];
+    rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
+    return NULL;
+}
+
 RT_VarTable_Acc_t *RT_VarTable_acc_get(void)
 {
     return &rt_vtable_accumulator;
@@ -251,9 +227,9 @@ RT_VarTable_Acc_t *RT_VarTable_acc_get(void)
 
 void RT_VarTable_acc_setval(RT_Data_t val)
 {
-    rt_vtable_refcnt_incr(&val);
-    if (!rt_vtable_accumulator.adr) rt_vtable_refcnt_decr(&rt_vtable_accumulator.val);
-    else rt_vtable_refcnt_decr(rt_vtable_accumulator.adr);
+    RT_Data_copy(&val);
+    if (!rt_vtable_accumulator.adr) RT_Data_destroy(&rt_vtable_accumulator.val);
+    else RT_Data_destroy(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = val;
     rt_vtable_accumulator.adr = NULL;
 }
@@ -261,9 +237,9 @@ void RT_VarTable_acc_setval(RT_Data_t val)
 void RT_VarTable_acc_setadr(RT_Data_t *adr)
 {
     if (!adr) io_errndie("RT_VarTable_acc_setadr:" ERR_MSG_NULLPTR);
-    rt_vtable_refcnt_incr(adr);
-    if (!rt_vtable_accumulator.adr) rt_vtable_refcnt_decr(&rt_vtable_accumulator.val);
-    else rt_vtable_refcnt_decr(rt_vtable_accumulator.adr);
+    RT_Data_copy(adr);
+    if (!rt_vtable_accumulator.adr) RT_Data_destroy(&rt_vtable_accumulator.val);
+    else RT_Data_destroy(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = RT_Data_null();
     rt_vtable_accumulator.adr = adr;
 }
@@ -281,7 +257,7 @@ const AST_Statement_t *RT_VarTable_pop_proc()
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
                 /* decrement refcnt, if 0, data gets destroyed */
-                rt_vtable_refcnt_decr(&(kh_value(current_scope->scope, iter)));
+                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
     }
@@ -301,7 +277,7 @@ RT_Data_t RT_VarTable_pop_scope()
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
                 /* decrement refcnt, if 0, data gets destroyed */
-                rt_vtable_refcnt_decr(&(kh_value(current_scope->scope, iter)));
+                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
         --current_proc->top;
