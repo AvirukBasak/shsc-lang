@@ -425,6 +425,11 @@ postfix_expression:
                                                         }
     | postfix_expression "[" nws expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
     | "$" "[" nws expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
+    | "$" "(" nws expression ")"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
+    | "$" LEXTOK_DECINT_LITERAL                         { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
+                                                            AST_Expression_Literal(
+                                                                AST_Literal_i64($2)), NULL);
+                                                        }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,
