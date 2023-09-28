@@ -57,11 +57,12 @@ RT_Data_t RT_Data_str(RT_DataStr_t *str)
     return var;
 }
 
-RT_Data_t RT_Data_interp_str(RT_DataStr_t *str)
+RT_Data_t RT_Data_interp_str(const char *str)
 {
-    RT_Data_t var;
-    var.type = RT_DATA_TYPE_INTERP_STR;
-    var.data.str = str;
+    char *parsed_str = RT_Data_interp_str_parse(str);
+    RT_Data_t var = RT_Data_str(
+        RT_DataStr_init(parsed_str));
+    free(parsed_str);
     return var;
 }
 
@@ -84,29 +85,6 @@ RT_Data_t RT_Data_any(void *ptr)
 RT_Data_t RT_Data_null(void)
 {
     return RT_Data_any(NULL);
-}
-
-RT_Data_t RT_Data_Literal(const AST_Literal_t *lit)
-{
-    switch (lit->type) {
-        case RT_DATA_TYPE_LST:
-            io_errndie("RT_Data_Literal: can't create a list directly from AST");
-        case RT_DATA_TYPE_INTERP_STR:
-            return RT_Data_interp_str(RT_DataStr_init(lit->data.str));
-        case RT_DATA_TYPE_STR:
-            return RT_Data_str(RT_DataStr_init(lit->data.str));
-        case RT_DATA_TYPE_I64:
-            return RT_Data_i64(lit->data.i64);
-        case RT_DATA_TYPE_F64:
-            return RT_Data_i64(lit->data.f64);
-        case RT_DATA_TYPE_CHR:
-            return RT_Data_chr(lit->data.chr);
-        case RT_DATA_TYPE_BUL:
-            return RT_Data_bul(lit->data.bul);
-        case RT_DATA_TYPE_ANY:
-            return RT_Data_null();
-    }
-    return RT_Data_null();
 }
 
 void RT_Data_destroy(RT_Data_t *var)

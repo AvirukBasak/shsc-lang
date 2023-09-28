@@ -42,11 +42,10 @@ RT_Data_t RT_Data_chr(char val);
 RT_Data_t RT_Data_i64(int64_t val);
 RT_Data_t RT_Data_f64(double val);
 RT_Data_t RT_Data_str(RT_DataStr_t *str);
-RT_Data_t RT_Data_interp_str(RT_DataStr_t *str);
+RT_Data_t RT_Data_interp_str(const char *str);
 RT_Data_t RT_Data_list(RT_DataList_t *lst);
 RT_Data_t RT_Data_any(void *ptr);
 RT_Data_t RT_Data_null(void);
-RT_Data_t RT_Data_Literal(const AST_Literal_t *lit);
 void RT_Data_destroy(RT_Data_t *var);
 
 bool RT_Data_isnull(const RT_Data_t var);
