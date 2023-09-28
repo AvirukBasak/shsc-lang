@@ -30,8 +30,9 @@ const AST_Identifier_t *rt_current_proc = NULL;
 const AST_Identifier_t *rt_modulename_get(void);
 const AST_Identifier_t *rt_procname_get(void);
 
-void rt_Statements_eval(const AST_Statements_t *code);
-void rt_Statement_eval(const AST_Statement_t *statement);
+bool rt_Statements_eval(const AST_Statements_t *code);
+bool rt_Statements_newscope_eval(const AST_Statements_t *code);
+bool rt_Statement_eval(const AST_Statement_t *statement);
 void rt_Assignment_eval(const AST_Assignment_t *assignment);
 void rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st);
 void rt_IfBlock_eval(const AST_IfBlock_t *if_block);
@@ -68,31 +69,37 @@ const AST_Identifier_t *rt_procname_get(void)
     return rt_current_module;
 }
 
-void rt_Statements_eval(const AST_Statements_t *code)
+bool rt_Statements_eval(const AST_Statements_t *code)
 {
-    if (!code) return;
-    rt_Statements_eval(code->statements);
-    rt_Statement_eval(code->statement);
+    if (!code) return false;
+    const AST_Statements_t *ptr = code;
+    while (ptr) {
+        bool return_ = rt_Statement_eval(code->statement);
+        if (return_) return true;
+        ptr = ptr->statements;
+    }
+    return false;
 }
 
-void rt_Statements_newscope_eval(const AST_Statements_t *code)
+bool rt_Statements_newscope_eval(const AST_Statements_t *code)
 {
-    if (!code) return;
+    if (!code) return false;
     RT_VarTable_push_scope();
-    rt_Statements_eval(code);
+    bool return_ = rt_Statements_eval(code);
     RT_VarTable_pop_scope();
+    return return_;
 }
 
-void rt_Statement_eval(const AST_Statement_t *statement)
+bool rt_Statement_eval(const AST_Statement_t *statement)
 {
-    if (!statement) return;
+    if (!statement) return false;
     rt_currline = statement->line_no;
     switch (statement->type) {
         case STATEMENT_TYPE_EMPTY:
             break;
         case STATEMENT_TYPE_RETURN:
             rt_Expression_eval(statement->statement.expression);
-            break;
+            return true;
         case STATEMENT_TYPE_ASSIGNMENT:
             rt_Assignment_eval(statement->statement.assignment);
             break;
@@ -100,6 +107,7 @@ void rt_Statement_eval(const AST_Statement_t *statement)
             rt_CompoundSt_eval(statement->statement.compound_statement);
             break;
     }
+    return false;
 }
 
 void rt_Assignment_eval(const AST_Assignment_t *assignment)
@@ -139,6 +147,7 @@ void rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st)
 
 void rt_IfBlock_eval(const AST_IfBlock_t *if_block)
 {
+    if (!if_block) return;
     rt_Expression_eval(if_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
     if (cond) rt_Statements_newscope_eval(if_block->if_st);
@@ -147,6 +156,7 @@ void rt_IfBlock_eval(const AST_IfBlock_t *if_block)
 
 void rt_ElseBlock_eval(const AST_ElseBlock_t *else_block)
 {
+    if (!else_block) return;
     /* takes care of [ else nwp statements end ] */
     if (!else_block->condition && !else_block->else_block) {
         rt_Statements_newscope_eval(else_block->else_if_st);
@@ -161,6 +171,7 @@ void rt_ElseBlock_eval(const AST_ElseBlock_t *else_block)
 
 void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
 {
+    if (!while_block) return;
     rt_Expression_eval(while_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
     while (cond) {
@@ -170,6 +181,7 @@ void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
 
 void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
 {
+    if (!for_block) return;
     switch (for_block->type) {
         case FORBLOCK_TYPE_RANGE: {
             /* calculate start, end and by */
@@ -200,8 +212,9 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                 RT_VarTable_push_scope();
                 RT_VarTable_create(for_block->iter->identifier_name,
                     RT_Data_i64(i));
-                rt_Statements_newscope_eval(for_block->statements);
+                bool return_ = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
+                if (return_) break;
             }
             break;
         }
@@ -234,8 +247,9 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                     default:
                         rt_throw("unsupported for loop iterable type");
                 }
-                rt_Statements_eval(for_block->statements);
+                bool return_ = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
+                if (return_) break;
             }
             /* destroy iterable object */
             RT_Data_destroy(&iterable);
@@ -245,6 +259,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
 
 void rt_Expression_eval(const AST_Expression_t *expr)
 {
+    if (!expr) return;
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
         case LEXTOK_DOT:
@@ -392,6 +407,7 @@ void rt_Expression_eval(const AST_Expression_t *expr)
 
 void rt_Literal_eval(const AST_Literal_t *literal)
 {
+    if (!literal) return;
     switch (literal->type) {
         case DATA_TYPE_BUL:
             RT_VarTable_acc_setval(
@@ -438,6 +454,7 @@ void rt_Identifier_eval(const AST_Identifier_t *identifier)
 
 void rt_CommaSepList_eval(const AST_CommaSepList_t *comma_list)
 {
+    if (!comma_list) return;
     const AST_CommaSepList_t *ptr = comma_list;
     RT_DataList_t *new_list = RT_DataList_init();
     while (ptr) {
