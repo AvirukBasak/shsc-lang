@@ -158,7 +158,7 @@ void fn_input_i64(int64_t *val)
 {
     if (!val) io_errndie("fn_input_i64:" ERR_MSG_NULLPTR);
     char *str;
-    int len = fn_input_str(&str);
+    fn_input_str(&str);
     char *endptr;
     errno = 0;
     *val = (int64_t) strtoll(str, &endptr, 10);
@@ -171,7 +171,7 @@ void fn_input_f64(double *val)
 {
     if (!val) io_errndie("fn_input_f64:" ERR_MSG_NULLPTR);
     char *str;
-    int len = fn_input_str(&str);
+    fn_input_str(&str);
     char *endptr;
     errno = 0;
     *val = (double) strtod(str, &endptr);

@@ -175,7 +175,8 @@ void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
     rt_Expression_eval(while_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
     while (cond) {
-        rt_Statements_newscope_eval(while_block->statements);
+        bool return_ = rt_Statements_newscope_eval(while_block->statements);
+        if (return_) break;
     }
 }
 
@@ -415,7 +416,10 @@ void rt_Expression_eval(const AST_Expression_t *expr)
 
 void rt_Literal_eval(const AST_Literal_t *literal)
 {
-    if (!literal) return;
+    if (!literal) {
+        RT_VarTable_acc_setval(RT_Data_null());
+        return;
+    }
     switch (literal->type) {
         case DATA_TYPE_BUL:
             RT_VarTable_acc_setval(
@@ -455,14 +459,20 @@ void rt_Literal_eval(const AST_Literal_t *literal)
 
 void rt_Identifier_eval(const AST_Identifier_t *identifier)
 {
-    if (!identifier) return;
+    if (!identifier) {
+        RT_VarTable_acc_setval(RT_Data_null());
+        return;
+    }
     RT_VarTable_acc_setadr(
         RT_VarTable_getref(identifier->identifier_name));
 }
 
 void rt_CommaSepList_eval(const AST_CommaSepList_t *comma_list)
 {
-    if (!comma_list) return;
+    if (!comma_list) {
+        RT_VarTable_acc_setval(RT_Data_null());
+        return;
+    }
     const AST_CommaSepList_t *ptr = comma_list;
     RT_DataList_t *new_list = RT_DataList_init();
     while (ptr) {
