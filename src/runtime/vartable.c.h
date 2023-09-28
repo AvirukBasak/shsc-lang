@@ -169,7 +169,7 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
     } else {
         /* variable doesn't exist, add a new entry */
         int ret;
-        iter = kh_put(RT_Data_t, current_scope->scope, strdup(varname), &ret);
+        iter = kh_put(RT_Data_t, current_scope->scope, varname, &ret);
         /* create variable, increase reference count to 1 and set new data */
         RT_Data_copy(&value);
         kh_value(current_scope->scope, iter) = value;
