@@ -1,14 +1,16 @@
 module main
 
 proc test start
-    for i from 0 to 5 do
-        var text = input("Enter you name: ", str)
-        var bytes = print(f"Hello {text}!", "It's a beautiful world!", lf)
-        return f"Printed: {bytes} Bytes"
+    var times = $1
+    for x in times do
+        var name = input(f"Enter name {x}: ", str)
+        var bytes = print(f"Hello {name}!",
+            "It's a beautiful world!", lf)
+        print(f"Printed: {bytes} Bytes", lf, lf)
     end
 end
 
 proc main start
-    var x = test()
-    print(x, lf)
+    var ret = test("Times", [1, 2, 3, 4, 5])
+    print(ret, lf)
 end
