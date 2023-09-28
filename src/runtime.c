@@ -74,7 +74,7 @@ bool rt_Statements_eval(const AST_Statements_t *code)
     if (!code) return false;
     const AST_Statements_t *ptr = code;
     while (ptr) {
-        bool return_ = rt_Statement_eval(code->statement);
+        bool return_ = rt_Statement_eval(ptr->statement);
         if (return_) return true;
         ptr = ptr->statements;
     }
@@ -259,7 +259,10 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
 
 void rt_Expression_eval(const AST_Expression_t *expr)
 {
-    if (!expr) return;
+    if (!expr) {
+        RT_VarTable_acc_setval(RT_Data_null());
+        return;
+    }
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
         case LEXTOK_DOT:
