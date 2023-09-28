@@ -29,6 +29,8 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
     on the returned data pointer, that'll take care of reference counts */
 RT_Data_t *RT_VarTable_getref(const char *varname);
 
+RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar);
+
 /** this is used to get the accumulator data and address */
 RT_VarTable_Acc_t *RT_VarTable_acc_get(void);
 

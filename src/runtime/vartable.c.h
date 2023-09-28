@@ -229,6 +229,7 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
         int tmp = rt_vtable_get_tempvar(varname);
         if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
         if (tmp >= 0) return &rt_vtable_temporary[tmp];
+        /* else fall back to code outside if-else ladder */
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     for (int64_t i = current_proc->top; i >= 0; i--) {
@@ -241,6 +242,14 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     }
     /* variable not found, throw an error */
     rt_throw("undefined variable '%s'", varname);
+    return NULL;
+}
+
+RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar)
+{
+    if (tmpvar >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
+    if (tmpvar >= 0) return &rt_vtable_temporary[tmpvar];
+    rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
     return NULL;
 }
 
