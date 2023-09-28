@@ -223,6 +223,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
             /* convert expression to a data list */
             rt_Expression_eval(for_block->iterable.lst);
             RT_Data_t iterable = *RT_ACC_DATA;
+            RT_Data_copy(&iterable);
             int64_t length = 0;
             switch (iterable.type) {
                 case RT_DATA_TYPE_LST:
