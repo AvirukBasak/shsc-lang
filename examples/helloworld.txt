@@ -8,9 +8,10 @@ proc test start
             "It's a beautiful world!", lf)
         print(f"Printed: {bytes} Bytes", lf, lf)
     end
+    return 100
 end
 
 proc main start
     var ret = test("Times", [1, 2, 3, 4, 5])
-    print(ret, lf)
+    print("Return val:", ret, lf)
 end
