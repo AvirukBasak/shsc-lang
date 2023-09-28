@@ -11,6 +11,7 @@
 #include "runtime/io.h"
 #include "runtime/data.h"
 #include "runtime/data/string.h"
+#include "runtime/data/list.h"
 #include "runtime/vartable.h"
 
 /*
@@ -29,6 +30,9 @@ FN_FunctionDescriptor_t FN_FunctionsList_getfn(const char *fname)
 {
     if (!strcmp(fname, "print")) return FN_PRINT;
     if (!strcmp(fname, "input")) return FN_INPUT;
+    if (!strcmp(fname, "type")) return FN_TYPE;
+    if (!strcmp(fname, "len")) return FN_LEN;
+    if (!strcmp(fname, "refcnt")) return FN_REFCNT;
     return FN_UNDEFINED;
 }
 
@@ -106,6 +110,72 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                     "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively",
                     RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
                     break;
+            }
+            break;
+        }
+        case FN_TYPE: {
+            const char var[4] = "0";
+            const RT_Data_t data = *RT_VarTable_getref(var);
+            switch (data.type) {
+                case RT_DATA_TYPE_BUL:
+                    ret = RT_VarTable_typeid_bul;
+                    break;
+                case RT_DATA_TYPE_CHR:
+                    ret = RT_VarTable_typeid_chr;
+                    break;
+                case RT_DATA_TYPE_I64:
+                    ret = RT_VarTable_typeid_i64;
+                    break;
+                case RT_DATA_TYPE_F64:
+                    ret = RT_VarTable_typeid_f64;
+                    break;
+                case RT_DATA_TYPE_STR:
+                    ret = RT_VarTable_typeid_str;
+                    break;
+                case RT_DATA_TYPE_INTERP_STR:
+                    ret = RT_VarTable_typeid_interp_str;
+                    break;
+                case RT_DATA_TYPE_LST:
+                    ret = RT_VarTable_typeid_lst;
+                    break;
+                case RT_DATA_TYPE_ANY:
+                    ret = RT_Data_isnull(data) ?
+                        RT_VarTable_rsv_null : RT_VarTable_typeid_any;
+                    break;
+            }
+            break;
+        }
+        case FN_LEN: {
+            const char var[4] = "0";
+            const RT_Data_t data = *RT_VarTable_getref(var);
+            switch (data.type) {
+            case RT_DATA_TYPE_STR:
+            case RT_DATA_TYPE_INTERP_STR:
+                ret = RT_Data_i64(RT_DataStr_length(data.data.str));
+                break;
+            case RT_DATA_TYPE_LST:
+                ret = RT_Data_i64(RT_DataList_length(data.data.lst));
+                break;
+            default:
+                ret = RT_Data_i64(1);
+                break;
+            }
+            break;
+        }
+        case FN_REFCNT: {
+            const char var[4] = "0";
+            const RT_Data_t data = *RT_VarTable_getref(var);
+            switch (data.type) {
+            case RT_DATA_TYPE_STR:
+            case RT_DATA_TYPE_INTERP_STR:
+                ret = RT_Data_i64(data.data.str->rc);
+                break;
+            case RT_DATA_TYPE_LST:
+                ret = RT_Data_i64(data.data.lst->rc);
+                break;
+            default:
+                ret = RT_Data_i64(1);
+                break;
             }
             break;
         }
