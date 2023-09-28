@@ -1,6 +1,7 @@
 #ifndef RT_DATA_LIST_H
 #define RT_DATA_LIST_H
 
+#include <stddef.h>
 #include "runtime/data.h"
 
 struct RT_DataList_t {
@@ -12,6 +13,7 @@ struct RT_DataList_t {
 
 RT_DataList_t *RT_DataList_init();
 int64_t RT_DataList_length(const RT_DataList_t *lst);
+void RT_DataList_copy(RT_DataList_t *lst);
 void RT_DataList_destroy(RT_DataList_t **ptr);
 void RT_DataList_append(RT_DataList_t *lst, RT_Data_t var);
 void RT_DataList_set(RT_DataList_t *lst, int64_t idx, RT_Data_t var);

@@ -38,10 +38,20 @@ int64_t RT_DataStr_length(const RT_DataStr_t *str)
     return str->length;
 }
 
+void RT_DataStr_copy(RT_DataStr_t *str)
+{
+    ++str->rc;
+}
+
 void RT_DataStr_destroy(RT_DataStr_t **ptr)
 {
     if (!ptr || !*ptr) return;
     RT_DataStr_t *str = *ptr;
+    /* ref counting */
+    --str->rc;
+    if (str->rc < 0) str->rc = 0;
+    if (str->rc > 0) return;
+    /* free if rc 0 */
     free(str->var);
     str->var = NULL;
     free(str);

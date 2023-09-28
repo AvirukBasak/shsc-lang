@@ -19,8 +19,6 @@
 #define RT_VTABLE_TEMPORARY_SIZE (32)
 
 int rt_vtable_get_tempvar(const char *varname);
-void rt_vtable_refcnt_incr(RT_Data_t *value);
-void rt_vtable_refcnt_decr(RT_Data_t *value);
 
 KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
 
@@ -149,37 +147,6 @@ RT_Data_t *rt_vtable_get_globvar(const char *varname)
     return NULL;
 }
 
-/** increment reference count of composite data */
-void rt_vtable_refcnt_incr(RT_Data_t *value)
-{
-    if (value->type == RT_DATA_TYPE_STR
-     || value->type == RT_DATA_TYPE_INTERP_STR) {
-        ++value->data.str->rc;
-    } else if (value->type == RT_DATA_TYPE_LST) {
-        ++value->data.lst->rc;
-    }
-}
-
-/** decrement reference count of composite data
-    and free data if rc is 0 */
-void rt_vtable_refcnt_decr(RT_Data_t *value)
-{
-    if (value->type == RT_DATA_TYPE_STR
-     || value->type == RT_DATA_TYPE_INTERP_STR) {
-         --value->data.str->rc;
-         if (value->data.str->rc < 0)
-             value->data.str->rc = 0;
-         if (value->data.str->rc == 0)
-             RT_Data_destroy(value);
-    } else if (value->type == RT_DATA_TYPE_LST) {
-        --value->data.lst->rc;
-        if (value->data.lst->rc < 0)
-            value->data.lst->rc = 0;
-        if (value->data.lst->rc == 0)
-            RT_Data_destroy(value);
-    }
-}
-
 void RT_VarTable_create(const char *varname, RT_Data_t value)
 {
     if (!strcmp(varname, "-"))
@@ -196,15 +163,15 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
     /* variable exists, reduce reference count and replace
        it with the new data */
     if (iter != kh_end(current_scope->scope)) {
-        rt_vtable_refcnt_decr(&kh_value(current_scope->scope, iter));
-        rt_vtable_refcnt_incr(&value);
+        RT_Data_destroy(&kh_value(current_scope->scope, iter));
+        RT_Data_copy(&value);
         kh_value(current_scope->scope, iter) = value;
     } else {
         /* variable doesn't exist, add a new entry */
         int ret;
         iter = kh_put(RT_Data_t, current_scope->scope, strdup(varname), &ret);
         /* create variable, increase reference count to 1 and set new data */
-        rt_vtable_refcnt_incr(&value);
+        RT_Data_copy(&value);
         kh_value(current_scope->scope, iter) = value;
     }
 }
@@ -213,8 +180,8 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 {
     if (!dest) return NULL;
     if (dest == &rt_vtable_null) rt_throw("cannot assign to reserved identifier 'null'");
-    rt_vtable_refcnt_decr(dest);
-    rt_vtable_refcnt_incr(&src);
+    RT_Data_destroy(dest);
+    RT_Data_copy(&src);
     *dest = src;
     return dest;
 }
@@ -260,9 +227,9 @@ RT_VarTable_Acc_t *RT_VarTable_acc_get(void)
 
 void RT_VarTable_acc_setval(RT_Data_t val)
 {
-    rt_vtable_refcnt_incr(&val);
-    if (!rt_vtable_accumulator.adr) rt_vtable_refcnt_decr(&rt_vtable_accumulator.val);
-    else rt_vtable_refcnt_decr(rt_vtable_accumulator.adr);
+    RT_Data_copy(&val);
+    if (!rt_vtable_accumulator.adr) RT_Data_destroy(&rt_vtable_accumulator.val);
+    else RT_Data_destroy(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = val;
     rt_vtable_accumulator.adr = NULL;
 }
@@ -270,9 +237,9 @@ void RT_VarTable_acc_setval(RT_Data_t val)
 void RT_VarTable_acc_setadr(RT_Data_t *adr)
 {
     if (!adr) io_errndie("RT_VarTable_acc_setadr:" ERR_MSG_NULLPTR);
-    rt_vtable_refcnt_incr(adr);
-    if (!rt_vtable_accumulator.adr) rt_vtable_refcnt_decr(&rt_vtable_accumulator.val);
-    else rt_vtable_refcnt_decr(rt_vtable_accumulator.adr);
+    RT_Data_copy(adr);
+    if (!rt_vtable_accumulator.adr) RT_Data_destroy(&rt_vtable_accumulator.val);
+    else RT_Data_destroy(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = RT_Data_null();
     rt_vtable_accumulator.adr = adr;
 }
@@ -290,7 +257,7 @@ const AST_Statement_t *RT_VarTable_pop_proc()
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
                 /* decrement refcnt, if 0, data gets destroyed */
-                rt_vtable_refcnt_decr(&(kh_value(current_scope->scope, iter)));
+                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
     }
@@ -310,7 +277,7 @@ RT_Data_t RT_VarTable_pop_scope()
         for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
             if (kh_exist(current_scope->scope, iter))
                 /* decrement refcnt, if 0, data gets destroyed */
-                rt_vtable_refcnt_decr(&(kh_value(current_scope->scope, iter)));
+                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
         }
         kh_destroy(RT_Data_t, current_scope->scope);
         --current_proc->top;
