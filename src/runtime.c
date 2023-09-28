@@ -416,8 +416,7 @@ void rt_Literal_eval(const AST_Literal_t *literal)
             break;
         case DATA_TYPE_INTERP_STR:
             RT_VarTable_acc_setval(
-                RT_Data_interp_str(
-                    RT_DataStr_init(literal->data.str)));
+                RT_Data_interp_str(literal->data.str));
             break;
         case DATA_TYPE_LST:
             rt_CommaSepList_eval(literal->data.lst);
@@ -454,7 +453,9 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
 {
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     if (code) {
+        RT_VarTable_push_proc(proc->identifier_name, NULL);
         rt_Statements_eval(code);
+        RT_VarTable_pop_proc();
         return;
     }
     /* attempt to call in built function */
