@@ -55,17 +55,17 @@ RT_VarTable_Acc_t rt_vtable_accumulator = {
 RT_Data_t rt_vtable_temporary[RT_VTABLE_TEMPORARY_SIZE];
 
 /* few globally defined variables */
-RT_Data_t rt_vtable_lf         = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
+RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
 /* list of globally defined typename variables */
-          rt_vtable_bul        = { .data.chr = RT_DATA_TYPE_BUL,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_chr        = { .data.chr = RT_DATA_TYPE_CHR,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_i64        = { .data.chr = RT_DATA_TYPE_I64,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_f64        = { .data.chr = RT_DATA_TYPE_F64,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_str        = { .data.chr = RT_DATA_TYPE_STR,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_interp_str = { .data.chr = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
-          rt_vtable_lst        = { .data.chr = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_any        = { .data.chr = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
-          rt_vtable_null       = { .data.any = NULL ,                   .type = RT_DATA_TYPE_ANY };
+          RT_VarTable_typeid_bul        = { .data.i64 = RT_DATA_TYPE_BUL,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_chr        = { .data.i64 = RT_DATA_TYPE_CHR,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_i64        = { .data.i64 = RT_DATA_TYPE_I64,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_f64        = { .data.i64 = RT_DATA_TYPE_F64,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_str        = { .data.i64 = RT_DATA_TYPE_STR,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_interp_str = { .data.i64 = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_lst        = { .data.i64 = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_any        = { .data.i64 = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_rsv_null          = { .data.any = NULL,                    .type = RT_DATA_TYPE_ANY };
 
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr)
 {
@@ -135,15 +135,15 @@ int rt_vtable_get_tempvar(const char *varname)
 
 RT_Data_t *rt_vtable_get_globvar(const char *varname)
 {
-    if (!strcmp("lf", varname))         return &rt_vtable_lf;
-    if (!strcmp("bul", varname))        return &rt_vtable_bul;
-    if (!strcmp("chr", varname))        return &rt_vtable_chr;
-    if (!strcmp("i64", varname))        return &rt_vtable_i64;
-    if (!strcmp("f64", varname))        return &rt_vtable_f64;
-    if (!strcmp("str", varname))        return &rt_vtable_str;
-    if (!strcmp("interp_str", varname)) return &rt_vtable_interp_str;
-    if (!strcmp("lst", varname))        return &rt_vtable_lst;
-    if (!strcmp("null", varname))       return &rt_vtable_null;
+    if (!strcmp("lf", varname))         return &RT_VarTable_rsv_lf;
+    if (!strcmp("bul", varname))        return &RT_VarTable_typeid_bul;
+    if (!strcmp("chr", varname))        return &RT_VarTable_typeid_chr;
+    if (!strcmp("i64", varname))        return &RT_VarTable_typeid_i64;
+    if (!strcmp("f64", varname))        return &RT_VarTable_typeid_f64;
+    if (!strcmp("str", varname))        return &RT_VarTable_typeid_str;
+    if (!strcmp("interp_str", varname)) return &RT_VarTable_typeid_interp_str;
+    if (!strcmp("lst", varname))        return &RT_VarTable_typeid_lst;
+    if (!strcmp("null", varname))       return &RT_VarTable_rsv_null;
     return NULL;
 }
 
@@ -179,7 +179,7 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
 RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 {
     if (!dest) return NULL;
-    if (dest == &rt_vtable_null) rt_throw("cannot assign to reserved identifier 'null'");
+    if (dest == &RT_VarTable_rsv_null) rt_throw("cannot assign to reserved identifier 'null'");
     RT_Data_destroy(dest);
     RT_Data_copy(&src);
     *dest = src;

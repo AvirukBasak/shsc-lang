@@ -17,6 +17,20 @@ typedef struct {
     RT_Data_t *adr;
 } RT_VarTable_Acc_t;
 
+/* few globally defined variables */
+extern
+RT_Data_t RT_VarTable_rsv_lf,
+/* list of globally defined typename variables */
+          RT_VarTable_typeid_bul,
+          RT_VarTable_typeid_chr,
+          RT_VarTable_typeid_i64,
+          RT_VarTable_typeid_f64,
+          RT_VarTable_typeid_str,
+          RT_VarTable_typeid_interp_str,
+          RT_VarTable_typeid_lst,
+          RT_VarTable_typeid_any,
+          RT_VarTable_rsv_null;
+
 /** create a new variable in the current scope */
 void RT_VarTable_create(const char *varname, RT_Data_t value);
 
