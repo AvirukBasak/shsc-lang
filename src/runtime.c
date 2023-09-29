@@ -276,11 +276,13 @@ void rt_Expression_eval(const AST_Expression_t *expr)
                 expr->rhs.literal->data.lst : NULL;
             /* copy fn args into temporary location */
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                if (ptr) rt_Expression_eval(ptr->expression);
-                RT_Data_t data = ptr ? *RT_ACC_DATA : RT_Data_null();
-                RT_VarTable_modf(RT_VarTable_getref(var), data);
-                ptr = ptr ? ptr->comma_list : ptr;
+                RT_Data_t data = RT_Data_null();
+                if (ptr) {
+                    rt_Expression_eval(ptr->expression);
+                    data = *RT_ACC_DATA;
+                }
+                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), data);
+                if (ptr) ptr = ptr->comma_list;
             }
             /* get fn code and push code to stack */
             rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);
