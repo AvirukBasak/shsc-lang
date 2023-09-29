@@ -43,8 +43,7 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
         case FN_PRINT: {
             int bytes = 0;
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                const RT_Data_t data = *RT_VarTable_getref(var);
+                const RT_Data_t data = *RT_VarTable_getref_tmpvar(i);
                 if (RT_Data_isnull(data)) continue;
                 if (i > 0) printf(" ");
                 bytes += RT_Data_print(data);
@@ -53,8 +52,8 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             break;
         }
         case FN_INPUT: {
-            const RT_Data_t prompt = *RT_VarTable_getref("0");
-            const RT_Data_t type_ = *RT_VarTable_getref("1");
+            const RT_Data_t prompt = *RT_VarTable_getref_tmpvar(0);
+            const RT_Data_t type_ = *RT_VarTable_getref_tmpvar(1);
             if (type_.type != RT_DATA_TYPE_I64) {
                 char *s = RT_Data_tostr(type_);
                 rt_throw(
@@ -114,8 +113,7 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             break;
         }
         case FN_TYPE: {
-            const char var[4] = "0";
-            const RT_Data_t data = *RT_VarTable_getref(var);
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
                 case RT_DATA_TYPE_BUL:
                     ret = RT_VarTable_typeid_bul;
@@ -146,8 +144,7 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             break;
         }
         case FN_LEN: {
-            const char var[4] = "0";
-            const RT_Data_t data = *RT_VarTable_getref(var);
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
             case RT_DATA_TYPE_STR:
             case RT_DATA_TYPE_INTERP_STR:
@@ -163,8 +160,7 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             break;
         }
         case FN_REFCNT: {
-            const char var[4] = "0";
-            const RT_Data_t data = *RT_VarTable_getref(var);
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
             case RT_DATA_TYPE_STR:
             case RT_DATA_TYPE_INTERP_STR:
