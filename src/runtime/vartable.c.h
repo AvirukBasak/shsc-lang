@@ -17,10 +17,6 @@
 #include "runtime/io.h"
 #include "runtime/vartable.h"
 
-#define RT_VTABLE_TEMPORARY_SIZE (32)
-
-int rt_vtable_get_tempvar(const char *varname);
-
 KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
 
 /** local scope, stores a map of variables */
@@ -53,7 +49,7 @@ RT_VarTable_Acc_t rt_vtable_accumulator = {
     .adr = NULL
 };
 
-RT_Data_t rt_vtable_temporary[RT_VTABLE_TEMPORARY_SIZE];
+RT_Data_t rt_vtable_tmpvars[RT_TMPVAR_CNT];
 
 /* few globally defined variables */
 RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
@@ -215,9 +211,9 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
 
 RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar)
 {
-    if (tmpvar >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
-    if (tmpvar >= 0) return &rt_vtable_temporary[tmpvar];
-    rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
+    if (tmpvar >= RT_TMPVAR_CNT) rt_throw("no argument at '%d': valid arguments are $0 to $%d", tmpvar, RT_TMPVAR_CNT-1);
+    if (tmpvar >= 0) return &rt_vtable_tmpvars[tmpvar];
+    rt_throw("no argument at '%d': valid arguments are $0 to $%d", tmpvar, RT_TMPVAR_CNT-1);
     return NULL;
 }
 
