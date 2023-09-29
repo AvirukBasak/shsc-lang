@@ -1,6 +1,7 @@
 #ifndef RT_VARTABLE_C_H
 #define RT_VARTABLE_C_H
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -149,7 +150,7 @@ RT_Data_t *rt_vtable_get_globvar(const char *varname)
 
 void RT_VarTable_create(const char *varname, RT_Data_t value)
 {
-    if (!strcmp(varname, "-"))
+    if ( (!isalpha(varname[0]) && varname[0] != '_') || isdigit(varname[0]) )
         io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     else {
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
@@ -188,8 +189,8 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 
 RT_Data_t *RT_VarTable_getref(const char *varname)
 {
-    if (!strcmp(varname, "-"))
-        io_errndie("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
+    if ( (!isalpha(varname[0]) && varname[0] != '_') || isdigit(varname[0]) )
+        io_errndie("RT_VarTable_getref: invalid variable name '%s'", varname);
     else {
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) return globvar;
