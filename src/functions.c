@@ -58,8 +58,8 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                 char *s = RT_Data_tostr(type_);
                 rt_throw(
                     "input: invalid type parameter: '%s'\n"
-                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`"
-                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively", s,
+                    "  valid parameters are bul, chr, i64, f64 or str\n"
+                    "  respective values are %d, %d, %d, %d or %d", s,
                     RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
                 free(s);
             }
@@ -67,8 +67,8 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             if (!fn_isvalid_input_type(type_.data.i64))
                 rt_throw(
                     "input: invalid type parameter\n"
-                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`\n"
-                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively",
+                    "  valid parameters are bul, chr, i64, f64 or str\n"
+                    "  respective values are %d, %d, %d, %d or %d",
                     RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
             RT_Data_print(prompt);
             switch (type) {
@@ -105,8 +105,8 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                 }
                 default: rt_throw(
                     "input: invalid type parameter\n"
-                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`\n"
-                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively",
+                    "  valid parameters are bul, chr, i64, f64 or str\n"
+                    "  respective values are %d, %d, %d, %d or %d",
                     RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
                     break;
             }
@@ -205,7 +205,7 @@ void fn_input_bul(bool *val)
     else if (!strncmp("0", str, len)) *val = false;
     else if (!strncmp("true", str, len)) *val = true;
     else if (!strncmp("false", str, len)) *val = false;
-    else rt_throw("input: invalid input for type `bul`: '%s'", str);
+    else rt_throw("input: invalid input for type bul: '%s'", str);
     free(str);
 }
 
@@ -216,7 +216,7 @@ void fn_input_chr(char *val)
     int len = fn_input_str(&str);
     if (len == 1) *val = str[0];
     else if (len == 0) *val = 0;
-    else rt_throw("input: invalid input for type `chr`: '%s'", str);
+    else rt_throw("input: invalid input for type chr: '%s'", str);
     free(str);
 }
 
@@ -229,7 +229,7 @@ void fn_input_i64(int64_t *val)
     errno = 0;
     *val = (int64_t) strtoll(str, &endptr, 10);
     if (errno || *endptr != '\0')
-        rt_throw("input: invalid input for type `i64`: '%s'", str);
+        rt_throw("input: invalid input for type i64: '%s'", str);
     free(str);
 }
 
@@ -242,7 +242,7 @@ void fn_input_f64(double *val)
     errno = 0;
     *val = (double) strtod(str, &endptr);
     if (errno || *endptr != '\0')
-        rt_throw("input: invalid input for type `f64`: '%s'", str);
+        rt_throw("input: invalid input for type f64: '%s'", str);
     free(str);
 }
 
