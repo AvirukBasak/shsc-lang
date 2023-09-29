@@ -255,6 +255,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
             }
             /* destroy iterable object */
             RT_Data_destroy(&iterable);
+            break;
         }
     }
 }
@@ -360,14 +361,12 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_MULTIPLY_ASSIGN:
         case LEXTOK_PLUS:
         case LEXTOK_INCREMENT:
-            rt_throw("unary increment operator is not yet supported");
-            break;
         case LEXTOK_ADD_ASSIGN:
         case LEXTOK_MINUS:
         case LEXTOK_DECREMENT:
-            rt_throw("unary decrement operator is not yet supported");
-            break;
         case LEXTOK_SUBSTRACT_ASSIGN:
+            rt_throw("unimplemented operators");
+            break;
         case LEXTOK_DOT:
             rt_throw("memebership operator '.' is not yet supported");
             break;
@@ -376,12 +375,12 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_FLOOR_DIVIDE_ASSIGN:
         case LEXTOK_DIVIDE_ASSIGN:
         case LEXTOK_DCOLON:
-            rt_throw("memebership operator '::' is not yet supported");
-            break;
         case LEXTOK_LBRACE_ANGULAR:
         case LEXTOK_BITWISE_LSHIFT:
         case LEXTOK_BITWISE_LSHIFT_ASSIGN:
         case LEXTOK_LOGICAL_LESSER_EQUAL:
+            rt_throw("unimplemented operators");
+            break;
         case LEXTOK_ASSIGN:
             RT_VarTable_acc_setval(*RT_VarTable_modf(lhs, *rhs));
             break;
@@ -399,9 +398,11 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_LOGICAL_OR:
         case LEXTOK_LOGICAL_OR_ASSIGN:
         case LEXTOK_TILDE:
-        case TOKOP_FNCALL: break;
+        case TOKOP_FNCALL:
         case TOKOP_INDEXING:
         case TOKOP_TERNARY_COND:
+            rt_throw("unimplemented operators");
+            break;
         case TOKOP_FNARGS_INDEXING:
             if (!rhs || rhs->type != RT_DATA_TYPE_I64)
                 rt_throw("argument index should evaluate to an `i64`");
