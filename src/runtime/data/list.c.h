@@ -95,28 +95,28 @@ void RT_DataList_del_val(RT_DataList_t *lst, RT_Data_t var)
 
 char *RT_DataList_tostr(const RT_DataList_t *lst)
 {
-    char *str = (char*) malloc(3 * sizeof(char));
+    size_t size = 3;
+    char *str = (char*) malloc(size * sizeof(char));
     if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_MALLOCFAIL);
     int p = 0;
-    size_t size = 3;
-    sprintf(str + p++, "[");
+    sprintf(&str[p++], "[");
     for (int64_t i = 0; i < lst->length; ++i) {
         char *lst_el = RT_Data_tostr(lst->var[i]);
         const size_t sz = strlen(lst_el) +1;
         str = (char*) realloc(str, (size += sz) * sizeof(char));
         if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_REALLOCFAIL);
-        sprintf(str + p, "%s", lst_el);
+        sprintf(&str[p], "%s", lst_el);
         free(lst_el);
         lst_el = NULL;
-        p += sz;
+        p += sz -1;
         if (i != lst->length - 1) {
             str = (char*) realloc(str, (size += 2) * sizeof(char));
             if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_REALLOCFAIL);
-            sprintf(str + p, ", ");
+            sprintf(&str[p], ", ");
             p += 2;
         }
     }
-    sprintf(str + p++, "]");
+    sprintf(&str[p++], "]");
     return str;
 }
 
