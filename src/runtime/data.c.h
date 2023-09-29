@@ -119,6 +119,7 @@ void RT_Data_destroy(RT_Data_t *var)
         default:
             break;
     }
+    *var = RT_Data_null();
 }
 
 bool RT_Data_isnull(const RT_Data_t var)
