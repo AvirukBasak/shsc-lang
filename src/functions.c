@@ -146,32 +146,32 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
         case FN_LEN: {
             const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
-            case RT_DATA_TYPE_STR:
-            case RT_DATA_TYPE_INTERP_STR:
-                ret = RT_Data_i64(RT_DataStr_length(data.data.str));
-                break;
-            case RT_DATA_TYPE_LST:
-                ret = RT_Data_i64(RT_DataList_length(data.data.lst));
-                break;
-            default:
-                ret = RT_Data_i64(1);
-                break;
+                case RT_DATA_TYPE_STR:
+                case RT_DATA_TYPE_INTERP_STR:
+                    ret = RT_Data_i64(RT_DataStr_length(data.data.str));
+                    break;
+                case RT_DATA_TYPE_LST:
+                    ret = RT_Data_i64(RT_DataList_length(data.data.lst));
+                    break;
+                default:
+                    ret = RT_Data_i64(1);
+                    break;
             }
             break;
         }
         case FN_REFCNT: {
             const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
-            case RT_DATA_TYPE_STR:
-            case RT_DATA_TYPE_INTERP_STR:
-                ret = RT_Data_i64(data.data.str->rc);
-                break;
-            case RT_DATA_TYPE_LST:
-                ret = RT_Data_i64(data.data.lst->rc);
-                break;
-            default:
-                ret = RT_Data_i64(1);
-                break;
+                case RT_DATA_TYPE_STR:
+                case RT_DATA_TYPE_INTERP_STR:
+                    ret = RT_Data_i64(data.data.str->rc);
+                    break;
+                case RT_DATA_TYPE_LST:
+                    ret = RT_Data_i64(data.data.lst->rc);
+                    break;
+                default:
+                    ret = RT_Data_i64(1);
+                    break;
             }
             break;
         }
