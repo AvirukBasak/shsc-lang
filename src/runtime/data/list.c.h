@@ -56,6 +56,7 @@ void RT_DataList_destroy(RT_DataList_t **ptr)
 
 void RT_DataList_append(RT_DataList_t *lst, RT_Data_t var)
 {
+    RT_Data_copy(&var);
     if (lst->length >= lst->capacity) {
         lst->capacity = lst->capacity * 2 +1;
         lst->var = (RT_Data_t*) realloc(lst->var, lst->capacity * sizeof(RT_Data_t));
