@@ -53,6 +53,7 @@ bool RT_Data_isnull(const RT_Data_t var);
 char *RT_Data_interp_str_parse(const char *str);
 bool RT_Data_tobool(const RT_Data_t var);
 char *RT_Data_tostr(const RT_Data_t var);
+char *RT_Data_typename(const RT_Data_t var);
 int RT_Data_print(const RT_Data_t var);
 
 #endif

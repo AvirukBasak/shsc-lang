@@ -254,6 +254,21 @@ char *RT_Data_tostr(const RT_Data_t var)
     }
 }
 
+char *RT_Data_typename(const RT_Data_t var)
+{
+    switch (var.type) {
+        case RT_DATA_TYPE_BUL:        return "bul";
+        case RT_DATA_TYPE_CHR:        return "chr";
+        case RT_DATA_TYPE_I64:        return "i64";
+        case RT_DATA_TYPE_F64:        return "f64";
+        case RT_DATA_TYPE_STR:        return "str";
+        case RT_DATA_TYPE_INTERP_STR: return "interp_str";
+        case RT_DATA_TYPE_LST:        return "lst";
+        case RT_DATA_TYPE_ANY:        return var.data.any ? "any" : "null";
+    }
+    return NULL;
+}
+
 int RT_Data_print(RT_Data_t var)
 {
     char *str = RT_Data_tostr(var);
