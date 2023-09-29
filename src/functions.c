@@ -28,11 +28,12 @@ int fn_input_str(char **val);
 
 FN_FunctionDescriptor_t FN_FunctionsList_getfn(const char *fname)
 {
-    if (!strcmp(fname, "print")) return FN_PRINT;
-    if (!strcmp(fname, "input")) return FN_INPUT;
-    if (!strcmp(fname, "type")) return FN_TYPE;
-    if (!strcmp(fname, "len")) return FN_LEN;
-    if (!strcmp(fname, "refcnt")) return FN_REFCNT;
+    if (!strcmp(fname, "print"))    return FN_PRINT;
+    if (!strcmp(fname, "input"))    return FN_INPUT;
+    if (!strcmp(fname, "type"))     return FN_TYPE;
+    if (!strcmp(fname, "typename")) return FN_TYPENAME;
+    if (!strcmp(fname, "len"))      return FN_LEN;
+    if (!strcmp(fname, "refcnt"))   return FN_REFCNT;
     return FN_UNDEFINED;
 }
 
@@ -141,6 +142,12 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                         RT_VarTable_rsv_null : RT_VarTable_typeid_any;
                     break;
             }
+            break;
+        }
+        case FN_TYPENAME: {
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+            const char *typename = RT_Data_typename(data);
+            ret = RT_Data_str(RT_DataStr_init(typename));
             break;
         }
         case FN_LEN: {

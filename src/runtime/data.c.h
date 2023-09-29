@@ -254,7 +254,7 @@ char *RT_Data_tostr(const RT_Data_t var)
     }
 }
 
-char *RT_Data_typename(const RT_Data_t var)
+const char *RT_Data_typename(const RT_Data_t var)
 {
     switch (var.type) {
         case RT_DATA_TYPE_BUL:        return "bul";
