@@ -107,29 +107,6 @@ void RT_VarTable_push_scope()
 
 #include <errno.h>
 
-/** convert an integer variable name to an index */
-int rt_vtable_get_tempvar(const char *varname)
-{
-    /* variables to store the converted integer and the end
-       pointer after conversion */
-    char *endptr;
-    int converted_int;
-    /* convert the string to an integer using strtol */
-    errno = 0; /* Set errno to 0 before the call to strtol */
-    converted_int = (int) strtol(varname, &endptr, 10);
-    /* check if there was an error during conversion */
-    if ((errno == ERANGE && (converted_int == INT_MAX
-        || converted_int == INT_MIN))
-        || (errno != 0 && converted_int == 0)) {
-        /* conversion error occurred */
-        return -1;
-    }
-    /* check if the string is fully consumed (i.e., there are no
-       non-integer characters after the number) */
-    bool fully_consumed = (*endptr == '\0');
-    return fully_consumed && (converted_int >= 0) ? converted_int : -1;
-}
-
 RT_Data_t *rt_vtable_get_globvar(const char *varname)
 {
     if (!strcmp("lf", varname))         return &RT_VarTable_rsv_lf;
@@ -150,9 +127,7 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
         io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     else {
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
-        if (globvar) rt_throw("cannot use 'var' with reserved identifier '%s'", varname);
-        int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 0) io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
+        if (globvar) rt_throw("cannot use 'var' with reserved global identifier '%s'", varname);
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
@@ -190,10 +165,6 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     else {
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) return globvar;
-        int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
-        if (tmp >= 0) return &rt_vtable_temporary[tmp];
-        /* else fall back to code outside if-else ladder */
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     for (int64_t i = current_proc->top; i >= 0; i--) {
