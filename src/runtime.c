@@ -189,17 +189,17 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
             rt_Expression_eval(for_block->iterable.range.start);
             RT_Data_t start = *RT_ACC_DATA;
             if (start.type != RT_DATA_TYPE_I64)
-                rt_throw("for loop range start should be an i64");
+                rt_throw("for loop range start should be an i64, not '%s'", RT_Data_typename(start));
             rt_Expression_eval(for_block->iterable.range.end);
             RT_Data_t end = *RT_ACC_DATA;
             if (end.type != RT_DATA_TYPE_I64)
-                rt_throw("for loop range end should be an i64");
+                rt_throw("for loop range end should be an i64, not '%s'", RT_Data_typename(start));
             RT_Data_t by = RT_Data_null();
             if (for_block->iterable.range.by) {
                 rt_Expression_eval(for_block->iterable.range.by);
                 by = *RT_ACC_DATA;
                 if (by.type != RT_DATA_TYPE_I64)
-                    rt_throw("for loop by value should be an i64");
+                    rt_throw("for loop by value should be an i64, not '%s'", RT_Data_typename(start));
             }
             const int64_t start_i = start.data.i64;
             const int64_t end_i = end.data.i64;
@@ -233,7 +233,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                     length = RT_DataStr_length(iterable.data.str);
                     break;
                 default:
-                    rt_throw("unsupported for loop iterable type");
+                    rt_throw("not a for loop iterable type: '%s'", RT_Data_typename(iterable));
             }
             for (int64_t i = 0; i < length; ++i) {
                 RT_VarTable_push_scope();
@@ -247,7 +247,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                             RT_Data_chr(*RT_DataStr_getref(iterable.data.str, i)));
                         break;
                     default:
-                        rt_throw("unsupported for loop iterable type");
+                        rt_throw("not a for loop iterable type: '%s'", RT_Data_typename(iterable));
                 }
                 bool return_ = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
