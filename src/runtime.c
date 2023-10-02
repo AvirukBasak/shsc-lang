@@ -189,17 +189,17 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
             rt_Expression_eval(for_block->iterable.range.start);
             RT_Data_t start = *RT_ACC_DATA;
             if (start.type != RT_DATA_TYPE_I64)
-                rt_throw("for loop range start should be an i64");
+                rt_throw("for loop range start should be an i64, not '%s'", RT_Data_typename(start));
             rt_Expression_eval(for_block->iterable.range.end);
             RT_Data_t end = *RT_ACC_DATA;
             if (end.type != RT_DATA_TYPE_I64)
-                rt_throw("for loop range end should be an i64");
+                rt_throw("for loop range end should be an i64, not '%s'", RT_Data_typename(start));
             RT_Data_t by = RT_Data_null();
             if (for_block->iterable.range.by) {
                 rt_Expression_eval(for_block->iterable.range.by);
                 by = *RT_ACC_DATA;
                 if (by.type != RT_DATA_TYPE_I64)
-                    rt_throw("for loop by value should be an i64");
+                    rt_throw("for loop by value should be an i64, not '%s'", RT_Data_typename(start));
             }
             const int64_t start_i = start.data.i64;
             const int64_t end_i = end.data.i64;
@@ -233,7 +233,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                     length = RT_DataStr_length(iterable.data.str);
                     break;
                 default:
-                    rt_throw("unsupported for loop iterable type");
+                    rt_throw("not a for loop iterable type: '%s'", RT_Data_typename(iterable));
             }
             for (int64_t i = 0; i < length; ++i) {
                 RT_VarTable_push_scope();
@@ -247,7 +247,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                             RT_Data_chr(*RT_DataStr_getref(iterable.data.str, i)));
                         break;
                     default:
-                        rt_throw("unsupported for loop iterable type");
+                        rt_throw("not a for loop iterable type: '%s'", RT_Data_typename(iterable));
                 }
                 bool return_ = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
@@ -255,6 +255,7 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
             }
             /* destroy iterable object */
             RT_Data_destroy(&iterable);
+            break;
         }
     }
 }
@@ -276,11 +277,13 @@ void rt_Expression_eval(const AST_Expression_t *expr)
                 expr->rhs.literal->data.lst : NULL;
             /* copy fn args into temporary location */
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                if (ptr) rt_Expression_eval(ptr->expression);
-                RT_Data_t data = ptr ? *RT_ACC_DATA : RT_Data_null();
-                RT_VarTable_modf(RT_VarTable_getref(var), data);
-                ptr = ptr ? ptr->comma_list : ptr;
+                RT_Data_t data = RT_Data_null();
+                if (ptr) {
+                    rt_Expression_eval(ptr->expression);
+                    data = *RT_ACC_DATA;
+                }
+                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), data);
+                if (ptr) ptr = ptr->comma_list;
             }
             /* get fn code and push code to stack */
             rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);
@@ -358,14 +361,12 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_MULTIPLY_ASSIGN:
         case LEXTOK_PLUS:
         case LEXTOK_INCREMENT:
-            rt_throw("unary increment operator is not yet supported");
-            break;
         case LEXTOK_ADD_ASSIGN:
         case LEXTOK_MINUS:
         case LEXTOK_DECREMENT:
-            rt_throw("unary decrement operator is not yet supported");
-            break;
         case LEXTOK_SUBSTRACT_ASSIGN:
+            rt_throw("unimplemented operators");
+            break;
         case LEXTOK_DOT:
             rt_throw("memebership operator '.' is not yet supported");
             break;
@@ -374,12 +375,12 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_FLOOR_DIVIDE_ASSIGN:
         case LEXTOK_DIVIDE_ASSIGN:
         case LEXTOK_DCOLON:
-            rt_throw("memebership operator '::' is not yet supported");
-            break;
         case LEXTOK_LBRACE_ANGULAR:
         case LEXTOK_BITWISE_LSHIFT:
         case LEXTOK_BITWISE_LSHIFT_ASSIGN:
         case LEXTOK_LOGICAL_LESSER_EQUAL:
+            rt_throw("unimplemented operators");
+            break;
         case LEXTOK_ASSIGN:
             RT_VarTable_acc_setval(*RT_VarTable_modf(lhs, *rhs));
             break;
@@ -397,9 +398,11 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_LOGICAL_OR:
         case LEXTOK_LOGICAL_OR_ASSIGN:
         case LEXTOK_TILDE:
-        case TOKOP_FNCALL: break;
+        case TOKOP_FNCALL:
         case TOKOP_INDEXING:
         case TOKOP_TERNARY_COND:
+            rt_throw("unimplemented operators");
+            break;
         case TOKOP_FNARGS_INDEXING:
             if (!rhs || rhs->type != RT_DATA_TYPE_I64)
                 rt_throw("argument index should evaluate to an `i64`");

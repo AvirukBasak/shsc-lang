@@ -46,15 +46,8 @@ void RT_DataList_destroy(RT_DataList_t **ptr)
     if (lst->rc < 0) lst->rc = 0;
     if (lst->rc > 0) return;
     /* free if rc 0 */
-    for (int64_t i = 0; i < lst->length; i++) {
-        RT_Data_t var = lst->var[i];
-        if (var.type == RT_DATA_TYPE_STR || var.type == RT_DATA_TYPE_INTERP_STR) {
-            free(var.data.str);
-            var.data.str = NULL;
-            var.type = RT_DATA_TYPE_ANY;
-        } else if (var.type == RT_DATA_TYPE_LST)
-            RT_DataList_destroy(&var.data.lst);
-    }
+    for (int64_t i = 0; i < lst->length; i++)
+        RT_Data_destroy(&lst->var[i]);
     free(lst->var);
     lst->var = NULL;
     free(lst);
@@ -63,6 +56,7 @@ void RT_DataList_destroy(RT_DataList_t **ptr)
 
 void RT_DataList_append(RT_DataList_t *lst, RT_Data_t var)
 {
+    RT_Data_copy(&var);
     if (lst->length >= lst->capacity) {
         lst->capacity = lst->capacity * 2 +1;
         lst->var = (RT_Data_t*) realloc(lst->var, lst->capacity * sizeof(RT_Data_t));
@@ -82,9 +76,7 @@ RT_Data_t *RT_DataList_getref(const RT_DataList_t *lst, int64_t idx)
 void RT_DataList_del_index(RT_DataList_t *lst, int64_t idx)
 {
     if (idx >= 0 && idx < lst->length) {
-        RT_Data_t var = lst->var[idx];
-        if (var.type == RT_DATA_TYPE_STR || var.type == RT_DATA_TYPE_INTERP_STR)
-            free(var.data.str);
+        RT_Data_destroy(&lst->var[idx]);
         for (int64_t i = idx + 1; i < lst->length; i++)
             lst->var[i-1] = lst->var[i];
         --lst->length;
@@ -103,28 +95,28 @@ void RT_DataList_del_val(RT_DataList_t *lst, RT_Data_t var)
 
 char *RT_DataList_tostr(const RT_DataList_t *lst)
 {
-    char *str = (char*) malloc(3 * sizeof(char));
+    size_t size = 3;
+    char *str = (char*) malloc(size * sizeof(char));
     if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_MALLOCFAIL);
     int p = 0;
-    size_t size = 3;
-    sprintf(str + p++, "[");
+    sprintf(&str[p++], "[");
     for (int64_t i = 0; i < lst->length; ++i) {
         char *lst_el = RT_Data_tostr(lst->var[i]);
         const size_t sz = strlen(lst_el) +1;
         str = (char*) realloc(str, (size += sz) * sizeof(char));
         if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_REALLOCFAIL);
-        sprintf(str + p, "%s", lst_el);
+        sprintf(&str[p], "%s", lst_el);
         free(lst_el);
         lst_el = NULL;
-        p += sz;
+        p += sz -1;
         if (i != lst->length - 1) {
             str = (char*) realloc(str, (size += 2) * sizeof(char));
             if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_REALLOCFAIL);
-            sprintf(str + p, ", ");
+            sprintf(&str[p], ", ");
             p += 2;
         }
     }
-    sprintf(str + p++, "]");
+    sprintf(&str[p++], "]");
     return str;
 }
 

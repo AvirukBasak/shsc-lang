@@ -1,6 +1,6 @@
 module main
 
-proc test start
+proc xyz start
     print("Hello world!", "lf")
 
     var x = input(i64)

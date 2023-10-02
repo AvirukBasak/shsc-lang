@@ -1,6 +1,7 @@
 #ifndef RT_VARTABLE_C_H
 #define RT_VARTABLE_C_H
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -15,10 +16,6 @@
 #include "runtime/data/string.h"
 #include "runtime/io.h"
 #include "runtime/vartable.h"
-
-#define RT_VTABLE_TEMPORARY_SIZE (32)
-
-int rt_vtable_get_tempvar(const char *varname);
 
 KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
 
@@ -52,7 +49,7 @@ RT_VarTable_Acc_t rt_vtable_accumulator = {
     .adr = NULL
 };
 
-RT_Data_t rt_vtable_temporary[RT_VTABLE_TEMPORARY_SIZE];
+RT_Data_t rt_vtable_tmpvars[RT_TMPVAR_CNT];
 
 /* few globally defined variables */
 RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
@@ -110,29 +107,6 @@ void RT_VarTable_push_scope()
 
 #include <errno.h>
 
-/** convert an integer variable name to an index */
-int rt_vtable_get_tempvar(const char *varname)
-{
-    /* variables to store the converted integer and the end
-       pointer after conversion */
-    char *endptr;
-    int converted_int;
-    /* convert the string to an integer using strtol */
-    errno = 0; /* Set errno to 0 before the call to strtol */
-    converted_int = (int) strtol(varname, &endptr, 10);
-    /* check if there was an error during conversion */
-    if ((errno == ERANGE && (converted_int == INT_MAX
-        || converted_int == INT_MIN))
-        || (errno != 0 && converted_int == 0)) {
-        /* conversion error occurred */
-        return -1;
-    }
-    /* check if the string is fully consumed (i.e., there are no
-       non-integer characters after the number) */
-    bool fully_consumed = (*endptr == '\0');
-    return fully_consumed && (converted_int >= 0) ? converted_int : -1;
-}
-
 RT_Data_t *rt_vtable_get_globvar(const char *varname)
 {
     if (!strcmp("lf", varname))         return &RT_VarTable_rsv_lf;
@@ -149,13 +123,11 @@ RT_Data_t *rt_vtable_get_globvar(const char *varname)
 
 void RT_VarTable_create(const char *varname, RT_Data_t value)
 {
-    if (!strcmp(varname, "-"))
+    if ( (!isalpha(varname[0]) && varname[0] != '_') || isdigit(varname[0]) )
         io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
     else {
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
-        if (globvar) rt_throw("cannot use 'var' with reserved identifier '%s'", varname);
-        int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 0) io_errndie("RT_VarTable_create: invalid new variable name '%s'", varname);
+        if (globvar) rt_throw("cannot use 'var' with reserved global identifier '%s'", varname);
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
@@ -188,15 +160,11 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 
 RT_Data_t *RT_VarTable_getref(const char *varname)
 {
-    if (!strcmp(varname, "-"))
-        io_errndie("RT_VarTable_getref: accumulator must be accessed via 'RT_VarTable_acc_get' or 'RT_VarTable_acc_set'");
+    if ( (!isalpha(varname[0]) && varname[0] != '_') || isdigit(varname[0]) )
+        io_errndie("RT_VarTable_getref: invalid variable name '%s'", varname);
     else {
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) return globvar;
-        int tmp = rt_vtable_get_tempvar(varname);
-        if (tmp >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmp);
-        if (tmp >= 0) return &rt_vtable_temporary[tmp];
-        /* else fall back to code outside if-else ladder */
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
     for (int64_t i = current_proc->top; i >= 0; i--) {
@@ -214,9 +182,9 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
 
 RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar)
 {
-    if (tmpvar >= 32) rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
-    if (tmpvar >= 0) return &rt_vtable_temporary[tmpvar];
-    rt_throw("no argument at '%d': valid arguments are $[0] to $[31]", tmpvar);
+    if (tmpvar >= RT_TMPVAR_CNT) rt_throw("no argument at '%d': valid arguments are $0 to $%d", tmpvar, RT_TMPVAR_CNT-1);
+    if (tmpvar >= 0) return &rt_vtable_tmpvars[tmpvar];
+    rt_throw("no argument at '%d': valid arguments are $0 to $%d", tmpvar, RT_TMPVAR_CNT-1);
     return NULL;
 }
 

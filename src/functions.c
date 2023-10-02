@@ -28,11 +28,12 @@ int fn_input_str(char **val);
 
 FN_FunctionDescriptor_t FN_FunctionsList_getfn(const char *fname)
 {
-    if (!strcmp(fname, "print")) return FN_PRINT;
-    if (!strcmp(fname, "input")) return FN_INPUT;
-    if (!strcmp(fname, "type")) return FN_TYPE;
-    if (!strcmp(fname, "len")) return FN_LEN;
-    if (!strcmp(fname, "refcnt")) return FN_REFCNT;
+    if (!strcmp(fname, "print"))    return FN_PRINT;
+    if (!strcmp(fname, "input"))    return FN_INPUT;
+    if (!strcmp(fname, "type"))     return FN_TYPE;
+    if (!strcmp(fname, "typename")) return FN_TYPENAME;
+    if (!strcmp(fname, "len"))      return FN_LEN;
+    if (!strcmp(fname, "refcnt"))   return FN_REFCNT;
     return FN_UNDEFINED;
 }
 
@@ -43,8 +44,7 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
         case FN_PRINT: {
             int bytes = 0;
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                const char var[4] = { ((i % 100) / 10) + '0', (i % 10) + '0', '\0' };
-                const RT_Data_t data = *RT_VarTable_getref(var);
+                const RT_Data_t data = *RT_VarTable_getref_tmpvar(i);
                 if (RT_Data_isnull(data)) continue;
                 if (i > 0) printf(" ");
                 bytes += RT_Data_print(data);
@@ -53,14 +53,14 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             break;
         }
         case FN_INPUT: {
-            const RT_Data_t prompt = *RT_VarTable_getref("0");
-            const RT_Data_t type_ = *RT_VarTable_getref("1");
+            const RT_Data_t prompt = *RT_VarTable_getref_tmpvar(0);
+            const RT_Data_t type_ = *RT_VarTable_getref_tmpvar(1);
             if (type_.type != RT_DATA_TYPE_I64) {
                 char *s = RT_Data_tostr(type_);
                 rt_throw(
                     "input: invalid type parameter: '%s'\n"
-                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`"
-                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively", s,
+                    "  valid parameters are bul, chr, i64, f64 or str\n"
+                    "  respective values are %d, %d, %d, %d or %d", s,
                     RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
                 free(s);
             }
@@ -68,8 +68,8 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             if (!fn_isvalid_input_type(type_.data.i64))
                 rt_throw(
                     "input: invalid type parameter\n"
-                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`\n"
-                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively",
+                    "  valid parameters are bul, chr, i64, f64 or str\n"
+                    "  respective values are %d, %d, %d, %d or %d",
                     RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
             RT_Data_print(prompt);
             switch (type) {
@@ -106,16 +106,15 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                 }
                 default: rt_throw(
                     "input: invalid type parameter\n"
-                    "  valid parameters: `bul`, `chr`, `i64`, `f64` or `str`\n"
-                    "  values are: `%d`, `%d`, `%d`, `%d` or `%d` respectively",
+                    "  valid parameters are bul, chr, i64, f64 or str\n"
+                    "  respective values are %d, %d, %d, %d or %d",
                     RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
                     break;
             }
             break;
         }
         case FN_TYPE: {
-            const char var[4] = "0";
-            const RT_Data_t data = *RT_VarTable_getref(var);
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
                 case RT_DATA_TYPE_BUL:
                     ret = RT_VarTable_typeid_bul;
@@ -145,37 +144,41 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             }
             break;
         }
+        case FN_TYPENAME: {
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+            const char *typename = RT_Data_typename(data);
+            ret = RT_Data_str(RT_DataStr_init(typename));
+            break;
+        }
         case FN_LEN: {
-            const char var[4] = "0";
-            const RT_Data_t data = *RT_VarTable_getref(var);
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
-            case RT_DATA_TYPE_STR:
-            case RT_DATA_TYPE_INTERP_STR:
-                ret = RT_Data_i64(RT_DataStr_length(data.data.str));
-                break;
-            case RT_DATA_TYPE_LST:
-                ret = RT_Data_i64(RT_DataList_length(data.data.lst));
-                break;
-            default:
-                ret = RT_Data_i64(1);
-                break;
+                case RT_DATA_TYPE_STR:
+                case RT_DATA_TYPE_INTERP_STR:
+                    ret = RT_Data_i64(RT_DataStr_length(data.data.str));
+                    break;
+                case RT_DATA_TYPE_LST:
+                    ret = RT_Data_i64(RT_DataList_length(data.data.lst));
+                    break;
+                default:
+                    ret = RT_Data_i64(1);
+                    break;
             }
             break;
         }
         case FN_REFCNT: {
-            const char var[4] = "0";
-            const RT_Data_t data = *RT_VarTable_getref(var);
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
             switch (data.type) {
-            case RT_DATA_TYPE_STR:
-            case RT_DATA_TYPE_INTERP_STR:
-                ret = RT_Data_i64(data.data.str->rc);
-                break;
-            case RT_DATA_TYPE_LST:
-                ret = RT_Data_i64(data.data.lst->rc);
-                break;
-            default:
-                ret = RT_Data_i64(1);
-                break;
+                case RT_DATA_TYPE_STR:
+                case RT_DATA_TYPE_INTERP_STR:
+                    ret = RT_Data_i64(data.data.str->rc);
+                    break;
+                case RT_DATA_TYPE_LST:
+                    ret = RT_Data_i64(data.data.lst->rc);
+                    break;
+                default:
+                    ret = RT_Data_i64(1);
+                    break;
             }
             break;
         }
@@ -209,7 +212,7 @@ void fn_input_bul(bool *val)
     else if (!strncmp("0", str, len)) *val = false;
     else if (!strncmp("true", str, len)) *val = true;
     else if (!strncmp("false", str, len)) *val = false;
-    else rt_throw("input: invalid input for type `bul`: '%s'", str);
+    else rt_throw("input: invalid input for type bul: '%s'", str);
     free(str);
 }
 
@@ -220,7 +223,7 @@ void fn_input_chr(char *val)
     int len = fn_input_str(&str);
     if (len == 1) *val = str[0];
     else if (len == 0) *val = 0;
-    else rt_throw("input: invalid input for type `chr`: '%s'", str);
+    else rt_throw("input: invalid input for type chr: '%s'", str);
     free(str);
 }
 
@@ -233,7 +236,7 @@ void fn_input_i64(int64_t *val)
     errno = 0;
     *val = (int64_t) strtoll(str, &endptr, 10);
     if (errno || *endptr != '\0')
-        rt_throw("input: invalid input for type `i64`: '%s'", str);
+        rt_throw("input: invalid input for type i64: '%s'", str);
     free(str);
 }
 
@@ -246,7 +249,7 @@ void fn_input_f64(double *val)
     errno = 0;
     *val = (double) strtod(str, &endptr);
     if (errno || *endptr != '\0')
-        rt_throw("input: invalid input for type `f64`: '%s'", str);
+        rt_throw("input: invalid input for type f64: '%s'", str);
     free(str);
 }
 
