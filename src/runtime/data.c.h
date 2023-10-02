@@ -108,18 +108,22 @@ void RT_Data_destroy(RT_Data_t *var)
         case RT_DATA_TYPE_STR:
         case RT_DATA_TYPE_INTERP_STR:
             RT_DataStr_destroy(&var->data.str);
+            if (!var->data.str) *var = RT_Data_null();
             break;
         case RT_DATA_TYPE_LST:
             RT_DataList_destroy(&var->data.lst);
+            if (!var->data.lst) *var = RT_Data_null();
             break;
         case RT_DATA_TYPE_ANY:
             if (var->data.any) free(var->data.any);
             var->data.any = NULL;
+            *var = RT_Data_null();
             break;
         default:
+            /* assigning non-composite data to RT_VarTable_null
+               corrupts data in case *var points to a rt_ global var */
             break;
     }
-    *var = RT_Data_null();
 }
 
 bool RT_Data_isnull(const RT_Data_t var)
