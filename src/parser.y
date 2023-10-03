@@ -490,6 +490,7 @@ int yyerror(const char* msg)
 void parse_interpret(FILE *f)
 {
     yyin = f;
+    if (yyin == stdin) printf("%s", ">> ");
 #ifdef LEX_DEBUG
     LexToken tok = lex_get_nexttok(yyin);
     while (tok != LEXTOK_EOF) {
