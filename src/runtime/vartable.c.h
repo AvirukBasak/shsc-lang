@@ -21,34 +21,33 @@ KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
 
 /** local scope, stores a map of variables */
 typedef struct {
-    khash_t(RT_Data_t) *scope;
+    khash_t(RT_Data_t) *var_map;
 } RT_VarTable_Scope_t;
 
-/** scope of a procedure that stores local scopes,
-    return address of last procedure and name of
-    the current procedure */
+/** the scopes stack of a procedure */
 typedef struct {
     RT_VarTable_Scope_t *scopes;
-    int64_t top;
+    int64_t curr_scope_ptr;
     size_t capacity;
-    const char *procname;
-    const AST_Statement_t *ret_addr;
 } RT_VarTable_Proc_t;
 
+/** the VarTable is basically the call stack */
 typedef struct {
     RT_VarTable_Proc_t *procs;
-    int64_t top;
+    int64_t curr_proc_ptr;
     size_t capacity;
 } RT_VarTable_t;
 
 /** gloablly allocated stack pointer */
 RT_VarTable_t *rt_vtable = NULL;
 
+/** the accumulator */
 RT_VarTable_Acc_t rt_vtable_accumulator = {
     .val = { .data.any = NULL, RT_DATA_TYPE_ANY },
     .adr = NULL
 };
 
+/** an array of 32 tmp variables */
 RT_Data_t rt_vtable_tmpvars[RT_TMPVAR_CNT];
 
 /* few globally defined variables */
