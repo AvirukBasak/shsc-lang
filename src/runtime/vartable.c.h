@@ -122,13 +122,14 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) return globvar;
     }
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
-    for (int64_t i = current_proc->top; i >= 0; i--) {
+    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    /* go down the scopes stack to find the right local variable */
+    for (int64_t i = current_proc->curr_scope_ptr; i >= 0; i--) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
-        khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
+        khiter_t entry_it = kh_get(RT_Data_t, current_scope->var_map, varname);
         /* variable found, return its value */
-        if (iter != kh_end(current_scope->scope)) {
-            return &kh_value(current_scope->scope, iter);
+        if (entry_it != kh_end(current_scope->var_map)) {
+            return &kh_value(current_scope->var_map, entry_it);
         }
     }
     /* variable not found, throw an error */
