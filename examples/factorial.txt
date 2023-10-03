@@ -8,9 +8,10 @@ end
 
 # factorial(num)
 proc factorial start
-    if $[0] <= 1 then
+    var n = $0
+    if n <= 1 then
         return 1
     else
-        return $[0] * factorial($[0] - 1)
+        return n * factorial(n - 1)
     end
 end

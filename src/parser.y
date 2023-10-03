@@ -424,11 +424,14 @@ postfix_expression:
                                                             AST_Expression_CommaSepList($4), NULL);
                                                         }
     | postfix_expression "[" nws expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
-    | "$" "[" nws expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
-    | "$" "(" nws expression ")"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
+    | "$" "[" expression "]"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
+    | "$" "(" expression ")"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
     | "$" LEXTOK_DECINT_LITERAL                         { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
                                                             AST_Expression_Literal(
                                                                 AST_Literal_i64($2)), NULL);
+                                                        }
+    | "$" identifier                                    { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
+                                                            AST_Expression_Identifier($2), NULL);
                                                         }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
@@ -447,7 +450,7 @@ primary_expression:
     ;
 
 comma_list:
-    expression                                          { $$ = AST_CommaSepList(NULL, $1); }
+    expression nws                                      { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nws                                { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nws comma_list                     { $$ = AST_CommaSepList($4, $1); }
     ;
@@ -490,6 +493,7 @@ int yyerror(const char* msg)
 void parse_interpret(FILE *f)
 {
     yyin = f;
+    if (yyin == stdin) printf("%s", ">> ");
 #ifdef LEX_DEBUG
     LexToken tok = lex_get_nexttok(yyin);
     while (tok != LEXTOK_EOF) {

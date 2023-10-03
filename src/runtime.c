@@ -13,13 +13,11 @@
 #include "runtime/data/list.h"
 #include "runtime/data/string.h"
 #include "runtime/io.h"
+#include "runtime/vartable.h"
 
 #include "runtime/data.c.h"
 #include "runtime/io.c.h"
 #include "runtime/vartable.c.h"
-#include "runtime/vartable.h"
-
-#define RT_ACC_DATA (RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val)
 
 const char *rt_currfile = NULL;
 int rt_currline = 0;
@@ -52,7 +50,7 @@ void RT_exec(void)
     const AST_Identifier_t *proc = AST_ProcedureMap_main();
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     rt_currfile = AST_ProcedureMap_get_filename(module, proc);
-    RT_VarTable_push_proc(proc->identifier_name, NULL);
+    RT_VarTable_push_proc(proc->identifier_name);
     rt_Statements_eval(code);
     RT_VarTable_pop_proc();
 }
@@ -275,15 +273,25 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case TOKOP_FNCALL: {
             const AST_CommaSepList_t *ptr = expr->rhs_type != EXPR_TYPE_NULL ?
                 expr->rhs.literal->data.lst : NULL;
-            /* copy fn args into temporary location */
+            /* create an array for args */
+            RT_Data_t args[RT_TMPVAR_CNT];
+            /* evaluate fn args and store in args array */
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
                 RT_Data_t data = RT_Data_null();
                 if (ptr) {
                     rt_Expression_eval(ptr->expression);
                     data = *RT_ACC_DATA;
+                    /* copy data as acc is overwritten on next iter */
+                    RT_Data_copy(&data);
                 }
-                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), data);
+                args[i] = data;
                 if (ptr) ptr = ptr->comma_list;
+            }
+            /* copy fn args into temporary location */
+            for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
+                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), args[i]);
+                /* destroy data i.e. reduce its ref_count once as it was previously copied */
+                RT_Data_destroy(&args[i]);
             }
             /* get fn code and push code to stack */
             rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);
@@ -492,7 +500,7 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
 {
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     if (code) {
-        RT_VarTable_push_proc(proc->identifier_name, NULL);
+        RT_VarTable_push_proc(proc->identifier_name);
         rt_Statements_eval(code);
         RT_VarTable_pop_proc();
         return;

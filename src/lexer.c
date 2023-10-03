@@ -17,6 +17,9 @@ int lex_char_no = 1;
 
 LexToken yylex(void)
 {
+    if (lex_currtok == LEXTOK_NEWLINE)
+        if (yyin == stdin) printf("%s", ">> ");
+
     int token = lex_currtok = lex_get_nexttok(yyin);
     switch (token) {
         case LEXTOK_IDENTIFIER:

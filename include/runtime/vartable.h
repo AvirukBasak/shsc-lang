@@ -7,6 +7,7 @@
 #include "data.h"
 
 #define RT_TMPVAR_CNT (32)
+#define RT_ACC_DATA (RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val)
 
 /** accumulator stores procedure return values
     and also the address from which the value was obtained
@@ -48,20 +49,23 @@ RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar);
 /** this is used to get the accumulator data and address */
 RT_VarTable_Acc_t *RT_VarTable_acc_get(void);
 
-/** this is used to update the accumulator */
-void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr);
+/** this is used to update the accumulator val, nulls adr */
+void RT_VarTable_acc_setval(RT_Data_t val);
+
+/** this is used to update the accumulator adr, nulls val */
+void RT_VarTable_acc_setadr(RT_Data_t *adr);
 
 /** push a new function scope into the stack and store the procedure name and return address */
-void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);
+void RT_VarTable_push_proc(const char *procname);
 
 /** pop the procedure off the stack, return the return address and clear the scope from memory */
-const AST_Statement_t *RT_VarTable_pop_proc();
+RT_Data_t RT_VarTable_pop_proc(void);
 
 /** push a new local scope into the stack */
 void RT_VarTable_push_scope();
 
 /** pop local scope and return result of last expression */
-RT_Data_t RT_VarTable_pop_scope();
+RT_Data_t RT_VarTable_pop_scope(void);
 
 /** clear memory of the vartable */
 void RT_VarTable_destroy();
