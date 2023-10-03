@@ -430,6 +430,9 @@ postfix_expression:
                                                             AST_Expression_Literal(
                                                                 AST_Literal_i64($2)), NULL);
                                                         }
+    | "$" identifier                                    { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
+                                                            AST_Expression_Identifier($2), NULL);
+                                                        }
     | postfix_expression "++"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                           { $$ = AST_Expression($2, $1, NULL, NULL); }
     | postfix_expression "." identifier                 { $$ = AST_Expression($2, $1,
