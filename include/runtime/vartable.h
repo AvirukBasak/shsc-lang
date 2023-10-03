@@ -59,13 +59,13 @@ void RT_VarTable_acc_setadr(RT_Data_t *adr);
 void RT_VarTable_push_proc(const char *procname);
 
 /** pop the procedure off the stack, return the return address and clear the scope from memory */
-const AST_Statement_t *RT_VarTable_pop_proc();
+RT_Data_t RT_VarTable_pop_proc(void);
 
 /** push a new local scope into the stack */
 void RT_VarTable_push_scope();
 
 /** pop local scope and return result of last expression */
-RT_Data_t RT_VarTable_pop_scope();
+RT_Data_t RT_VarTable_pop_scope(void);
 
 /** clear memory of the vartable */
 void RT_VarTable_destroy();
