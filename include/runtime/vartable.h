@@ -7,6 +7,7 @@
 #include "data.h"
 
 #define RT_TMPVAR_CNT (32)
+#define RT_ACC_DATA (RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val)
 
 /** accumulator stores procedure return values
     and also the address from which the value was obtained

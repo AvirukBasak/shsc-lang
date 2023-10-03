@@ -13,13 +13,11 @@
 #include "runtime/data/list.h"
 #include "runtime/data/string.h"
 #include "runtime/io.h"
+#include "runtime/vartable.h"
 
 #include "runtime/data.c.h"
 #include "runtime/io.c.h"
 #include "runtime/vartable.c.h"
-#include "runtime/vartable.h"
-
-#define RT_ACC_DATA (RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val)
 
 const char *rt_currfile = NULL;
 int rt_currline = 0;
