@@ -273,15 +273,25 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case TOKOP_FNCALL: {
             const AST_CommaSepList_t *ptr = expr->rhs_type != EXPR_TYPE_NULL ?
                 expr->rhs.literal->data.lst : NULL;
-            /* copy fn args into temporary location */
+            /* create an array for args */
+            RT_Data_t args[RT_TMPVAR_CNT];
+            /* evaluate fn args and store in args array */
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
                 RT_Data_t data = RT_Data_null();
                 if (ptr) {
                     rt_Expression_eval(ptr->expression);
                     data = *RT_ACC_DATA;
+                    /* copy data as acc is overwritten on next iter */
+                    RT_Data_copy(&data);
                 }
-                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), data);
+                args[i] = data;
                 if (ptr) ptr = ptr->comma_list;
+            }
+            /* copy fn args into temporary location */
+            for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
+                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), args[i]);
+                /* destroy data i.e. reduce its ref_count once as it was previously copied */
+                RT_Data_destroy(&args[i]);
             }
             /* get fn code and push code to stack */
             rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);
