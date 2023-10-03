@@ -85,22 +85,22 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) rt_throw("cannot use 'var' with reserved global identifier '%s'", varname);
     }
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
-    RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-    khiter_t iter = kh_get(RT_Data_t, current_scope->scope, varname);
+    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
+    khiter_t entry_it = kh_get(RT_Data_t, current_scope->var_map, varname);
     /* variable exists, reduce reference count and replace
        it with the new data */
-    if (iter != kh_end(current_scope->scope)) {
-        RT_Data_destroy(&kh_value(current_scope->scope, iter));
+    if (entry_it != kh_end(current_scope->var_map)) {
         RT_Data_copy(&value);
-        kh_value(current_scope->scope, iter) = value;
+        RT_Data_destroy(&kh_value(current_scope->var_map, entry_it));
+        kh_value(current_scope->var_map, entry_it) = value;
     } else {
         /* variable doesn't exist, add a new entry */
         int ret;
-        iter = kh_put(RT_Data_t, current_scope->scope, varname, &ret);
+        entry_it = kh_put(RT_Data_t, current_scope->var_map, varname, &ret);
         /* create variable, increase reference count to 1 and set new data */
         RT_Data_copy(&value);
-        kh_value(current_scope->scope, iter) = value;
+        kh_value(current_scope->var_map, entry_it) = value;
     }
 }
 
@@ -108,8 +108,8 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
 {
     if (!dest) return NULL;
     if (dest == &RT_VarTable_rsv_null) rt_throw("cannot assign to reserved identifier 'null'");
-    RT_Data_destroy(dest);
     RT_Data_copy(&src);
+    RT_Data_destroy(dest);
     *dest = src;
     return dest;
 }
