@@ -49,8 +49,11 @@ RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar);
 /** this is used to get the accumulator data and address */
 RT_VarTable_Acc_t *RT_VarTable_acc_get(void);
 
-/** this is used to update the accumulator */
-void RT_VarTable_acc_set(RT_Data_t val, RT_Data_t *adr);
+/** this is used to update the accumulator val, nulls adr */
+void RT_VarTable_acc_setval(RT_Data_t val);
+
+/** this is used to update the accumulator adr, nulls val */
+void RT_VarTable_acc_setadr(RT_Data_t *adr);
 
 /** push a new function scope into the stack and store the procedure name and return address */
 void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);
