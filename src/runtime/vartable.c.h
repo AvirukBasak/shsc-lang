@@ -63,49 +63,6 @@ RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                   
           RT_VarTable_typeid_any        = { .data.i64 = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
           RT_VarTable_rsv_null          = { .data.any = NULL,                    .type = RT_DATA_TYPE_ANY };
 
-void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr)
-{
-    /* check if the stack is already initialized */
-    if (rt_vtable == NULL) {
-        rt_vtable = (RT_VarTable_t*) malloc(sizeof(RT_VarTable_t));
-        if (!rt_vtable) io_errndie("RT_VarTable_push_proc:" ERR_MSG_MALLOCFAIL);
-        rt_vtable->procs = NULL;
-        rt_vtable->top = -1;
-        rt_vtable->capacity = 0;
-    }
-    /* increase the capacity if needed */
-    if (rt_vtable->top >= rt_vtable->capacity -1) {
-        rt_vtable->capacity = rt_vtable->capacity * 2 +1;
-        rt_vtable->procs = (RT_VarTable_Proc_t*) realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(RT_VarTable_Proc_t));
-        if (!rt_vtable->procs) io_errndie("RT_VarTable_push_proc:" ERR_MSG_REALLOCFAIL);
-    }
-    /* push the new procedure scope */
-    ++rt_vtable->top;
-    rt_vtable->procs[rt_vtable->top].scopes = NULL;
-    rt_vtable->procs[rt_vtable->top].top = -1;
-    rt_vtable->procs[rt_vtable->top].capacity = 0;
-    rt_vtable->procs[rt_vtable->top].procname = procname;
-    rt_vtable->procs[rt_vtable->top].ret_addr = ret_addr;
-    /* push a new local scope */
-    RT_VarTable_push_scope();
-}
-
-void RT_VarTable_push_scope()
-{
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
-    /* increase the capacity if needed */
-    if (current_proc->top >= current_proc->capacity -1) {
-        current_proc->capacity = current_proc->capacity * 2 +1;
-        current_proc->scopes = (RT_VarTable_Scope_t*) realloc(current_proc->scopes, current_proc->capacity * sizeof(RT_VarTable_Scope_t));
-        if (!current_proc->scopes) io_errndie("RT_VarTable_push_scope:" ERR_MSG_REALLOCFAIL);
-    }
-    /* push the new local scope */
-    ++current_proc->top;
-    current_proc->scopes[current_proc->top].scope = kh_init(RT_Data_t);
-}
-
-#include <errno.h>
-
 RT_Data_t *rt_vtable_get_globvar(const char *varname)
 {
     if (!strcmp("lf", varname))         return &RT_VarTable_rsv_lf;
@@ -211,48 +168,98 @@ void RT_VarTable_acc_setadr(RT_Data_t *adr)
     rt_vtable_accumulator.adr = adr;
 }
 
-const AST_Statement_t *RT_VarTable_pop_proc()
+void RT_VarTable_push_proc(const char *procname)
 {
-    if (rt_vtable == NULL || rt_vtable->top == -1)
-        /* nothing to pop, return NULL */
-        return NULL;
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
-    for (int64_t i = current_proc->top; i >= 0; i--) {
-        /* free all the scopes and their variables in the current procedure */
-        RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
-        khiter_t iter;
-        for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
-            if (kh_exist(current_scope->scope, iter))
-                /* decrement refcnt, if 0, data gets destroyed */
-                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
-        }
-        kh_destroy(RT_Data_t, current_scope->scope);
+    /* check if the stack is already initialized */
+    if (rt_vtable == NULL) {
+        rt_vtable = (RT_VarTable_t*) malloc(sizeof(RT_VarTable_t));
+        if (!rt_vtable) io_errndie("RT_VarTable_push_proc:" ERR_MSG_MALLOCFAIL);
+        rt_vtable->procs = NULL;
+        rt_vtable->curr_proc_ptr = -1;
+        rt_vtable->capacity = 0;
     }
-    --rt_vtable->top;
-    return current_proc->ret_addr;
+    /* increase the capacity if needed */
+    if (rt_vtable->curr_proc_ptr >= rt_vtable->capacity -1) {
+        rt_vtable->capacity = rt_vtable->capacity * 2 +1;
+        rt_vtable->procs = (RT_VarTable_Proc_t*) realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(RT_VarTable_Proc_t));
+        if (!rt_vtable->procs) io_errndie("RT_VarTable_push_proc:" ERR_MSG_REALLOCFAIL);
+    }
+    /* push the new procedure scope */
+    ++rt_vtable->curr_proc_ptr;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].scopes = NULL;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].curr_scope_ptr = -1;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].capacity = 0;
+    /* push a new local scope */
+    RT_VarTable_push_scope();
 }
 
-RT_Data_t RT_VarTable_pop_scope()
+RT_Data_t RT_VarTable_pop_proc(void)
 {
-    if (rt_vtable == NULL || rt_vtable->top == -1)
-        return RT_Data_null();
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->top]);
-    if (current_proc->top >= 0) {
-        RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->top]);
-        RT_Data_t last_expr = RT_VarTable_acc_get()->val;
-        khiter_t iter;
-        for (iter = kh_begin(current_scope->scope); iter != kh_end(current_scope->scope); ++iter) {
-            if (kh_exist(current_scope->scope, iter))
-                /* decrement refcnt, if 0, data gets destroyed */
-                RT_Data_destroy(&(kh_value(current_scope->scope, iter)));
-        }
-        kh_destroy(RT_Data_t, current_scope->scope);
-        --current_proc->top;
-        return last_expr;
+    if (rt_vtable == NULL || rt_vtable->curr_proc_ptr == -1)
+        /* nothing to pop, return NULL */
+        return RT_VarTable_rsv_null;
+    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    /* pop all scopes in that proc */
+    while (current_proc->curr_scope_ptr >= 0) {
+        RT_VarTable_pop_scope();
     }
-    /* if there are no scopes left in the current procedure, pop the procedure */
-    RT_VarTable_pop_proc();
-    return RT_VarTable_acc_get()->val;
+    // for (int64_t i = current_proc->top; i >= 0; i--) {
+    //     /* free all the scopes and their variables in the current procedure */
+    //     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
+    //     khiter_t iter;
+    //     for (iter = kh_begin(current_scope->var_map); iter != kh_end(current_scope->var_map); ++iter) {
+    //         if (kh_exist(current_scope->var_map, iter))
+    //             /* decrement refcnt, if 0, data gets destroyed */
+    //             RT_Data_destroy(&(kh_value(current_scope->var_map, iter)));
+    //     }
+    //     kh_destroy(RT_Data_t, current_scope->var_map);
+    // }
+    --rt_vtable->curr_proc_ptr;
+    if (rt_vtable->curr_proc_ptr == -1) {
+        free(rt_vtable->procs);
+        rt_vtable->procs = NULL;
+        rt_vtable->capacity = 0;
+    }
+    return *RT_ACC_DATA;
+}
+
+void RT_VarTable_push_scope()
+{
+    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    /* increase the capacity if needed */
+    if (current_proc->curr_scope_ptr >= current_proc->capacity -1) {
+        current_proc->capacity = current_proc->capacity * 2 +1;
+        current_proc->scopes = (RT_VarTable_Scope_t*) realloc(current_proc->scopes, current_proc->capacity * sizeof(RT_VarTable_Scope_t));
+        if (!current_proc->scopes) io_errndie("RT_VarTable_push_scope:" ERR_MSG_REALLOCFAIL);
+    }
+    /* push the new local scope */
+    ++current_proc->curr_scope_ptr;
+    current_proc->scopes[current_proc->curr_scope_ptr].var_map = kh_init(RT_Data_t);
+}
+
+RT_Data_t RT_VarTable_pop_scope(void)
+{
+    if (!rt_vtable || rt_vtable->curr_proc_ptr == -1)
+        return RT_Data_null();
+    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    if (!current_proc || current_proc->curr_scope_ptr == -1)
+        return RT_Data_null();
+    RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
+    /* iterate through every var entry and delete it */
+    for (khiter_t entry_it = kh_begin(current_scope->var_map); entry_it != kh_end(current_scope->var_map); ++entry_it) {
+        if (kh_exist(current_scope->var_map, entry_it))
+            /* decrement refcnt, if 0, data gets destroyed */
+            RT_Data_destroy(&(kh_value(current_scope->var_map, entry_it)));
+    }
+    kh_destroy(RT_Data_t, current_scope->var_map);
+    --current_proc->curr_scope_ptr;
+    /* if there are no scopes left in the current procedure free the stack */
+    if (current_proc->curr_scope_ptr == -1) {
+        free(current_proc->scopes);
+        current_proc->scopes = NULL;
+        current_proc->capacity = 0;
+    }
+    return *RT_ACC_DATA;
 }
 
 /** clear memory of the vartable */
