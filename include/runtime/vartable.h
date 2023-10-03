@@ -56,7 +56,7 @@ void RT_VarTable_acc_setval(RT_Data_t val);
 void RT_VarTable_acc_setadr(RT_Data_t *adr);
 
 /** push a new function scope into the stack and store the procedure name and return address */
-void RT_VarTable_push_proc(const char *procname, const AST_Statement_t *ret_addr);
+void RT_VarTable_push_proc(const char *procname);
 
 /** pop the procedure off the stack, return the return address and clear the scope from memory */
 const AST_Statement_t *RT_VarTable_pop_proc();

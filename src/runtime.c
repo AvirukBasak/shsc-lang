@@ -50,7 +50,7 @@ void RT_exec(void)
     const AST_Identifier_t *proc = AST_ProcedureMap_main();
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     rt_currfile = AST_ProcedureMap_get_filename(module, proc);
-    RT_VarTable_push_proc(proc->identifier_name, NULL);
+    RT_VarTable_push_proc(proc->identifier_name);
     rt_Statements_eval(code);
     RT_VarTable_pop_proc();
 }
@@ -490,7 +490,7 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
 {
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     if (code) {
-        RT_VarTable_push_proc(proc->identifier_name, NULL);
+        RT_VarTable_push_proc(proc->identifier_name);
         rt_Statements_eval(code);
         RT_VarTable_pop_proc();
         return;
