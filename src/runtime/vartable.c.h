@@ -270,22 +270,6 @@ void RT_VarTable_destroy()
     return;
 }
 
-void RT_VarTable_test()
-{
-    /* push first scope */
-    RT_VarTable_push_proc("main", NULL);
-    /* set a variable in the current scope */
-    RT_Data_t var1 = RT_Data_i64(42);
-    RT_VarTable_create("var1", var1);
-    /* get a variable from the current scope */
-    RT_Data_t var1_ = *RT_VarTable_getref("var1");
-    if (!RT_Data_isnull(var1_))
-        RT_Data_print(var1_);
-    /* pop the current scope */
-    RT_VarTable_pop_proc();
-    RT_VarTable_destroy();
-}
-
 #else
     #warning re-inclusion of module 'runtime/vartable.c.h'
 #endif
