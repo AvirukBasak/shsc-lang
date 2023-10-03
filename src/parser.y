@@ -447,7 +447,7 @@ primary_expression:
     ;
 
 comma_list:
-    expression                                          { $$ = AST_CommaSepList(NULL, $1); }
+    expression nws                                      { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nws                                { $$ = AST_CommaSepList(NULL, $1); }
     | expression "," nws comma_list                     { $$ = AST_CommaSepList($4, $1); }
     ;
