@@ -424,8 +424,8 @@ postfix_expression:
                                                             AST_Expression_CommaSepList($4), NULL);
                                                         }
     | postfix_expression "[" nws expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
-    | "$" "[" nws expression "]"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
-    | "$" "(" nws expression ")"                        { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $4, NULL); }
+    | "$" "[" expression "]"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
+    | "$" "(" expression ")"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
     | "$" LEXTOK_DECINT_LITERAL                         { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
                                                             AST_Expression_Literal(
                                                                 AST_Literal_i64($2)), NULL);
