@@ -11,7 +11,7 @@
 #include "parser.h"
 #include "runtime.h"
 
-#define VERSION "0.1"
+#define VERSION "0.2 Alpha"
 
 void main_parsefiles(const char **filepaths, int file_cnt);
 
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
     /* check if -v or --version is present */
     if (!strcmp(argv[index], "-v") || !strcmp(argv[index], "--version")) {
-        printf("Shsc version %s\n"
+        printf("Shsc Version %s\n"
                "License: GPL 3.0\n"
                "Authors: Aviruk Basak\n", VERSION);
         exit(0);
