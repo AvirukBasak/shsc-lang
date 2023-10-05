@@ -423,7 +423,7 @@ postfix_expression:
     | postfix_expression "(" nws comma_list ")"         { $$ = AST_Expression(TOKOP_FNCALL, $1,
                                                             AST_Expression_CommaSepList($4), NULL);
                                                         }
-    | postfix_expression "[" nws expression "]"         { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
+    | postfix_expression "[" expression "]"             { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
     | "$" "[" expression "]"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
     | "$" "(" expression ")"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
     | "$" LEXTOK_DECINT_LITERAL                         { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
@@ -466,10 +466,24 @@ literal:
     | LEXTOK_OCTINT_LITERAL                             { $$ = AST_Literal_i64($1); }
     | LEXTOK_DECINT_LITERAL                             { $$ = AST_Literal_i64($1); }
     | LEXTOK_HEXINT_LITERAL                             { $$ = AST_Literal_i64($1); }
-    | LEXTOK_STR_LITERAL                                { $$ = AST_Literal_str($1); }
+    | string_literal                                    { $$ = $1; }
+    | list_literal                                      { $$ = $1; }
+    | map_literal                                       { $$ = $1; }
+    ;
+
+string_literal:
+    LEXTOK_STR_LITERAL                                  { $$ = AST_Literal_str($1); }
     | LEXTOK_INTERP_STR_LITERAL                         { $$ = AST_Literal_interp_str($1); }
-    | "[" "]"                                           { $$ = AST_Literal_lst(NULL); }
+    ;
+
+list_literal:
+    "[" "]"                                             { $$ = AST_Literal_lst(NULL); }
     | "[" nws comma_list "]"                            { $$ = AST_Literal_lst($3); }
+    ;
+
+map_literal:
+    "{" "}"                                             { $$ = AST_Literal_map(NULL); }
+    | "{" nws assoc_list "}"                            { $$ = AST_Literal_map($3); }
     ;
 
 identifier:
