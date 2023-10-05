@@ -61,6 +61,7 @@ RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                   
           RT_VarTable_typeid_interp_str = { .data.i64 = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
           RT_VarTable_typeid_lst        = { .data.i64 = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
           RT_VarTable_typeid_any        = { .data.i64 = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_map        = { .data.i64 = RT_DATA_TYPE_MAP,        .type = RT_DATA_TYPE_I64 },
           RT_VarTable_rsv_null          = { .data.any = NULL,                    .type = RT_DATA_TYPE_ANY };
 
 RT_Data_t *rt_vtable_get_globvar(const char *varname)

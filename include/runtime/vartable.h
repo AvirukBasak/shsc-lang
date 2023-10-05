@@ -30,6 +30,7 @@ RT_Data_t RT_VarTable_rsv_lf,
           RT_VarTable_typeid_interp_str,
           RT_VarTable_typeid_lst,
           RT_VarTable_typeid_any,
+          RT_VarTable_typeid_map,
           RT_VarTable_rsv_null;
 
 /** create a new variable in the current scope */

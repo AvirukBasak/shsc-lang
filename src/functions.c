@@ -12,6 +12,7 @@
 #include "runtime/data.h"
 #include "runtime/data/string.h"
 #include "runtime/data/list.h"
+#include "runtime/data/map.h"
 #include "runtime/vartable.h"
 
 /*
@@ -137,6 +138,9 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                 case RT_DATA_TYPE_LST:
                     ret = RT_VarTable_typeid_lst;
                     break;
+                case RT_DATA_TYPE_MAP:
+                    ret = RT_VarTable_typeid_map;
+                    break;
                 case RT_DATA_TYPE_ANY:
                     ret = RT_Data_isnull(data) ?
                         RT_VarTable_rsv_null : RT_VarTable_typeid_any;
@@ -160,6 +164,9 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                 case RT_DATA_TYPE_LST:
                     ret = RT_Data_i64(RT_DataList_length(data.data.lst));
                     break;
+                case RT_DATA_TYPE_MAP:
+                    ret = RT_Data_i64(RT_DataMap_length(data.data.mp));
+                    break;
                 default:
                     ret = RT_Data_i64(1);
                     break;
@@ -175,6 +182,9 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                     break;
                 case RT_DATA_TYPE_LST:
                     ret = RT_Data_i64(data.data.lst->rc);
+                    break;
+                case RT_DATA_TYPE_MAP:
+                    ret = RT_Data_i64(data.data.mp->rc);
                     break;
                 default:
                     ret = RT_Data_i64(1);
