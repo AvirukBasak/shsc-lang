@@ -19,7 +19,7 @@ RT_DataMap_t *RT_DataMap_init()
 {
     RT_DataMap_t *mp = (RT_DataMap_t*) malloc(sizeof(RT_DataMap_t));
     if (!mp) io_errndie("RT_DataMap_init:" ERR_MSG_MALLOCFAIL);
-    mp->data_map = NULL;
+    mp->data_map = kh_init(RT_DataMap_t);
     mp->length = 0;
     /* rc is kept at 0 unless the runtime assigns
        a variable to the data */
@@ -60,7 +60,6 @@ void RT_DataMap_destroy(RT_DataMap_t **ptr)
 void RT_DataMap_insert(RT_DataMap_t *mp, const char *key, RT_Data_t value)
 {
     RT_Data_copy(&value);
-    if (!mp->data_map) mp->data_map = kh_init(RT_DataMap_t);
     khiter_t entry_it = kh_get(RT_DataMap_t, mp->data_map, key);
     if (entry_it != kh_end(mp->data_map)) {
         /* key exists, reduce original value ref count */
@@ -96,10 +95,6 @@ void RT_DataMap_del(RT_DataMap_t *mp, const char *key)
     if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
     RT_Data_destroy(&kh_value(mp->data_map, entry_it));
     --mp->length;
-    if (mp->length == 0) {
-        kh_destroy(RT_DataMap_t, mp->data_map);
-        mp->data_map = NULL;
-    }
 }
 
 char *RT_DataMap_tostr(const RT_DataMap_t *mp)
