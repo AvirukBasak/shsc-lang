@@ -9,6 +9,7 @@
 typedef struct RT_Data_t RT_Data_t;
 typedef struct RT_DataStr_t RT_DataStr_t;
 typedef struct RT_DataList_t RT_DataList_t;
+typedef struct RT_DataMap_t RT_DataMap_t;
 
 /* based on the mapping of datatype IDs provided
    by the Shsc IR Spec
