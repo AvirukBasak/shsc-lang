@@ -9,6 +9,7 @@
 typedef struct RT_Data_t RT_Data_t;
 typedef struct RT_DataStr_t RT_DataStr_t;
 typedef struct RT_DataList_t RT_DataList_t;
+typedef struct RT_DataMap_t RT_DataMap_t;
 
 /* based on the mapping of datatype IDs provided
    by the Shsc IR Spec
@@ -22,6 +23,7 @@ enum RT_DataType_t {
     RT_DATA_TYPE_INTERP_STR = 5, /* parsable char* : variable  */
     RT_DATA_TYPE_LST = 6,        /* list           : variable  */
     RT_DATA_TYPE_ANY = 7,        /* void*          : undefined */
+    RT_DATA_TYPE_MAP = 8,        /* hash map       : variable  */
 };
 
 struct RT_Data_t {
@@ -32,6 +34,7 @@ struct RT_Data_t {
         double f64;
         RT_DataStr_t *str;
         RT_DataList_t *lst;
+        RT_DataMap_t *mp;
         void *any;
     } data;
     enum RT_DataType_t type;
@@ -44,6 +47,7 @@ RT_Data_t RT_Data_f64(double val);
 RT_Data_t RT_Data_str(RT_DataStr_t *str);
 RT_Data_t RT_Data_interp_str(const char *str);
 RT_Data_t RT_Data_list(RT_DataList_t *lst);
+RT_Data_t RT_Data_map(RT_DataMap_t *mp);
 RT_Data_t RT_Data_any(void *ptr);
 RT_Data_t RT_Data_null(void);
 void RT_Data_copy(RT_Data_t *var);

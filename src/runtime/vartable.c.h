@@ -14,15 +14,11 @@
 #include "runtime/data.h"
 #include "runtime/data/list.h"
 #include "runtime/data/string.h"
+#include "runtime/data/map.h"
 #include "runtime/io.h"
 #include "runtime/vartable.h"
 
-KHASH_MAP_INIT_STR(RT_Data_t, RT_Data_t)
-
-/** local scope, stores a map of variables */
-typedef struct {
-    khash_t(RT_Data_t) *var_map;
-} RT_VarTable_Scope_t;
+typedef RT_DataMap_t *RT_VarTable_Scope_t;
 
 /** the scopes stack of a procedure */
 typedef struct {
@@ -61,6 +57,7 @@ RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                   
           RT_VarTable_typeid_interp_str = { .data.i64 = RT_DATA_TYPE_INTERP_STR, .type = RT_DATA_TYPE_I64 },
           RT_VarTable_typeid_lst        = { .data.i64 = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
           RT_VarTable_typeid_any        = { .data.i64 = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_map        = { .data.i64 = RT_DATA_TYPE_MAP,        .type = RT_DATA_TYPE_I64 },
           RT_VarTable_rsv_null          = { .data.any = NULL,                    .type = RT_DATA_TYPE_ANY };
 
 RT_Data_t *rt_vtable_get_globvar(const char *varname)
@@ -87,21 +84,7 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
     }
     RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
-    khiter_t entry_it = kh_get(RT_Data_t, current_scope->var_map, varname);
-    /* variable exists, reduce reference count and replace
-       it with the new data */
-    if (entry_it != kh_end(current_scope->var_map)) {
-        RT_Data_copy(&value);
-        RT_Data_destroy(&kh_value(current_scope->var_map, entry_it));
-        kh_value(current_scope->var_map, entry_it) = value;
-    } else {
-        /* variable doesn't exist, add a new entry */
-        int ret;
-        entry_it = kh_put(RT_Data_t, current_scope->var_map, varname, &ret);
-        /* create variable, increase reference count to 1 and set new data */
-        RT_Data_copy(&value);
-        kh_value(current_scope->var_map, entry_it) = value;
-    }
+    RT_DataMap_insert(*current_scope, varname, value);
 }
 
 RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
@@ -126,11 +109,8 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
     /* go down the scopes stack to find the right local variable */
     for (int64_t i = current_proc->curr_scope_ptr; i >= 0; i--) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
-        khiter_t entry_it = kh_get(RT_Data_t, current_scope->var_map, varname);
-        /* variable found, return its value */
-        if (entry_it != kh_end(current_scope->var_map)) {
-            return &kh_value(current_scope->var_map, entry_it);
-        }
+        RT_Data_t *data = RT_DataMap_getref__n(*current_scope, varname);
+        if (data) return data;
     }
     /* variable not found, throw an error */
     rt_throw("undefined variable '%s'", varname);
@@ -235,7 +215,7 @@ void RT_VarTable_push_scope()
     }
     /* push the new local scope */
     ++current_proc->curr_scope_ptr;
-    current_proc->scopes[current_proc->curr_scope_ptr].var_map = kh_init(RT_Data_t);
+    current_proc->scopes[current_proc->curr_scope_ptr] = RT_DataMap_init();
 }
 
 RT_Data_t RT_VarTable_pop_scope(void)
@@ -246,13 +226,8 @@ RT_Data_t RT_VarTable_pop_scope(void)
     if (!current_proc || current_proc->curr_scope_ptr == -1)
         return RT_Data_null();
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
-    /* iterate through every var entry and delete it */
-    for (khiter_t entry_it = kh_begin(current_scope->var_map); entry_it != kh_end(current_scope->var_map); ++entry_it) {
-        if (kh_exist(current_scope->var_map, entry_it))
-            /* decrement refcnt, if 0, data gets destroyed */
-            RT_Data_destroy(&(kh_value(current_scope->var_map, entry_it)));
-    }
-    kh_destroy(RT_Data_t, current_scope->var_map);
+    /* destroy map of values */
+    RT_DataMap_destroy(current_scope);
     --current_proc->curr_scope_ptr;
     /* if there are no scopes left in the current procedure free the stack */
     if (current_proc->curr_scope_ptr == -1) {

@@ -14,6 +14,7 @@
 #include "runtime/data.h"
 #include "runtime/data/string.h"
 #include "runtime/data/list.h"
+#include "runtime/data/map.h"
 #include "runtime/io.h"
 #include "runtime/vartable.h"
 
@@ -74,6 +75,14 @@ RT_Data_t RT_Data_list(RT_DataList_t *lst)
     return var;
 }
 
+RT_Data_t RT_Data_map(RT_DataMap_t *mp)
+{
+    RT_Data_t var;
+    var.type = RT_DATA_TYPE_MAP;
+    var.data.mp = mp;
+    return var;
+}
+
 RT_Data_t RT_Data_any(void *ptr)
 {
     RT_Data_t var;
@@ -97,6 +106,9 @@ void RT_Data_copy(RT_Data_t *var)
         case RT_DATA_TYPE_LST:
             RT_DataList_copy(var->data.lst);
             break;
+        case RT_DATA_TYPE_MAP:
+            RT_DataMap_copy(var->data.mp);
+            break;
         default:
             break;
     }
@@ -113,6 +125,10 @@ void RT_Data_destroy(RT_Data_t *var)
         case RT_DATA_TYPE_LST:
             RT_DataList_destroy(&var->data.lst);
             if (!var->data.lst) *var = RT_Data_null();
+            break;
+        case RT_DATA_TYPE_MAP:
+            RT_DataMap_destroy(&var->data.mp);
+            if (!var->data.mp) *var = RT_Data_null();
             break;
         case RT_DATA_TYPE_ANY:
             if (var->data.any) free(var->data.any);
@@ -201,6 +217,8 @@ bool RT_Data_tobool(const RT_Data_t var)
             return !!var.data.str->var && !!var.data.str->length;
         case RT_DATA_TYPE_LST:
             return !!var.data.lst->var && !!var.data.lst->length;
+        case RT_DATA_TYPE_MAP:
+            return !!var.data.mp->data_map && !!var.data.mp->length;
         case RT_DATA_TYPE_ANY:
             return !!var.data.any;
         default:
@@ -246,6 +264,9 @@ char *RT_Data_tostr(const RT_Data_t var)
         case RT_DATA_TYPE_LST: {
             return RT_DataList_tostr(var.data.lst);
         }
+        case RT_DATA_TYPE_MAP: {
+            return RT_DataMap_tostr(var.data.mp);
+        }
         case RT_DATA_TYPE_ANY: {
             if (!var.data.any) return strdup("null");
             char *str = (char*) malloc(16 +1 * sizeof(char));
@@ -268,6 +289,7 @@ const char *RT_Data_typename(const RT_Data_t var)
         case RT_DATA_TYPE_STR:        return "str";
         case RT_DATA_TYPE_INTERP_STR: return "interp_str";
         case RT_DATA_TYPE_LST:        return "lst";
+        case RT_DATA_TYPE_MAP:        return "map";
         case RT_DATA_TYPE_ANY:        return var.data.any ? "any" : "null";
     }
     return NULL;
@@ -283,6 +305,7 @@ int RT_Data_print(RT_Data_t var)
 
 #include "data/list.c.h"
 #include "data/string.c.h"
+#include "data/map.c.h"
 
 #else
     #warning re-inclusion of module 'runtime/data.c.h'
