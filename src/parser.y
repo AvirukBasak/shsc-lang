@@ -175,6 +175,7 @@ FILE *yyin = NULL;
     AST_Block_t            *astnode_block;                /* block */
     AST_Expression_t       *astnode_expression;           /* expression */
     AST_CommaSepList_t     *astnode_comma_list;           /* comma_list */
+    AST_AssociativeList_t  *astnode_assoc_list;           /* assoc_list */
     AST_Literal_t          *astnode_literal;              /* literal */
     AST_Identifier_t       *astnode_identifier;           /* identifier */
 }
@@ -214,7 +215,11 @@ FILE *yyin = NULL;
 %type <astnode_expression>         primary_expression
 
 %type <astnode_comma_list>         comma_list
+%type <astnode_assoc_list>         assoc_list
 %type <astnode_literal>            literal
+%type <astnode_literal>            string_literal
+%type <astnode_literal>            list_literal
+%type <astnode_literal>            map_literal
 %type <astnode_identifier>         identifier
 
 
