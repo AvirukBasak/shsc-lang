@@ -455,6 +455,12 @@ comma_list:
     | expression "," nws comma_list                     { $$ = AST_CommaSepList($4, $1); }
     ;
 
+assoc_list:
+    string_literal ":" expression nws                   { $$ = AST_AssociativeList(NULL, $1, $3); }
+    | string_literal ":" expression "," nws             { $$ = AST_AssociativeList(NULL, $1, $3); }
+    | string_literal ":" expression "," nws assoc_list  { $$ = AST_AssociativeList($4, $1, $3); }
+    ;
+
 literal:
     LEXTOK_BOOL_LITERAL                                 { $$ = AST_Literal_bul($1); }
     | LEXTOK_CHAR_LITERAL                               { $$ = AST_Literal_chr($1); }
