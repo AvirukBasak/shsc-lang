@@ -17,7 +17,6 @@ int64_t RT_DataStr_length(const RT_DataStr_t *str);
 void RT_DataStr_copy(RT_DataStr_t *str);
 void RT_DataStr_destroy(RT_DataStr_t **ptr);
 void RT_DataStr_append(RT_DataStr_t *str, char ch);
-void RT_DataStr_set(RT_DataStr_t *str, int64_t idx, char var);
 /** data can be updated by assigning a char to the returned pointer */
 char *RT_DataStr_getref(const RT_DataStr_t *str, int64_t idx);
 void RT_DataStr_del_index(RT_DataStr_t *str, int64_t idx);
