@@ -15,6 +15,7 @@ void AST2JSON_ForBlock(const AST_ForBlock_t* for_block);
 void AST2JSON_Block(const AST_Block_t* block);
 void AST2JSON_Expression(const AST_Expression_t* expression);
 void AST2JSON_CommaSepList(const AST_CommaSepList_t* comma_list);
+void AST2JSON_AssociativeList(const AST_AssociativeList_t* assoc_list);
 void AST2JSON_Literal(const AST_Literal_t* literal);
 void AST2JSON_Identifier(const AST_Identifier_t* identifier);
 void AST2JSON_ProcedureMap();

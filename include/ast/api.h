@@ -124,7 +124,7 @@ struct AST_CommaSepList_t {
 };
 
 struct AST_AssociativeList_t {
-    AST_CommaSepList_t *assoc_list;
+    AST_AssociativeList_t *assoc_list;
     AST_Literal_t *key;
     AST_Expression_t *value;
 };
