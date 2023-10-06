@@ -113,15 +113,29 @@ char *RT_DataMap_tostr(const RT_DataMap_t *mp)
     sprintf(&str[p++], "{");
     for (khiter_t entry_it = kh_begin(mp->data_map); entry_it != kh_end(mp->data_map); ++entry_it) {
         if (!kh_exist(mp->data_map, entry_it)) continue;
+
         const char *mp_ky = kh_key(mp->data_map, entry_it);
-        char *mp_el = RT_Data_tostr(kh_value(mp->data_map, entry_it).value);
-        /** size values:  "        %s         "   : \x20       %s       \x00 */
-        const size_t sz = 1 + strlen(mp_ky) + 1 + 1 + 1 + strlen(mp_el) + 1;
+
+        const RT_Data_t data_val = kh_value(mp->data_map, entry_it).value;
+        char *mp_el = RT_Data_tostr(data_val);
+        char *mp_el_escaped = io_partial_escape_string(mp_el);
+        free(mp_el);
+        mp_el = NULL;
+
+        char *delim = "";
+        if (data_val.type == RT_DATA_TYPE_CHR) delim = "'";
+        else if (data_val.type == RT_DATA_TYPE_STR
+              || data_val.type == RT_DATA_TYPE_INTERP_STR) delim = "\"";
+
+        /** size values:  "        %s         "   : \x20     <delim>                 %s              <delim>    \x00 */
+        const size_t sz = 1 + strlen(mp_ky) + 1 + 1 + 1 + strlen(delim) + strlen(mp_el_escaped) + strlen(delim) + 1;
         str = (char*) realloc(str, (size += sz) * sizeof(char));
         if (!str) io_errndie("RT_DataMap_tostr:" ERR_MSG_REALLOCFAIL);
-        sprintf(&str[p], "\"%s\": %s", mp_ky, mp_el);
-        free(mp_el);
-        mp_ky = mp_el = NULL;
+
+        sprintf(&str[p], "\"%s\": %s%s%s", mp_ky, delim, mp_el_escaped, delim);
+
+        free(mp_el_escaped);
+        mp_ky = mp_el_escaped = NULL;
         p += sz -1;
         if (count_len++ < mp->length -1) {
             str = (char*) realloc(str, (size += 2) * sizeof(char));

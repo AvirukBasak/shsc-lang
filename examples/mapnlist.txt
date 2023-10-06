@@ -1,0 +1,7 @@
+proc main start
+    var mp = {"ww": true, "xy": 78, "pq": 1222,
+        "map": {"beta": "hi", "alpha": 67, "gamma": "\x05\x12"}}
+    print(mp, lf)
+    mp = ["xyz", 'a', "\n", "001", 'A', "AA"]
+    print(mp, lf)
+end

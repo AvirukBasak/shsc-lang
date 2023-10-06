@@ -17,7 +17,6 @@ void AST2JSON_close_obj(void);
 void AST2JSON_open_list(void);
 void AST2JSON_close_list(void);
 void AST2JSON_put_comma(void);
-char *AST2JSON_escape_string(const char *str);
 
 FILE *AST2JSON_outfile = NULL;
 int AST2JSON_indent_depth = 0;
@@ -80,70 +79,6 @@ void AST2JSON_put_comma(void)
         return;
     }
     AST2JSON_printf(",\n%*s", AST2JSON_indent_depth, "");
-}
-
-/* helper function to escape special characters in a string */
-char *AST2JSON_escape_string(const char *str)
-{
-    if (!str) return NULL;
-    size_t len = strlen(str);
-    char *escaped = (char*) malloc((4 * len +1) * sizeof(char));
-    if (!escaped) io_errndie("AST2JSON_escape_string:" ERR_MSG_MALLOCFAIL);
-    char *ptr = escaped;
-    while (*str != '\0') {
-        switch (*str) {
-            case '\a':
-                *ptr++ = '\\';
-                *ptr++ = 'a';
-                break;
-            case '\b':
-                *ptr++ = '\\';
-                *ptr++ = 'b';
-                break;
-            case '\f':
-                *ptr++ = '\\';
-                *ptr++ = 'f';
-                break;
-            case '\n':
-                *ptr++ = '\\';
-                *ptr++ = 'n';
-                break;
-            case '\r':
-                *ptr++ = '\\';
-                *ptr++ = 'r';
-                break;
-            case '\t':
-                *ptr++ = '\\';
-                *ptr++ = 't';
-                break;
-            case '\v':
-                *ptr++ = '\\';
-                *ptr++ = 'v';
-                break;
-            case '\\':
-                *ptr++ = '\\';
-                *ptr++ = '\\';
-                break;
-            case '\"':
-                *ptr++ = '\\';
-                *ptr++ = '"';
-                break;
-            default:
-                if (*str < 32 || *str > 126) {
-                    /* unprintable character, escape using \xXX notation */
-                    sprintf(
-                        ptr, "\\x%02X",
-                        (unsigned char) *str);
-                    ptr += 4;
-                } else
-                    /* copy printable character as is */
-                    *ptr++ = *str;
-                break;
-        }
-        ++str;
-    }
-    *ptr = '\0';
-    return escaped;
 }
 
 /* function to convert AST_Statements_t to JSON */
@@ -550,6 +485,7 @@ void AST2JSON_AssociativeList(const AST_AssociativeList_t* assoc_list)
     mp = mp->assoc_list;
 
     while (mp) {
+        AST2JSON_put_comma();
         AST2JSON_open_obj();
         AST2JSON_printf("\"key\": ");
         AST2JSON_Literal(mp->key);
@@ -585,7 +521,7 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
             break;
         case DATA_TYPE_CHR: {
             char chr[2] = { literal->data.chr, '\0' };
-            char *escaped_chr = AST2JSON_escape_string(chr);
+            char *escaped_chr = io_full_escape_string(chr);
             AST2JSON_put_comma();
             AST2JSON_printf("\"type\": \"DATA_TYPE_CHR\"");
             AST2JSON_put_comma();
@@ -618,7 +554,7 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
             AST2JSON_printf("\"type\": \"DATA_TYPE_STR\"");
             AST2JSON_put_comma();
             AST2JSON_printf("\"data\": ");
-            char *escaped_str = AST2JSON_escape_string(literal->data.str);
+            char *escaped_str = io_full_escape_string(literal->data.str);
             if (escaped_str) {
                 AST2JSON_printf("\"%s\"", escaped_str);
                 free(escaped_str);

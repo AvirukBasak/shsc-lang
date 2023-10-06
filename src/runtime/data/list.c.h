@@ -101,15 +101,28 @@ char *RT_DataList_tostr(const RT_DataList_t *lst)
     int p = 0;
     sprintf(&str[p++], "[");
     for (int64_t i = 0; i < lst->length; ++i) {
-        char *lst_el = RT_Data_tostr(lst->var[i]);
-        const size_t sz = strlen(lst_el) +1;
-        str = (char*) realloc(str, (size += sz) * sizeof(char));
-        if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_REALLOCFAIL);
-        sprintf(&str[p], "%s", lst_el);
+        const RT_Data_t data_val = lst->var[i];
+        char *lst_el = RT_Data_tostr(data_val);
+        char *lst_el_escaped = io_partial_escape_string(lst_el);
         free(lst_el);
         lst_el = NULL;
+
+        char *delim = "";
+        if (lst->var[i].type == RT_DATA_TYPE_CHR) delim = "'";
+        else if (data_val.type == RT_DATA_TYPE_STR
+              || data_val.type == RT_DATA_TYPE_INTERP_STR) delim = "\"";
+
+        /** size values:  "   <delim>               %s               <delim>     \x00 */
+        const size_t sz = strlen(delim) + strlen(lst_el_escaped) + strlen(delim) + 1;
+        str = (char*) realloc(str, (size += sz) * sizeof(char));
+        if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_REALLOCFAIL);
+
+        sprintf(&str[p], "%s%s%s", delim, lst_el_escaped, delim);
+
+        free(lst_el_escaped);
+        lst_el_escaped = NULL;
         p += sz -1;
-        if (i != lst->length - 1) {
+        if (i < lst->length - 1) {
             str = (char*) realloc(str, (size += 2) * sizeof(char));
             if (!str) io_errndie("RT_DataList_tostr:" ERR_MSG_REALLOCFAIL);
             sprintf(&str[p], ", ");
