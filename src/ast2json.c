@@ -524,6 +524,46 @@ void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
     AST2JSON_close_obj();
 }
 
+void AST2JSON_AssociativeList(const AST_AssociativeList_t* assoc_list)
+{
+    if (!assoc_list) {
+        AST2JSON_printf("null");
+        return;
+    }
+
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"node\": \"assoc_list\"");
+
+    const AST_AssociativeList_t *mp = assoc_list;
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"assoc_list\": ");
+    AST2JSON_open_list();
+
+    AST2JSON_open_obj();
+    AST2JSON_printf("\"key\": ");
+    AST2JSON_Literal(mp->key);
+    AST2JSON_put_comma();
+    AST2JSON_printf("\"value\": ");
+    AST2JSON_Expression(mp->value);
+    AST2JSON_close_obj();
+
+    mp = mp->assoc_list;
+
+    while (mp) {
+        AST2JSON_open_obj();
+        AST2JSON_printf("\"key\": ");
+        AST2JSON_Literal(mp->key);
+        AST2JSON_put_comma();
+        AST2JSON_printf("\"value\": ");
+        AST2JSON_Expression(mp->value);
+        AST2JSON_close_obj();
+        mp = mp->assoc_list;
+    }
+
+    AST2JSON_close_list();
+    AST2JSON_close_obj();
+}
+
 /* function to convert AST_Literal_t to JSON */
 void AST2JSON_Literal(const AST_Literal_t *literal)
 {
@@ -593,6 +633,13 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
             AST2JSON_put_comma();
             AST2JSON_printf("\"data\": ");
             AST2JSON_CommaSepList(literal->data.lst);
+            break;
+        case DATA_TYPE_MAP:
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"DATA_TYPE_MAP\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"data\": ");
+            AST2JSON_AssociativeList(literal->data.mp);
             break;
         case DATA_TYPE_ANY:
             AST2JSON_put_comma();
