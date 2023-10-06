@@ -115,6 +115,76 @@ char **io_read_lines(const char *filepath, size_t *line_cnt)
     return ret_lines;
 }
 
+char *io_full_escape_string(const char *str)
+{
+    if (!str) return NULL;
+    size_t len = strlen(str);
+    char *escaped = (char*) malloc((4 * len +1) * sizeof(char));
+    if (!escaped) io_errndie("AST2JSON_escape_string:" ERR_MSG_MALLOCFAIL);
+    char *ptr = escaped;
+    while (*str != '\0') {
+        switch (*str) {
+            case '\a': *ptr++ = '\\'; *ptr++ = 'a'; break;
+            case '\b': *ptr++ = '\\'; *ptr++ = 'b'; break;
+            case '\f': *ptr++ = '\\'; *ptr++ = 'f'; break;
+            case '\n': *ptr++ = '\\'; *ptr++ = 'n'; break;
+            case '\r': *ptr++ = '\\'; *ptr++ = 'r'; break;
+            case '\t': *ptr++ = '\\'; *ptr++ = 't'; break;
+            case '\v': *ptr++ = '\\'; *ptr++ = 'v'; break;
+            case '\\': *ptr++ = '\\'; *ptr++ = '\\'; break;
+            case '\"': *ptr++ = '\\'; *ptr++ = '"'; break;
+            default:
+                if (*str < 32 || *str > 126) {
+                    /* unprintable character, escape using \xXX notation */
+                    sprintf(
+                        ptr, "\\x%02X",
+                        (unsigned char) *str);
+                    ptr += 4;
+                } else
+                    /* copy printable character as is */
+                    *ptr++ = *str;
+                break;
+        }
+        ++str;
+    }
+    *ptr = '\0';
+    return escaped;
+}
+
+char *io_partial_escape_string(const char *str)
+{
+    if (!str) return NULL;
+    size_t len = strlen(str);
+    char *escaped = (char*) malloc((4 * len +1) * sizeof(char));
+    if (!escaped) io_errndie("AST2JSON_escape_string:" ERR_MSG_MALLOCFAIL);
+    char *ptr = escaped;
+    while (*str != '\0') {
+        switch (*str) {
+            case '\a': *ptr++ = '\\'; *ptr++ = 'a'; break;
+            case '\b': *ptr++ = '\\'; *ptr++ = 'b'; break;
+            case '\f': *ptr++ = '\\'; *ptr++ = 'f'; break;
+            case '\n': *ptr++ = '\\'; *ptr++ = 'n'; break;
+            case '\r': *ptr++ = '\\'; *ptr++ = 'r'; break;
+            case '\t': *ptr++ = '\\'; *ptr++ = 't'; break;
+            case '\v': *ptr++ = '\\'; *ptr++ = 'v'; break;
+            default:
+                if (*str < 32 || *str > 126) {
+                    /* unprintable character, escape using \xXX notation */
+                    sprintf(
+                        ptr, "\\x%02X",
+                        (unsigned char) *str);
+                    ptr += 4;
+                } else
+                    /* copy printable character as is */
+                    *ptr++ = *str;
+                break;
+        }
+        ++str;
+    }
+    *ptr = '\0';
+    return escaped;
+}
+
 void io_errnexit(const char *fmt, ...)
 {
     fprintf(stderr, "shsc: ");
