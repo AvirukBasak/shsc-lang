@@ -12,6 +12,7 @@
 #include "runtime/data.h"
 #include "runtime/data/list.h"
 #include "runtime/data/string.h"
+#include "runtime/data/map.h"
 #include "runtime/io.h"
 #include "runtime/vartable.h"
 
@@ -39,6 +40,7 @@ void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block);
 void rt_ForBlock_eval(const AST_ForBlock_t *for_block);
 void rt_Expression_eval(const AST_Expression_t *expr);
 void rt_CommaSepList_eval(const AST_CommaSepList_t *comma_list);
+void rt_AssociativeList_eval(const AST_AssociativeList_t *assoc_list);
 void rt_Literal_eval(const AST_Literal_t *literal);
 void rt_Identifier_eval(const AST_Identifier_t *identifier);
 
@@ -461,6 +463,9 @@ void rt_Literal_eval(const AST_Literal_t *literal)
         case DATA_TYPE_LST:
             rt_CommaSepList_eval(literal->data.lst);
             break;
+        case DATA_TYPE_MAP:
+            rt_AssociativeList_eval(literal->data.mp);
+            break;
         case DATA_TYPE_ANY:
             /* void* must be explicitly casted */
             RT_VarTable_acc_setval(
@@ -494,6 +499,29 @@ void rt_CommaSepList_eval(const AST_CommaSepList_t *comma_list)
     }
     RT_VarTable_acc_setval(
         RT_Data_list(new_list));
+}
+
+void rt_AssociativeList_eval(const AST_AssociativeList_t *assoc_list)
+{
+    if (!assoc_list) {
+        RT_VarTable_acc_setval(RT_Data_null());
+        return;
+    }
+    const AST_AssociativeList_t *ptr = assoc_list;
+    RT_DataMap_t *new_map = RT_DataMap_init();
+    while (ptr) {
+        rt_Literal_eval(ptr->key);
+        char *key_cstr = RT_Data_tostr(*RT_ACC_DATA);
+        /* note that the RT_Data_t string returned above is not
+           manually cleaned coz it's reference counted l, and is
+           freed when accumulator value is changed below */
+        rt_Expression_eval(ptr->value);
+        RT_DataMap_insert(new_map, key_cstr, *RT_ACC_DATA);
+        ptr = ptr->assoc_list;
+        free(key_cstr);
+    }
+    RT_VarTable_acc_setval(
+        RT_Data_map(new_map));
 }
 
 void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *proc)
