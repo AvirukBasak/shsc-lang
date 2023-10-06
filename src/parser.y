@@ -428,7 +428,7 @@ postfix_expression:
     | postfix_expression "(" nws comma_list ")"         { $$ = AST_Expression(TOKOP_FNCALL, $1,
                                                             AST_Expression_CommaSepList($4), NULL);
                                                         }
-    | postfix_expression "[" expression "]"             { $$ = AST_Expression(TOKOP_INDEXING, $1, $4, NULL); }
+    | postfix_expression "[" expression "]"             { $$ = AST_Expression(TOKOP_INDEXING, $1, $3, NULL); }
     | "$" "[" expression "]"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
     | "$" "(" expression ")"                            { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
     | "$" LEXTOK_DECINT_LITERAL                         { $$ = AST_Expression(TOKOP_FNARGS_INDEXING, NULL,
@@ -463,7 +463,7 @@ comma_list:
 assoc_list:
     string_literal ":" expression nws                   { $$ = AST_AssociativeList(NULL, $1, $3); }
     | string_literal ":" expression "," nws             { $$ = AST_AssociativeList(NULL, $1, $3); }
-    | string_literal ":" expression "," nws assoc_list  { $$ = AST_AssociativeList($4, $1, $3); }
+    | string_literal ":" expression "," nws assoc_list  { $$ = AST_AssociativeList($6, $1, $3); }
     ;
 
 literal:
