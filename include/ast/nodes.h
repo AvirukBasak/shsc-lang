@@ -113,6 +113,12 @@ struct AST_CommaSepList_t {
     AST_Expression_t *expression;
 };
 
+struct AST_AssociativeList_t {
+    AST_CommaSepList_t *assoc_list;
+    AST_Literal_t *key;
+    AST_Expression_t *value;
+};
+
 struct AST_Literal_t {
     union {
         bool bul;
@@ -121,6 +127,7 @@ struct AST_Literal_t {
         double f64;
         char *str;
         AST_CommaSepList_t *lst;
+        AST_AssociativeList_t *mp;
         void *any;
     }  data;
     enum AST_DataType_t type;
