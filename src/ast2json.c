@@ -550,6 +550,7 @@ void AST2JSON_AssociativeList(const AST_AssociativeList_t* assoc_list)
     mp = mp->assoc_list;
 
     while (mp) {
+        AST2JSON_put_comma();
         AST2JSON_open_obj();
         AST2JSON_printf("\"key\": ");
         AST2JSON_Literal(mp->key);
