@@ -37,6 +37,7 @@ AST_Expression_t    *AST_Expression_Identifier(AST_Identifier_t *identifier);
 AST_Expression_t    *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list);
 
 AST_CommaSepList_t  *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Expression_t *expression);
+AST_AssociativeList_t  *AST_AssociativeList(AST_AssociativeList_t *assoc_list, AST_Literal_t *key, AST_Expression_t *value);
 
 AST_Literal_t       *AST_Literal_bul(bool literal);
 AST_Literal_t       *AST_Literal_chr(char literal);
@@ -45,6 +46,7 @@ AST_Literal_t       *AST_Literal_i64(int64_t literal);
 AST_Literal_t       *AST_Literal_str(char *literal);
 AST_Literal_t       *AST_Literal_interp_str(char *literal);
 AST_Literal_t       *AST_Literal_lst(AST_CommaSepList_t *literal);
+AST_Literal_t       *AST_Literal_map(AST_AssociativeList_t *literal);
 
 AST_Identifier_t    *AST_Identifier(char *identifier_name);
 

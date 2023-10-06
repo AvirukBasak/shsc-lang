@@ -46,6 +46,7 @@ enum AST_DataType_t {
     DATA_TYPE_INTERP_STR = 5, /* parsable char* : variable  */
     DATA_TYPE_LST = 6,        /* linked list    : variable  */
     DATA_TYPE_ANY = 7,        /* void*          : undefined */
+    DATA_TYPE_MAP = 8,        /* hash map       : variable */
 };
 
 #endif

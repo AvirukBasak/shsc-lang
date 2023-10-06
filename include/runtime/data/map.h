@@ -5,7 +5,12 @@
 #include "tlib/khash/khash.h"
 #include "runtime/data.h"
 
-KHASH_MAP_INIT_STR(RT_DataMap_t, RT_Data_t)
+typedef struct {
+    char *key;
+    RT_Data_t value;
+} RT_DataMapEntry_t;
+
+KHASH_MAP_INIT_STR(RT_DataMap_t, RT_DataMapEntry_t)
 
 struct RT_DataMap_t {
     khash_t(RT_DataMap_t) *data_map;

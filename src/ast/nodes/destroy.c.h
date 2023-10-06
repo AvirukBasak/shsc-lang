@@ -193,10 +193,26 @@ void AST_CommaSepList_free(AST_CommaSepList_t **ptr)
 {
     if (!ptr) return;
     AST_CommaSepList_t *comma_list = *ptr;
-    if (!comma_list) return;
-    AST_CommaSepList_free(&comma_list->comma_list);
-    AST_Expression_free(&comma_list->expression);
-    free(comma_list);
+    while (comma_list) {
+        AST_Expression_free(&comma_list->expression);
+        AST_CommaSepList_t *rm = comma_list;
+        comma_list = comma_list->comma_list;
+        free(rm);
+    }
+    *ptr = NULL;
+}
+
+void AST_AssociativeList_free(AST_AssociativeList_t **ptr)
+{
+    if (!ptr) return;
+    AST_AssociativeList_t *assoc_list = *ptr;
+    while (assoc_list) {
+        AST_Literal_free(&assoc_list->key);
+        AST_Expression_free(&assoc_list->value);
+        AST_AssociativeList_t *rm = assoc_list;
+        assoc_list = assoc_list->assoc_list;
+        free(rm);
+    }
     *ptr = NULL;
 }
 
@@ -212,6 +228,9 @@ void AST_Literal_free(AST_Literal_t **ptr)
             break;
         case DATA_TYPE_LST:
             AST_CommaSepList_free(&literal->data.lst);
+            break;
+        case DATA_TYPE_MAP:
+            AST_AssociativeList_free(&literal->data.mp);
             break;
         default: break;
     }

@@ -47,9 +47,11 @@ void RT_DataMap_destroy(RT_DataMap_t **ptr)
     if (mp->rc > 0) return;
     /* free if rc 0, iterate through each entry and destroy it */
     for (khiter_t entry_it = kh_begin(mp->data_map); entry_it != kh_end(mp->data_map); ++entry_it) {
-        if (kh_exist(mp->data_map, entry_it))
-            /* decrement refcnt, if 0, data gets destroyed */
-            RT_Data_destroy(&(kh_value(mp->data_map, entry_it)));
+        if (!kh_exist(mp->data_map, entry_it)) continue;
+        /* decrement refcnt, if 0, data gets destroyed */
+        RT_Data_destroy(&kh_value(mp->data_map, entry_it).value);
+        /* free the key */
+        free(kh_value(mp->data_map, entry_it).key);
     }
     kh_destroy(RT_DataMap_t, mp->data_map);
     mp->data_map = NULL;
@@ -63,14 +65,17 @@ void RT_DataMap_insert(RT_DataMap_t *mp, const char *key, RT_Data_t value)
     khiter_t entry_it = kh_get(RT_DataMap_t, mp->data_map, key);
     if (entry_it != kh_end(mp->data_map)) {
         /* key exists, reduce original value ref count */
-        RT_Data_destroy(&kh_value(mp->data_map, entry_it));
+        RT_Data_destroy(&kh_value(mp->data_map, entry_it).value);
     } else {
         int ret;
-        /* key doesn't exist, create key */
-        entry_it = kh_put(RT_DataMap_t, mp->data_map, key, &ret);
+        /* key doesn't exist, create duplicate key and have kh keep a reference
+           to it so that the key can be accessed via kh_key macro */
+        char *key_internal = strdup(key);
+        entry_it = kh_put(RT_DataMap_t, mp->data_map, key_internal, &ret);
+        kh_value(mp->data_map, entry_it).key = key_internal;
         ++mp->length;
     }
-    kh_value(mp->data_map, entry_it) = value;
+    kh_value(mp->data_map, entry_it).value = value;
 }
 
 RT_Data_t *RT_DataMap_getref__n(const RT_DataMap_t *mp, const char *key)
@@ -78,7 +83,7 @@ RT_Data_t *RT_DataMap_getref__n(const RT_DataMap_t *mp, const char *key)
     khiter_t entry_it = kh_get(RT_DataMap_t, mp->data_map, key);
     /* key found, return its value */
     if (entry_it != kh_end(mp->data_map))
-        return &kh_value(mp->data_map, entry_it);
+        return &kh_value(mp->data_map, entry_it).value;
     return NULL;
 }
 
@@ -93,7 +98,8 @@ void RT_DataMap_del(RT_DataMap_t *mp, const char *key)
 {
     khiter_t entry_it = kh_get(RT_DataMap_t, mp->data_map, key);
     if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
-    RT_Data_destroy(&kh_value(mp->data_map, entry_it));
+    RT_Data_destroy(&kh_value(mp->data_map, entry_it).value);
+    free(kh_value(mp->data_map, entry_it).key);
     --mp->length;
 }
 
@@ -102,11 +108,13 @@ char *RT_DataMap_tostr(const RT_DataMap_t *mp)
     size_t size = 3;
     char *str = (char*) malloc(size * sizeof(char));
     if (!str) io_errndie("RT_DataMap_tostr:" ERR_MSG_MALLOCFAIL);
-    int p = 0;
+    int p = 0,
+        count_len = 0;
     sprintf(&str[p++], "{");
     for (khiter_t entry_it = kh_begin(mp->data_map); entry_it != kh_end(mp->data_map); ++entry_it) {
+        if (!kh_exist(mp->data_map, entry_it)) continue;
         const char *mp_ky = kh_key(mp->data_map, entry_it);
-        char *mp_el = RT_Data_tostr(kh_value(mp->data_map, entry_it));
+        char *mp_el = RT_Data_tostr(kh_value(mp->data_map, entry_it).value);
         /** size values:  "        %s         "   : \x20       %s       \x00 */
         const size_t sz = 1 + strlen(mp_ky) + 1 + 1 + 1 + strlen(mp_el) + 1;
         str = (char*) realloc(str, (size += sz) * sizeof(char));
@@ -115,7 +123,7 @@ char *RT_DataMap_tostr(const RT_DataMap_t *mp)
         free(mp_el);
         mp_ky = mp_el = NULL;
         p += sz -1;
-        if (entry_it != kh_end(mp->data_map) - 1) {
+        if (count_len++ < mp->length -1) {
             str = (char*) realloc(str, (size += 2) * sizeof(char));
             if (!str) io_errndie("RT_DataMap_tostr:" ERR_MSG_REALLOCFAIL);
             sprintf(&str[p], ", ");
