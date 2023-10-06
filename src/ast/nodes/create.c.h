@@ -274,6 +274,16 @@ AST_CommaSepList_t *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Express
     return comma_sep_list;
 }
 
+AST_AssociativeList_t *AST_AssociativeList(AST_AssociativeList_t *assoc_list, AST_Literal_t *key, AST_Expression_t *value)
+{
+    AST_AssociativeList_t *associative_list = (AST_AssociativeList_t*) malloc(sizeof(AST_AssociativeList_t));
+    if (!associative_list) io_errndie("AST_AssociativeList_t:" ERR_MSG_MALLOCFAIL);
+    associative_list->assoc_list = assoc_list;
+    associative_list->key = key;
+    associative_list->value = value;
+    return associative_list;
+}
+
 AST_Literal_t *AST_Literal_bul(bool literal)
 {
     AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
@@ -334,6 +344,15 @@ AST_Literal_t *AST_Literal_lst(AST_CommaSepList_t *literal)
     if (!ast_literal) io_errndie("AST_Literal_lst:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_LST;
     ast_literal->data.lst = literal;
+    return ast_literal;
+}
+
+AST_Literal_t *AST_Literal_map(AST_AssociativeList_t *literal)
+{
+    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!ast_literal) io_errndie("AST_Literal_map:" ERR_MSG_MALLOCFAIL);
+    ast_literal->type = DATA_TYPE_MAP;
+    ast_literal->data.mp = literal;
     return ast_literal;
 }
 
