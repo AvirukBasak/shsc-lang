@@ -30,6 +30,39 @@ Examples at [`examples/`](examples/).
 make run ARGS="examples/helloworld.txt"
 ```
 
+### Features Added
+- [x] Variables
+- [x] Local scopes
+- [x] Function scopes
+- [x] Call stack
+- [x] Literals
+    - [x] Boolean
+    - [x] Char
+    - [x] Int 64-bit
+    - [x] Float 64-bit
+    - [x] String
+    - [x] Format string
+    - [x] List
+    - [x] Hash map
+- [x] Reference counted GC
+- [x] Function definition
+- [x] Function call
+- [ ] Function arguments (unreliable)
+- [x] Inbuilt functions
+    - [x] `print`
+    - [x] `input`
+    - [x] `type`
+    - [x] `typename`
+    - [x] `len`
+    - [x] `refcount`
+    - [ ] `isnull`
+- [ ] Break and continue
+- [x] Range based for
+- [x] Iterable based for
+- [x] While
+- [ ] If-else (untested)
+- [ ] Operators
+
 ### List File
  - Each line of the list file has a single file path
  - Spaces in file path is valid and quotes not required
