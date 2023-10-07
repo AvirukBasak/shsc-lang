@@ -55,6 +55,7 @@ make run ARGS="examples/helloworld.txt"
     - [x] `typename`
     - [x] `len`
     - [x] `refcount`
+    - [ ] `tostr`
     - [ ] `isnull`
 - [ ] Break and continue
 - [x] Range based for
@@ -92,8 +93,7 @@ shsc -tf ast.json examples/factorial.txt
 
 ### Docs
 - Lexer interface at [`docs/LexerInterface.md`](docs/LexerInterface.md)
-- Language specs at [`docs/LanguageSpec.md`](docs/LanguageSpec.md)
-- Syntax specs at [`docs/LanguageSyntax.md`](docs/LanguageSyntax.md)
+- Language docs at [`docs/LanguageDocs.md`](docs/LanguageDocs.md)
 - Bytecode specs at [`ShscIrSpec.md`](https://github.com/AvirukBasak/shsc-runtime/blob/main/docs/ShscIrSpec.md)
 - Contribution guidelines at [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
 
