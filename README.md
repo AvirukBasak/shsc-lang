@@ -55,8 +55,8 @@ make run ARGS="examples/helloworld.txt"
     - [x] `typename`
     - [x] `len`
     - [x] `refcount`
-    - [ ] `tostr`
-    - [ ] `isnull`
+    - [x] `tostr`
+    - [x] `isnull`
 - [ ] Break and continue
 - [x] Range based for
 - [x] Iterable based for
