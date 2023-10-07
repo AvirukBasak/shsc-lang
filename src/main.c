@@ -11,8 +11,6 @@
 #include "parser.h"
 #include "runtime.h"
 
-#define VERSION "0.2 Alpha"
-
 void main_parsefiles(const char **filepaths, int file_cnt);
 
 int main(int argc, char **argv)

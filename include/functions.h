@@ -10,6 +10,8 @@ typedef enum {
     FN_TYPENAME,
     FN_LEN,
     FN_REFCNT,
+    FN_TOSTR,
+    FN_ISNULL,
     FN_UNDEFINED,
 } FN_FunctionDescriptor_t;
 

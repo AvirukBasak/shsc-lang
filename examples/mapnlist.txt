@@ -1,7 +1,22 @@
 proc main start
-    var mp = {"ww": true, "xy": 78, "pq": 1222,
-        "map": {"beta": "hi", "alpha": 67, "gamma": "\x05\x12"}}
-    print(mp, lf)
-    mp = ["xyz", 'a', "\n", "001", 'A', "AA"]
-    print(mp, lf)
+    var my_map = {
+        "key1": true,
+        "key2": 78,
+        "key3": 1222,
+        "key4": {
+            "alpha": "hi",
+            "beta": 67,
+            "gamma": "\x05\x0a"
+        }
+    }
+    print(my_map, lf)
+    var list = ["xyz", 'a', "\n", "001", 'A', "\x41\x41"]
+    print(list, lf)
+    list = [
+        [ 1, 2, 4, 5 ],
+        [ 1, 2, 4, 5 ],
+        [ 1, 2, 4, 5 ],
+        [ 1, 2, 4, 5 ],
+    ]
+    print(list, lf)
 end

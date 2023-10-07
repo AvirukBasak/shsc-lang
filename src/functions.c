@@ -35,6 +35,8 @@ FN_FunctionDescriptor_t FN_FunctionsList_getfn(const char *fname)
     if (!strcmp(fname, "typename")) return FN_TYPENAME;
     if (!strcmp(fname, "len"))      return FN_LEN;
     if (!strcmp(fname, "refcnt"))   return FN_REFCNT;
+    if (!strcmp(fname, "tostr"))    return FN_TOSTR;
+    if (!strcmp(fname, "isnull"))   return FN_ISNULL;
     return FN_UNDEFINED;
 }
 
@@ -190,6 +192,16 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
                     ret = RT_Data_i64(1);
                     break;
             }
+            break;
+        }
+        case FN_TOSTR: {
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+            ret = RT_Data_str(RT_DataStr_init(RT_Data_tostr(data)));
+            break;
+        }
+        case FN_ISNULL: {
+            const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+            ret = RT_Data_bul(RT_Data_isnull(data));
             break;
         }
         case FN_UNDEFINED:
