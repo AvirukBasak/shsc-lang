@@ -1,7 +1,7 @@
 # Contribute to Shsc
 
-Thank you for your interest in contributing to Scheisse Script!
-We welcome contributions from the community to make Scheisse Script better.
+Thank you for your interest in contributing to Shsc!
+We welcome contributions from the community to make Shsc better.
 
 Before you get started, please take a moment to read and follow these guidelines.
 
@@ -21,7 +21,7 @@ Before you get started, please take a moment to read and follow these guidelines
 - [Bytecode Spec](https://github.com/AvirukBasak/shsc-runtime/blob/main/docs/ShscIrSpec.md)
 
 ## Project Overview
-Scheisse Script is an interpreter written in C for a custom-designed programming language.
+Shsc is an interpreter written in C for a custom-designed programming language.
 
 ## Syntax
 The syntax for this language can be found in the file [LanguageSyntax.md](LanguageSyntax.md).
@@ -88,12 +88,12 @@ However `AST_Expression()` extracts out the data from the returned `AST_Expressi
 Therefore, There's absolutely no way you'll ever find the `TOKOP_NOP` in any `AST_Expression_t` in the finally generated AST.
 
 ## Contributing Guidelines
-To contribute to Scheisse Script, please follow these guidelines:
+To contribute to Shsc, please follow these guidelines:
 1. Fork the repository and create a new branch for your contribution.
 2. Make your changes or additions while adhering to the coding conventions and guidelines mentioned above.
 3. Write clear and concise commit messages (alternatively, email the repo owner explaining your changes and include the commit link from the GitHub site in that email).
 4. Submit a pull request, documenting the changes made and providing any necessary context.
 
-We appreciate your contributions and look forward to working with you to improve Scheisse Script!
+We appreciate your contributions and look forward to working with you to improve Shsc!
 
 If you have any questions or need assistance, feel free to reach out to the project maintainers.
