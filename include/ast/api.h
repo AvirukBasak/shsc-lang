@@ -81,15 +81,16 @@ struct AST_WhileBlock_t {
 };
 
 struct AST_ForBlock_t {
-    const AST_Identifier_t *iter;
+    const AST_Identifier_t *idx;
+    const AST_Identifier_t *val;
     const union {
         const struct {
             const AST_Expression_t *start;
             const AST_Expression_t *end;
             const AST_Expression_t *by;
         } range;
-        const AST_Expression_t *lst;
-    } iterable;
+        const AST_Expression_t *iterable;
+    } it;
     const AST_Statements_t *statements;
     const enum AST_ForBlockType_t type;
 };

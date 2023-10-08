@@ -27,8 +27,8 @@ AST_IfBlock_t       *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *i
 AST_ElseBlock_t     *AST_ElseBlock(AST_Condition_t *condition, AST_Statements_t *else_if_st, AST_ElseBlock_t *else_block);
 
 AST_WhileBlock_t    *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st);
-AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *iter, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st);
-AST_ForBlock_t      *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Expression_t *lst, AST_Statements_t *for_st);
+AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *val, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st);
+AST_ForBlock_t      *AST_ForBlock_iterate(AST_Identifier_t *idx, AST_Identifier_t *val, AST_Expression_t *iterable, AST_Statements_t *for_st);
 AST_Block_t         *AST_Block(AST_Statements_t *statements);
 
 AST_Expression_t    *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition);

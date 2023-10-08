@@ -115,15 +115,16 @@ void AST_ForBlock_free(AST_ForBlock_t **ptr)
     if (!ptr) return;
     AST_ForBlock_t *for_block = *ptr;
     if (!for_block) return;
-    AST_Identifier_free(&for_block->iter);
+    AST_Identifier_free(&for_block->idx);
+    AST_Identifier_free(&for_block->val);
     switch (for_block->type) {
         case FORBLOCK_TYPE_RANGE:
-            AST_Expression_free(&for_block->iterable.range.start);
-            AST_Expression_free(&for_block->iterable.range.end);
-            AST_Expression_free(&for_block->iterable.range.by);
+            AST_Expression_free(&for_block->it.range.start);
+            AST_Expression_free(&for_block->it.range.end);
+            AST_Expression_free(&for_block->it.range.by);
             break;
         case FORBLOCK_TYPE_LIST:
-            AST_Expression_free(&for_block->iterable.lst);
+            AST_Expression_free(&for_block->it.iterable);
             break;
     }
     AST_Statements_free(&for_block->statements);
