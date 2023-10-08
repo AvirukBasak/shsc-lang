@@ -312,7 +312,8 @@ while_block:
 for_block:
     "for" identifier "from" expression "to" expression "do" nwp statements "end"                   { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
     | "for" identifier "from" expression "to" expression "by" expression "do" nwp statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
-    | "for" identifier "in" expression "do" nwp statements "end"                                   { $$ = AST_ForBlock_iterate($2, $4, $7); }
+    | "for" identifier "in" expression "do" nwp statements "end"                                   { $$ = AST_ForBlock_iterate(NULL, $2, $4, $7); }
+    | "for" identifier "," identifier "in" expression "do" nwp statements "end"                    { $$ = AST_ForBlock_iterate($2, $4, $6, $9); }
     ;
 
 block:
