@@ -18,6 +18,8 @@ struct RT_DataMap_t {
     int64_t rc;
 };
 
+typedef khiter_t RT_DataMap_iter_t;
+
 RT_DataMap_t *RT_DataMap_init();
 int64_t RT_DataMap_length(const RT_DataMap_t *mp);
 void RT_DataMap_copy(RT_DataMap_t *mp);
@@ -32,5 +34,10 @@ RT_Data_t *RT_DataMap_getref__n(const RT_DataMap_t *mp, const char *key);
 RT_Data_t *RT_DataMap_getref(const RT_DataMap_t *mp, const char *key);
 void RT_DataMap_del(RT_DataMap_t *mp, const char *key);
 char *RT_DataMap_tostr(const RT_DataMap_t *mp);
+
+RT_DataMap_iter_t RT_DataMap_begin(RT_DataMap_t *mp);
+RT_DataMap_iter_t RT_DataMap_end(RT_DataMap_t *mp);
+bool RT_DataMap_exists(RT_DataMap_t *mp, RT_DataMap_iter_t it);
+const RT_DataMapEntry_t *RT_DataMap_get(RT_DataMap_t *mp, RT_DataMap_iter_t it);
 
 #endif

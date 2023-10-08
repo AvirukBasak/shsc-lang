@@ -148,6 +148,27 @@ char *RT_DataMap_tostr(const RT_DataMap_t *mp)
     return str;
 }
 
+RT_DataMap_iter_t RT_DataMap_begin(RT_DataMap_t *mp)
+{
+    return kh_begin(mp->data_map);
+}
+
+RT_DataMap_iter_t RT_DataMap_end(RT_DataMap_t *mp)
+{
+    return kh_end(mp->data_map);
+}
+
+bool RT_DataMap_exists(RT_DataMap_t *mp, RT_DataMap_iter_t it)
+{
+    return kh_exist(mp->data_map, it);
+}
+
+const RT_DataMapEntry_t *RT_DataMap_get(RT_DataMap_t *mp, RT_DataMap_iter_t it)
+{
+    if (!kh_exist(mp->data_map, it)) return NULL;
+    return &kh_value(mp->data_map, it);
+}
+
 #else
     #warning re-inclusion of module 'runtime/data/map.c.h'
 #endif
