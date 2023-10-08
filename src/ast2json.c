@@ -273,21 +273,21 @@ void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
             AST2JSON_put_comma();
             AST2JSON_printf("\"type\": \"FORBLOCK_TYPE_RANGE\"");
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iter\": ");
-            AST2JSON_Identifier(for_block->iter);
+            AST2JSON_printf("\"val\": ");
+            AST2JSON_Identifier(for_block->val);
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iterable\": ");
+            AST2JSON_printf("\"it\": ");
             AST2JSON_open_obj();
-            AST2JSON_printf("\"node\": \"iterable\"");
+            AST2JSON_printf("\"node\": \"range\"");
             AST2JSON_put_comma();
             AST2JSON_printf("\"start\": ");
-            AST2JSON_Expression(for_block->iterable.range.start);
+            AST2JSON_Expression(for_block->it.range.start);
             AST2JSON_put_comma();
             AST2JSON_printf("\"end\": ");
-            AST2JSON_Expression(for_block->iterable.range.end);
+            AST2JSON_Expression(for_block->it.range.end);
             AST2JSON_put_comma();
             AST2JSON_printf("\"by\": ");
-            AST2JSON_Expression(for_block->iterable.range.by);
+            AST2JSON_Expression(for_block->it.range.by);
             AST2JSON_close_obj();
             break;
         }
@@ -295,11 +295,14 @@ void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
             AST2JSON_put_comma();
             AST2JSON_printf("\"type\": \"FORBLOCK_TYPE_LIST\"");
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iter\": ");
-            AST2JSON_Identifier(for_block->iter);
+            AST2JSON_printf("\"idx\": ");
+            AST2JSON_Identifier(for_block->idx);
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iterable\": ");
-            AST2JSON_Expression(for_block->iterable.lst);
+            AST2JSON_printf("\"val\": ");
+            AST2JSON_Identifier(for_block->val);
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"it\": ");
+            AST2JSON_Expression(for_block->it.iterable);
             break;
     }
 
