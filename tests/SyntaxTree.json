@@ -10,27 +10,43 @@
         "statements": [
           {
             "node": "statement",
-            "line_no": 15,
+            "line_no": 11,
+            "type": "STATEMENT_TYPE_ASSIGNMENT",
+            "statement": {
+              "node": "assignment",
+              "lhs": {
+                "node": "identifier",
+                "identifier_name": "n"
+              },
+              "rhs": {
+                "node": "expression",
+                "op": "$[]",
+                "lhs_type": "EXPR_TYPE_NULL",
+                "lhs": null,
+                "rhs_type": "EXPR_TYPE_LITERAL",
+                "rhs": {
+                  "node": "literal",
+                  "type": "DATA_TYPE_I64",
+                  "data": 0
+                },
+                "condition_type": "EXPR_TYPE_NULL",
+                "condition": null
+              }
+            }
+          },
+          {
+            "node": "statement",
+            "line_no": 16,
             "type": "STATEMENT_TYPE_COMPOUND",
             "statement": {
               "node": "if_block",
               "condition": {
                 "node": "expression",
                 "op": "<=",
-                "lhs_type": "EXPR_TYPE_EXPRESSION",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
                 "lhs": {
-                  "node": "expression",
-                  "op": "$[]",
-                  "lhs_type": "EXPR_TYPE_NULL",
-                  "lhs": null,
-                  "rhs_type": "EXPR_TYPE_LITERAL",
-                  "rhs": {
-                    "node": "literal",
-                    "type": "DATA_TYPE_I64",
-                    "data": 0
-                  },
-                  "condition_type": "EXPR_TYPE_NULL",
-                  "condition": null
+                  "node": "identifier",
+                  "identifier_name": "n"
                 },
                 "rhs_type": "EXPR_TYPE_LITERAL",
                 "rhs": {
@@ -46,7 +62,7 @@
                 "statements": [
                   {
                     "node": "statement",
-                    "line_no": 12,
+                    "line_no": 13,
                     "type": "STATEMENT_TYPE_RETURN",
                     "statement": {
                       "node": "expression",
@@ -73,25 +89,15 @@
                   "statements": [
                     {
                       "node": "statement",
-                      "line_no": 14,
+                      "line_no": 15,
                       "type": "STATEMENT_TYPE_RETURN",
                       "statement": {
                         "node": "expression",
                         "op": "*",
-                        "lhs_type": "EXPR_TYPE_EXPRESSION",
+                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
-                          "node": "expression",
-                          "op": "$[]",
-                          "lhs_type": "EXPR_TYPE_NULL",
-                          "lhs": null,
-                          "rhs_type": "EXPR_TYPE_LITERAL",
-                          "rhs": {
-                            "node": "literal",
-                            "type": "DATA_TYPE_I64",
-                            "data": 0
-                          },
-                          "condition_type": "EXPR_TYPE_NULL",
-                          "condition": null
+                          "node": "identifier",
+                          "identifier_name": "n"
                         },
                         "rhs_type": "EXPR_TYPE_EXPRESSION",
                         "rhs": {
@@ -112,20 +118,10 @@
                                 {
                                   "node": "expression",
                                   "op": "-",
-                                  "lhs_type": "EXPR_TYPE_EXPRESSION",
+                                  "lhs_type": "EXPR_TYPE_IDENTIFIER",
                                   "lhs": {
-                                    "node": "expression",
-                                    "op": "$[]",
-                                    "lhs_type": "EXPR_TYPE_NULL",
-                                    "lhs": null,
-                                    "rhs_type": "EXPR_TYPE_LITERAL",
-                                    "rhs": {
-                                      "node": "literal",
-                                      "type": "DATA_TYPE_I64",
-                                      "data": 0
-                                    },
-                                    "condition_type": "EXPR_TYPE_NULL",
-                                    "condition": null
+                                    "node": "identifier",
+                                    "identifier_name": "n"
                                   },
                                   "rhs_type": "EXPR_TYPE_LITERAL",
                                   "rhs": {
@@ -325,7 +321,7 @@
         "statements": [
           {
             "node": "statement",
-            "line_no": 16,
+            "line_no": 15,
             "type": "STATEMENT_TYPE_ASSIGNMENT",
             "statement": {
               "node": "assignment",
@@ -460,7 +456,7 @@
           },
           {
             "node": "statement",
-            "line_no": 17,
+            "line_no": 16,
             "type": "STATEMENT_TYPE_ASSIGNMENT",
             "statement": {
               "node": "assignment",
@@ -1369,16 +1365,17 @@
           },
           {
             "node": "statement",
-            "line_no": 11,
+            "line_no": 10,
             "type": "STATEMENT_TYPE_COMPOUND",
             "statement": {
               "node": "for_block",
               "type": "FORBLOCK_TYPE_LIST",
-              "iter": {
+              "idx": null,
+              "val": {
                 "node": "identifier",
                 "identifier_name": "x"
               },
-              "iterable": {
+              "it": {
                 "node": "expression",
                 "op": "NOP",
                 "lhs_type": "EXPR_TYPE_IDENTIFIER",
@@ -1397,50 +1394,6 @@
                   {
                     "node": "statement",
                     "line_no": 6,
-                    "type": "STATEMENT_TYPE_ASSIGNMENT",
-                    "statement": {
-                      "node": "assignment",
-                      "lhs": null,
-                      "rhs": {
-                        "node": "expression",
-                        "op": "()",
-                        "lhs_type": "EXPR_TYPE_IDENTIFIER",
-                        "lhs": {
-                          "node": "identifier",
-                          "identifier_name": "print"
-                        },
-                        "rhs_type": "EXPR_TYPE_LITERAL",
-                        "rhs": {
-                          "node": "literal",
-                          "type": "DATA_TYPE_LST",
-                          "data": {
-                            "node": "comma_list",
-                            "comma_list": [
-                              {
-                                "node": "expression",
-                                "op": "$[]",
-                                "lhs_type": "EXPR_TYPE_NULL",
-                                "lhs": null,
-                                "rhs_type": "EXPR_TYPE_LITERAL",
-                                "rhs": {
-                                  "node": "literal",
-                                  "type": "DATA_TYPE_I64",
-                                  "data": 1
-                                },
-                                "condition_type": "EXPR_TYPE_NULL",
-                                "condition": null
-                              }
-                            ]
-                          }
-                        },
-                        "condition_type": "EXPR_TYPE_NULL",
-                        "condition": null
-                      }
-                    }
-                  },
-                  {
-                    "node": "statement",
-                    "line_no": 7,
                     "type": "STATEMENT_TYPE_ASSIGNMENT",
                     "statement": {
                       "node": "assignment",
@@ -1500,7 +1453,7 @@
                   },
                   {
                     "node": "statement",
-                    "line_no": 9,
+                    "line_no": 8,
                     "type": "STATEMENT_TYPE_ASSIGNMENT",
                     "statement": {
                       "node": "assignment",
@@ -1574,7 +1527,7 @@
                   },
                   {
                     "node": "statement",
-                    "line_no": 10,
+                    "line_no": 9,
                     "type": "STATEMENT_TYPE_ASSIGNMENT",
                     "statement": {
                       "node": "assignment",
@@ -1648,7 +1601,7 @@
           },
           {
             "node": "statement",
-            "line_no": 12,
+            "line_no": 11,
             "type": "STATEMENT_TYPE_RETURN",
             "statement": {
               "node": "expression",
