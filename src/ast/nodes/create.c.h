@@ -144,6 +144,7 @@ AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *val, AST_Expression_t *start, AST
 {
     AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
     if (!for_block) io_errndie("AST_ForBlock:" ERR_MSG_MALLOCFAIL);
+    for_block->idx = NULL;
     for_block->val = val;
     for_block->it.range.start = start;
     for_block->it.range.end = end;
