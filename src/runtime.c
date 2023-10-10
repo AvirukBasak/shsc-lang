@@ -62,9 +62,9 @@ void RT_exec(void)
     RT_VarTable_push_proc(proc->identifier_name);
     rt_ControlStatus_t ctrl = rt_Statements_eval(code);
     if (ctrl == RT_CTRL_BREAK)
-        rt_throw('unexpected `break` statement outside loop');
+        rt_throw("unexpected `break` statement outside loop");
     if (ctrl == RT_CTRL_CONTINUE)
-        rt_throw('unexpected `continue` statement outside loop');
+        rt_throw("unexpected `continue` statement outside loop");
     RT_VarTable_pop_proc();
 }
 
@@ -186,7 +186,8 @@ rt_ControlStatus_t rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
     while (cond) {
         rt_ControlStatus_t ctrl = rt_Statements_newscope_eval(while_block->statements);
-        if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+        if (ctrl == RT_CTRL_PASS)
+            /* do nothing in pass */;
         if (ctrl == RT_CTRL_RETURN)   return ctrl;
         if (ctrl == RT_CTRL_BREAK)    break;
         if (ctrl == RT_CTRL_CONTINUE) continue;
@@ -229,7 +230,8 @@ rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                     RT_Data_i64(i));
                 rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
-                if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+                if (ctrl == RT_CTRL_PASS)
+                    /* do nothing in pass */;
                 if (ctrl == RT_CTRL_RETURN)   return ctrl;
                 if (ctrl == RT_CTRL_BREAK)    break;
                 if (ctrl == RT_CTRL_CONTINUE) continue;
@@ -266,7 +268,8 @@ rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                     RT_VarTable_create(for_block->val->identifier_name, entry.value);
                     rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                     RT_VarTable_pop_scope();
-                    if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+                    if (ctrl == RT_CTRL_PASS)
+                        /* do nothing in pass */;
                     if (ctrl == RT_CTRL_RETURN)   return ctrl;
                     if (ctrl == RT_CTRL_BREAK)    break;
                     if (ctrl == RT_CTRL_CONTINUE) continue;
@@ -291,7 +294,8 @@ rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                 }
                 rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
-                if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+                if (ctrl == RT_CTRL_PASS)
+                    /* do nothing in pass */;
                 if (ctrl == RT_CTRL_RETURN)   return ctrl;
                 if (ctrl == RT_CTRL_BREAK)    break;
                 if (ctrl == RT_CTRL_CONTINUE) continue;
