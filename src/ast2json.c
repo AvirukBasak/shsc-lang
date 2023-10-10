@@ -147,6 +147,18 @@ void AST2JSON_Statement(const AST_Statement_t *statement)
             AST2JSON_put_comma();
             AST2JSON_printf("\"statement\": null");
             break;
+        case STATEMENT_TYPE_BREAK:
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_BREAK\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": null");
+            break;
+        case STATEMENT_TYPE_CONTINUE:
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_CONTINUE\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": null");
+            break;
     }
     AST2JSON_close_obj();
 }
