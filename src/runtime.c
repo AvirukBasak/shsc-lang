@@ -60,7 +60,11 @@ void RT_exec(void)
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     rt_currfile = AST_ProcedureMap_get_filename(module, proc);
     RT_VarTable_push_proc(proc->identifier_name);
-    rt_Statements_eval(code);
+    rt_ControlStatus_t ctrl = rt_Statements_eval(code);
+    if (ctrl == RT_CTRL_BREAK)
+        rt_throw('unexpected `break` statement outside loop');
+    if (ctrl == RT_CTRL_CONTINUE)
+        rt_throw('unexpected `continue` statement outside loop');
     RT_VarTable_pop_proc();
 }
 
