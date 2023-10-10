@@ -80,45 +80,48 @@ const AST_Identifier_t *rt_procname_get(void)
     return rt_current_module;
 }
 
-bool rt_Statements_eval(const AST_Statements_t *code)
+rt_ControlStatus_t rt_Statements_eval(const AST_Statements_t *code)
 {
-    if (!code) return false;
+    if (!code) return RT_CTRL_PASS;
     const AST_Statements_t *ptr = code;
     while (ptr) {
-        bool return_ = rt_Statement_eval(ptr->statement);
-        if (return_) return true;
+        rt_ControlStatus_t ctrl = rt_Statement_eval(ptr->statement);
+        if (ctrl != RT_CTRL_PASS) return ctrl;
         ptr = ptr->statements;
     }
-    return false;
+    return RT_CTRL_PASS;
 }
 
-bool rt_Statements_newscope_eval(const AST_Statements_t *code)
+rt_ControlStatus_t rt_Statements_newscope_eval(const AST_Statements_t *code)
 {
-    if (!code) return false;
+    if (!code) return RT_CTRL_PASS;
     RT_VarTable_push_scope();
-    bool return_ = rt_Statements_eval(code);
+    rt_ControlStatus_t ctrl = rt_Statements_eval(code);
     RT_VarTable_pop_scope();
-    return return_;
+    return ctrl;
 }
 
-bool rt_Statement_eval(const AST_Statement_t *statement)
+rt_ControlStatus_t rt_Statement_eval(const AST_Statement_t *statement)
 {
-    if (!statement) return false;
+    if (!statement) return RT_CTRL_PASS;
     rt_currline = statement->line_no;
     switch (statement->type) {
         case STATEMENT_TYPE_EMPTY:
-            break;
+            return RT_CTRL_PASS;
+        case STATEMENT_TYPE_BREAK:
+            return RT_CTRL_BREAK;
+        case STATEMENT_TYPE_CONTINUE:
+            return RT_CTRL_CONTINUE;
         case STATEMENT_TYPE_RETURN:
             rt_Expression_eval(statement->statement.expression);
-            return true;
+            return RT_CTRL_RETURN;
         case STATEMENT_TYPE_ASSIGNMENT:
             rt_Assignment_eval(statement->statement.assignment);
             break;
         case STATEMENT_TYPE_COMPOUND:
-            rt_CompoundSt_eval(statement->statement.compound_statement);
-            break;
+            return rt_CompoundSt_eval(statement->statement.compound_statement);
     }
-    return false;
+    return RT_CTRL_PASS;
 }
 
 void rt_Assignment_eval(const AST_Assignment_t *assignment)
@@ -137,63 +140,63 @@ void rt_Assignment_eval(const AST_Assignment_t *assignment)
     }
 }
 
-void rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st)
+rt_ControlStatus_t rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st)
 {
-    if (!compound_st) return;
+    if (!compound_st) return RT_CTRL_PASS;
     switch (compound_st->type) {
         case COMPOUNDST_TYPE_IF:
-            rt_IfBlock_eval(compound_st->compound_statement.if_block);
-            break;
+            return rt_IfBlock_eval(compound_st->compound_statement.if_block);
         case COMPOUNDST_TYPE_WHILE:
-            rt_WhileBlock_eval(compound_st->compound_statement.while_block);
-            break;
+            return rt_WhileBlock_eval(compound_st->compound_statement.while_block);
         case COMPOUNDST_TYPE_FOR:
-            rt_ForBlock_eval(compound_st->compound_statement.for_block);
-            break;
+            return rt_ForBlock_eval(compound_st->compound_statement.for_block);
         case COMPOUNDST_TYPE_BLOCK:
-            rt_Statements_newscope_eval(compound_st->compound_statement.block->statements);
-            break;
+            return rt_Statements_newscope_eval(compound_st->compound_statement.block->statements);
     }
+    return RT_CTRL_PASS;
 }
 
-void rt_IfBlock_eval(const AST_IfBlock_t *if_block)
+rt_ControlStatus_t rt_IfBlock_eval(const AST_IfBlock_t *if_block)
 {
-    if (!if_block) return;
+    if (!if_block) return RT_CTRL_PASS;
     rt_Expression_eval(if_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
-    if (cond) rt_Statements_newscope_eval(if_block->if_st);
-    else rt_ElseBlock_eval(if_block->else_block);
+    if (cond) return rt_Statements_newscope_eval(if_block->if_st);
+    else return rt_ElseBlock_eval(if_block->else_block);
 }
 
-void rt_ElseBlock_eval(const AST_ElseBlock_t *else_block)
+rt_ControlStatus_t rt_ElseBlock_eval(const AST_ElseBlock_t *else_block)
 {
-    if (!else_block) return;
+    if (!else_block) return RT_CTRL_PASS;
     /* takes care of [ else nwp statements end ] */
     if (!else_block->condition && !else_block->else_block) {
-        rt_Statements_newscope_eval(else_block->else_if_st);
-        return;
+        return rt_Statements_newscope_eval(else_block->else_if_st);
     }
     /* takes care of [ else if condition then nwp statements ] */
     rt_Expression_eval(else_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
-    if (cond) rt_Statements_newscope_eval(else_block->else_if_st);
-    else rt_ElseBlock_eval(else_block->else_block);
+    if (cond) return rt_Statements_newscope_eval(else_block->else_if_st);
+    else return rt_ElseBlock_eval(else_block->else_block);
 }
 
-void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
+rt_ControlStatus_t rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
 {
-    if (!while_block) return;
+    if (!while_block) return RT_CTRL_PASS;
     rt_Expression_eval(while_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
     while (cond) {
-        bool return_ = rt_Statements_newscope_eval(while_block->statements);
-        if (return_) break;
+        rt_ControlStatus_t ctrl = rt_Statements_newscope_eval(while_block->statements);
+        if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+        if (ctrl == RT_CTRL_RETURN)   return ctrl;
+        if (ctrl == RT_CTRL_BREAK)    break;
+        if (ctrl == RT_CTRL_CONTINUE) continue;
     }
+    return RT_CTRL_PASS;
 }
 
-void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
+rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block)
 {
-    if (!for_block) return;
+    if (!for_block) return RT_CTRL_PASS;
     switch (for_block->type) {
         case FORBLOCK_TYPE_RANGE: {
             /* calculate start, end and by */
@@ -224,9 +227,12 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                 RT_VarTable_push_scope();
                 RT_VarTable_create(for_block->val->identifier_name,
                     RT_Data_i64(i));
-                bool return_ = rt_Statements_eval(for_block->statements);
+                rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
-                if (return_) break;
+                if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+                if (ctrl == RT_CTRL_RETURN)   return ctrl;
+                if (ctrl == RT_CTRL_BREAK)    break;
+                if (ctrl == RT_CTRL_CONTINUE) continue;
             }
             break;
         }
@@ -258,9 +264,12 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                     if (for_block->idx) RT_VarTable_create(for_block->idx->identifier_name,
                         RT_Data_str(RT_DataStr_init(entry.key)));
                     RT_VarTable_create(for_block->val->identifier_name, entry.value);
-                    bool return_ = rt_Statements_eval(for_block->statements);
+                    rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                     RT_VarTable_pop_scope();
-                    if (return_) break;
+                    if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+                    if (ctrl == RT_CTRL_RETURN)   return ctrl;
+                    if (ctrl == RT_CTRL_BREAK)    break;
+                    if (ctrl == RT_CTRL_CONTINUE) continue;
                 }
             } else for (int64_t i = 0; i < length; ++i) {
                 RT_VarTable_push_scope();
@@ -280,15 +289,19 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                     default:
                         rt_throw("not a for loop iterable type: '%s'", RT_Data_typename(iterable));
                 }
-                bool return_ = rt_Statements_eval(for_block->statements);
+                rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
-                if (return_) break;
+                if (ctrl == RT_CTRL_PASS)     /* do nothing in pass */;
+                if (ctrl == RT_CTRL_RETURN)   return ctrl;
+                if (ctrl == RT_CTRL_BREAK)    break;
+                if (ctrl == RT_CTRL_CONTINUE) continue;
             }
             /* destroy iterable object */
             RT_Data_destroy(&iterable);
             break;
         }
     }
+    return RT_CTRL_PASS;
 }
 
 void rt_Expression_eval(const AST_Expression_t *expr)
