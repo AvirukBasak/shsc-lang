@@ -25,6 +25,26 @@ AST_Statement_t *AST_Statement_empty(int line_no) {
     return stmt;
 }
 
+AST_Statement_t *AST_Statement_break(int line_no)
+{
+    AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
+    if (!stmt) io_errndie("AST_Statement_break:" ERR_MSG_MALLOCFAIL);
+    stmt->type = STATEMENT_TYPE_BREAK;
+    stmt->statement.assignment = NULL;
+    stmt->line_no = line_no;
+    return stmt;
+}
+
+AST_Statement_t *AST_Statement_continue(int line_no)
+{
+    AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
+    if (!stmt) io_errndie("AST_Statement_continue:" ERR_MSG_MALLOCFAIL);
+    stmt->type = STATEMENT_TYPE_CONTINUE;
+    stmt->statement.assignment = NULL;
+    stmt->line_no = line_no;
+    return stmt;
+}
+
 AST_Statement_t *AST_Statement_return(AST_Expression_t *expression, int line_no)
 {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));

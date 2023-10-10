@@ -274,6 +274,8 @@ statements:
 
 statement:
     "pass" trm                                          { $$ = AST_Statement_empty(lex_line_no - $2); }
+    | "break" trm                                       { $$ = AST_Statement_break(lex_line_no - $2); }
+    | "continue" trm                                    { $$ = AST_Statement_continue(lex_line_no - $2); }
     | "return" expression trm                           { $$ = AST_Statement_return($2, lex_line_no - $3); }
     | "return" trm                                      { $$ = AST_Statement_return(NULL, lex_line_no - $2); }
     | assignment trm                                    { $$ = AST_Statement_Assignment($1, lex_line_no - $2); }

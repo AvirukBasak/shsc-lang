@@ -26,6 +26,8 @@ void AST_Statement_free(AST_Statement_t **ptr)
     if (!statement) return;
     switch (statement->type) {
         case STATEMENT_TYPE_EMPTY:
+        case STATEMENT_TYPE_BREAK:
+        case STATEMENT_TYPE_CONTINUE:
             break;
         case STATEMENT_TYPE_RETURN:
             AST_Expression_free(&statement->statement.expression);
