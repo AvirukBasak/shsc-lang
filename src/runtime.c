@@ -20,6 +20,13 @@
 #include "runtime/io.c.h"
 #include "runtime/vartable.c.h"
 
+typedef enum {
+    RT_CTRL_PASS,
+    RT_CTRL_RETURN,
+    RT_CTRL_BREAK,
+    RT_CTRL_CONTINUE,
+} rt_ControlStatus_t;
+
 const char *rt_currfile = NULL;
 int rt_currline = 0;
 
@@ -29,15 +36,15 @@ const AST_Identifier_t *rt_current_proc = NULL;
 const AST_Identifier_t *rt_modulename_get(void);
 const AST_Identifier_t *rt_procname_get(void);
 
-bool rt_Statements_eval(const AST_Statements_t *code);
-bool rt_Statements_newscope_eval(const AST_Statements_t *code);
-bool rt_Statement_eval(const AST_Statement_t *statement);
+rt_ControlStatus_t rt_Statements_eval(const AST_Statements_t *code);
+rt_ControlStatus_t rt_Statements_newscope_eval(const AST_Statements_t *code);
+rt_ControlStatus_t rt_Statement_eval(const AST_Statement_t *statement);
 void rt_Assignment_eval(const AST_Assignment_t *assignment);
-void rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st);
-void rt_IfBlock_eval(const AST_IfBlock_t *if_block);
-void rt_ElseBlock_eval(const AST_ElseBlock_t *else_block);
-void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block);
-void rt_ForBlock_eval(const AST_ForBlock_t *for_block);
+rt_ControlStatus_t rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st);
+rt_ControlStatus_t rt_IfBlock_eval(const AST_IfBlock_t *if_block);
+rt_ControlStatus_t rt_ElseBlock_eval(const AST_ElseBlock_t *else_block);
+rt_ControlStatus_t rt_WhileBlock_eval(const AST_WhileBlock_t *while_block);
+rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block);
 void rt_Expression_eval(const AST_Expression_t *expr);
 void rt_CommaSepList_eval(const AST_CommaSepList_t *comma_list);
 void rt_AssociativeList_eval(const AST_AssociativeList_t *assoc_list);
