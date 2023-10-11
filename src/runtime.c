@@ -33,9 +33,6 @@ int rt_currline = 0;
 const AST_Identifier_t *rt_current_module = NULL;
 const AST_Identifier_t *rt_current_proc = NULL;
 
-const AST_Identifier_t *rt_modulename_get(void);
-const AST_Identifier_t *rt_procname_get(void);
-
 rt_ControlStatus_t rt_Statements_eval(const AST_Statements_t *code);
 rt_ControlStatus_t rt_Statements_newscope_eval(const AST_Statements_t *code);
 rt_ControlStatus_t rt_Statement_eval(const AST_Statement_t *statement);
@@ -68,13 +65,13 @@ void RT_exec(void)
     RT_VarTable_pop_proc();
 }
 
-const AST_Identifier_t *rt_modulename_get(void)
+const AST_Identifier_t *RT_modulename_get(void)
 {
     if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
     return rt_current_module;
 }
 
-const AST_Identifier_t *rt_procname_get(void)
+const AST_Identifier_t *RT_procname_get(void)
 {
     if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
     return rt_current_module;
@@ -345,7 +342,7 @@ void rt_Expression_eval(const AST_Expression_t *expr)
                 RT_Data_destroy(&args[i]);
             }
             /* get fn code and push code to stack */
-            rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);
+            rt_fncall_handler(RT_modulename_get(), expr->lhs.variable);
             return;
         }
         default: break;
