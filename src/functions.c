@@ -49,7 +49,14 @@ RT_Data_t FN_FunctionsList_call(FN_FunctionDescriptor_t fn)
             for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
                 const RT_Data_t data = *RT_VarTable_getref_tmpvar(i);
                 if (RT_Data_isnull(data)) continue;
-                if (i > 0) printf(" ");
+                /* print a space before data conditions:
+                   - no space before 1st element
+                   - no space before `lf` */
+                /* i is not 1st element AND data is not a character */
+                if ((i > 0 && data.type != RT_DATA_TYPE_CHR) ||
+                    /* i is not 1st element BUT if data is character it should not be lf */
+                    (i > 0 && data.type == RT_DATA_TYPE_CHR && data.data.chr != '\n'))
+                        printf(" ");
                 bytes += RT_Data_print(data);
             }
             ret = RT_Data_i64(bytes);
