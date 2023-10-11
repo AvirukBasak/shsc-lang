@@ -224,7 +224,8 @@ rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block)
             if ( (start_i < end_i && by_i < 0) || (start_i > end_i && by_i > 0) )
                 rt_throw("possible infinite for loop for by value '%" PRId64 "'", by_i);
             /* start for loop */
-            for (int64_t i = start_i; i < end_i; i += by_i) {
+            for (int64_t i = start_i;
+                    (start_i <= end_i && i < end_i) || i > end_i; i += by_i) {
                 RT_VarTable_push_scope();
                 RT_VarTable_create(for_block->val->identifier_name,
                     RT_Data_i64(i));
