@@ -588,17 +588,17 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
         rt_current_module = module;
         rt_current_proc = proc;
     }
-    if (!code) {
+    if (code) {
+        /* call user defined function */
+        RT_VarTable_push_proc(proc->identifier_name);
+        rt_Statements_eval(code);
+        RT_VarTable_pop_proc();
+    } else {
         /* attempt to call in-built function */
         if (fn == FN_UNDEFINED)
             rt_throw("undefined procedure '%s::%s'",
                 module->identifier_name, proc->identifier_name);
         RT_VarTable_acc_setval(FN_FunctionsList_call(fn));
-    } else {
-        /* call user defined function */
-        RT_VarTable_push_proc(proc->identifier_name);
-        rt_Statements_eval(code);
-        RT_VarTable_pop_proc();
     }
     /* restore metadata to previous module and function */
     rt_currfile = currfile_bkp;
