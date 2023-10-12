@@ -470,7 +470,8 @@ void rt_Expression_eval(const AST_Expression_t *expr)
             break;
         /* stuff that doesn't form an operation */
         default:
-            io_errndie("rt_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
+            io_errndie("rt_Expression_eval: invalid operation '%s'",
+                lex_get_tokcode(expr->op));
     }
 }
 
@@ -572,29 +573,35 @@ void rt_AssociativeList_eval(const AST_AssociativeList_t *assoc_list)
 
 void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *proc)
 {
+    /* get code as AST from user defined function */
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
-    if (code) {
-        const char *currfile_bkp = rt_currfile;
-        const AST_Identifier_t *currmodule_bkp = rt_current_module;
-        const AST_Identifier_t *currproc_bkp = rt_current_proc;
-
+    /* get a descriptor to in-built function */
+    const FN_FunctionDescriptor_t fn = FN_FunctionsList_getfn(
+        module->identifier_name, proc->identifier_name);
+    /* backup metadata on current module and function */
+    const char *currfile_bkp = rt_currfile;
+    const AST_Identifier_t *currmodule_bkp = rt_current_module;
+    const AST_Identifier_t *currproc_bkp = rt_current_proc;
+    /* update metadata to new module and function */
+    if (code || fn != FN_UNDEFINED) {
         rt_currfile = AST_ProcedureMap_get_filename(module, proc);
         rt_current_module = module;
         rt_current_proc = proc;
-
+    }
+    if (!code) {
+        /* attempt to call in-built function */
+        if (fn == FN_UNDEFINED)
+            rt_throw("undefined procedure '%s::%s'",
+                module->identifier_name, proc->identifier_name);
+        RT_VarTable_acc_setval(FN_FunctionsList_call(fn));
+    } else {
+        /* call user defined function */
         RT_VarTable_push_proc(proc->identifier_name);
         rt_Statements_eval(code);
         RT_VarTable_pop_proc();
-
-        rt_currfile = currfile_bkp;
-        rt_current_module = currmodule_bkp;
-        rt_current_proc = currproc_bkp;
-
-        return;
     }
-    /* attempt to call in built function */
-    FN_FunctionDescriptor_t fn = FN_FunctionsList_getfn(proc->identifier_name);
-    if (fn == FN_UNDEFINED)
-        rt_throw("undefined procedure '%s::%s'", module->identifier_name, proc->identifier_name);
-    RT_VarTable_acc_setval(FN_FunctionsList_call(fn));
+    /* restore metadata to previous module and function */
+    rt_currfile = currfile_bkp;
+    rt_current_module = currmodule_bkp;
+    rt_current_proc = currproc_bkp;
 }
