@@ -111,9 +111,9 @@ If you use `var` again, the original variable will be destroyed and replaced by 
 ```
 proc test start
     var x = 5
-    print(x, lf)
+    io::print(x, lf)
     var x = 11
-    print(x, lf)
+    io::print(x, lf)
 end
 ```
 **Output:**
@@ -135,7 +135,7 @@ Even a combination of the two can be used wherever one desires.
 #### Example
 ```
 x = 5; y = 7
-print(x, y, lf)
+io::print(x, y, lf)
 ```
 
 ## If statements
@@ -242,9 +242,9 @@ proc factorial start
 end
 
 proc main start
-    var inp = input("Enter a number: ", i64)
+    var inp = io::input("Enter a number: ", i64)
     var res = factorial(inp)
-    print(f"result = {res}\n")
+    io::print(f"result = {res}\n")
 end
 ```
 
@@ -424,7 +424,7 @@ proc test start
             "gamma": "\x05\x0a"
         }
     }
-    print(my_map, lf)
+    io::print(my_map, lf)
 end
 ```
 **Output:**
@@ -437,12 +437,19 @@ Note how order of keys is not maintained.
 Also note how data is stringified during conversion to string (printing).
 
 ## Built-in functions
-The language supports the following built-in functions
-- `type` returns one of the [global variables for types](#global-variables-for-types)
-- `typename` returns identifier name of one of the [global variables for types](#global-variables-for-types)
-- `len` returns length of list, string or map, else returns `1`
-- `refcnt` returns total number of references to an object
-- `print` print string form of some data (calls tostr)
-- `tostr` stringifies a built-in
-- `input` takes input from stdin
+The language supports the following built-in functions (within built-in modules)
+#### Global
 - `isnull` returns true if data is `null`, else false
+- `tostr` stringifies a built-in
+- `type` returns one of the [global variables for types](#global-variables-for-types)
+
+#### Module `dbg`
+- `dbg::typename` returns identifier name of one of the [global variables for types](#global-variables-for-types)
+- `dbg::refcnt` returns total number of references to an object
+
+#### Module `io`
+- `io::print` prints string form of data (calls `tostr`)
+- `io::input` takes input from stdin
+
+#### Module `it`
+- `it::len` returns length of list, string or map, else returns `1`
