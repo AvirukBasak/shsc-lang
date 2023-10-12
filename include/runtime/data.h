@@ -10,6 +10,7 @@ typedef struct RT_Data_t RT_Data_t;
 typedef struct RT_DataStr_t RT_DataStr_t;
 typedef struct RT_DataList_t RT_DataList_t;
 typedef struct RT_DataMap_t RT_DataMap_t;
+typedef struct RT_DataProc_t RT_DataProc_t;
 
 /* based on the mapping of datatype IDs provided
    by the Shsc IR Spec
@@ -24,6 +25,12 @@ enum RT_DataType_t {
     RT_DATA_TYPE_LST = 6,        /* list           : variable  */
     RT_DATA_TYPE_ANY = 7,        /* void*          : undefined */
     RT_DATA_TYPE_MAP = 8,        /* hash map       : variable  */
+    RT_DATA_TYPE_PROC = 9,       /* procedure      : ??  */
+};
+
+struct RT_DataProc_t {
+    const AST_Identifier_t *modulename;
+    const AST_Identifier_t *procname;
 };
 
 struct RT_Data_t {
@@ -35,6 +42,7 @@ struct RT_Data_t {
         RT_DataStr_t *str;
         RT_DataList_t *lst;
         RT_DataMap_t *mp;
+        RT_DataProc_t proc;
         void *any;
     } data;
     enum RT_DataType_t type;

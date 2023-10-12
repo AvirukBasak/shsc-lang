@@ -25,7 +25,11 @@ void rt_throw(const char *fmt, ...)
     va_end(args);
     fflush(stderr);
     fprintf(stderr, "\n");
+#ifdef DEBUG
+    abort();
+#else
     exit(ERR_RUNTIME);
+#endif
 }
 
 #else

@@ -9,14 +9,22 @@
 
 RT_Data_t FN_dbg_typename()
 {
-    const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_dbg_typename: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
+    const RT_Data_t data = *RT_DataList_getref(args.data.lst, 0);
     const char *tname= RT_Data_typename(data);
     return RT_Data_str(RT_DataStr_init(tname));
 }
 
 RT_Data_t FN_dbg_refcnt()
 {
-    const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_dbg_refcnt: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
+    const RT_Data_t data = *RT_DataList_getref(args.data.lst, 0);
     switch (data.type) {
         case RT_DATA_TYPE_STR:
         case RT_DATA_TYPE_INTERP_STR:

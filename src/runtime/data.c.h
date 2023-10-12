@@ -291,6 +291,7 @@ const char *RT_Data_typename(const RT_Data_t var)
         case RT_DATA_TYPE_LST:        return "lst";
         case RT_DATA_TYPE_MAP:        return "map";
         case RT_DATA_TYPE_ANY:        return var.data.any ? "any" : "null";
+        case RT_DATA_TYPE_PROC:       return "proc";
     }
     return NULL;
 }

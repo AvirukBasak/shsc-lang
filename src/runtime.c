@@ -315,34 +315,21 @@ void rt_Expression_eval(const AST_Expression_t *expr)
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
         case LEXTOK_DOT:
-            return;
-        case LEXTOK_DCOLON:
-            return;
-        case TOKOP_FNCALL: {
-            const AST_CommaSepList_t *ptr = expr->rhs_type != EXPR_TYPE_NULL ?
-                expr->rhs.literal->data.lst : NULL;
-            /* create an array for args */
-            RT_Data_t args[RT_TMPVAR_CNT];
-            /* evaluate fn args and store in args array */
-            for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                RT_Data_t data = RT_Data_null();
-                if (ptr) {
-                    rt_Expression_eval(ptr->expression);
-                    data = *RT_ACC_DATA;
-                    /* copy data as acc is overwritten on next iter */
-                    RT_Data_copy(&data);
-                }
-                args[i] = data;
-                if (ptr) ptr = ptr->comma_list;
-            }
-            /* copy fn args into temporary location */
-            for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), args[i]);
-                /* destroy data i.e. reduce its ref_count once as it was previously copied */
-                RT_Data_destroy(&args[i]);
-            }
-            /* get fn code and push code to stack */
-            rt_fncall_handler(RT_modulename_get(), expr->lhs.variable);
+            rt_throw("unimplemented operators");
+            break;
+        case LEXTOK_DCOLON: {
+            if (expr->lhs_type != EXPR_TYPE_IDENTIFIER
+                || expr->rhs_type != EXPR_TYPE_IDENTIFIER)
+                    rt_throw("invalid use of module membership operator");
+            /* instead of evaluating the lhs and RHS, directly generate a
+               procedure type literal and return it via accumulator */
+            RT_VarTable_acc_setval((RT_Data_t) {
+                .data.proc = {
+                    .modulename = expr->lhs.variable,
+                    .procname = expr->rhs.variable,
+                },
+                .type = RT_DATA_TYPE_PROC
+            });
             return;
         }
         default: break;
@@ -350,6 +337,22 @@ void rt_Expression_eval(const AST_Expression_t *expr)
 
     /* handle lhs and evaluate it */
     RT_Data_t *lhs = NULL;
+
+    /* during function call, if lhs is a single identifier only
+       then skip normal lhs evaluation to prevent conflict with
+       RT_VarTable_getref during identifier value resolution */
+    if (expr->op == TOKOP_FNCALL && expr->lhs_type == EXPR_TYPE_IDENTIFIER) {
+        RT_VarTable_acc_setval((RT_Data_t) {
+            .data.proc = {
+                .modulename = RT_modulename_get(),
+                .procname = expr->rhs.variable,
+            },
+            .type = RT_DATA_TYPE_PROC
+        });
+        lhs = RT_ACC_DATA;
+        goto rt_Expression_eval_skip_lhs_eval;
+    }
+
     switch (expr->lhs_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->lhs.expr);
@@ -368,6 +371,7 @@ void rt_Expression_eval(const AST_Expression_t *expr)
 
     /* handle rhs and evaluate it */
     RT_Data_t *rhs = NULL;
+rt_Expression_eval_skip_lhs_eval:
     switch (expr->rhs_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->rhs.expr);
@@ -386,6 +390,7 @@ void rt_Expression_eval(const AST_Expression_t *expr)
 
     /* handle condition and evaluate it */
     RT_Data_t *condition = NULL;
+rt_Expression_eval_skip_lhs_and_rhs_eval:
     switch (expr->condition_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->condition.expr);
@@ -402,6 +407,7 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case EXPR_TYPE_NULL: break;
     }
 
+rt_Expression_eval_skip_all_3_operands_eval:
     switch (expr->op) {
         case LEXTOK_BANG:
         case LEXTOK_LOGICAL_UNEQUAL:
@@ -454,17 +460,36 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_LOGICAL_OR:
         case LEXTOK_LOGICAL_OR_ASSIGN:
         case LEXTOK_TILDE:
-        case TOKOP_FNCALL:
+            rt_throw("unimplemented operators");
+            break;
+        case TOKOP_FNCALL: {
+            if (lhs->type != RT_DATA_TYPE_PROC)
+                rt_throw("cannot make procedure call to type '%s'", RT_Data_typename(*lhs));
+            if (rhs->type != RT_DATA_TYPE_LST)
+                rt_throw("cannot pass type '%s' as procedure argument", RT_Data_typename(*rhs));
+            /* copy fn args into temporary location */
+            RT_VarTable_modf(RT_VarTable_getref("$"), *rhs);
+            /* get fn code and push code to stack */
+            rt_fncall_handler(lhs->data.proc.modulename, lhs->data.proc.procname);
+            /* set no data to accumulator as data is already set by procedure called above
+               return early to prevent accumulator being modified by some other code */
+            return;
+        }
         case TOKOP_INDEXING:
         case TOKOP_TERNARY_COND:
             rt_throw("unimplemented operators");
             break;
-        case TOKOP_FNARGS_INDEXING:
+        case TOKOP_FNARGS_INDEXING: {
             if (!rhs || rhs->type != RT_DATA_TYPE_I64)
                 rt_throw("argument index should evaluate to an `i64`");
+            RT_Data_t args = *RT_VarTable_getref("$");
+            if (args.type != RT_DATA_TYPE_LST)
+                io_errndie("rt_Expression_eval: TOKOP_FNARGS_INDEXING: "
+                           "received arguments list as type '%s'", RT_Data_typename(args));
             RT_VarTable_acc_setadr(
-                RT_VarTable_getref_tmpvar(rhs->data.i64));
+                RT_DataList_getref(args.data.lst, rhs->data.i64));
             break;
+        }
         case TOKOP_NOP:
             RT_VarTable_acc_setval(*lhs);
             break;

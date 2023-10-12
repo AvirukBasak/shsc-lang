@@ -7,7 +7,11 @@
 
 RT_Data_t FN_it_len()
 {
-    const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_it_len: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
+    const RT_Data_t data = *RT_DataList_getref(args.data.lst, 0);
     switch (data.type) {
         case RT_DATA_TYPE_STR:
         case RT_DATA_TYPE_INTERP_STR:

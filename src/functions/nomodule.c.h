@@ -7,19 +7,31 @@
 
 RT_Data_t FN_isnull()
 {
-    const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_isnull: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
+    const RT_Data_t data = *RT_DataList_getref(args.data.lst, 0);
     return RT_Data_bul(RT_Data_isnull(data));
 }
 
 RT_Data_t FN_tostr()
 {
-    const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_tostr: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
+    const RT_Data_t data = *RT_DataList_getref(args.data.lst, 0);
     return RT_Data_str(RT_DataStr_init(RT_Data_tostr(data)));
 }
 
 RT_Data_t FN_type()
 {
-    const RT_Data_t data = *RT_VarTable_getref_tmpvar(0);
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_type: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
+    const RT_Data_t data = *RT_DataList_getref(args.data.lst, 0);
     switch (data.type) {
         case RT_DATA_TYPE_BUL:
             return RT_VarTable_typeid_bul;
@@ -40,6 +52,8 @@ RT_Data_t FN_type()
         case RT_DATA_TYPE_ANY:
             return RT_Data_isnull(data) ?
                 RT_VarTable_rsv_null : RT_VarTable_typeid_any;
+        case RT_DATA_TYPE_PROC:
+            return RT_VarTable_typeid_proc;
     }
     return RT_VarTable_typeid_any;
 }

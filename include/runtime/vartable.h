@@ -6,7 +6,7 @@
 #include "ast.h"
 #include "data.h"
 
-#define RT_TMPVAR_CNT (32)
+#define __RT_TMPVAR_CNT (32)
 #define RT_ACC_DATA (RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val)
 
 /** accumulator stores procedure return values
@@ -31,6 +31,7 @@ RT_Data_t RT_VarTable_rsv_lf,
           RT_VarTable_typeid_lst,
           RT_VarTable_typeid_any,
           RT_VarTable_typeid_map,
+          RT_VarTable_typeid_proc,
           RT_VarTable_rsv_null;
 
 /** create a new variable in the current scope */
@@ -39,13 +40,13 @@ void RT_VarTable_create(const char *varname, RT_Data_t value);
 /** modify data directly by address instead of querying via identifier */
 RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src);
 
-/** get the variable from the current scope if it exists, else return NULL.
+RT_Data_t *RT_VarTable_getref__n(const char *varname);
+
+/** get the variable from the current scope if it exists, else error.
     other than the accumulator, data should be updated only by calling
     `void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)`
     on the returned data pointer, that'll take care of reference counts */
 RT_Data_t *RT_VarTable_getref(const char *varname);
-
-RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar);
 
 /** this is used to get the accumulator data and address */
 RT_VarTable_Acc_t *RT_VarTable_acc_get(void);

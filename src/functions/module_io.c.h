@@ -26,9 +26,13 @@ int fn_io_input_str(char **val);
 
 RT_Data_t FN_io_print()
 {
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_io_print: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
     int bytes = 0;
-    for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-        const RT_Data_t data = *RT_VarTable_getref_tmpvar(i);
+    for (int i = 0; i < RT_DataList_length(args.data.lst); ++i) {
+        const RT_Data_t data = *RT_DataList_getref(args.data.lst, i);
         if (RT_Data_isnull(data)) continue;
         /* print a space before data conditions:
            - no space before 1st element
@@ -45,8 +49,12 @@ RT_Data_t FN_io_print()
 
 RT_Data_t FN_io_input()
 {
-    const RT_Data_t prompt = *RT_VarTable_getref_tmpvar(0);
-    const RT_Data_t type_ = *RT_VarTable_getref_tmpvar(1);
+    RT_Data_t args = *RT_VarTable_getref("$");
+    if (args.type != RT_DATA_TYPE_LST)
+        io_errndie("FN_io_input: "
+                   "received arguments list as type '%s'", RT_Data_typename(args));
+    const RT_Data_t prompt = *RT_DataList_getref(args.data.lst, 0);
+    const RT_Data_t type_ = *RT_DataList_getref(args.data.lst, 1);
     RT_Data_t ret = RT_Data_null();
     if (type_.type != RT_DATA_TYPE_I64) {
         char *s = RT_Data_tostr(type_);

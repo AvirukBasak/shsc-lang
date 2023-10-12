@@ -43,8 +43,8 @@ RT_VarTable_Acc_t rt_vtable_accumulator = {
     .adr = NULL
 };
 
-/** an array of 32 tmp variables */
-RT_Data_t rt_vtable_tmpvars[RT_TMPVAR_CNT];
+/** arguments list */
+RT_Data_t rt_vtable_argslist;
 
 /* few globally defined variables */
 RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = RT_DATA_TYPE_CHR },
@@ -58,6 +58,7 @@ RT_Data_t RT_VarTable_rsv_lf            = { .data.chr = '\n',                   
           RT_VarTable_typeid_lst        = { .data.i64 = RT_DATA_TYPE_LST,        .type = RT_DATA_TYPE_I64 },
           RT_VarTable_typeid_any        = { .data.i64 = RT_DATA_TYPE_ANY,        .type = RT_DATA_TYPE_I64 },
           RT_VarTable_typeid_map        = { .data.i64 = RT_DATA_TYPE_MAP,        .type = RT_DATA_TYPE_I64 },
+          RT_VarTable_typeid_proc       = { .data.i64 = RT_DATA_TYPE_PROC,       .type = RT_DATA_TYPE_I64 },
           RT_VarTable_rsv_null          = { .data.any = NULL,                    .type = RT_DATA_TYPE_ANY };
 
 RT_Data_t *rt_vtable_get_globvar(const char *varname)
@@ -97,11 +98,12 @@ RT_Data_t *RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)
     return dest;
 }
 
-RT_Data_t *RT_VarTable_getref(const char *varname)
+RT_Data_t *RT_VarTable_getref__n(const char *varname)
 {
-    if ( (!isalpha(varname[0]) && varname[0] != '_') || isdigit(varname[0]) )
+    if ( (!isalpha(varname[0]) && varname[0] != '_' && varname[0] != '$') || isdigit(varname[0]) )
         io_errndie("RT_VarTable_getref: invalid variable name '%s'", varname);
     else {
+        if (!strcmp(varname, "$")) return &rt_vtable_argslist;
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) return globvar;
     }
@@ -112,17 +114,15 @@ RT_Data_t *RT_VarTable_getref(const char *varname)
         RT_Data_t *data = RT_DataMap_getref__n(*current_scope, varname);
         if (data) return data;
     }
-    /* variable not found, throw an error */
-    rt_throw("undefined variable '%s'", varname);
     return NULL;
 }
 
-RT_Data_t *RT_VarTable_getref_tmpvar(int tmpvar)
+RT_Data_t *RT_VarTable_getref(const char *varname)
 {
-    if (tmpvar >= RT_TMPVAR_CNT) rt_throw("no argument at '%d': valid arguments are $0 to $%d", tmpvar, RT_TMPVAR_CNT-1);
-    if (tmpvar >= 0) return &rt_vtable_tmpvars[tmpvar];
-    rt_throw("no argument at '%d': valid arguments are $0 to $%d", tmpvar, RT_TMPVAR_CNT-1);
-    return NULL;
+    RT_Data_t *data = RT_VarTable_getref__n(varname);
+    /* variable not found, throw an error */
+    if (!data) rt_throw("undefined variable '%s'", varname);
+    return data;
 }
 
 RT_VarTable_Acc_t *RT_VarTable_acc_get(void)
