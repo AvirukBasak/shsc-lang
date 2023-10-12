@@ -29,7 +29,7 @@ double parse_float(const char *str, int base)
     if (*endptr == '\0') return sign * result;
     if (*endptr != '.') parse_throw("invalid float format 1; wtf was the lexer designer doing?", true);
 
-    /* parse the fraction if available */ 
+    /* parse the fraction if available */
     const int64_t fraction = strtol(dot_index +1, &endptr, base);
     const char *exp_index = endptr;
     result += (double) fraction / pow(base, exp_index - dot_index -1);
