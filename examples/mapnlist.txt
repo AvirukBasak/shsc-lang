@@ -9,14 +9,24 @@ proc main start
             "gamma": "\x05\x0a"
         }
     }
-    print(my_map, lf)
+    io::print(my_map, lf)
     var list = ["xyz", 'a', "\n", "001", 'A', "\x41\x41"]
-    print(list, lf)
+    io::print(list, lf)
     list = [
         [ 1, 2, 4, 5 ],
         [ 1, 2, 4, 5 ],
         [ 1, 2, 4, 5 ],
         [ 1, 2, 4, 5 ],
     ]
-    print(list, lf)
+    io::print(list, lf)
+    main::test()
+end
+
+proc test start
+    var x = {"a":1, "b":2, "c":3, "d":{"e":4, "f":5}, "g":6}
+    var y = tostr(x)
+    for k, v in x do
+        io::print(f"{k}: {v}, ")
+    end
+    io::print(lf)
 end

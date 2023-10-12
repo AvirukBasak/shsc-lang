@@ -336,7 +336,7 @@ void rt_Expression_eval(const AST_Expression_t *expr)
     }
 
     /* handle lhs and evaluate it */
-    RT_Data_t *lhs = NULL;
+    RT_Data_t lhs_, *lhs = NULL;
 
     /* during function call, if lhs is a single identifier only
        then skip normal lhs evaluation to prevent conflict with
@@ -345,64 +345,78 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         RT_VarTable_acc_setval((RT_Data_t) {
             .data.proc = {
                 .modulename = RT_modulename_get(),
-                .procname = expr->rhs.variable,
+                .procname = expr->lhs.variable,
             },
             .type = RT_DATA_TYPE_PROC
         });
-        lhs = RT_ACC_DATA;
+        /* copy accumulator value into temporary memory as accumulator gets
+           modified when evaluating other operands */
+        lhs_ = *RT_ACC_DATA;
+        lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
         goto rt_Expression_eval_skip_lhs_eval;
     }
 
     switch (expr->lhs_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->lhs.expr);
-            lhs = RT_ACC_DATA;
+            /* copy accumulator value into temporary memory as accumulator gets
+               modified when evaluating other operands */
+            lhs_ = *RT_ACC_DATA;
+            lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
             break;
         case EXPR_TYPE_LITERAL:
             rt_Literal_eval(expr->lhs.literal);
-            lhs = RT_ACC_DATA;
+            lhs_ = *RT_ACC_DATA;
+            lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
             break;
         case EXPR_TYPE_IDENTIFIER:
             rt_Identifier_eval(expr->lhs.variable);
-            lhs = RT_ACC_DATA;
+            lhs_ = *RT_ACC_DATA;
+            lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
             break;
         case EXPR_TYPE_NULL: break;
     }
 
     /* handle rhs and evaluate it */
-    RT_Data_t *rhs = NULL;
+    RT_Data_t rhs_, *rhs = NULL;
 rt_Expression_eval_skip_lhs_eval:
     switch (expr->rhs_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->rhs.expr);
-            rhs = RT_ACC_DATA;
+            rhs_ = *RT_ACC_DATA;
+            rhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &rhs_;
             break;
         case EXPR_TYPE_LITERAL:
             rt_Literal_eval(expr->rhs.literal);
-            rhs = RT_ACC_DATA;
+            rhs_ = *RT_ACC_DATA;
+            rhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &rhs_;
             break;
         case EXPR_TYPE_IDENTIFIER:
             rt_Identifier_eval(expr->rhs.variable);
-            rhs = RT_ACC_DATA;
+            rhs_ = *RT_ACC_DATA;
+            rhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &rhs_;
             break;
         case EXPR_TYPE_NULL: break;
     }
 
     /* handle condition and evaluate it */
-    RT_Data_t *condition = NULL;
+    RT_Data_t condition_, *condition = NULL;
 rt_Expression_eval_skip_lhs_and_rhs_eval:
     switch (expr->condition_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->condition.expr);
-            condition = RT_ACC_DATA;
+            condition_ = *RT_ACC_DATA;
+            condition = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &condition_;
             break;
         case EXPR_TYPE_LITERAL:
             rt_Literal_eval(expr->condition.literal);
-            condition = RT_ACC_DATA;
+            condition_ = *RT_ACC_DATA;
+            condition = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &condition_;
             break;
         case EXPR_TYPE_IDENTIFIER:
             rt_Identifier_eval(expr->condition.variable);
-            condition = RT_ACC_DATA;
+            condition_ = *RT_ACC_DATA;
+            condition = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &condition_;
             break;
         case EXPR_TYPE_NULL: break;
     }
@@ -465,6 +479,10 @@ rt_Expression_eval_skip_all_3_operands_eval:
         case TOKOP_FNCALL: {
             if (lhs->type != RT_DATA_TYPE_PROC)
                 rt_throw("cannot make procedure call to type '%s'", RT_Data_typename(*lhs));
+            if (!rhs) {
+                rhs_ = RT_Data_list(RT_DataList_init());
+                rhs = &rhs_;
+            }
             if (rhs->type != RT_DATA_TYPE_LST)
                 rt_throw("cannot pass type '%s' as procedure argument", RT_Data_typename(*rhs));
             /* copy fn args into temporary location */
