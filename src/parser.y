@@ -252,7 +252,7 @@ trm:
 
 /* Push module name to a stack */
 module:
-    { AST_ModuleStack_push(AST_ProcedureMap_main()); } program { AST_ModuleStack_pop(); }
+    { AST_ModuleStack_push(AST_Identifier(strdup("main"))); } program { AST_ModuleStack_pop(); }
     | "module" identifier trm { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
     ;
 
@@ -264,7 +264,9 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" nwp statements "end" trm  { AST_ProcedureMap_add((AST_Identifier_t*) AST_ModuleStack_top(), $2, $5); }
+    "proc" identifier "start" nwp statements "end" trm  { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5);
+                                                            AST_Identifier_free(&$2);
+                                                        }
     ;
 
 statements:

@@ -52,8 +52,8 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
 
 void RT_exec(void)
 {
-    const AST_Identifier_t *module = AST_ProcedureMap_main();
-    const AST_Identifier_t *proc = AST_ProcedureMap_main();
+    const AST_Identifier_t *module = AST_ProcedureMap_idfmain();
+    const AST_Identifier_t *proc = AST_ProcedureMap_idfmain();
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     rt_currfile = AST_ProcedureMap_get_filename(module, proc);
     RT_VarTable_push_proc(proc->identifier_name);
@@ -67,13 +67,13 @@ void RT_exec(void)
 
 const AST_Identifier_t *RT_modulename_get(void)
 {
-    if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
+    if (!rt_current_module) rt_current_module = AST_ProcedureMap_idfmain();
     return rt_current_module;
 }
 
 const AST_Identifier_t *RT_procname_get(void)
 {
-    if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
+    if (!rt_current_module) rt_current_module = AST_ProcedureMap_idfmain();
     return rt_current_module;
 }
 
@@ -583,8 +583,12 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
     const AST_Identifier_t *currmodule_bkp = rt_current_module;
     const AST_Identifier_t *currproc_bkp = rt_current_proc;
     /* update metadata to new module and function */
-    if (code || fn != FN_UNDEFINED) {
+    if (code) {
         rt_currfile = AST_ProcedureMap_get_filename(module, proc);
+        rt_current_module = module;
+        rt_current_proc = proc;
+    } else if (fn != FN_UNDEFINED) {
+        rt_currfile = "<built-in>";
         rt_current_module = module;
         rt_current_proc = proc;
     }
