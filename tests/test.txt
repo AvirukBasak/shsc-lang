@@ -1,31 +1,31 @@
 module main
 
 proc xyz start
-    print("Hello world!", "lf")
+    io::print("Hello world!", lf)
 
-    var x = input(i64)
+    var x = io::input("", i64)
 
     if x == 1 then
-        print("entered 1", lf)
+        io::print("entered 1", lf)
     elif x == 2 then
-        print("entered 2", lf)
+        io::print("entered 2", lf)
     else
-        print(f"entered {x}", lf)
+        io::print(f"entered {x}", lf)
     end
 
     while x >= 0 do
-        print(f"x = {x}")
+        io::print(f"x = {x}")
         x = x - 1
     end
 
-    x = input("prompt: ", str)
-    print(f"entered {x}", lf)
+    x = io::input("prompt: ", str)
+    io::print(f"entered {x}", lf)
 
     # test bool
     var x = true
-    print(f"bool value = {x}", lf)
+    io::print(f"bool value = {x}", lf)
     var y = 5 if x == false else 7
     if y == 5 then
-        print("x was false", lf)
+        io::print("x was false", lf)
     end
 end
