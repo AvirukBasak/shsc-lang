@@ -57,7 +57,7 @@ make run ARGS="examples/helloworld.txt"
 - [x] While
 - [x] Break and continue
 - [ ] If-else (untested)
-- [-] Built-in functions
+- [ ] Built-in functions
     - [x] `isnull`
     - [x] `tostr`
     - [x] `type`
