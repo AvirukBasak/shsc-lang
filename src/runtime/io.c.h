@@ -9,7 +9,7 @@
 #include "runtime.h"
 #include "runtime/io.h"
 
-#define RT_THROW_PRINT_FN      "%s::%s: "
+#define RT_THROW_PRINT_FN      "%s:%s: "
 #define RT_THROW_DONT_PRINT_FN ""
 
 void rt_throw(const char *fmt, ...)

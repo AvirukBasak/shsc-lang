@@ -643,7 +643,7 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
     } else {
         /* attempt to call in-built function */
         if (fn == FN_UNDEFINED)
-            rt_throw("undefined procedure '%s::%s'",
+            rt_throw("undefined procedure '%s:%s'",
                 module->identifier_name, proc->identifier_name);
         RT_VarTable_acc_setval(FN_FunctionsList_call(fn));
     }

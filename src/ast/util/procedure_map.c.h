@@ -76,10 +76,10 @@ void AST_ProcedureMap_add(const AST_Identifier_t *module_name, const AST_Identif
     /* If procedure exists, throw an error and exit */
     khint_t pk = kh_get(procedure_t, procmap, proc_name->identifier_name);
     if (pk != kh_end(procmap)) {
-        size_t sz = snprintf(NULL, 0, "duplicate method '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+        size_t sz = snprintf(NULL, 0, "duplicate method '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
         char *errmsg = (char*) malloc((sz +1) * sizeof(char));
         if (!errmsg) io_errndie("AST_ProcedureMap_add:" ERR_MSG_MALLOCFAIL);
-        sprintf(errmsg, "duplicate method '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+        sprintf(errmsg, "duplicate method '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
         parse_throw(errmsg, false);
         free(errmsg);
     }
@@ -121,7 +121,7 @@ const AST_Statements_t *AST_ProcedureMap_get_code(const AST_Identifier_t *module
 {
     const ast_ProcedureMap_procedure_t proc = AST_ProcedureMap_get(module_name, proc_name);
     /* if (!proc.proc_name)
-        rt_throw("undefined procedure '%s::%s'", module_name->identifier_name, proc_name->identifier_name); */
+        rt_throw("undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name); */
     return proc.code;
 }
 
@@ -130,7 +130,7 @@ const char *AST_ProcedureMap_get_filename(const AST_Identifier_t *module_name, c
 {
     const ast_ProcedureMap_procedure_t proc = AST_ProcedureMap_get(module_name, proc_name);
     if (!proc.procname)
-        rt_throw("AST_ProcedureMap_get_filename: undefined procedure '%s::%s'", module_name->identifier_name, proc_name->identifier_name);
+        rt_throw("AST_ProcedureMap_get_filename: undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
     return proc.src_filename;
 }
 
