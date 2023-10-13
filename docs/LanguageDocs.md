@@ -1,4 +1,4 @@
-**Last updated on Oct 8, 2023**
+**Last updated on Oct 13, 2023**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -57,7 +57,7 @@ Modules don't need to be explicitly imported; they're only declared in **line 1*
 
 To access a procedure from a different module, use the following syntax:
 ```
-modulename::procname
+modulename:procname
 ```
 Replace `modulename` with the appropriate module name and `procname` with the name of the procedure you want to access.
 
@@ -73,7 +73,7 @@ end
 The procedure name (`procname`) should be a valid identifier.
 
 ### Entry point
-Program execution starts at `main::main`, i.e., the main procedure of the main module.
+Program execution starts at `main:main`, i.e., the main procedure of the main module.
 
 ### Naming collision
 If there is a naming collision between procedures in the same module, the runtime will raise an error and stop execution.
@@ -111,9 +111,9 @@ If you use `var` again, the original variable will be destroyed and replaced by 
 ```
 proc test start
     var x = 5
-    io::print(x, lf)
+    io:print(x, lf)
     var x = 11
-    io::print(x, lf)
+    io:print(x, lf)
 end
 ```
 **Output:**
@@ -121,6 +121,15 @@ end
 5
 11
 ```
+
+### Constants
+You'd use the `const` keyword to create a constant in current scope.
+```
+proc test start
+    const x = 5
+end
+```
+A constant cannot be shadowed.
 
 ### Semicolons
 Newlines or semicolons can be used to terminate a statement.
@@ -135,7 +144,7 @@ Even a combination of the two can be used wherever one desires.
 #### Example
 ```
 x = 5; y = 7
-io::print(x, y, lf)
+io:print(x, y, lf)
 ```
 
 ## If statements
@@ -242,17 +251,17 @@ proc factorial start
 end
 
 proc main start
-    var inp = io::input("Enter a number: ", i64)
+    var inp = io:input("Enter a number: ", i64)
     var res = factorial(inp)
-    io::print(f"result = {res}\n")
+    io:print(f"result = {res}\n")
 end
 ```
 
-**WARNING:** Note that `$0` to `$x` (*x = 31 as of Oct 8, 2023*) are global variables and change on every function call.
-For this reason, you **must** copy the data from all `$i` (0 <= i <= x) to local variables as soon as the function opens.
+**WARNING:** Note that `$0`, `$1`, `$2` and so on make references to index of a global list of arguments and the list is modified on every function call.
+For this reason, you **must** copy the data from all `$i` (`i` belongs to set of whole numbers) to some local variables as soon as the function opens.
 
-You can also use `$[expression]` or `$(expression)`.
-However, without the braces, the syntax becomes `$i` where `i` is an `i64`, or `$variable`.
+You can use `$[expression]` or `$(expression)`.
+However, without the braces, the syntax becomes either `$i` where `i` is an `i64`, or `$variable`.
 
 Arguments to a function is defined by the actual parameters (i.e. at the caller side).
 
@@ -331,7 +340,7 @@ The language has built-in support for complex composite data structures which ca
 ### Memory management
 Memory is managed by allocating data in the heap, and maintaining a reference count.
 
-The reference count is updated when data is assigned b/w variables, and b/w accumulator and temporary variables.
+The reference count is updated when data is assigned b/w variables, and also b/w the accumulator and the arguments variable.
 
 In case the reference count becomes `0`, the data is freed immediately.
 
@@ -359,11 +368,11 @@ The following takes memory ownership
 #### Accumulator
 The language uses a temporary location called the `accumulator` to store the result of operations and return values.
 
-#### Temporary variables
-These are some global memory locations that are used to pass function arguments.
-They're ever-changing and the data they contain should be copied to the local scope.
+#### Arguments variable
+It's a global memory location that is used to pass the function arguments list.
+It's ever-changing and the arguments it contains should be copied to some local scope variables.
 
-Their data will change on any function call.
+It's data will change on any function call.
 
 ### Format strings
 ```
@@ -424,7 +433,7 @@ proc test start
             "gamma": "\x05\x0a"
         }
     }
-    io::print(my_map, lf)
+    io:print(my_map, lf)
 end
 ```
 **Output:**
@@ -444,12 +453,12 @@ The language supports the following built-in functions (within built-in modules)
 - `type` returns one of the [global variables for types](#global-variables-for-types)
 
 #### Module `dbg`
-- `dbg::typename` returns identifier name of one of the [global variables for types](#global-variables-for-types)
-- `dbg::refcnt` returns total number of references to an object
+- `dbg:typename` returns identifier name of one of the [global variables for types](#global-variables-for-types)
+- `dbg:refcnt` returns total number of references to an object
 
 #### Module `io`
-- `io::print` prints string form of data (calls `tostr`)
-- `io::input` takes input from stdin
+- `io:print` prints string form of data (calls `tostr`)
+- `io:input` takes input from stdin
 
 #### Module `it`
-- `it::len` returns length of list, string or map, else returns `1`
+- `it:len` returns length of list, string or map, else returns `1`

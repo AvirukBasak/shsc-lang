@@ -9,6 +9,7 @@ For Unix and Unix-like OS users:
 - You might need root privileges to install.
 
 For Windows users, you'll probably need to use `cygwin` or `git bash` to get `make` working.
+Idk if you can compile it on MSVC so give it a shot and maybe contribute an `md` on it.
 
 ### Usage
 ```
@@ -31,37 +32,74 @@ make run ARGS="examples/helloworld.txt"
 ```
 
 ### Features Added
+- [x] Modules
+- [x] Procedure definitions
+- [x] Procedure calls
+- [x] Function arguments (unreliable)
+- [x] Call stack
 - [x] Variables
+- [x] Variable Shadowing
+- [ ] Constants
 - [x] Local scopes
 - [x] Function scopes
-- [x] Call stack
 - [x] Literals
-    - [x] Boolean
-    - [x] Char
-    - [x] Int 64-bit
-    - [x] Float 64-bit
-    - [x] String
-    - [x] Format string
-    - [x] List
-    - [x] Hash map
+    - [x] `bul` Boolean
+    - [x] `chr` Char
+    - [x] `i64` Int 64-bit
+    - [x] `f64` Float 64-bit
+    - [x] `str`  String
+    - [x] `interp_str` Format string
+    - [x] `lst` List
+    - [x] `map` Hash map
 - [x] Reference counted GC
-- [x] Function definition
-- [x] Function call
-- [ ] Function arguments (unreliable)
-- [x] Inbuilt functions
-    - [x] `print`
-    - [x] `input`
-    - [x] `type`
-    - [x] `typename`
-    - [x] `len`
-    - [x] `refcnt`
-    - [x] `tostr`
-    - [x] `isnull`
-- [ ] Break and continue
 - [x] Range based for
 - [x] Iterable based for
 - [x] While
+- [x] Break and continue
 - [ ] If-else (untested)
+- [-] Built-in functions
+    - [x] `isnull`
+    - [x] `tostr`
+    - [x] `type`
+    - [x] `dbg:typename`
+    - [ ] `dbg:rtsize`
+    - [x] `dbg:refcnt`
+    - [ ] `dbg:filename`
+    - [ ] `dbg:lineno`
+    - [x] `io:print`
+    - [x] `io:input`
+    - [x] `it:len`
+    - [ ] `chr:isdigit`
+    - [ ] `chr:isalpha`
+    - [ ] `chr:isalnum`
+    - [ ] `i64:maxval`
+    - [ ] `i64:minval`
+    - [ ] `f64:maxval`
+    - [ ] `f64:minval`
+    - [ ] `str:append`
+    - [ ] `str:insert`
+    - [ ] `str:erase`
+    - [ ] `str:concat`
+    - [ ] `str:reverse`
+    - [ ] `str:substr`
+    - [ ] `str:find`
+    - [ ] `str:split`
+    - [ ] `str:toi64`
+    - [ ] `str:tof64`
+    - [ ] `lst:append`
+    - [ ] `lst:insert`
+    - [ ] `lst:erase`
+    - [ ] `lst:concat`
+    - [ ] `lst:reverse`
+    - [ ] `lst:sublst`
+    - [ ] `lst:find`
+    - [ ] `lst:join`
+    - [ ] `lst:sort`
+    - [ ] `map:insert`
+    - [ ] `map:erase`
+    - [ ] `map:concat`
+    - [ ] `map:find`
+    - [ ] `map:keys`
 - [ ] Operators
 
 ### List File
