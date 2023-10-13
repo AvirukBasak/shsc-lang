@@ -6,14 +6,14 @@ proc main start
     var d = null
     var e = "xyz"
     print(
-        dbg::typename(x),
-        dbg::typename(a),
-        dbg::typename(b),
-        dbg::typename(c),
-        dbg::typename(d),
-        dbg::typename(e),
+        dbg:typename(x),
+        dbg:typename(a),
+        dbg:typename(b),
+        dbg:typename(c),
+        dbg:typename(d),
+        dbg:typename(e),
         lf
     )
     var y = 3
-    io::print($y, lf)
+    io:print($y, lf)
 end

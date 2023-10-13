@@ -452,6 +452,9 @@ postfix_expression:
     | postfix_expression "::" identifier                { $$ = AST_Expression($2, $1,
                                                             AST_Expression_Identifier($3), NULL);
                                                         }
+    | postfix_expression ":" identifier                 { $$ = AST_Expression(LEXTOK_DCOLON, $1,
+                                                            AST_Expression_Identifier($3), NULL);
+                                                        }
     ;
 
 primary_expression:

@@ -3,15 +3,15 @@ module main
 proc test start
     var times = $1
     for x in times do
-        var name = io::input(f"Enter name {x}: ", str)
-        var bytes = io::print(f"Hello {name}!",
+        var name = io:input(f"Enter name {x}: ", str)
+        var bytes = io:print(f"Hello {name}!",
             "It's a beautiful world!", lf)
-        io::print(f"Printed: {bytes} Bytes", lf, lf)
+        io:print(f"Printed: {bytes} Bytes", lf, lf)
     end
     return 100
 end
 
 proc main start
     var ret = test("Times", [1, 2, 3, 4, 5])
-    io::print("Return val:", ret, lf)
+    io:print("Return val:", ret, lf)
 end
