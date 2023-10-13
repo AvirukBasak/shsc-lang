@@ -54,7 +54,7 @@ make run ARGS="examples/helloworld.txt"
     - [x] `type`
     - [x] `typename`
     - [x] `len`
-    - [x] `refcount`
+    - [x] `refcnt`
     - [x] `tostr`
     - [x] `isnull`
 - [ ] Break and continue

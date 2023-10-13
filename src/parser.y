@@ -252,7 +252,7 @@ trm:
 
 /* Push module name to a stack */
 module:
-    { AST_ModuleStack_push(AST_ProcedureMap_main()); } program { AST_ModuleStack_pop(); }
+    { AST_ModuleStack_push(AST_Identifier(strdup("main"))); } program { AST_ModuleStack_pop(); }
     | "module" identifier trm { AST_ModuleStack_push($2); } program { AST_ModuleStack_pop(); }
     ;
 
@@ -264,7 +264,9 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" nwp statements "end" trm  { AST_ProcedureMap_add((AST_Identifier_t*) AST_ModuleStack_top(), $2, $5); }
+    "proc" identifier "start" nwp statements "end" trm  { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5);
+                                                            AST_Identifier_free(&$2);
+                                                        }
     ;
 
 statements:
@@ -274,6 +276,8 @@ statements:
 
 statement:
     "pass" trm                                          { $$ = AST_Statement_empty(lex_line_no - $2); }
+    | "break" trm                                       { $$ = AST_Statement_break(lex_line_no - $2); }
+    | "continue" trm                                    { $$ = AST_Statement_continue(lex_line_no - $2); }
     | "return" expression trm                           { $$ = AST_Statement_return($2, lex_line_no - $3); }
     | "return" trm                                      { $$ = AST_Statement_return(NULL, lex_line_no - $2); }
     | assignment trm                                    { $$ = AST_Statement_Assignment($1, lex_line_no - $2); }
@@ -312,7 +316,8 @@ while_block:
 for_block:
     "for" identifier "from" expression "to" expression "do" nwp statements "end"                   { $$ = AST_ForBlock($2, $4, $6, NULL, $9); }
     | "for" identifier "from" expression "to" expression "by" expression "do" nwp statements "end" { $$ = AST_ForBlock($2, $4, $6, $8, $11); }
-    | "for" identifier "in" expression "do" nwp statements "end"                                   { $$ = AST_ForBlock_iterate($2, $4, $7); }
+    | "for" identifier "in" expression "do" nwp statements "end"                                   { $$ = AST_ForBlock_iterate(NULL, $2, $4, $7); }
+    | "for" identifier "," identifier "in" expression "do" nwp statements "end"                    { $$ = AST_ForBlock_iterate($2, $4, $6, $9); }
     ;
 
 block:

@@ -147,6 +147,18 @@ void AST2JSON_Statement(const AST_Statement_t *statement)
             AST2JSON_put_comma();
             AST2JSON_printf("\"statement\": null");
             break;
+        case STATEMENT_TYPE_BREAK:
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_BREAK\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": null");
+            break;
+        case STATEMENT_TYPE_CONTINUE:
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"type\": \"STATEMENT_TYPE_CONTINUE\"");
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"statement\": null");
+            break;
     }
     AST2JSON_close_obj();
 }
@@ -273,21 +285,21 @@ void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
             AST2JSON_put_comma();
             AST2JSON_printf("\"type\": \"FORBLOCK_TYPE_RANGE\"");
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iter\": ");
-            AST2JSON_Identifier(for_block->iter);
+            AST2JSON_printf("\"val\": ");
+            AST2JSON_Identifier(for_block->val);
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iterable\": ");
+            AST2JSON_printf("\"it\": ");
             AST2JSON_open_obj();
-            AST2JSON_printf("\"node\": \"iterable\"");
+            AST2JSON_printf("\"node\": \"range\"");
             AST2JSON_put_comma();
             AST2JSON_printf("\"start\": ");
-            AST2JSON_Expression(for_block->iterable.range.start);
+            AST2JSON_Expression(for_block->it.range.start);
             AST2JSON_put_comma();
             AST2JSON_printf("\"end\": ");
-            AST2JSON_Expression(for_block->iterable.range.end);
+            AST2JSON_Expression(for_block->it.range.end);
             AST2JSON_put_comma();
             AST2JSON_printf("\"by\": ");
-            AST2JSON_Expression(for_block->iterable.range.by);
+            AST2JSON_Expression(for_block->it.range.by);
             AST2JSON_close_obj();
             break;
         }
@@ -295,11 +307,14 @@ void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
             AST2JSON_put_comma();
             AST2JSON_printf("\"type\": \"FORBLOCK_TYPE_LIST\"");
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iter\": ");
-            AST2JSON_Identifier(for_block->iter);
+            AST2JSON_printf("\"idx\": ");
+            AST2JSON_Identifier(for_block->idx);
             AST2JSON_put_comma();
-            AST2JSON_printf("\"iterable\": ");
-            AST2JSON_Expression(for_block->iterable.lst);
+            AST2JSON_printf("\"val\": ");
+            AST2JSON_Identifier(for_block->val);
+            AST2JSON_put_comma();
+            AST2JSON_printf("\"it\": ");
+            AST2JSON_Expression(for_block->it.iterable);
             break;
     }
 
@@ -605,41 +620,36 @@ void AST2JSON_Identifier(const AST_Identifier_t *identifier)
 
 void AST2JSON_ProcedureMap()
 {
-    AST_ProcedureMapKeyList_t lst = AST_ProcedureMap_KeyList_get();
     /* open root */
     AST2JSON_open_obj();
     /* node name */
     AST2JSON_printf("\"node\": \"root\"");
-    for (int i = 0; i < lst.module_cnt; ++i) {
-        const AST_Identifier_t *module_name = lst.module[i].module_name;
+    AST_ProcedureMap_foreach_module(modulename, procmap, {
         /* open map of the module name to procedures */
         AST2JSON_put_comma();
-        AST2JSON_printf("\"%s\": ", module_name->identifier_name);
+        AST2JSON_printf("\"%s\": ", modulename);
         AST2JSON_open_obj();
         /* node name */
         AST2JSON_printf("\"node\": \"module\"");
-        for (int j = 0; j < lst.module[i].proc_cnt; ++j) {
-            const AST_Identifier_t *proc_name = lst.module[i].lst[j];
-            const AST_Statements_t *st = AST_ProcedureMap_get_code(module_name, proc_name);
+        AST_ProcedureMap_foreach_procedure(procmap, procname, filename, code, {
             /* open a procedure node, map it with proc name */
             AST2JSON_put_comma();
-            AST2JSON_printf("\"%s\": ", proc_name->identifier_name);
+            AST2JSON_printf("\"%s\": ", procname);
             AST2JSON_open_obj();
             AST2JSON_printf("\"node\": \"procedure\"");
             AST2JSON_put_comma();
-            AST2JSON_printf("\"file\": \"%s\"", AST_ProcedureMap_get_filename(module_name, proc_name));
+            AST2JSON_printf("\"file\": \"%s\"", filename);
             AST2JSON_put_comma();
             AST2JSON_printf("\"statements\": ");
-            AST2JSON_Statements(st);
+            AST2JSON_Statements(code);
             /* close procedure */
             AST2JSON_close_obj();
-        }
+        });
         AST2JSON_close_obj();
-    }
+    });
     /* close root */
     AST2JSON_close_obj();
     AST2JSON_printf("\n");
-    AST_ProcedureMap_KeyList_free(&lst);
 }
 
 void AST2JSON_convert(const char *filepath, bool format)

@@ -9,9 +9,15 @@
 #include "runtime.h"
 #include "runtime/io.h"
 
+#define RT_THROW_PRINT_FN      "%s::%s: "
+#define RT_THROW_DONT_PRINT_FN ""
+
 void rt_throw(const char *fmt, ...)
 {
-    fprintf(stderr, "shsc: %s:%d: ", rt_currfile, rt_currline);
+    fprintf(stderr, "shsc: " RT_THROW_DONT_PRINT_FN "%s:%d: ",
+        /* RT_modulename_get()->identifier_name, */
+            /* RT_procname_get()->identifier_name, */
+                rt_currfile, rt_currline);
     fflush(stderr);
     va_list args;
     va_start(args, fmt);
@@ -19,7 +25,11 @@ void rt_throw(const char *fmt, ...)
     va_end(args);
     fflush(stderr);
     fprintf(stderr, "\n");
+#ifdef DEBUG
+    abort();
+#else
     exit(ERR_RUNTIME);
+#endif
 }
 
 #else

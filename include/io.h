@@ -2,6 +2,7 @@
 #define IO_H
 
 #include <stddef.h>
+#include <stdio.h>
 
 /** read string contains trailing new line.
     size_t n is the number of bytes allocated.

@@ -70,15 +70,16 @@ struct AST_WhileBlock_t {
 };
 
 struct AST_ForBlock_t {
-    AST_Identifier_t *iter;
+    AST_Identifier_t *idx;
+    AST_Identifier_t *val;
     union {
         struct {
             AST_Expression_t *start;
             AST_Expression_t *end;
             AST_Expression_t *by;
         } range;
-        AST_Expression_t *lst;
-    } iterable;
+        AST_Expression_t *iterable;
+    } it;
     AST_Statements_t *statements;
     enum AST_ForBlockType_t type;
 };

@@ -20,24 +20,28 @@
 #include "runtime/io.c.h"
 #include "runtime/vartable.c.h"
 
+typedef enum {
+    RT_CTRL_PASS,
+    RT_CTRL_RETURN,
+    RT_CTRL_BREAK,
+    RT_CTRL_CONTINUE,
+} rt_ControlStatus_t;
+
 const char *rt_currfile = NULL;
 int rt_currline = 0;
 
 const AST_Identifier_t *rt_current_module = NULL;
 const AST_Identifier_t *rt_current_proc = NULL;
 
-const AST_Identifier_t *rt_modulename_get(void);
-const AST_Identifier_t *rt_procname_get(void);
-
-bool rt_Statements_eval(const AST_Statements_t *code);
-bool rt_Statements_newscope_eval(const AST_Statements_t *code);
-bool rt_Statement_eval(const AST_Statement_t *statement);
+rt_ControlStatus_t rt_Statements_eval(const AST_Statements_t *code);
+rt_ControlStatus_t rt_Statements_newscope_eval(const AST_Statements_t *code);
+rt_ControlStatus_t rt_Statement_eval(const AST_Statement_t *statement);
 void rt_Assignment_eval(const AST_Assignment_t *assignment);
-void rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st);
-void rt_IfBlock_eval(const AST_IfBlock_t *if_block);
-void rt_ElseBlock_eval(const AST_ElseBlock_t *else_block);
-void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block);
-void rt_ForBlock_eval(const AST_ForBlock_t *for_block);
+rt_ControlStatus_t rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st);
+rt_ControlStatus_t rt_IfBlock_eval(const AST_IfBlock_t *if_block);
+rt_ControlStatus_t rt_ElseBlock_eval(const AST_ElseBlock_t *else_block);
+rt_ControlStatus_t rt_WhileBlock_eval(const AST_WhileBlock_t *while_block);
+rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block);
 void rt_Expression_eval(const AST_Expression_t *expr);
 void rt_CommaSepList_eval(const AST_CommaSepList_t *comma_list);
 void rt_AssociativeList_eval(const AST_AssociativeList_t *assoc_list);
@@ -48,66 +52,73 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
 
 void RT_exec(void)
 {
-    const AST_Identifier_t *module = AST_ProcedureMap_main();
-    const AST_Identifier_t *proc = AST_ProcedureMap_main();
+    const AST_Identifier_t *module = AST_ProcedureMap_idfmain();
+    const AST_Identifier_t *proc = AST_ProcedureMap_idfmain();
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
     rt_currfile = AST_ProcedureMap_get_filename(module, proc);
     RT_VarTable_push_proc(proc->identifier_name);
-    rt_Statements_eval(code);
+    rt_ControlStatus_t ctrl = rt_Statements_eval(code);
+    if (ctrl == RT_CTRL_BREAK)
+        rt_throw("unexpected `break` statement outside loop");
+    if (ctrl == RT_CTRL_CONTINUE)
+        rt_throw("unexpected `continue` statement outside loop");
     RT_VarTable_pop_proc();
 }
 
-const AST_Identifier_t *rt_modulename_get(void)
+const AST_Identifier_t *RT_modulename_get(void)
 {
-    if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
+    if (!rt_current_module) rt_current_module = AST_ProcedureMap_idfmain();
     return rt_current_module;
 }
 
-const AST_Identifier_t *rt_procname_get(void)
+const AST_Identifier_t *RT_procname_get(void)
 {
-    if (!rt_current_module) rt_current_module = AST_ProcedureMap_main();
+    if (!rt_current_module) rt_current_module = AST_ProcedureMap_idfmain();
     return rt_current_module;
 }
 
-bool rt_Statements_eval(const AST_Statements_t *code)
+rt_ControlStatus_t rt_Statements_eval(const AST_Statements_t *code)
 {
-    if (!code) return false;
+    if (!code) return RT_CTRL_PASS;
     const AST_Statements_t *ptr = code;
     while (ptr) {
-        bool return_ = rt_Statement_eval(ptr->statement);
-        if (return_) return true;
+        rt_ControlStatus_t ctrl = rt_Statement_eval(ptr->statement);
+        if (ctrl != RT_CTRL_PASS) return ctrl;
         ptr = ptr->statements;
     }
-    return false;
+    return RT_CTRL_PASS;
 }
 
-bool rt_Statements_newscope_eval(const AST_Statements_t *code)
+rt_ControlStatus_t rt_Statements_newscope_eval(const AST_Statements_t *code)
 {
-    if (!code) return false;
+    if (!code) return RT_CTRL_PASS;
     RT_VarTable_push_scope();
-    bool return_ = rt_Statements_eval(code);
+    rt_ControlStatus_t ctrl = rt_Statements_eval(code);
     RT_VarTable_pop_scope();
-    return return_;
+    return ctrl;
 }
 
-bool rt_Statement_eval(const AST_Statement_t *statement)
+rt_ControlStatus_t rt_Statement_eval(const AST_Statement_t *statement)
 {
-    if (!statement) return false;
+    if (!statement) return RT_CTRL_PASS;
     rt_currline = statement->line_no;
     switch (statement->type) {
         case STATEMENT_TYPE_EMPTY:
-            break;
+            return RT_CTRL_PASS;
+        case STATEMENT_TYPE_BREAK:
+            return RT_CTRL_BREAK;
+        case STATEMENT_TYPE_CONTINUE:
+            return RT_CTRL_CONTINUE;
         case STATEMENT_TYPE_RETURN:
             rt_Expression_eval(statement->statement.expression);
-            return true;
+            return RT_CTRL_RETURN;
         case STATEMENT_TYPE_ASSIGNMENT:
             rt_Assignment_eval(statement->statement.assignment);
             break;
         case STATEMENT_TYPE_COMPOUND:
-            rt_CompoundSt_eval(statement->statement.compound_statement);
-            break;
+            return rt_CompoundSt_eval(statement->statement.compound_statement);
     }
-    return false;
+    return RT_CTRL_PASS;
 }
 
 void rt_Assignment_eval(const AST_Assignment_t *assignment)
@@ -126,77 +137,78 @@ void rt_Assignment_eval(const AST_Assignment_t *assignment)
     }
 }
 
-void rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st)
+rt_ControlStatus_t rt_CompoundSt_eval(const AST_CompoundSt_t *compound_st)
 {
-    if (!compound_st) return;
+    if (!compound_st) return RT_CTRL_PASS;
     switch (compound_st->type) {
         case COMPOUNDST_TYPE_IF:
-            rt_IfBlock_eval(compound_st->compound_statement.if_block);
-            break;
+            return rt_IfBlock_eval(compound_st->compound_statement.if_block);
         case COMPOUNDST_TYPE_WHILE:
-            rt_WhileBlock_eval(compound_st->compound_statement.while_block);
-            break;
+            return rt_WhileBlock_eval(compound_st->compound_statement.while_block);
         case COMPOUNDST_TYPE_FOR:
-            rt_ForBlock_eval(compound_st->compound_statement.for_block);
-            break;
+            return rt_ForBlock_eval(compound_st->compound_statement.for_block);
         case COMPOUNDST_TYPE_BLOCK:
-            rt_Statements_newscope_eval(compound_st->compound_statement.block->statements);
-            break;
+            return rt_Statements_newscope_eval(compound_st->compound_statement.block->statements);
     }
+    return RT_CTRL_PASS;
 }
 
-void rt_IfBlock_eval(const AST_IfBlock_t *if_block)
+rt_ControlStatus_t rt_IfBlock_eval(const AST_IfBlock_t *if_block)
 {
-    if (!if_block) return;
+    if (!if_block) return RT_CTRL_PASS;
     rt_Expression_eval(if_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
-    if (cond) rt_Statements_newscope_eval(if_block->if_st);
-    else rt_ElseBlock_eval(if_block->else_block);
+    if (cond) return rt_Statements_newscope_eval(if_block->if_st);
+    else return rt_ElseBlock_eval(if_block->else_block);
 }
 
-void rt_ElseBlock_eval(const AST_ElseBlock_t *else_block)
+rt_ControlStatus_t rt_ElseBlock_eval(const AST_ElseBlock_t *else_block)
 {
-    if (!else_block) return;
+    if (!else_block) return RT_CTRL_PASS;
     /* takes care of [ else nwp statements end ] */
     if (!else_block->condition && !else_block->else_block) {
-        rt_Statements_newscope_eval(else_block->else_if_st);
-        return;
+        return rt_Statements_newscope_eval(else_block->else_if_st);
     }
     /* takes care of [ else if condition then nwp statements ] */
     rt_Expression_eval(else_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
-    if (cond) rt_Statements_newscope_eval(else_block->else_if_st);
-    else rt_ElseBlock_eval(else_block->else_block);
+    if (cond) return rt_Statements_newscope_eval(else_block->else_if_st);
+    else return rt_ElseBlock_eval(else_block->else_block);
 }
 
-void rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
+rt_ControlStatus_t rt_WhileBlock_eval(const AST_WhileBlock_t *while_block)
 {
-    if (!while_block) return;
+    if (!while_block) return RT_CTRL_PASS;
     rt_Expression_eval(while_block->condition);
     bool cond = RT_Data_tobool(*RT_ACC_DATA);
     while (cond) {
-        bool return_ = rt_Statements_newscope_eval(while_block->statements);
-        if (return_) break;
+        rt_ControlStatus_t ctrl = rt_Statements_newscope_eval(while_block->statements);
+        if (ctrl == RT_CTRL_PASS)
+            /* do nothing in pass */;
+        if (ctrl == RT_CTRL_RETURN)   return ctrl;
+        if (ctrl == RT_CTRL_BREAK)    break;
+        if (ctrl == RT_CTRL_CONTINUE) continue;
     }
+    return RT_CTRL_PASS;
 }
 
-void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
+rt_ControlStatus_t rt_ForBlock_eval(const AST_ForBlock_t *for_block)
 {
-    if (!for_block) return;
+    if (!for_block) return RT_CTRL_PASS;
     switch (for_block->type) {
         case FORBLOCK_TYPE_RANGE: {
             /* calculate start, end and by */
-            rt_Expression_eval(for_block->iterable.range.start);
+            rt_Expression_eval(for_block->it.range.start);
             RT_Data_t start = *RT_ACC_DATA;
             if (start.type != RT_DATA_TYPE_I64)
                 rt_throw("for loop range start should be an i64, not '%s'", RT_Data_typename(start));
-            rt_Expression_eval(for_block->iterable.range.end);
+            rt_Expression_eval(for_block->it.range.end);
             RT_Data_t end = *RT_ACC_DATA;
             if (end.type != RT_DATA_TYPE_I64)
                 rt_throw("for loop range end should be an i64, not '%s'", RT_Data_typename(start));
             RT_Data_t by = RT_Data_null();
-            if (for_block->iterable.range.by) {
-                rt_Expression_eval(for_block->iterable.range.by);
+            if (for_block->it.range.by) {
+                rt_Expression_eval(for_block->it.range.by);
                 by = *RT_ACC_DATA;
                 if (by.type != RT_DATA_TYPE_I64)
                     rt_throw("for loop by value should be an i64, not '%s'", RT_Data_typename(start));
@@ -209,19 +221,24 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
             if ( (start_i < end_i && by_i < 0) || (start_i > end_i && by_i > 0) )
                 rt_throw("possible infinite for loop for by value '%" PRId64 "'", by_i);
             /* start for loop */
-            for (int64_t i = start_i; i < end_i; i += by_i) {
+            for (int64_t i = start_i;
+                    (start_i <= end_i && i < end_i) || i > end_i; i += by_i) {
                 RT_VarTable_push_scope();
-                RT_VarTable_create(for_block->iter->identifier_name,
+                RT_VarTable_create(for_block->val->identifier_name,
                     RT_Data_i64(i));
-                bool return_ = rt_Statements_eval(for_block->statements);
+                rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
-                if (return_) break;
+                if (ctrl == RT_CTRL_PASS)
+                    /* do nothing in pass */;
+                if (ctrl == RT_CTRL_RETURN)   return ctrl;
+                if (ctrl == RT_CTRL_BREAK)    break;
+                if (ctrl == RT_CTRL_CONTINUE) continue;
             }
             break;
         }
         case FORBLOCK_TYPE_LIST: {
             /* convert expression to a data list */
-            rt_Expression_eval(for_block->iterable.lst);
+            rt_Expression_eval(for_block->it.iterable);
             RT_Data_t iterable = *RT_ACC_DATA;
             RT_Data_copy(&iterable);
             int64_t length = 0;
@@ -232,32 +249,61 @@ void rt_ForBlock_eval(const AST_ForBlock_t *for_block)
                 case RT_DATA_TYPE_STR:
                     length = RT_DataStr_length(iterable.data.str);
                     break;
+                case RT_DATA_TYPE_MAP:
+                    length = RT_DataMap_length(iterable.data.mp);
+                    break;
                 default:
                     rt_throw("not a for loop iterable type: '%s'", RT_Data_typename(iterable));
             }
-            for (int64_t i = 0; i < length; ++i) {
+            if (iterable.type == RT_DATA_TYPE_MAP) {
+                for (RT_DataMap_iter_t entry_it = RT_DataMap_begin(iterable.data.mp);
+                        entry_it != RT_DataMap_end(iterable.data.mp); ++entry_it) {
+                    if (!RT_DataMap_exists(iterable.data.mp, entry_it)) continue;
+                    RT_DataMapEntry_t entry = *RT_DataMap_get(iterable.data.mp, entry_it);
+                    RT_VarTable_push_scope();
+                    if (for_block->idx) RT_VarTable_create(for_block->idx->identifier_name,
+                        RT_Data_str(RT_DataStr_init(entry.key)));
+                    RT_VarTable_create(for_block->val->identifier_name, entry.value);
+                    rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
+                    RT_VarTable_pop_scope();
+                    if (ctrl == RT_CTRL_PASS)
+                        /* do nothing in pass */;
+                    if (ctrl == RT_CTRL_RETURN)   return ctrl;
+                    if (ctrl == RT_CTRL_BREAK)    break;
+                    if (ctrl == RT_CTRL_CONTINUE) continue;
+                }
+            } else for (int64_t i = 0; i < length; ++i) {
                 RT_VarTable_push_scope();
                 switch (iterable.type) {
                     case RT_DATA_TYPE_LST:
-                        RT_VarTable_create(for_block->iter->identifier_name,
+                        if (for_block->idx) RT_VarTable_create(for_block->idx->identifier_name,
+                            RT_Data_i64(i));
+                        RT_VarTable_create(for_block->val->identifier_name,
                             *RT_DataList_getref(iterable.data.lst, i));
                         break;
                     case RT_DATA_TYPE_STR:
-                        RT_VarTable_create(for_block->iter->identifier_name,
+                        if (for_block->idx) RT_VarTable_create(for_block->idx->identifier_name,
+                            RT_Data_i64(i));
+                        RT_VarTable_create(for_block->val->identifier_name,
                             RT_Data_chr(*RT_DataStr_getref(iterable.data.str, i)));
                         break;
                     default:
                         rt_throw("not a for loop iterable type: '%s'", RT_Data_typename(iterable));
                 }
-                bool return_ = rt_Statements_eval(for_block->statements);
+                rt_ControlStatus_t ctrl = rt_Statements_eval(for_block->statements);
                 RT_VarTable_pop_scope();
-                if (return_) break;
+                if (ctrl == RT_CTRL_PASS)
+                    /* do nothing in pass */;
+                if (ctrl == RT_CTRL_RETURN)   return ctrl;
+                if (ctrl == RT_CTRL_BREAK)    break;
+                if (ctrl == RT_CTRL_CONTINUE) continue;
             }
             /* destroy iterable object */
             RT_Data_destroy(&iterable);
             break;
         }
     }
+    return RT_CTRL_PASS;
 }
 
 void rt_Expression_eval(const AST_Expression_t *expr)
@@ -269,93 +315,113 @@ void rt_Expression_eval(const AST_Expression_t *expr)
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
         case LEXTOK_DOT:
-            return;
-        case LEXTOK_DCOLON:
-            return;
-        case TOKOP_FNCALL: {
-            const AST_CommaSepList_t *ptr = expr->rhs_type != EXPR_TYPE_NULL ?
-                expr->rhs.literal->data.lst : NULL;
-            /* create an array for args */
-            RT_Data_t args[RT_TMPVAR_CNT];
-            /* evaluate fn args and store in args array */
-            for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                RT_Data_t data = RT_Data_null();
-                if (ptr) {
-                    rt_Expression_eval(ptr->expression);
-                    data = *RT_ACC_DATA;
-                    /* copy data as acc is overwritten on next iter */
-                    RT_Data_copy(&data);
-                }
-                args[i] = data;
-                if (ptr) ptr = ptr->comma_list;
-            }
-            /* copy fn args into temporary location */
-            for (int i = 0; i < RT_TMPVAR_CNT; ++i) {
-                RT_VarTable_modf(RT_VarTable_getref_tmpvar(i), args[i]);
-                /* destroy data i.e. reduce its ref_count once as it was previously copied */
-                RT_Data_destroy(&args[i]);
-            }
-            /* get fn code and push code to stack */
-            rt_fncall_handler(rt_modulename_get(), expr->lhs.variable);
+            rt_throw("unimplemented operators");
+            break;
+        case LEXTOK_DCOLON: {
+            if (expr->lhs_type != EXPR_TYPE_IDENTIFIER
+                || expr->rhs_type != EXPR_TYPE_IDENTIFIER)
+                    rt_throw("invalid use of module membership operator");
+            /* instead of evaluating the lhs and RHS, directly generate a
+               procedure type literal and return it via accumulator */
+            RT_VarTable_acc_setval((RT_Data_t) {
+                .data.proc = {
+                    .modulename = expr->lhs.variable,
+                    .procname = expr->rhs.variable,
+                },
+                .type = RT_DATA_TYPE_PROC
+            });
             return;
         }
         default: break;
     }
 
     /* handle lhs and evaluate it */
-    RT_Data_t *lhs = NULL;
+    RT_Data_t lhs_, *lhs = NULL;
+
+    /* during function call, if lhs is a single identifier only
+       then skip normal lhs evaluation to prevent conflict with
+       RT_VarTable_getref during identifier value resolution */
+    if (expr->op == TOKOP_FNCALL && expr->lhs_type == EXPR_TYPE_IDENTIFIER) {
+        RT_VarTable_acc_setval((RT_Data_t) {
+            .data.proc = {
+                .modulename = RT_modulename_get(),
+                .procname = expr->lhs.variable,
+            },
+            .type = RT_DATA_TYPE_PROC
+        });
+        /* copy accumulator value into temporary memory as accumulator gets
+           modified when evaluating other operands */
+        lhs_ = *RT_ACC_DATA;
+        lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
+        goto rt_Expression_eval_skip_lhs_eval;
+    }
+
     switch (expr->lhs_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->lhs.expr);
-            lhs = RT_ACC_DATA;
+            /* copy accumulator value into temporary memory as accumulator gets
+               modified when evaluating other operands */
+            lhs_ = *RT_ACC_DATA;
+            lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
             break;
         case EXPR_TYPE_LITERAL:
             rt_Literal_eval(expr->lhs.literal);
-            lhs = RT_ACC_DATA;
+            lhs_ = *RT_ACC_DATA;
+            lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
             break;
         case EXPR_TYPE_IDENTIFIER:
             rt_Identifier_eval(expr->lhs.variable);
-            lhs = RT_ACC_DATA;
+            lhs_ = *RT_ACC_DATA;
+            lhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &lhs_;
             break;
         case EXPR_TYPE_NULL: break;
     }
 
     /* handle rhs and evaluate it */
-    RT_Data_t *rhs = NULL;
+    RT_Data_t rhs_, *rhs = NULL;
+rt_Expression_eval_skip_lhs_eval:
     switch (expr->rhs_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->rhs.expr);
-            rhs = RT_ACC_DATA;
+            rhs_ = *RT_ACC_DATA;
+            rhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &rhs_;
             break;
         case EXPR_TYPE_LITERAL:
             rt_Literal_eval(expr->rhs.literal);
-            rhs = RT_ACC_DATA;
+            rhs_ = *RT_ACC_DATA;
+            rhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &rhs_;
             break;
         case EXPR_TYPE_IDENTIFIER:
             rt_Identifier_eval(expr->rhs.variable);
-            rhs = RT_ACC_DATA;
+            rhs_ = *RT_ACC_DATA;
+            rhs = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &rhs_;
             break;
         case EXPR_TYPE_NULL: break;
     }
 
     /* handle condition and evaluate it */
-    RT_Data_t *condition = NULL;
+    RT_Data_t condition_, *condition = NULL;
+rt_Expression_eval_skip_lhs_and_rhs_eval:
     switch (expr->condition_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_Expression_eval(expr->condition.expr);
-            condition = RT_ACC_DATA;
+            condition_ = *RT_ACC_DATA;
+            condition = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &condition_;
             break;
         case EXPR_TYPE_LITERAL:
             rt_Literal_eval(expr->condition.literal);
-            condition = RT_ACC_DATA;
+            condition_ = *RT_ACC_DATA;
+            condition = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &condition_;
             break;
         case EXPR_TYPE_IDENTIFIER:
             rt_Identifier_eval(expr->condition.variable);
-            condition = RT_ACC_DATA;
+            condition_ = *RT_ACC_DATA;
+            condition = RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &condition_;
             break;
         case EXPR_TYPE_NULL: break;
     }
 
+rt_Expression_eval_skip_all_3_operands_eval:
     switch (expr->op) {
         case LEXTOK_BANG:
         case LEXTOK_LOGICAL_UNEQUAL:
@@ -408,23 +474,47 @@ void rt_Expression_eval(const AST_Expression_t *expr)
         case LEXTOK_LOGICAL_OR:
         case LEXTOK_LOGICAL_OR_ASSIGN:
         case LEXTOK_TILDE:
-        case TOKOP_FNCALL:
+            rt_throw("unimplemented operators");
+            break;
+        case TOKOP_FNCALL: {
+            if (lhs->type != RT_DATA_TYPE_PROC)
+                rt_throw("cannot make procedure call to type '%s'", RT_Data_typename(*lhs));
+            if (!rhs) {
+                rhs_ = RT_Data_list(RT_DataList_init());
+                rhs = &rhs_;
+            }
+            if (rhs->type != RT_DATA_TYPE_LST)
+                rt_throw("cannot pass type '%s' as procedure argument", RT_Data_typename(*rhs));
+            /* copy fn args into temporary location */
+            RT_VarTable_modf(RT_VarTable_getref("$"), *rhs);
+            /* get fn code and push code to stack */
+            rt_fncall_handler(lhs->data.proc.modulename, lhs->data.proc.procname);
+            /* set no data to accumulator as data is already set by procedure called above
+               return early to prevent accumulator being modified by some other code */
+            return;
+        }
         case TOKOP_INDEXING:
         case TOKOP_TERNARY_COND:
             rt_throw("unimplemented operators");
             break;
-        case TOKOP_FNARGS_INDEXING:
+        case TOKOP_FNARGS_INDEXING: {
             if (!rhs || rhs->type != RT_DATA_TYPE_I64)
                 rt_throw("argument index should evaluate to an `i64`");
+            RT_Data_t args = *RT_VarTable_getref("$");
+            if (args.type != RT_DATA_TYPE_LST)
+                io_errndie("rt_Expression_eval: TOKOP_FNARGS_INDEXING: "
+                           "received arguments list as type '%s'", RT_Data_typename(args));
             RT_VarTable_acc_setadr(
-                RT_VarTable_getref_tmpvar(rhs->data.i64));
+                RT_DataList_getref(args.data.lst, rhs->data.i64));
             break;
+        }
         case TOKOP_NOP:
             RT_VarTable_acc_setval(*lhs);
             break;
         /* stuff that doesn't form an operation */
         default:
-            io_errndie("rt_Expression_eval: invalid operation '%s'", lex_get_tokcode(expr->op));
+            io_errndie("rt_Expression_eval: invalid operation '%s'",
+                lex_get_tokcode(expr->op));
     }
 }
 
@@ -526,16 +616,39 @@ void rt_AssociativeList_eval(const AST_AssociativeList_t *assoc_list)
 
 void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *proc)
 {
+    /* get code as AST from user defined function */
     const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
+    /* get a descriptor to in-built function */
+    const FN_FunctionDescriptor_t fn = FN_FunctionsList_getfn(
+        module->identifier_name, proc->identifier_name);
+    /* backup metadata on current module and function */
+    const char *currfile_bkp = rt_currfile;
+    const AST_Identifier_t *currmodule_bkp = rt_current_module;
+    const AST_Identifier_t *currproc_bkp = rt_current_proc;
+    /* update metadata to new module and function */
     if (code) {
+        rt_currfile = AST_ProcedureMap_get_filename(module, proc);
+        rt_current_module = module;
+        rt_current_proc = proc;
+    } else if (fn != FN_UNDEFINED) {
+        rt_currfile = "<built-in>";
+        rt_current_module = module;
+        rt_current_proc = proc;
+    }
+    if (code) {
+        /* call user defined function */
         RT_VarTable_push_proc(proc->identifier_name);
         rt_Statements_eval(code);
         RT_VarTable_pop_proc();
-        return;
+    } else {
+        /* attempt to call in-built function */
+        if (fn == FN_UNDEFINED)
+            rt_throw("undefined procedure '%s::%s'",
+                module->identifier_name, proc->identifier_name);
+        RT_VarTable_acc_setval(FN_FunctionsList_call(fn));
     }
-    /* attempt to call in built function */
-    FN_FunctionDescriptor_t fn = FN_FunctionsList_getfn(proc->identifier_name);
-    if (fn == FN_UNDEFINED)
-        rt_throw("undefined procedure '%s::%s'", module->identifier_name, proc->identifier_name);
-    RT_VarTable_acc_setval(FN_FunctionsList_call(fn));
+    /* restore metadata to previous module and function */
+    rt_currfile = currfile_bkp;
+    rt_current_module = currmodule_bkp;
+    rt_current_proc = currproc_bkp;
 }

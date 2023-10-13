@@ -25,6 +25,26 @@ AST_Statement_t *AST_Statement_empty(int line_no) {
     return stmt;
 }
 
+AST_Statement_t *AST_Statement_break(int line_no)
+{
+    AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
+    if (!stmt) io_errndie("AST_Statement_break:" ERR_MSG_MALLOCFAIL);
+    stmt->type = STATEMENT_TYPE_BREAK;
+    stmt->statement.assignment = NULL;
+    stmt->line_no = line_no;
+    return stmt;
+}
+
+AST_Statement_t *AST_Statement_continue(int line_no)
+{
+    AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
+    if (!stmt) io_errndie("AST_Statement_continue:" ERR_MSG_MALLOCFAIL);
+    stmt->type = STATEMENT_TYPE_CONTINUE;
+    stmt->statement.assignment = NULL;
+    stmt->line_no = line_no;
+    return stmt;
+}
+
 AST_Statement_t *AST_Statement_return(AST_Expression_t *expression, int line_no)
 {
     AST_Statement_t *stmt = (AST_Statement_t*) malloc(sizeof(AST_Statement_t));
@@ -140,25 +160,27 @@ AST_WhileBlock_t *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *w
     return while_block;
 }
 
-AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *iter, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st)
+AST_ForBlock_t *AST_ForBlock(AST_Identifier_t *val, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st)
 {
     AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
     if (!for_block) io_errndie("AST_ForBlock:" ERR_MSG_MALLOCFAIL);
-    for_block->iter = iter;
-    for_block->iterable.range.start = start;
-    for_block->iterable.range.end = end;
-    for_block->iterable.range.by = by;
+    for_block->idx = NULL;
+    for_block->val = val;
+    for_block->it.range.start = start;
+    for_block->it.range.end = end;
+    for_block->it.range.by = by;
     for_block->statements = for_st;
     for_block->type = FORBLOCK_TYPE_RANGE;
     return for_block;
 }
 
-AST_ForBlock_t *AST_ForBlock_iterate(AST_Identifier_t *iter, AST_Expression_t *lst, AST_Statements_t *for_st)
+AST_ForBlock_t *AST_ForBlock_iterate(AST_Identifier_t *idx, AST_Identifier_t *val, AST_Expression_t *iterable, AST_Statements_t *for_st)
 {
     AST_ForBlock_t *for_block = (AST_ForBlock_t*) malloc(sizeof(AST_ForBlock_t));
     if (!for_block) io_errndie("AST_ForBlock_iterate:" ERR_MSG_MALLOCFAIL);
-    for_block->iter = iter;
-    for_block->iterable.lst = lst;
+    for_block->idx = idx;
+    for_block->val = val;
+    for_block->it.iterable = iterable;
     for_block->statements = for_st;
     for_block->type = FORBLOCK_TYPE_LIST;
     return for_block;
