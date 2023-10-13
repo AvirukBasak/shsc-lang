@@ -16,8 +16,8 @@ INCLUDE_DIR    := ../include
 EXEC_NAME      := shsc
 
 CC             := gcc
-CFLAGS         := -Wall -Wno-unused-label -Ofast
-CDBGFLAGS      := -Wall -Wno-unused-label -g -fsanitize=address -D _LEX_DEBUG -D DEBUG
+CFLAGS         := -Wall -Wno-unused-but-set-variable -Wno-unused-label -Ofast
+CDBGFLAGS      := -Wall -Wno-unused-but-set-variable -Wno-unused-label -g -fsanitize=address -D _LEX_DEBUG -D DEBUG
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)

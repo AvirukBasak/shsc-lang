@@ -75,25 +75,25 @@ RT_Data_t FN_io_input()
     RT_Data_print(prompt);
     switch (type) {
         case RT_DATA_TYPE_BUL: {
-            bool val;
+            bool val = false;
             fn_io_input_bul(&val);
             ret = RT_Data_bul(val);
             break;
         }
         case RT_DATA_TYPE_CHR: {
-            char val;
+            char val = '\0';
             fn_io_input_chr(&val);
             ret = RT_Data_chr(val);
             break;
         }
         case RT_DATA_TYPE_I64: {
-            int64_t val;
+            int64_t val = 0;
             fn_io_input_i64(&val);
             ret = RT_Data_i64(val);
             break;
         }
         case RT_DATA_TYPE_F64: {
-            double val;
+            double val= 0.0;
             fn_io_input_f64(&val);
             ret = RT_Data_f64(val);
             break;
