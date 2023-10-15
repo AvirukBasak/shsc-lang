@@ -1,5 +1,5 @@
 # Shsc
-World's most sh*tty programming language.
+A scripting language inspired by C, Python and Javascript.
 
 ### Build
 For Unix and Unix-like OS users:

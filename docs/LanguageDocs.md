@@ -6,7 +6,7 @@ Some of this is yet to be implemented.
 
 # Language Docs
 
-This language is inspired by Python, JavaScript, Go, and C.
+This language is inspired by C, Python and Javascript.
 However, it introduces its own unique features and has a limited set of datatypes.
 
 Shsc is a dynamically and weakly typed language with coercion rules that make sense (unlike JS).
