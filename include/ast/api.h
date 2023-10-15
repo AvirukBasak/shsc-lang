@@ -11,20 +11,20 @@
    file acts as an all-in-one header for all ast functions
    - #include "ast.h"
    - #include "lexer.h"
-   - #include "nodes/create.h"
-   - #include "nodes/destroy.h"
+   - #include "nodes/constructors.h"
+   - #include "nodes/destructors.h"
    - #include "nodes/enums.h"
-   - #include "util/module_stack.h"
-   - #include "util/procedure_map.h"
+   - #include "util/ModuleStack.h"
+   - #include "util/ModuleAndProcTable.h"
    even if your IDE screams of unused-includes, DO NOT remove them */
 
 #include "ast.h"
 #include "lexer.h"
-#include "nodes/create.h"
-#include "nodes/destroy.h"
-#include "nodes/enums.h"
-#include "util/module_stack.h"
-#include "util/procedure_map.h"
+#include "ast/nodes/constructors.h"
+#include "ast/nodes/destructors.h"
+#include "ast/nodes/enums.h"
+#include "ast/util/ModuleStack.h"
+#include "ast/util/ModuleAndProcTable.h"
 
 typedef LexToken AST_Operator_t;
 

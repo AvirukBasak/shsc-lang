@@ -11,9 +11,9 @@
 
 #include "ast.h"
 #include "lexer.h"
-#include "nodes/create.h"
-#include "nodes/destroy.h"
-#include "nodes/enums.h"
+#include "ast/nodes/constructors.h"
+#include "ast/nodes/destructors.h"
+#include "ast/nodes/enums.h"
 
 typedef LexToken AST_Operator_t;
 

@@ -19,8 +19,8 @@ int main(int argc, char **argv)
 
     char **lines = NULL;
     size_t line_cnt = 0;
-    char* ast_filename = NULL;
-    bool ast_format = false;
+    char* AST_filename = NULL;
+    bool AST_format = false;
 
     /* start from 1 to skip program name */
     int index = 1;
@@ -51,15 +51,15 @@ int main(int argc, char **argv)
     /* check if -t or --ast is present */
     if (!strcmp(argv[index], "-t") || !strcmp(argv[index], "--ast")) {
         if (argc < 3) io_errnexit("no json file provided for '--ast'");
-        ast_filename = argv[++index];
+        AST_filename = argv[++index];
         ++index;
     }
 
     /* check if -tf or --astf is present */
     else if (!strcmp(argv[index], "-tf") || !strcmp(argv[index], "--astf")) {
         if (argc < 3) io_errnexit("no json file provided for '--astf'");
-        ast_filename = argv[++index];
-        ast_format = true;
+        AST_filename = argv[++index];
+        AST_format = true;
         ++index;
     }
 
@@ -101,16 +101,16 @@ int main(int argc, char **argv)
     }
 
 #ifndef LEX_DEBUG
-    if (ast_filename)
+    if (AST_filename)
         /* save the AST as JSON */
-        AST2JSON_convert(ast_filename, ast_format);
+        AST2JSON_convert(AST_filename, AST_format);
     else
         /* execute the program */
         RT_exec();
 #endif
 
     /* clear the entire AST */
-    AST_ProcedureMap_clear();
+    AST_util_ModuleAndProcTable_clear();
 
     return 0;
 }

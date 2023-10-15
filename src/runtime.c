@@ -5,7 +5,7 @@
 #include "ast/api.h"
 #include "runtime.h"
 #include "ast/nodes/enums.h"
-#include "ast/util/procedure_map.h"
+#include "ast/util/ModuleAndProcTable.h"
 #include "functions.h"
 #include "lexer.h"
 #include "parser.yy.h"
@@ -52,10 +52,10 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
 
 void RT_exec(void)
 {
-    const AST_Identifier_t *module = AST_ProcedureMap_idfmain();
-    const AST_Identifier_t *proc = AST_ProcedureMap_idfmain();
-    const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
-    rt_currfile = AST_ProcedureMap_get_filename(module, proc);
+    const AST_Identifier_t *module = AST_util_ModuleAndProcTable_idfmain();
+    const AST_Identifier_t *proc = AST_util_ModuleAndProcTable_idfmain();
+    const AST_Statements_t *code = AST_util_ModuleAndProcTable_get_code(module, proc);
+    rt_currfile = AST_util_ModuleAndProcTable_get_filename(module, proc);
     RT_VarTable_push_proc(proc->identifier_name);
     rt_ControlStatus_t ctrl = rt_Statements_eval(code);
     if (ctrl == RT_CTRL_BREAK)
@@ -67,13 +67,13 @@ void RT_exec(void)
 
 const AST_Identifier_t *RT_modulename_get(void)
 {
-    if (!rt_current_module) rt_current_module = AST_ProcedureMap_idfmain();
+    if (!rt_current_module) rt_current_module = AST_util_ModuleAndProcTable_idfmain();
     return rt_current_module;
 }
 
 const AST_Identifier_t *RT_procname_get(void)
 {
-    if (!rt_current_module) rt_current_module = AST_ProcedureMap_idfmain();
+    if (!rt_current_module) rt_current_module = AST_util_ModuleAndProcTable_idfmain();
     return rt_current_module;
 }
 
@@ -617,7 +617,7 @@ void rt_AssociativeList_eval(const AST_AssociativeList_t *assoc_list)
 void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *proc)
 {
     /* get code as AST from user defined function */
-    const AST_Statements_t *code = AST_ProcedureMap_get_code(module, proc);
+    const AST_Statements_t *code = AST_util_ModuleAndProcTable_get_code(module, proc);
     /* get a descriptor to in-built function */
     const FN_FunctionDescriptor_t fn = FN_FunctionsList_getfn(
         module->identifier_name, proc->identifier_name);
@@ -627,7 +627,7 @@ void rt_fncall_handler(const AST_Identifier_t *module, const AST_Identifier_t *p
     const AST_Identifier_t *currproc_bkp = rt_current_proc;
     /* update metadata to new module and function */
     if (code) {
-        rt_currfile = AST_ProcedureMap_get_filename(module, proc);
+        rt_currfile = AST_util_ModuleAndProcTable_get_filename(module, proc);
         rt_current_module = module;
         rt_current_proc = proc;
     } else if (fn != FN_UNDEFINED) {
