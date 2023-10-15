@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "errcodes.h"
-#include "io.h"
 #include "ast/api.h"
 #include "ast2json.h"
+#include "errcodes.h"
+#include "io.h"
 #include "lexer.h"
 
 void AST2JSON_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));

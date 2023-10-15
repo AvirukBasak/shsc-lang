@@ -12,7 +12,7 @@
 #include "functions/module_str.h"
 #include "functions/nomodule.h"
 #include "io.h"
-#include "runtime/data.h"
+#include "runtime/data/Data.h"
 
 FN_FunctionDescriptor_t FN_FunctionsList_getfn(const char *module, const char *fname)
 {

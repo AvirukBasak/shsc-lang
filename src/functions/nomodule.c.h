@@ -3,9 +3,9 @@
 
 #include "io.h"
 #include "functions/nomodule.h"
-#include "runtime/data.h"
-#include "runtime/data/string.h"
-#include "runtime/data/list.h"
+#include "runtime/data/Data.h"
+#include "runtime/data/DataStr.h"
+#include "runtime/data/DataList.h"
 #include "runtime/VarTable.h"
 
 RT_Data_t FN_isnull()

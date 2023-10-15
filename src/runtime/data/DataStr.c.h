@@ -9,8 +9,8 @@
 
 #include "io.h"
 #include "errcodes.h"
-#include "runtime/data.h"
-#include "runtime/data/string.h"
+#include "runtime/data/Data.h"
+#include "runtime/data/DataStr.h"
 #include "runtime/io.h"
 
 RT_DataStr_t *RT_DataStr_init(const char *s)
@@ -98,5 +98,5 @@ void RT_DataStr_del_val(RT_DataStr_t *str, char var)
 }
 
 #else
-    #warning re-inclusion of module 'runtime/data/string.c.h'
+    #warning re-inclusion of module 'runtime/data/DataStr.c.h'
 #endif

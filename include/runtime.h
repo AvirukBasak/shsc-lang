@@ -3,7 +3,7 @@
 
 #include "ast.h"
 #include "lexer.h"
-#include "runtime/data.h"
+#include "runtime/data/Data.h"
 
 extern const char *rt_currfile;
 extern int rt_currline;

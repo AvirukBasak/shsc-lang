@@ -11,10 +11,10 @@
 #include "ast/api.h"
 #include "errcodes.h"
 #include "io.h"
-#include "runtime/data.h"
-#include "runtime/data/string.h"
-#include "runtime/data/list.h"
-#include "runtime/data/map.h"
+#include "runtime/data/Data.h"
+#include "runtime/data/DataStr.h"
+#include "runtime/data/DataList.h"
+#include "runtime/data/DataMap.h"
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 
@@ -49,6 +49,10 @@ RT_Data_t RT_Data_f64(double val)
     var.data.f64 = val;
     return var;
 }
+
+#include "runtime/data/DataList.c.h"
+#include "runtime/data/DataStr.c.h"
+#include "runtime/data/DataMap.c.h"
 
 RT_Data_t RT_Data_str(RT_DataStr_t *str)
 {
@@ -304,10 +308,6 @@ int RT_Data_print(RT_Data_t var)
     return bytes;
 }
 
-#include "data/list.c.h"
-#include "data/string.c.h"
-#include "data/map.c.h"
-
 #else
-    #warning re-inclusion of module 'runtime/data.c.h'
+    #warning re-inclusion of module 'runtime/data/Data.c.h'
 #endif

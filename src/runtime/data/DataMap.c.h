@@ -9,9 +9,9 @@
 
 #include "io.h"
 #include "errcodes.h"
-#include "runtime/data.h"
-#include "runtime/data/map.h"
-#include "runtime/data/string.h"
+#include "runtime/data/Data.h"
+#include "runtime/data/DataMap.h"
+#include "runtime/data/DataStr.h"
 #include "runtime/io.h"
 #include "tlib/khash/khash.h"
 
@@ -170,5 +170,5 @@ const RT_DataMapEntry_t *RT_DataMap_get(RT_DataMap_t *mp, RT_DataMap_iter_t it)
 }
 
 #else
-    #warning re-inclusion of module 'runtime/data/map.c.h'
+    #warning re-inclusion of module 'runtime/data/DataMap.c.h'
 #endif
