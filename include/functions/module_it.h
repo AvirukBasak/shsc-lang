@@ -1,8 +1,8 @@
-#ifndef FN_MODULE_IT_H
-#define FN_MODULE_IT_H
+#ifndef fn_MODULE_IT_H
+#define fn_MODULE_IT_H
 
 #include "runtime/data/Data.h"
 
-RT_Data_t FN_it_len();
+rt_Data_t fn_it_len();
 
 #endif

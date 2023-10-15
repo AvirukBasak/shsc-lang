@@ -1,5 +1,5 @@
-#ifndef RT_DATA_STRING_C_H
-#define RT_DATA_STRING_C_H
+#ifndef rt_DATA_STRING_C_H
+#define rt_DATA_STRING_C_H
 
 #include <inttypes.h>
 #include <stddef.h>
@@ -13,15 +13,15 @@
 #include "runtime/data/DataStr.h"
 #include "runtime/io.h"
 
-RT_DataStr_t *RT_DataStr_init(const char *s)
+rt_DataStr_t *rt_DataStr_init(const char *s)
 {
-    RT_DataStr_t *str = (RT_DataStr_t*) malloc(sizeof(RT_DataStr_t));
-    if (!str) io_errndie("RT_DataStr_init:" ERR_MSG_MALLOCFAIL);
+    rt_DataStr_t *str = (rt_DataStr_t*) malloc(sizeof(rt_DataStr_t));
+    if (!str) io_errndie("rt_DataStr_init:" ERR_MSG_MALLOCFAIL);
     str->length = !s ? 0 : strlen(s);
     str->capacity = !s ? 0 : (str->length +1);
     if (s) {
         str->var = (char*) malloc(str->capacity * sizeof(char) +1);
-        if (!str->var) io_errndie("RT_DataStr_init:" ERR_MSG_MALLOCFAIL);
+        if (!str->var) io_errndie("rt_DataStr_init:" ERR_MSG_MALLOCFAIL);
         strncpy(str->var, s, str->length);
         str->var[str->length] = 0;
     } else {
@@ -33,20 +33,20 @@ RT_DataStr_t *RT_DataStr_init(const char *s)
     return str;
 }
 
-int64_t RT_DataStr_length(const RT_DataStr_t *str)
+int64_t rt_DataStr_length(const rt_DataStr_t *str)
 {
     return str->length;
 }
 
-void RT_DataStr_copy(RT_DataStr_t *str)
+void rt_DataStr_copy(rt_DataStr_t *str)
 {
     ++str->rc;
 }
 
-void RT_DataStr_destroy(RT_DataStr_t **ptr)
+void rt_DataStr_destroy(rt_DataStr_t **ptr)
 {
     if (!ptr || !*ptr) return;
-    RT_DataStr_t *str = *ptr;
+    rt_DataStr_t *str = *ptr;
     /* ref counting */
     --str->rc;
     if (str->rc < 0) str->rc = 0;
@@ -58,18 +58,18 @@ void RT_DataStr_destroy(RT_DataStr_t **ptr)
     *ptr = NULL;
 }
 
-void RT_DataStr_append(RT_DataStr_t *str, char var)
+void rt_DataStr_append(rt_DataStr_t *str, char var)
 {
     if (str->length >= str->capacity) {
         str->capacity = str->capacity * 2 +2;
         str->var = (char*) realloc(str->var, str->capacity * sizeof(char));
-        if (!str->var) io_errndie("RT_DataStr_append:" ERR_MSG_REALLOCFAIL);
+        if (!str->var) io_errndie("rt_DataStr_append:" ERR_MSG_REALLOCFAIL);
     }
     str->var[str->length++] = var;
     str->var[str->length] = '\0';
 }
 
-char *RT_DataStr_getref(const RT_DataStr_t *str, int64_t idx)
+char *rt_DataStr_getref(const rt_DataStr_t *str, int64_t idx)
 {
     if (idx >= 0 && idx < str->length)
         return &str->var[idx];
@@ -77,7 +77,7 @@ char *RT_DataStr_getref(const RT_DataStr_t *str, int64_t idx)
     return NULL;
 }
 
-void RT_DataStr_del_index(RT_DataStr_t *str, int64_t idx)
+void rt_DataStr_del_index(rt_DataStr_t *str, int64_t idx)
 {
     if (idx >= 0 && idx < str->length) {
         for (int64_t i = idx + 1; i < str->length; i++)
@@ -87,11 +87,11 @@ void RT_DataStr_del_index(RT_DataStr_t *str, int64_t idx)
     } else rt_throw("string out of bounds for index '%" PRId64 "'", idx);
 }
 
-void RT_DataStr_del_val(RT_DataStr_t *str, char var)
+void rt_DataStr_del_val(rt_DataStr_t *str, char var)
 {
     for (int64_t i = 0; i < str->length; i++) {
         if (str->var[i] == var) {
-            RT_DataStr_del_index(str, i);
+            rt_DataStr_del_index(str, i);
             --i;
         }
     }

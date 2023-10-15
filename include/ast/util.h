@@ -1,5 +1,5 @@
-#ifndef AST_UTIL_H
-#define AST_UTIL_H
+#ifndef ast_UTIL_H
+#define ast_UTIL_H
 
 /* the following includes are absolutely needed
    - #include "util/ModuleStack.h"

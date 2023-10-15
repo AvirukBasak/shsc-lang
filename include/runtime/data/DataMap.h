@@ -1,5 +1,5 @@
-#ifndef RT_DATA_MAP_H
-#define RT_DATA_MAP_H
+#ifndef rt_DATA_MAP_H
+#define rt_DATA_MAP_H
 
 #include <stddef.h>
 
@@ -8,37 +8,37 @@
 
 typedef struct {
     char *key;
-    RT_Data_t value;
-} RT_DataMapEntry_t;
+    rt_Data_t value;
+} rt_DataMapEntry_t;
 
-KHASH_MAP_INIT_STR(RT_DataMap_t, RT_DataMapEntry_t)
+KHASH_MAP_INIT_STR(rt_DataMap_t, rt_DataMapEntry_t)
 
-struct RT_DataMap_t {
-    khash_t(RT_DataMap_t) *data_map;
+struct rt_DataMap_t {
+    khash_t(rt_DataMap_t) *data_map;
     int64_t length;
     int64_t rc;
 };
 
-typedef khiter_t RT_DataMap_iter_t;
+typedef khiter_t rt_DataMap_iter_t;
 
-RT_DataMap_t *RT_DataMap_init();
-int64_t RT_DataMap_length(const RT_DataMap_t *mp);
-void RT_DataMap_copy(RT_DataMap_t *mp);
-void RT_DataMap_destroy(RT_DataMap_t **ptr);
-void RT_DataMap_insert(RT_DataMap_t *mp, const char *key, RT_Data_t value);
-/** unlike RT_DataMap_getref, returns NULL if key not found */
-RT_Data_t *RT_DataMap_getref__n(const RT_DataMap_t *mp, const char *key);
-/** unlike RT_DataMap_getref__n, CRASHES using rt_throw if key not found.
+rt_DataMap_t *rt_DataMap_init();
+int64_t rt_DataMap_length(const rt_DataMap_t *mp);
+void rt_DataMap_copy(rt_DataMap_t *mp);
+void rt_DataMap_destroy(rt_DataMap_t **ptr);
+void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value);
+/** unlike rt_DataMap_getref, returns NULL if key not found */
+rt_Data_t *rt_DataMap_getref_errnull(const rt_DataMap_t *mp, const char *key);
+/** unlike rt_DataMap_getref_errnull, CRASHES using rt_throw if key not found.
     data should be updated only by calling
-    `void RT_VarTable_modf(RT_Data_t *dest, RT_Data_t src)`
+    `void rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)`
     on the returned data pointer, that'll take care of reference counts */
-RT_Data_t *RT_DataMap_getref(const RT_DataMap_t *mp, const char *key);
-void RT_DataMap_del(RT_DataMap_t *mp, const char *key);
-char *RT_DataMap_tostr(const RT_DataMap_t *mp);
+rt_Data_t *rt_DataMap_getref(const rt_DataMap_t *mp, const char *key);
+void rt_DataMap_del(rt_DataMap_t *mp, const char *key);
+char *rt_DataMap_tostr(const rt_DataMap_t *mp);
 
-RT_DataMap_iter_t RT_DataMap_begin(RT_DataMap_t *mp);
-RT_DataMap_iter_t RT_DataMap_end(RT_DataMap_t *mp);
-bool RT_DataMap_exists(RT_DataMap_t *mp, RT_DataMap_iter_t it);
-const RT_DataMapEntry_t *RT_DataMap_get(RT_DataMap_t *mp, RT_DataMap_iter_t it);
+rt_DataMap_iter_t rt_DataMap_begin(rt_DataMap_t *mp);
+rt_DataMap_iter_t rt_DataMap_end(rt_DataMap_t *mp);
+bool rt_DataMap_exists(rt_DataMap_t *mp, rt_DataMap_iter_t it);
+const rt_DataMapEntry_t *rt_DataMap_get(rt_DataMap_t *mp, rt_DataMap_iter_t it);
 
 #endif

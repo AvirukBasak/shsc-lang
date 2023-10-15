@@ -1,5 +1,5 @@
-#ifndef FN_MODULE_IO_C_H
-#define FN_MODULE_IO_C_H
+#ifndef fn_MODULE_IO_C_H
+#define fn_MODULE_IO_C_H
 
 #include <errno.h>
 #include <stdbool.h>
@@ -18,91 +18,91 @@
 #include "runtime/data/DataList.h"
 #include "runtime/VarTable.h"
 
-bool fn_io_input_type_isvalid(enum RT_DataType_t type);
+bool fn_io_input_type_isvalid(enum rt_DataType_t type);
 void fn_io_input_bul(bool *val);
 void fn_io_input_chr(char *val);
 void fn_io_input_i64(int64_t *val);
 void fn_io_input_f64(double *val);
 int fn_io_input_str(char **val);
 
-RT_Data_t FN_io_print()
+rt_Data_t fn_io_print()
 {
-    RT_Data_t args = *RT_VarTable_getref("$");
-    if (args.type != RT_DATA_TYPE_LST)
-        io_errndie("FN_io_print: "
-                   "received arguments list as type '%s'", RT_Data_typename(args));
+    rt_Data_t args = *rt_VarTable_getref("$");
+    if (args.type != rt_DATA_TYPE_LST)
+        io_errndie("fn_io_print: "
+                   "received arguments list as type '%s'", rt_Data_typename(args));
     int bytes = 0;
-    for (int i = 0; i < RT_DataList_length(args.data.lst); ++i) {
-        const RT_Data_t data = *RT_DataList_getref(args.data.lst, i);
-        if (RT_Data_isnull(data)) continue;
+    for (int i = 0; i < rt_DataList_length(args.data.lst); ++i) {
+        const rt_Data_t data = *rt_DataList_getref(args.data.lst, i);
+        if (rt_Data_isnull(data)) continue;
         /* print a space before data conditions:
            - no space before 1st element
            - no space before `lf` */
         /* i is not 1st element AND data is not a character */
-        if ((i > 0 && data.type != RT_DATA_TYPE_CHR) ||
+        if ((i > 0 && data.type != rt_DATA_TYPE_CHR) ||
             /* i is not 1st element BUT if data is character it should not be lf */
-            (i > 0 && data.type == RT_DATA_TYPE_CHR && data.data.chr != '\n'))
+            (i > 0 && data.type == rt_DATA_TYPE_CHR && data.data.chr != '\n'))
                 printf(" ");
-        bytes += RT_Data_print(data);
+        bytes += rt_Data_print(data);
     }
-    return RT_Data_i64(bytes);
+    return rt_Data_i64(bytes);
 }
 
-RT_Data_t FN_io_input()
+rt_Data_t fn_io_input()
 {
-    RT_Data_t args = *RT_VarTable_getref("$");
-    if (args.type != RT_DATA_TYPE_LST)
-        io_errndie("FN_io_input: "
-                   "received arguments list as type '%s'", RT_Data_typename(args));
-    const RT_Data_t prompt = *RT_DataList_getref(args.data.lst, 0);
-    const RT_Data_t type_ = *RT_DataList_getref(args.data.lst, 1);
-    RT_Data_t ret = RT_Data_null();
-    if (type_.type != RT_DATA_TYPE_I64) {
-        char *s = RT_Data_tostr(type_);
+    rt_Data_t args = *rt_VarTable_getref("$");
+    if (args.type != rt_DATA_TYPE_LST)
+        io_errndie("fn_io_input: "
+                   "received arguments list as type '%s'", rt_Data_typename(args));
+    const rt_Data_t prompt = *rt_DataList_getref(args.data.lst, 0);
+    const rt_Data_t type_ = *rt_DataList_getref(args.data.lst, 1);
+    rt_Data_t ret = rt_Data_null();
+    if (type_.type != rt_DATA_TYPE_I64) {
+        char *s = rt_Data_tostr(type_);
         rt_throw(
             "input: invalid type parameter: '%s'\n"
             "  valid parameters are bul, chr, i64, f64 or str\n"
             "  respective values are %d, %d, %d, %d or %d", s,
-            RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
+            rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
         free(s);
     }
-    enum RT_DataType_t type = type_.data.i64;
+    enum rt_DataType_t type = type_.data.i64;
     if (!fn_io_input_type_isvalid(type_.data.i64))
         rt_throw(
             "input: invalid type parameter\n"
             "  valid parameters are bul, chr, i64, f64 or str\n"
             "  respective values are %d, %d, %d, %d or %d",
-            RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
-    RT_Data_print(prompt);
+            rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
+    rt_Data_print(prompt);
     switch (type) {
-        case RT_DATA_TYPE_BUL: {
+        case rt_DATA_TYPE_BUL: {
             bool val = false;
             fn_io_input_bul(&val);
-            ret = RT_Data_bul(val);
+            ret = rt_Data_bul(val);
             break;
         }
-        case RT_DATA_TYPE_CHR: {
+        case rt_DATA_TYPE_CHR: {
             char val = '\0';
             fn_io_input_chr(&val);
-            ret = RT_Data_chr(val);
+            ret = rt_Data_chr(val);
             break;
         }
-        case RT_DATA_TYPE_I64: {
+        case rt_DATA_TYPE_I64: {
             int64_t val = 0;
             fn_io_input_i64(&val);
-            ret = RT_Data_i64(val);
+            ret = rt_Data_i64(val);
             break;
         }
-        case RT_DATA_TYPE_F64: {
+        case rt_DATA_TYPE_F64: {
             double val= 0.0;
             fn_io_input_f64(&val);
-            ret = RT_Data_f64(val);
+            ret = rt_Data_f64(val);
             break;
         }
-        case RT_DATA_TYPE_STR: {
+        case rt_DATA_TYPE_STR: {
             char *val = NULL;
             fn_io_input_str(&val);
-            ret = RT_Data_str(RT_DataStr_init(val));
+            ret = rt_Data_str(rt_DataStr_init(val));
             free(val);
             break;
         }
@@ -110,20 +110,20 @@ RT_Data_t FN_io_input()
             "input: invalid type parameter\n"
             "  valid parameters are bul, chr, i64, f64 or str\n"
             "  respective values are %d, %d, %d, %d or %d",
-            RT_DATA_TYPE_BUL, RT_DATA_TYPE_CHR, RT_DATA_TYPE_I64, RT_DATA_TYPE_F64, RT_DATA_TYPE_STR);
+            rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
             break;
     }
     return ret;
 }
 
-bool fn_io_input_type_isvalid(enum RT_DataType_t type)
+bool fn_io_input_type_isvalid(enum rt_DataType_t type)
 {
     switch (type) {
-        case RT_DATA_TYPE_BUL:
-        case RT_DATA_TYPE_CHR:
-        case RT_DATA_TYPE_I64:
-        case RT_DATA_TYPE_F64:
-        case RT_DATA_TYPE_STR:
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_STR:
             return true;
         default: return false;
     }

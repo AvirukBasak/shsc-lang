@@ -1,24 +1,24 @@
-#ifndef AST_H
-#define AST_H
+#ifndef ast_H
+#define ast_H
 
 #include <stdbool.h>
 
-typedef struct AST_Statements_t           AST_Statements_t;
-typedef struct AST_Statement_t            AST_Statement_t;
-typedef struct AST_Assignment_t           AST_Assignment_t;
-typedef struct AST_CompoundSt_t           AST_CompoundSt_t;
-typedef struct AST_IfBlock_t              AST_IfBlock_t;
-typedef struct AST_ElseBlock_t            AST_ElseBlock_t;
-typedef struct AST_WhileBlock_t           AST_WhileBlock_t;
-typedef struct AST_ForBlock_t             AST_ForBlock_t;
-typedef struct AST_Block_t                AST_Block_t;
+typedef struct ast_Statements_t           ast_Statements_t;
+typedef struct ast_Statement_t            ast_Statement_t;
+typedef struct ast_Assignment_t           ast_Assignment_t;
+typedef struct ast_CompoundSt_t           ast_CompoundSt_t;
+typedef struct ast_IfBlock_t              ast_IfBlock_t;
+typedef struct ast_ElseBlock_t            ast_ElseBlock_t;
+typedef struct ast_WhileBlock_t           ast_WhileBlock_t;
+typedef struct ast_ForBlock_t             ast_ForBlock_t;
+typedef struct ast_Block_t                ast_Block_t;
 
-typedef struct AST_Expression_t           AST_Expression_t;
-typedef struct AST_Expression_t           AST_Condition_t;
-typedef struct AST_CommaSepList_t         AST_CommaSepList_t;
-typedef struct AST_AssociativeList_t      AST_AssociativeList_t;
+typedef struct ast_Expression_t           ast_Expression_t;
+typedef struct ast_Expression_t           ast_Condition_t;
+typedef struct ast_CommaSepList_t         ast_CommaSepList_t;
+typedef struct ast_AssociativeList_t      ast_AssociativeList_t;
 
-typedef struct AST_Literal_t              AST_Literal_t;
-typedef struct AST_Identifier_t           AST_Identifier_t;
+typedef struct ast_Literal_t              ast_Literal_t;
+typedef struct ast_Identifier_t           ast_Identifier_t;
 
 #endif
