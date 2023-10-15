@@ -1,6 +1,8 @@
 #ifndef fn_NOMODULE_C_H
 #define fn_NOMODULE_C_H
 
+#include <stdlib.h>
+
 #include "io.h"
 #include "functions/nomodule.h"
 #include "runtime/data/Data.h"
@@ -25,7 +27,11 @@ rt_Data_t fn_tostr()
         io_errndie("fn_tostr: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
     const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
-    return rt_Data_str(rt_DataStr_init(rt_Data_tostr(data)));
+    char *strdata = rt_Data_tostr(data);
+    const rt_Data_t retdata = rt_Data_str(rt_DataStr_init(strdata));
+    free(strdata);
+    strdata = NULL;
+    return retdata;
 }
 
 rt_Data_t fn_type()
