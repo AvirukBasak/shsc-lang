@@ -314,10 +314,10 @@ void rt_Expression_eval(const ast_Expression_t *expr)
     }
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
-        case LEXTOK_DOT:
+        case TOKEN_DOT:
             rt_throw("unimplemented operators");
             break;
-        case LEXTOK_DCOLON: {
+        case TOKEN_DCOLON: {
             if (expr->lhs_type != EXPR_TYPE_IDENTIFIER
                 || expr->rhs_type != EXPR_TYPE_IDENTIFIER)
                     rt_throw("invalid use of module membership operator");
@@ -423,57 +423,57 @@ rt_Expression_eval_skip_lhs_and_rhs_eval:
 
 rt_Expression_eval_skip_all_3_operands_eval:
     switch (expr->op) {
-        case LEXTOK_BANG:
-        case LEXTOK_LOGICAL_UNEQUAL:
-        case LEXTOK_PERCENT:
-        case LEXTOK_MODULO_ASSIGN:
-        case LEXTOK_AMPERSAND:
-        case LEXTOK_LOGICAL_AND:
-        case LEXTOK_LOGICAL_AND_ASSIGN:
-        case LEXTOK_BITWISE_AND_ASSIGN:
-        case LEXTOK_ASTERIX:
-        case LEXTOK_EXPONENT:
-        case LEXTOK_EXPONENT_ASSIGN:
-        case LEXTOK_MULTIPLY_ASSIGN:
-        case LEXTOK_PLUS:
-        case LEXTOK_INCREMENT:
-        case LEXTOK_ADD_ASSIGN:
-        case LEXTOK_MINUS:
-        case LEXTOK_DECREMENT:
-        case LEXTOK_SUBSTRACT_ASSIGN:
+        case TOKEN_BANG:
+        case TOKEN_LOGICAL_UNEQUAL:
+        case TOKEN_PERCENT:
+        case TOKEN_MODULO_ASSIGN:
+        case TOKEN_AMPERSAND:
+        case TOKEN_LOGICAL_AND:
+        case TOKEN_LOGICAL_AND_ASSIGN:
+        case TOKEN_BITWISE_AND_ASSIGN:
+        case TOKEN_ASTERIX:
+        case TOKEN_EXPONENT:
+        case TOKEN_EXPONENT_ASSIGN:
+        case TOKEN_MULTIPLY_ASSIGN:
+        case TOKEN_PLUS:
+        case TOKEN_INCREMENT:
+        case TOKEN_ADD_ASSIGN:
+        case TOKEN_MINUS:
+        case TOKEN_DECREMENT:
+        case TOKEN_SUBSTRACT_ASSIGN:
             rt_throw("unimplemented operators");
             break;
-        case LEXTOK_DOT:
+        case TOKEN_DOT:
             rt_throw("memebership operator '.' is not yet supported");
             break;
-        case LEXTOK_FSLASH:
-        case LEXTOK_FLOOR_DIVIDE:
-        case LEXTOK_FLOOR_DIVIDE_ASSIGN:
-        case LEXTOK_DIVIDE_ASSIGN:
-        case LEXTOK_DCOLON:
-        case LEXTOK_LBRACE_ANGULAR:
-        case LEXTOK_BITWISE_LSHIFT:
-        case LEXTOK_BITWISE_LSHIFT_ASSIGN:
-        case LEXTOK_LOGICAL_LESSER_EQUAL:
+        case TOKEN_FSLASH:
+        case TOKEN_FLOOR_DIVIDE:
+        case TOKEN_FLOOR_DIVIDE_ASSIGN:
+        case TOKEN_DIVIDE_ASSIGN:
+        case TOKEN_DCOLON:
+        case TOKEN_LBRACE_ANGULAR:
+        case TOKEN_BITWISE_LSHIFT:
+        case TOKEN_BITWISE_LSHIFT_ASSIGN:
+        case TOKEN_LOGICAL_LESSER_EQUAL:
             rt_throw("unimplemented operators");
             break;
-        case LEXTOK_ASSIGN:
+        case TOKEN_ASSIGN:
             rt_VarTable_acc_setval(*rt_VarTable_modf(lhs, *rhs));
             break;
-        case LEXTOK_LOGICAL_EQUAL:
-        case LEXTOK_RBRACE_ANGULAR:
-        case LEXTOK_LOGICAL_GREATER_EQUAL:
-        case LEXTOK_BITWISE_RSHIFT:
-        case LEXTOK_BITWISE_RSHIFT_ASSIGN:
-        case LEXTOK_ARITH_RSHIFT:
-        case LEXTOK_ARITH_RSHIFT_ASSIGN:
-        case LEXTOK_CARET:
-        case LEXTOK_BITWISE_XOR_ASSIGN:
-        case LEXTOK_PIPE:
-        case LEXTOK_BITWISE_OR_ASSIGN:
-        case LEXTOK_LOGICAL_OR:
-        case LEXTOK_LOGICAL_OR_ASSIGN:
-        case LEXTOK_TILDE:
+        case TOKEN_LOGICAL_EQUAL:
+        case TOKEN_RBRACE_ANGULAR:
+        case TOKEN_LOGICAL_GREATER_EQUAL:
+        case TOKEN_BITWISE_RSHIFT:
+        case TOKEN_BITWISE_RSHIFT_ASSIGN:
+        case TOKEN_ARITH_RSHIFT:
+        case TOKEN_ARITH_RSHIFT_ASSIGN:
+        case TOKEN_CARET:
+        case TOKEN_BITWISE_XOR_ASSIGN:
+        case TOKEN_PIPE:
+        case TOKEN_BITWISE_OR_ASSIGN:
+        case TOKEN_LOGICAL_OR:
+        case TOKEN_LOGICAL_OR_ASSIGN:
+        case TOKEN_TILDE:
             rt_throw("unimplemented operators");
             break;
         case TOKOP_FNCALL: {
@@ -514,7 +514,7 @@ rt_Expression_eval_skip_all_3_operands_eval:
         /* stuff that doesn't form an operation */
         default:
             io_errndie("rt_Expression_eval: invalid operation '%s'",
-                lex_get_tokcode(expr->op));
+                lex_Token_getcode(expr->op));
     }
 }
 

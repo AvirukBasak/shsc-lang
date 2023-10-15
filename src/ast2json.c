@@ -351,7 +351,7 @@ void AST2JSON_Expression(const ast_Expression_t *expression)
     AST2JSON_open_obj();
     AST2JSON_printf("\"node\": \"expression\"");
     AST2JSON_put_comma();
-    AST2JSON_printf("\"op\": \"%s\"", lex_get_symbol(expression->op));
+    AST2JSON_printf("\"op\": \"%s\"", lex_Token_getsymbol(expression->op));
 
     switch (expression->lhs_type) {
         case EXPR_TYPE_EXPRESSION:

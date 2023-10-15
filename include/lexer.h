@@ -24,26 +24,26 @@
 
 // The following form the EXTERNAL INTERFACE
 
-typedef enum yytokentype LexToken;
+typedef enum yytokentype lex_Token_t;
 
-LexToken yylex(void);
-LexToken lex_get_nexttok(FILE *f);
-const char *lex_get_tokcode(LexToken code);
-const char *lex_get_symbol(LexToken code);
+lex_Token_t yylex(void);
+lex_Token_t lex_Token_getnext(FILE *f);
+const char *lex_Token_getcode(lex_Token_t code);
+const char *lex_Token_getsymbol(lex_Token_t code);
 
-const char *lex_get_buffstr();
+const char *lex_Buffer_getstr();
 
 extern int lex_line_no;
 extern int lex_char_no;
 
 // The following are for INTERNAL USE
 
-typedef struct LexBuffer LexBuffer;
+typedef struct lex_Buffer_t lex_Buffer_t;
 
-extern LexBuffer *lex_buffer;
-extern LexToken lex_currtok;
+extern lex_Buffer_t *lex_buffer;
+extern lex_Token_t lex_currtok;
 
-struct LexBuffer {
+struct lex_Buffer_t {
     char *buffer;
     size_t push_i;
     size_t size;
@@ -55,13 +55,13 @@ char lex_ungetc(char *c, FILE *f);
 
 bool lex_is_delimiter(char c);
 bool lex_is_printable(char c);
-bool lex_isalmun_undr(char c);
+bool lex_is_alnumundr(char c);
 
 // lexer/buffer
-void lex_buffpush(char ch);
-char lex_buffpop();
-void lex_buffreset();
-void lex_buffree();
+void lex_Buffer_push(char ch);
+char lex_Buffer_pop();
+void lex_Buffer_reset();
+void lex_Buffer_free();
 
 // lexer
 void lex_throw(const char *msg);
