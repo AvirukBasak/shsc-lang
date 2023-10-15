@@ -1,5 +1,5 @@
-#ifndef AST_UTIL_MODULE_STACK_C_H
-#define AST_UTIL_MODULE_STACK_C_H
+#ifndef ast_UTIL_MODULE_STACK_C_H
+#define ast_UTIL_MODULE_STACK_C_H
 
 #include <stdlib.h>
 
@@ -9,51 +9,51 @@
 #include "errcodes.h"
 #include "io.h"
 
-typedef struct AST_ModuleStack_t AST_ModuleStack_t;
-struct AST_ModuleStack_t {
-    AST_Identifier_t *data;
-    AST_ModuleStack_t *next;
+typedef struct ast_ModuleStack_t ast_ModuleStack_t;
+struct ast_ModuleStack_t {
+    ast_Identifier_t *data;
+    ast_ModuleStack_t *next;
 };
 
 // Global variable representing the top of the stack
-AST_ModuleStack_t *AST_modstack_top = NULL;
+ast_ModuleStack_t *ast_modstack_top = NULL;
 
 /** Push name of current module to module stack.
-    Takes ownership of the (AST_Identifier*), and frees on pop */
-void AST_ModuleStack_push(AST_Identifier_t *module_name)
+    Takes ownership of the (ast_Identifier*), and frees on pop */
+void ast_ModuleStack_push(ast_Identifier_t *module_name)
 {
-    AST_ModuleStack_t *new_node = (AST_ModuleStack_t*) malloc(sizeof(AST_ModuleStack_t));
-    if (!new_node) io_errndie("AST_ModuleStack_push:" ERR_MSG_MALLOCFAIL);
+    ast_ModuleStack_t *new_node = (ast_ModuleStack_t*) malloc(sizeof(ast_ModuleStack_t));
+    if (!new_node) io_errndie("ast_ModuleStack_push:" ERR_MSG_MALLOCFAIL);
     new_node->data = module_name;
-    new_node->next = AST_modstack_top;
-    AST_modstack_top = new_node;
+    new_node->next = ast_modstack_top;
+    ast_modstack_top = new_node;
 }
 
 /** Function to get the top module name from the stack */
-const AST_Identifier_t *AST_ModuleStack_top(void)
+const ast_Identifier_t *ast_ModuleStack_top(void)
 {
-    if (AST_modstack_top == NULL) return NULL;
-    return AST_modstack_top->data;
+    if (ast_modstack_top == NULL) return NULL;
+    return ast_modstack_top->data;
 }
 
 /** Pop top module name from stack */
-void AST_ModuleStack_pop(void)
+void ast_ModuleStack_pop(void)
 {
-    if (AST_modstack_top == NULL) return;
-    AST_ModuleStack_t *temp = AST_modstack_top;
-    AST_modstack_top = AST_modstack_top->next;
-    AST_Identifier_destroy(&temp->data);
+    if (ast_modstack_top == NULL) return;
+    ast_ModuleStack_t *temp = ast_modstack_top;
+    ast_modstack_top = ast_modstack_top->next;
+    ast_Identifier_destroy(&temp->data);
     temp->data = NULL;
     free(temp);
 }
 
-/** Empty the stack and free all (AST_Identifier*) */
-void AST_ModuleStack_clear(void)
+/** Empty the stack and free all (ast_Identifier*) */
+void ast_ModuleStack_clear(void)
 {
-    while (AST_modstack_top != NULL) {
-        AST_ModuleStack_t *temp = AST_modstack_top;
-        AST_modstack_top = AST_modstack_top->next;
-        AST_Identifier_destroy(&temp->data);
+    while (ast_modstack_top != NULL) {
+        ast_ModuleStack_t *temp = ast_modstack_top;
+        ast_modstack_top = ast_modstack_top->next;
+        ast_Identifier_destroy(&temp->data);
         temp->data = NULL;
         free(temp);
     }

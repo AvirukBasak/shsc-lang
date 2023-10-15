@@ -1,55 +1,55 @@
-#ifndef AST_NODES_CONSTRUCTORS_H
-#define AST_NODES_CONSTRUCTORS_H
+#ifndef ast_NODES_CONSTRUCTORS_H
+#define ast_NODES_CONSTRUCTORS_H
 
 #include <stdint.h>
 
 #include "ast.h"
 #include "lexer.h"
 
-typedef LexToken AST_Operator_t;
+typedef LexToken ast_Operator_t;
 
-AST_Statements_t    *AST_Statements(AST_Statements_t *statements, AST_Statement_t *statement);
+ast_Statements_t    *ast_Statements(ast_Statements_t *statements, ast_Statement_t *statement);
 
-AST_Statement_t     *AST_Statement_empty(int line_no);
-AST_Statement_t     *AST_Statement_break(int line_no);
-AST_Statement_t     *AST_Statement_continue(int line_no);
-AST_Statement_t     *AST_Statement_return(AST_Expression_t *expression, int line_no);
-AST_Statement_t     *AST_Statement_Assignment(AST_Assignment_t *assignment, int line_no);
-AST_Statement_t     *AST_Statement_CompoundSt(AST_CompoundSt_t *compund, int line_no);
+ast_Statement_t     *ast_Statement_empty(int line_no);
+ast_Statement_t     *ast_Statement_break(int line_no);
+ast_Statement_t     *ast_Statement_continue(int line_no);
+ast_Statement_t     *ast_Statement_return(ast_Expression_t *expression, int line_no);
+ast_Statement_t     *ast_Statement_Assignment(ast_Assignment_t *assignment, int line_no);
+ast_Statement_t     *ast_Statement_CompoundSt(ast_CompoundSt_t *compund, int line_no);
 
-AST_Assignment_t    *AST_Assignment_create(AST_Identifier_t *identifier, AST_Expression_t *expression);
-AST_Assignment_t    *AST_Assignment_tovoid(AST_Expression_t *expression);
+ast_Assignment_t    *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expression_t *expression);
+ast_Assignment_t    *ast_Assignment_tovoid(ast_Expression_t *expression);
 
-AST_CompoundSt_t    *AST_CompoundSt_IfBlock(AST_IfBlock_t *block);
-AST_CompoundSt_t    *AST_CompoundSt_WhileBlock(AST_WhileBlock_t *block);
-AST_CompoundSt_t    *AST_CompoundSt_ForBlock(AST_ForBlock_t *block);
-AST_CompoundSt_t    *AST_CompoundSt_Block(AST_Block_t *block);
+ast_CompoundSt_t    *ast_CompoundSt_IfBlock(ast_IfBlock_t *block);
+ast_CompoundSt_t    *ast_CompoundSt_WhileBlock(ast_WhileBlock_t *block);
+ast_CompoundSt_t    *ast_CompoundSt_ForBlock(ast_ForBlock_t *block);
+ast_CompoundSt_t    *ast_CompoundSt_Block(ast_Block_t *block);
 
-AST_IfBlock_t       *AST_IfBlock(AST_Condition_t *condition, AST_Statements_t *if_st, AST_ElseBlock_t *else_block);
-AST_ElseBlock_t     *AST_ElseBlock(AST_Condition_t *condition, AST_Statements_t *else_if_st, AST_ElseBlock_t *else_block);
+ast_IfBlock_t       *ast_IfBlock(ast_Condition_t *condition, ast_Statements_t *if_st, ast_ElseBlock_t *else_block);
+ast_ElseBlock_t     *ast_ElseBlock(ast_Condition_t *condition, ast_Statements_t *else_if_st, ast_ElseBlock_t *else_block);
 
-AST_WhileBlock_t    *AST_WhileBlock(AST_Condition_t *condition, AST_Statements_t *while_st);
-AST_ForBlock_t      *AST_ForBlock(AST_Identifier_t *val, AST_Expression_t *start, AST_Expression_t *end, AST_Expression_t *by, AST_Statements_t *for_st);
-AST_ForBlock_t      *AST_ForBlock_iterate(AST_Identifier_t *idx, AST_Identifier_t *val, AST_Expression_t *iterable, AST_Statements_t *for_st);
-AST_Block_t         *AST_Block(AST_Statements_t *statements);
+ast_WhileBlock_t    *ast_WhileBlock(ast_Condition_t *condition, ast_Statements_t *while_st);
+ast_ForBlock_t      *ast_ForBlock(ast_Identifier_t *val, ast_Expression_t *start, ast_Expression_t *end, ast_Expression_t *by, ast_Statements_t *for_st);
+ast_ForBlock_t      *ast_ForBlock_iterate(ast_Identifier_t *idx, ast_Identifier_t *val, ast_Expression_t *iterable, ast_Statements_t *for_st);
+ast_Block_t         *ast_Block(ast_Statements_t *statements);
 
-AST_Expression_t    *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_Expression_t *rhs, AST_Expression_t *condition);
-AST_Expression_t    *AST_Expression_Literal(AST_Literal_t *literal);
-AST_Expression_t    *AST_Expression_Identifier(AST_Identifier_t *identifier);
-AST_Expression_t    *AST_Expression_CommaSepList(AST_CommaSepList_t *comma_list);
+ast_Expression_t    *ast_Expression(ast_Operator_t op, ast_Expression_t *lhs, ast_Expression_t *rhs, ast_Expression_t *condition);
+ast_Expression_t    *ast_Expression_Literal(ast_Literal_t *literal);
+ast_Expression_t    *ast_Expression_Identifier(ast_Identifier_t *identifier);
+ast_Expression_t    *ast_Expression_CommaSepList(ast_CommaSepList_t *comma_list);
 
-AST_CommaSepList_t  *AST_CommaSepList(AST_CommaSepList_t *comma_list, AST_Expression_t *expression);
-AST_AssociativeList_t  *AST_AssociativeList(AST_AssociativeList_t *assoc_list, AST_Literal_t *key, AST_Expression_t *value);
+ast_CommaSepList_t  *ast_CommaSepList(ast_CommaSepList_t *comma_list, ast_Expression_t *expression);
+ast_AssociativeList_t  *ast_AssociativeList(ast_AssociativeList_t *assoc_list, ast_Literal_t *key, ast_Expression_t *value);
 
-AST_Literal_t       *AST_Literal_bul(bool literal);
-AST_Literal_t       *AST_Literal_chr(char literal);
-AST_Literal_t       *AST_Literal_f64(double literal);
-AST_Literal_t       *AST_Literal_i64(int64_t literal);
-AST_Literal_t       *AST_Literal_str(char *literal);
-AST_Literal_t       *AST_Literal_interp_str(char *literal);
-AST_Literal_t       *AST_Literal_lst(AST_CommaSepList_t *literal);
-AST_Literal_t       *AST_Literal_map(AST_AssociativeList_t *literal);
+ast_Literal_t       *ast_Literal_bul(bool literal);
+ast_Literal_t       *ast_Literal_chr(char literal);
+ast_Literal_t       *ast_Literal_f64(double literal);
+ast_Literal_t       *ast_Literal_i64(int64_t literal);
+ast_Literal_t       *ast_Literal_str(char *literal);
+ast_Literal_t       *ast_Literal_interp_str(char *literal);
+ast_Literal_t       *ast_Literal_lst(ast_CommaSepList_t *literal);
+ast_Literal_t       *ast_Literal_map(ast_AssociativeList_t *literal);
 
-AST_Identifier_t    *AST_Identifier(char *identifier_name);
+ast_Identifier_t    *ast_Identifier(char *identifier_name);
 
 #endif

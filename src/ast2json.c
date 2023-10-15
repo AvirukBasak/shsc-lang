@@ -81,8 +81,8 @@ void AST2JSON_put_comma(void)
     AST2JSON_printf(",\n%*s", AST2JSON_indent_depth, "");
 }
 
-/* function to convert AST_Statements_t to JSON */
-void AST2JSON_Statements(const AST_Statements_t *statements)
+/* function to convert ast_Statements_t to JSON */
+void AST2JSON_Statements(const ast_Statements_t *statements)
 {
     if (!statements) {
         AST2JSON_printf("null");
@@ -94,7 +94,7 @@ void AST2JSON_Statements(const AST_Statements_t *statements)
     AST2JSON_put_comma();
     AST2JSON_printf("\"statements\": ");
     AST2JSON_open_list();
-    const AST_Statements_t *st = statements;
+    const ast_Statements_t *st = statements;
     AST2JSON_Statement(st->statement);
     st = st->statements;
     while (st) {
@@ -106,8 +106,8 @@ void AST2JSON_Statements(const AST_Statements_t *statements)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_Statement_t to JSON */
-void AST2JSON_Statement(const AST_Statement_t *statement)
+/* function to convert ast_Statement_t to JSON */
+void AST2JSON_Statement(const ast_Statement_t *statement)
 {
     if (!statement) {
         AST2JSON_printf("null");
@@ -163,8 +163,8 @@ void AST2JSON_Statement(const AST_Statement_t *statement)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_Assignment_t to JSON */
-void AST2JSON_Assignment(const AST_Assignment_t *assignment)
+/* function to convert ast_Assignment_t to JSON */
+void AST2JSON_Assignment(const ast_Assignment_t *assignment)
 {
     if (!assignment) {
         AST2JSON_printf("null");
@@ -182,8 +182,8 @@ void AST2JSON_Assignment(const AST_Assignment_t *assignment)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_CompoundSt_t to JSON */
-void AST2JSON_CompoundSt(const AST_CompoundSt_t *compound_statement)
+/* function to convert ast_CompoundSt_t to JSON */
+void AST2JSON_CompoundSt(const ast_CompoundSt_t *compound_statement)
 {
     if (!compound_statement) {
         AST2JSON_printf("null");
@@ -206,8 +206,8 @@ void AST2JSON_CompoundSt(const AST_CompoundSt_t *compound_statement)
     }
 }
 
-/* function to convert AST_IfBlock_t to JSON */
-void AST2JSON_IfBlock(const AST_IfBlock_t *if_block)
+/* function to convert ast_IfBlock_t to JSON */
+void AST2JSON_IfBlock(const ast_IfBlock_t *if_block)
 {
     if (!if_block) {
         AST2JSON_printf("null");
@@ -228,8 +228,8 @@ void AST2JSON_IfBlock(const AST_IfBlock_t *if_block)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_ElseIfBlock_t to JSON */
-void AST2JSON_ElseBlock(const AST_ElseBlock_t *else_block)
+/* function to convert ast_ElseIfBlock_t to JSON */
+void AST2JSON_ElseBlock(const ast_ElseBlock_t *else_block)
 {
     if (!else_block) {
         AST2JSON_printf("null");
@@ -250,8 +250,8 @@ void AST2JSON_ElseBlock(const AST_ElseBlock_t *else_block)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_WhileBlock_t to JSON */
-void AST2JSON_WhileBlock(const AST_WhileBlock_t *while_block)
+/* function to convert ast_WhileBlock_t to JSON */
+void AST2JSON_WhileBlock(const ast_WhileBlock_t *while_block)
 {
     if (!while_block) {
         AST2JSON_printf("null");
@@ -269,8 +269,8 @@ void AST2JSON_WhileBlock(const AST_WhileBlock_t *while_block)
     AST2JSON_close_obj();
 }
 
-/* Function to convert AST_ForBlock_t to JSON */
-void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
+/* Function to convert ast_ForBlock_t to JSON */
+void AST2JSON_ForBlock(const ast_ForBlock_t *for_block)
 {
     if (!for_block) {
         AST2JSON_printf("null");
@@ -324,8 +324,8 @@ void AST2JSON_ForBlock(const AST_ForBlock_t *for_block)
     AST2JSON_close_obj();
 }
 
-/* Function to convert AST_Block_t to JSON */
-void AST2JSON_Block(const AST_Block_t *block)
+/* Function to convert ast_Block_t to JSON */
+void AST2JSON_Block(const ast_Block_t *block)
 {
     if (!block) {
         AST2JSON_printf("null");
@@ -340,8 +340,8 @@ void AST2JSON_Block(const AST_Block_t *block)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_Expression_t to JSON */
-void AST2JSON_Expression(const AST_Expression_t *expression)
+/* function to convert ast_Expression_t to JSON */
+void AST2JSON_Expression(const ast_Expression_t *expression)
 {
     if (!expression) {
         AST2JSON_printf("null");
@@ -446,8 +446,8 @@ void AST2JSON_Expression(const AST_Expression_t *expression)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_CommaSepList_t to JSON */
-void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
+/* function to convert ast_CommaSepList_t to JSON */
+void AST2JSON_CommaSepList(const ast_CommaSepList_t *comma_list)
 {
     if (!comma_list) {
         AST2JSON_printf("null");
@@ -457,7 +457,7 @@ void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
     AST2JSON_open_obj();
     AST2JSON_printf("\"node\": \"comma_list\"");
 
-    const AST_CommaSepList_t *lst = comma_list;
+    const ast_CommaSepList_t *lst = comma_list;
     AST2JSON_put_comma();
     AST2JSON_printf("\"comma_list\": ");
     AST2JSON_open_list();
@@ -474,7 +474,7 @@ void AST2JSON_CommaSepList(const AST_CommaSepList_t *comma_list)
     AST2JSON_close_obj();
 }
 
-void AST2JSON_AssociativeList(const AST_AssociativeList_t* assoc_list)
+void AST2JSON_AssociativeList(const ast_AssociativeList_t* assoc_list)
 {
     if (!assoc_list) {
         AST2JSON_printf("null");
@@ -484,7 +484,7 @@ void AST2JSON_AssociativeList(const AST_AssociativeList_t* assoc_list)
     AST2JSON_open_obj();
     AST2JSON_printf("\"node\": \"assoc_list\"");
 
-    const AST_AssociativeList_t *mp = assoc_list;
+    const ast_AssociativeList_t *mp = assoc_list;
     AST2JSON_put_comma();
     AST2JSON_printf("\"assoc_list\": ");
     AST2JSON_open_list();
@@ -515,8 +515,8 @@ void AST2JSON_AssociativeList(const AST_AssociativeList_t* assoc_list)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_Literal_t to JSON */
-void AST2JSON_Literal(const AST_Literal_t *literal)
+/* function to convert ast_Literal_t to JSON */
+void AST2JSON_Literal(const ast_Literal_t *literal)
 {
     if (!literal) {
         AST2JSON_printf("null");
@@ -603,8 +603,8 @@ void AST2JSON_Literal(const AST_Literal_t *literal)
     AST2JSON_close_obj();
 }
 
-/* function to convert AST_Identifier_t to JSON */
-void AST2JSON_Identifier(const AST_Identifier_t *identifier)
+/* function to convert ast_Identifier_t to JSON */
+void AST2JSON_Identifier(const ast_Identifier_t *identifier)
 {
     if (!identifier) {
         AST2JSON_printf("null");
@@ -624,14 +624,14 @@ void AST2JSON_ModuleAndProcTable()
     AST2JSON_open_obj();
     /* node name */
     AST2JSON_printf("\"node\": \"root\"");
-    AST_util_ModuleAndProcTable_foreach_module(modulename, procmap, {
+    ast_util_ModuleAndProcTable_foreach_module(modulename, procmap, {
         /* open map of the module name to procedures */
         AST2JSON_put_comma();
         AST2JSON_printf("\"%s\": ", modulename);
         AST2JSON_open_obj();
         /* node name */
         AST2JSON_printf("\"node\": \"module\"");
-        AST_util_ModuleAndProcTable_foreach_procedure(procmap, procname, filename, code, {
+        ast_util_ModuleAndProcTable_foreach_procedure(procmap, procname, filename, code, {
             /* open a procedure node, map it with proc name */
             AST2JSON_put_comma();
             AST2JSON_printf("\"%s\": ", procname);

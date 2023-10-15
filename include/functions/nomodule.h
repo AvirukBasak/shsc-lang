@@ -1,10 +1,10 @@
-#ifndef FN_NOMODULE_H
-#define FN_NOMODULE_H
+#ifndef fn_NOMODULE_H
+#define fn_NOMODULE_H
 
 #include "runtime/data/Data.h"
 
-RT_Data_t FN_isnull();
-RT_Data_t FN_tostr();
-RT_Data_t FN_type();
+rt_Data_t fn_isnull();
+rt_Data_t fn_tostr();
+rt_Data_t fn_type();
 
 #endif
