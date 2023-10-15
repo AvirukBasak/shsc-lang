@@ -69,7 +69,7 @@ void RT_VarTable_push_scope();
 /** pop local scope and return result of last expression */
 RT_Data_t RT_VarTable_pop_scope(void);
 
-/** clear memory of the vartable */
+/** clear memory of the VarTable */
 void RT_VarTable_destroy();
 
 #endif
