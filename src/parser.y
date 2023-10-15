@@ -264,8 +264,8 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" nwp statements "end" trm  { AST_ProcedureMap_add(AST_ModuleStack_top(), $2, $5);
-                                                            AST_Identifier_free(&$2);
+    "proc" identifier "start" nwp statements "end" trm  { AST_util_ModuleAndProcTable_add(AST_ModuleStack_top(), $2, $5);
+                                                            AST_Identifier_destroy(&$2);
                                                         }
     ;
 

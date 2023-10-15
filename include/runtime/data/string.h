@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+
 #include "runtime/data.h"
 
 struct RT_DataStr_t {

@@ -618,20 +618,20 @@ void AST2JSON_Identifier(const AST_Identifier_t *identifier)
     AST2JSON_close_obj();
 }
 
-void AST2JSON_ProcedureMap()
+void AST2JSON_ModuleAndProcTable()
 {
     /* open root */
     AST2JSON_open_obj();
     /* node name */
     AST2JSON_printf("\"node\": \"root\"");
-    AST_ProcedureMap_foreach_module(modulename, procmap, {
+    AST_util_ModuleAndProcTable_foreach_module(modulename, procmap, {
         /* open map of the module name to procedures */
         AST2JSON_put_comma();
         AST2JSON_printf("\"%s\": ", modulename);
         AST2JSON_open_obj();
         /* node name */
         AST2JSON_printf("\"node\": \"module\"");
-        AST_ProcedureMap_foreach_procedure(procmap, procname, filename, code, {
+        AST_util_ModuleAndProcTable_foreach_procedure(procmap, procname, filename, code, {
             /* open a procedure node, map it with proc name */
             AST2JSON_put_comma();
             AST2JSON_printf("\"%s\": ", procname);
@@ -657,7 +657,7 @@ void AST2JSON_convert(const char *filepath, bool format)
     AST2JSON_format = format;
     if (!strcmp(filepath, "-")) AST2JSON_outfile = stdout;
     else AST2JSON_outfile = fopen(filepath, "wb");
-    AST2JSON_ProcedureMap();
+    AST2JSON_ModuleAndProcTable();
     if (AST2JSON_outfile != stdout)
         fclose(AST2JSON_outfile);
 }

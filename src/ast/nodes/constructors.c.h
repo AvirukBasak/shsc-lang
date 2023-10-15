@@ -1,5 +1,5 @@
-#ifndef AST_NODES_CREATE_C_H
-#define AST_NODES_CREATE_C_H
+#ifndef AST_NODES_CONSTRUCTORS_C_H
+#define AST_NODES_CONSTRUCTORS_C_H
 
 #include <stdlib.h>
 
@@ -214,7 +214,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
         expression->lhs = lhs->lhs;
         lhs->lhs.expr = NULL;
         lhs->lhs_type = EXPR_TYPE_NULL;
-        AST_Expression_free(&lhs);
+        AST_Expression_destroy(&lhs);
     } else {
         expression->lhs_type = lhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
         expression->lhs.expr = lhs;
@@ -225,7 +225,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
         expression->rhs = rhs->lhs;
         rhs->lhs.expr = NULL;
         rhs->lhs_type = EXPR_TYPE_NULL;
-        AST_Expression_free(&rhs);
+        AST_Expression_destroy(&rhs);
     } else {
         expression->rhs_type = rhs ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
         expression->rhs.expr = rhs;
@@ -236,7 +236,7 @@ AST_Expression_t *AST_Expression(AST_Operator_t op, AST_Expression_t *lhs, AST_E
         expression->condition = condition->lhs;
         condition->lhs.expr = NULL;
         condition->lhs_type = EXPR_TYPE_NULL;
-        AST_Expression_free(&condition);
+        AST_Expression_destroy(&condition);
     } else {
         expression->condition_type = condition ? EXPR_TYPE_EXPRESSION : EXPR_TYPE_NULL;
         expression->condition.expr = condition;
@@ -308,74 +308,74 @@ AST_AssociativeList_t *AST_AssociativeList(AST_AssociativeList_t *assoc_list, AS
 
 AST_Literal_t *AST_Literal_bul(bool literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_bul:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_BUL;
-    ast_literal->data.bul = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_bul:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_BUL;
+    AST_literal->data.bul = literal;
+    return AST_literal;
 }
 
 AST_Literal_t *AST_Literal_chr(char literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_chr:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_CHR;
-    ast_literal->data.chr = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_chr:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_CHR;
+    AST_literal->data.chr = literal;
+    return AST_literal;
 }
 
 AST_Literal_t *AST_Literal_f64(double literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_f64:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_F64;
-    ast_literal->data.f64 = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_f64:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_F64;
+    AST_literal->data.f64 = literal;
+    return AST_literal;
 }
 
 AST_Literal_t *AST_Literal_i64(int64_t literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_i64:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_I64;
-    ast_literal->data.i64 = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_i64:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_I64;
+    AST_literal->data.i64 = literal;
+    return AST_literal;
 }
 
 AST_Literal_t *AST_Literal_str(char *literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_str:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_STR;
-    ast_literal->data.str = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_str:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_STR;
+    AST_literal->data.str = literal;
+    return AST_literal;
 }
 
 AST_Literal_t *AST_Literal_interp_str(char *literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_interp_str:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_INTERP_STR;
-    ast_literal->data.str = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_interp_str:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_INTERP_STR;
+    AST_literal->data.str = literal;
+    return AST_literal;
 }
 
 AST_Literal_t *AST_Literal_lst(AST_CommaSepList_t *literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_lst:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_LST;
-    ast_literal->data.lst = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_lst:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_LST;
+    AST_literal->data.lst = literal;
+    return AST_literal;
 }
 
 AST_Literal_t *AST_Literal_map(AST_AssociativeList_t *literal)
 {
-    AST_Literal_t *ast_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
-    if (!ast_literal) io_errndie("AST_Literal_map:" ERR_MSG_MALLOCFAIL);
-    ast_literal->type = DATA_TYPE_MAP;
-    ast_literal->data.mp = literal;
-    return ast_literal;
+    AST_Literal_t *AST_literal = (AST_Literal_t*) malloc(sizeof(AST_Literal_t));
+    if (!AST_literal) io_errndie("AST_Literal_map:" ERR_MSG_MALLOCFAIL);
+    AST_literal->type = DATA_TYPE_MAP;
+    AST_literal->data.mp = literal;
+    return AST_literal;
 }
 
 AST_Identifier_t *AST_Identifier(char *identifier_name)
@@ -387,5 +387,5 @@ AST_Identifier_t *AST_Identifier(char *identifier_name)
 }
 
 #else
-    #warning re-inclusion of module 'ast/nodes/create.c.h'
+    #warning re-inclusion of module 'ast/nodes/constructors.c.h'
 #endif
