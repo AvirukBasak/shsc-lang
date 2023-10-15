@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "runtime/data.h"
+#include "runtime/data/Data.h"
 
 struct RT_DataStr_t {
     char *var;

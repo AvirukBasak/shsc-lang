@@ -5,18 +5,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "ast/nodes/enums.h"
-#include "tlib/khash/khash.h"
 
 #include "ast/api.h"
+#include "ast/nodes/enums.h"
 #include "io.h"
 #include "errcodes.h"
-#include "runtime/data.h"
-#include "runtime/data/list.h"
-#include "runtime/data/string.h"
-#include "runtime/data/map.h"
+#include "runtime/data/Data.h"
+#include "runtime/data/DataList.h"
+#include "runtime/data/DataStr.h"
+#include "runtime/data/DataMap.h"
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
+#include "tlib/khash/khash.h"
 
 typedef RT_DataMap_t *RT_VarTable_Scope_t;
 

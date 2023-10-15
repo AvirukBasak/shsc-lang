@@ -9,9 +9,9 @@
 
 #include "io.h"
 #include "errcodes.h"
-#include "runtime/data.h"
-#include "runtime/data/list.h"
-#include "runtime/data/string.h"
+#include "runtime/data/Data.h"
+#include "runtime/data/DataList.h"
+#include "runtime/data/DataStr.h"
 #include "runtime/io.h"
 
 RT_DataList_t *RT_DataList_init()
@@ -134,5 +134,5 @@ char *RT_DataList_tostr(const RT_DataList_t *lst)
 }
 
 #else
-    #warning re-inclusion of module 'runtime/data/list.c.h'
+    #warning re-inclusion of module 'runtime/data/DataList.c.h'
 #endif

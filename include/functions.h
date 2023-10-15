@@ -1,7 +1,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include "runtime/data.h"
+#include "runtime/data/Data.h"
 
 /**
  FN_<module>_FUNCTION

@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "ast.h"
-#include "data.h"
+#include "runtime/data/Data.h"
 
 #define __RT_TMPVAR_CNT (32)
 #define RT_ACC_DATA (RT_VarTable_acc_get()->adr ? RT_VarTable_acc_get()->adr : &RT_VarTable_acc_get()->val)
