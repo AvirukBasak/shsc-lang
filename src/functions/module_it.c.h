@@ -1,8 +1,12 @@
 #ifndef FN_MODULE_IT_C_H
 #define FN_MODULE_IT_C_H
 
+#include "io.h"
+#include "functions/module_it.h"
 #include "runtime/data.h"
 #include "runtime/data/string.h"
+#include "runtime/data/list.h"
+#include "runtime/data/map.h"
 #include "runtime/vartable.h"
 
 RT_Data_t FN_it_len()
