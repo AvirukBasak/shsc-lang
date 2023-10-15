@@ -1,5 +1,5 @@
-#ifndef rt_VARTABLE_H
-#define rt_VARTABLE_H
+#ifndef RT_VARTABLE_H
+#define RT_VARTABLE_H
 
 #include <stdbool.h>
 
@@ -7,7 +7,7 @@
 #include "runtime/data/Data.h"
 
 #define _rt_TMPVAR_CNT (32)
-#define rt_ACC_DATA (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
+#define RT_ACC_DATA (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
 
 /** accumulator stores procedure return values
     and also the address from which the value was obtained

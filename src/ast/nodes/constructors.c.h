@@ -1,5 +1,5 @@
-#ifndef ast_NODES_CONSTRUCTORS_C_H
-#define ast_NODES_CONSTRUCTORS_C_H
+#ifndef AST_NODES_CONSTRUCTORS_C_H
+#define AST_NODES_CONSTRUCTORS_C_H
 
 #include <stdlib.h>
 
@@ -194,7 +194,7 @@ ast_Block_t *ast_Block(ast_Statements_t *statements)
     return block;
 }
 
-#define ast_EXPRESSION_ISOPERAND(expr_) ({             \
+#define AST_EXPRESSION_ISOPERAND(expr_) ({             \
     ast_Expression_t *expr = expr_;                    \
     expr && expr->op == TOKOP_NOP                      \
          && ( expr->lhs_type == EXPR_TYPE_LITERAL      \
@@ -209,7 +209,7 @@ ast_Expression_t *ast_Expression(ast_Operator_t op, ast_Expression_t *lhs, ast_E
     if (!expression) io_errndie("ast_Expression:" ERR_MSG_MALLOCFAIL);
     expression->op = op;
 
-    if (ast_EXPRESSION_ISOPERAND(lhs)) {
+    if (AST_EXPRESSION_ISOPERAND(lhs)) {
         expression->lhs_type = lhs->lhs_type;
         expression->lhs = lhs->lhs;
         lhs->lhs.expr = NULL;
@@ -220,7 +220,7 @@ ast_Expression_t *ast_Expression(ast_Operator_t op, ast_Expression_t *lhs, ast_E
         expression->lhs.expr = lhs;
     }
 
-    if (ast_EXPRESSION_ISOPERAND(rhs)) {
+    if (AST_EXPRESSION_ISOPERAND(rhs)) {
         expression->rhs_type = rhs->lhs_type;
         expression->rhs = rhs->lhs;
         rhs->lhs.expr = NULL;
@@ -231,7 +231,7 @@ ast_Expression_t *ast_Expression(ast_Operator_t op, ast_Expression_t *lhs, ast_E
         expression->rhs.expr = rhs;
     }
 
-    if (ast_EXPRESSION_ISOPERAND(condition)) {
+    if (AST_EXPRESSION_ISOPERAND(condition)) {
         expression->condition_type = condition->lhs_type;
         expression->condition = condition->lhs;
         condition->lhs.expr = NULL;

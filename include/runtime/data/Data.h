@@ -1,5 +1,5 @@
-#ifndef rt_DATA_H
-#define rt_DATA_H
+#ifndef RT_DATA_H
+#define RT_DATA_H
 
 #include <stdbool.h>
 #include <stdint.h>

@@ -1,5 +1,5 @@
-#ifndef ast_UTIL_MODULE_STACK_H
-#define ast_UTIL_MODULE_STACK_H
+#ifndef AST_UTIL_MODULE_STACK_H
+#define AST_UTIL_MODULE_STACK_H
 
 #include "ast.h"
 

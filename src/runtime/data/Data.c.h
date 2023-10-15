@@ -1,5 +1,5 @@
-#ifndef rt_DATA_C_H
-#define rt_DATA_C_H
+#ifndef RT_DATA_C_H
+#define RT_DATA_C_H
 
 #include <ctype.h>
 #include <inttypes.h>

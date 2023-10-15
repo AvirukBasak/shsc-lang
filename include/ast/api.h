@@ -1,9 +1,9 @@
-#ifdef ast_NODES_H
+#ifdef AST_NODES_H
     #error either of 'ast/api.h' or 'ast/nodes.h' should be included
 #endif
 
-#ifndef ast_API_H
-#define ast_API_H
+#ifndef AST_API_H
+#define AST_API_H
 
 #include <stdbool.h>
 

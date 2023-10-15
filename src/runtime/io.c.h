@@ -1,5 +1,5 @@
-#ifndef rt_IO_C_H
-#define rt_IO_C_H
+#ifndef RT_IO_C_H
+#define RT_IO_C_H
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -9,12 +9,12 @@
 #include "runtime.h"
 #include "runtime/io.h"
 
-#define rt_THROW_PRINT_FN      "%s:%s: "
-#define rt_THROW_DONT_PRINT_FN ""
+#define RT_THROW_PRINT_FN      "%s:%s: "
+#define RT_THROW_DONT_PRINT_FN ""
 
 void rt_throw(const char *fmt, ...)
 {
-    fprintf(stderr, "shsc: " rt_THROW_DONT_PRINT_FN "%s:%d: ",
+    fprintf(stderr, "shsc: " RT_THROW_DONT_PRINT_FN "%s:%d: ",
         /* rt_modulename_get()->identifier_name, */
             /* rt_procname_get()->identifier_name, */
                 rt_currfile, rt_currline);

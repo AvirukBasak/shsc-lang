@@ -1,5 +1,5 @@
-#ifndef rt_DATA_MAP_H
-#define rt_DATA_MAP_H
+#ifndef RT_DATA_MAP_H
+#define RT_DATA_MAP_H
 
 #include <stddef.h>
 
