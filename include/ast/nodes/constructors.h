@@ -6,7 +6,7 @@
 #include "ast.h"
 #include "lexer.h"
 
-typedef LexToken ast_Operator_t;
+typedef lex_Token_t ast_Operator_t;
 
 ast_Statements_t    *ast_Statements(ast_Statements_t *statements, ast_Statement_t *statement);
 

@@ -6,9 +6,9 @@
 
 #include "lexer.h"
 
-LexToken lex_match_bool(FILE *f, char ch)
+lex_Token_t lex_match_bool(FILE *f, char ch)
 {
-    if (!isalpha(ch)) return LEXTOK_INVALID;
+    if (!isalpha(ch)) return TOKEN_INVALID;
     /* start at 1 as ch is already in buffer */
     size_t currlen = 1;
     while (true) {
@@ -20,21 +20,21 @@ LexToken lex_match_bool(FILE *f, char ch)
         }
         currlen++;
     }
-    if (lex_get_buffstr()[0] == 't' && !strcmp(lex_get_buffstr(), "true"))  return LEXTOK_BOOL_LITERAL;
-    if (lex_get_buffstr()[0] == 'f' && !strcmp(lex_get_buffstr(), "false")) return LEXTOK_BOOL_LITERAL;
+    if (lex_Buffer_getstr()[0] == 't' && !strcmp(lex_Buffer_getstr(), "true"))  return TOKEN_BOOL_LITERAL;
+    if (lex_Buffer_getstr()[0] == 'f' && !strcmp(lex_Buffer_getstr(), "false")) return TOKEN_BOOL_LITERAL;
     /* unget all characters except the first if all matches failed */
     while (currlen > 1) {
         lex_ungetc(&ch, f);
         currlen--;
     }
-    return LEXTOK_INVALID;
+    return TOKEN_INVALID;
 }
 
-LexToken lex_match_char(FILE *f, char ch)
+lex_Token_t lex_match_char(FILE *f, char ch)
 {
-    if (ch != '\'') return LEXTOK_INVALID;
+    if (ch != '\'') return TOKEN_INVALID;
     /* pop out quote symbol */
-    lex_buffpop();
+    lex_Buffer_pop();
     char prev2 = 0, prev = 0;
     while (true) {
         /* can't use lex_getc as it doesn't buffer delimiters */
@@ -42,32 +42,32 @@ LexToken lex_match_char(FILE *f, char ch)
         prev = ch;
         ch = getc(f);
         if (prev2 != '\\' && prev == '\\' && ch == '\'') {
-            lex_buffpush(ch);
+            lex_Buffer_push(ch);
             continue;
         }
         if (ch == '\'') break;
         if (ch == '\n') lex_throw("character literal cannot have un-escaped newline");
         if (ch == (char) EOF) lex_throw("unexpected end of file");
-        lex_buffpush(ch);
+        lex_Buffer_push(ch);
     }
-    return LEXTOK_CHAR_LITERAL;
+    return TOKEN_CHAR_LITERAL;
 }
 
-LexToken lex_match_string(FILE *f, char ch)
+lex_Token_t lex_match_string(FILE *f, char ch)
 {
     if (ch != '"') {
-        if (ch != 'f') return LEXTOK_INVALID;
+        if (ch != 'f') return TOKEN_INVALID;
         char ch = getc(f);
         if (ch != '"') {
             ungetc(ch, f);
             ungetc('f', f);
-            return LEXTOK_INVALID;
+            return TOKEN_INVALID;
         }
     }
     /* after the above checks, ch is now either " or f */
-    LexToken tok = ch == '"' ? LEXTOK_STR_LITERAL : LEXTOK_INTERP_STR_LITERAL;
+    lex_Token_t tok = ch == '"' ? TOKEN_STR_LITERAL : TOKEN_INTERP_STR_LITERAL;
     /* pop out " or f symbol */
-    lex_buffpop();
+    lex_Buffer_pop();
     char prev2 = 0, prev = 0;
     while (true) {
         /* can't use lex_getc as it doesn't buffer delimiters */
@@ -75,12 +75,12 @@ LexToken lex_match_string(FILE *f, char ch)
         prev = ch;
         ch = getc(f);
         if (prev2 != '\\' && prev == '\\' && ch == '"') {
-            lex_buffpush(ch);
+            lex_Buffer_push(ch);
             continue;
         }
         if (ch == '"') break;
         if (ch == (char) EOF) lex_throw("unexpected end of file");
-        lex_buffpush(ch);
+        lex_Buffer_push(ch);
     }
     return tok;
 }
@@ -127,18 +127,18 @@ char lex_match_digits(FILE* f, char ch, enum LexBase base)
     lex_digitchecker_ft lex_isdigit = lex_get_dgitchecker(base);
     /* convert lower case hex digits to uppercase */
     if (lex_isdigit(ch) && ch >= 'a' && ch <= 'f') {
-        lex_buffpush(lex_buffpop() - ('a' - 'A'));
+        lex_Buffer_push(lex_Buffer_pop() - ('a' - 'A'));
     }
     /* match [a-fA-F0-9_]+ */
     while (lex_isdigit(ch)) {
         ch = lex_getc(f);
         /* convert lower case hex digits to uppercase */
         if (lex_isdigit(ch) && ch >= 'a' && ch <= 'f') {
-            lex_buffpush(lex_buffpop() - ('a' - 'A'));
+            lex_Buffer_push(lex_Buffer_pop() - ('a' - 'A'));
         }
         /* if _ consume it but don't buffer it */
         if (ch == '_') {
-            lex_buffpop();
+            lex_Buffer_pop();
             ch = lex_getc(f);
         }
     }
@@ -147,33 +147,33 @@ char lex_match_digits(FILE* f, char ch, enum LexBase base)
 
 /* this function accepts numeric strings that start with any digit or '.'
    and have the form (\d*)(\.\d+)?([ep][+-]?\d+)? */
-LexToken lex_match_unum(FILE *f, char ch, enum LexBase base)
+lex_Token_t lex_match_unum(FILE *f, char ch, enum LexBase base)
 {
     /* get digit checker based on base */
     lex_digitchecker_ft lex_isdigit = lex_get_dgitchecker(base);
     /* get token type based on base */
-    LexToken inttok, floattok;
+    lex_Token_t inttok, floattok;
     switch (base) {
         case LEXBASE_2:
-            inttok = LEXTOK_BININT_LITERAL;
-            floattok = LEXTOK_BINFLOAT_LITERAL;
+            inttok = TOKEN_BININT_LITERAL;
+            floattok = TOKEN_BINFLOAT_LITERAL;
             break;
         case LEXBASE_8:
-            inttok = LEXTOK_OCTINT_LITERAL;
-            floattok = LEXTOK_OCTFLOAT_LITERAL;
+            inttok = TOKEN_OCTINT_LITERAL;
+            floattok = TOKEN_OCTFLOAT_LITERAL;
             break;
         case LEXBASE_16:
-            inttok = LEXTOK_HEXINT_LITERAL;
-            floattok = LEXTOK_HEXFLOAT_LITERAL;
+            inttok = TOKEN_HEXINT_LITERAL;
+            floattok = TOKEN_HEXFLOAT_LITERAL;
             break;
         default:
-            inttok = LEXTOK_DECINT_LITERAL;
-            floattok = LEXTOK_DECFLOAT_LITERAL;
+            inttok = TOKEN_DECINT_LITERAL;
+            floattok = TOKEN_DECFLOAT_LITERAL;
             break;
     }
-    LexToken retok = LEXTOK_INVALID;
+    lex_Token_t retok = TOKEN_INVALID;
     /* match \d* */
-    if (!lex_isdigit(ch) && ch != '.') return LEXTOK_INVALID;
+    if (!lex_isdigit(ch) && ch != '.') return TOKEN_INVALID;
     if (ch != '.') {
         ch = lex_match_digits(f, ch, base);
         /* integer or integer part matched */
@@ -195,8 +195,8 @@ LexToken lex_match_unum(FILE *f, char ch, enum LexBase base)
     if ((base != LEXBASE_16 && ch == 'e') || ch == 'p') {
         /* pop 'e' and push 'p', convert e to p */
         char backup_expchar = ch;
-        lex_buffpop();
-        lex_buffpush('p');
+        lex_Buffer_pop();
+        lex_Buffer_push('p');
         /* next char */
         ch = lex_getc(f);
         /* consume + or - symbol */
@@ -224,7 +224,7 @@ LexToken lex_match_unum(FILE *f, char ch, enum LexBase base)
 }
 
 /* may accept only if the string starts w/ '+', '-', '.', digit or '0' */
-LexToken lex_match_numeric(FILE *f, char ch)
+lex_Token_t lex_match_numeric(FILE *f, char ch)
 {
     /* if starts with a 0 */
     if (ch == '0') {
@@ -232,15 +232,15 @@ LexToken lex_match_numeric(FILE *f, char ch)
         switch (ch) {
             case 'b': {
                 /* pop "0b" */
-                lex_buffpop();
-                lex_buffpop();
+                lex_Buffer_pop();
+                lex_Buffer_pop();
                 ch = lex_getc(f);
                 return lex_match_unum(f, ch, LEXBASE_2);
             }
             case 'x': {
                 /* pop "0x" */
-                lex_buffpop();
-                lex_buffpop();
+                lex_Buffer_pop();
+                lex_Buffer_pop();
                 ch = lex_getc(f);
                 return lex_match_unum(f, ch, LEXBASE_16);
             }
@@ -248,7 +248,7 @@ LexToken lex_match_numeric(FILE *f, char ch)
                 /* for values like 023... and 00.12... and many others */
                 if (isdigit(ch)) {
                     lex_ungetc(&ch, f);  /* unget curr char */
-                    lex_buffpop();       /* pop leading '0' from buffer */
+                    lex_Buffer_pop();       /* pop leading '0' from buffer */
                     ch = lex_getc(f);    /* get back the unget char after '0' */
                     return lex_match_unum(f, ch, LEXBASE_8);
                 }
@@ -261,7 +261,7 @@ LexToken lex_match_numeric(FILE *f, char ch)
                 else {
                     /* unget ch and return int literal for '0' */
                     lex_ungetc(&ch, f);
-                    return LEXTOK_DECINT_LITERAL;
+                    return TOKEN_DECINT_LITERAL;
                 }
             }
         }
@@ -269,7 +269,7 @@ LexToken lex_match_numeric(FILE *f, char ch)
     /* starts with any other number or '.' */
     else if (isdigit(ch) || ch == '.')
         return lex_match_unum(f, ch, LEXBASE_10);
-    else return LEXTOK_INVALID;
+    else return TOKEN_INVALID;
 }
 
 #else

@@ -26,7 +26,7 @@
 #include "ast/util/ModuleStack.h"
 #include "ast/util/ModuleAndProcTable.h"
 
-typedef LexToken ast_Operator_t;
+typedef lex_Token_t ast_Operator_t;
 
 struct ast_Statements_t {
     const ast_Statements_t *statements;

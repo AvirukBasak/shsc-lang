@@ -17,71 +17,71 @@ FILE *yyin = NULL;
 
 %}
 
-%token <tok> LEXTOK_BANG                              "!"
-%token <tok> LEXTOK_LOGICAL_UNEQUAL                   "!="
-%token <tok> LEXTOK_LOGICAL_UNIDENTICAL               "!=="
-%token <tok> LEXTOK_DQUOTE                            '"'
-%token <tok> LEXTOK_DOLLAR                            "$"
-%token <tok> LEXTOK_PERCENT                           "%"
-%token <tok> LEXTOK_MODULO_ASSIGN                     "%="
-%token <tok> LEXTOK_AMPERSAND                         "&"
-%token <tok> LEXTOK_LOGICAL_AND                       "&&"
-%token <tok> LEXTOK_LOGICAL_AND_ASSIGN                "&&="
-%token <tok> LEXTOK_BITWISE_AND_ASSIGN                "&="
-%token <tok> LEXTOK_SQUOTE                            "'"
-%token <tok> LEXTOK_LBRACE_PAREN                      "("
-%token <tok> LEXTOK_RBRACE_PAREN                      ")"
-%token <tok> LEXTOK_ASTERIX                           "*"
-%token <tok> LEXTOK_EXPONENT                          "**"
-%token <tok> LEXTOK_EXPONENT_ASSIGN                   "**="
-%token <tok> LEXTOK_MULTIPLY_ASSIGN                   "*="
-%token <tok> LEXTOK_PLUS                              "+"
-%token <tok> LEXTOK_INCREMENT                         "++"
-%token <tok> LEXTOK_ADD_ASSIGN                        "+="
-%token <tok> LEXTOK_COMMA                             ","
-%token <tok> LEXTOK_MINUS                             "-"
-%token <tok> LEXTOK_DECREMENT                         "--"
-%token <tok> LEXTOK_SUBSTRACT_ASSIGN                  "-="
-%token <tok> LEXTOK_SARROW                            "->"
-%token <tok> LEXTOK_DOT                               "."
-%token <tok> LEXTOK_ELIPSIS                           "..."
-%token <tok> LEXTOK_FSLASH                            "/"
-%token <tok> LEXTOK_FLOOR_DIVIDE                      "//"
-%token <tok> LEXTOK_FLOOR_DIVIDE_ASSIGN               "//="
-%token <tok> LEXTOK_DIVIDE_ASSIGN                     "/="
-%token <tok> LEXTOK_COLON                             ":"
-%token <tok> LEXTOK_DCOLON                            "::"
-%token <tok> LEXTOK_SEMICOLON                         ";"
-%token <tok> LEXTOK_LBRACE_ANGULAR                    "<"
-%token <tok> LEXTOK_BITWISE_LSHIFT                    "<<"
-%token <tok> LEXTOK_BITWISE_LSHIFT_ASSIGN             "<<="
-%token <tok> LEXTOK_LOGICAL_LESSER_EQUAL              "<="
-%token <tok> LEXTOK_ASSIGN                            "="
-%token <tok> LEXTOK_LOGICAL_EQUAL                     "=="
-%token <tok> LEXTOK_LOGICAL_IDENTICAL                 "==="
-%token <tok> LEXTOK_DARROW                            "=>"
-%token <tok> LEXTOK_RBRACE_ANGULAR                    ">"
-%token <tok> LEXTOK_LOGICAL_GREATER_EQUAL             ">="
-%token <tok> LEXTOK_BITWISE_RSHIFT                    ">>"
-%token <tok> LEXTOK_BITWISE_RSHIFT_ASSIGN             ">>="
-%token <tok> LEXTOK_ARITH_RSHIFT                      ">>>"
-%token <tok> LEXTOK_ARITH_RSHIFT_ASSIGN               ">>>="
-%token <tok> LEXTOK_QUESTION                          "?"
-%token <tok> LEXTOK_AT                                "@"
-%token <tok> LEXTOK_LBRACE_SQUARE                     "["
-%token <tok> LEXTOK_BSLASH                            "\\"
-%token <tok> LEXTOK_RBRACE_SQUARE                     "]"
-%token <tok> LEXTOK_CARET                             "^"
-%token <tok> LEXTOK_BITWISE_XOR_ASSIGN                "^="
-%token <tok> LEXTOK_BACKTICK                          "`"
-%token <tok> LEXTOK_LBRACE_CURLY                      "{"
-%token <tok> LEXTOK_PIPE                              "|"
-%token <tok> LEXTOK_BITWISE_OR_ASSIGN                 "|="
-%token <tok> LEXTOK_PIPEOUT                           "|>"
-%token <tok> LEXTOK_LOGICAL_OR                        "||"
-%token <tok> LEXTOK_LOGICAL_OR_ASSIGN                 "||="
-%token <tok> LEXTOK_RBRACE_CURLY                      "}"
-%token <tok> LEXTOK_TILDE                             "~"
+%token <tok> TOKEN_BANG                              "!"
+%token <tok> TOKEN_LOGICAL_UNEQUAL                   "!="
+%token <tok> TOKEN_LOGICAL_UNIDENTICAL               "!=="
+%token <tok> TOKEN_DQUOTE                            '"'
+%token <tok> TOKEN_DOLLAR                            "$"
+%token <tok> TOKEN_PERCENT                           "%"
+%token <tok> TOKEN_MODULO_ASSIGN                     "%="
+%token <tok> TOKEN_AMPERSAND                         "&"
+%token <tok> TOKEN_LOGICAL_AND                       "&&"
+%token <tok> TOKEN_LOGICAL_AND_ASSIGN                "&&="
+%token <tok> TOKEN_BITWISE_AND_ASSIGN                "&="
+%token <tok> TOKEN_SQUOTE                            "'"
+%token <tok> TOKEN_LBRACE_PAREN                      "("
+%token <tok> TOKEN_RBRACE_PAREN                      ")"
+%token <tok> TOKEN_ASTERIX                           "*"
+%token <tok> TOKEN_EXPONENT                          "**"
+%token <tok> TOKEN_EXPONENT_ASSIGN                   "**="
+%token <tok> TOKEN_MULTIPLY_ASSIGN                   "*="
+%token <tok> TOKEN_PLUS                              "+"
+%token <tok> TOKEN_INCREMENT                         "++"
+%token <tok> TOKEN_ADD_ASSIGN                        "+="
+%token <tok> TOKEN_COMMA                             ","
+%token <tok> TOKEN_MINUS                             "-"
+%token <tok> TOKEN_DECREMENT                         "--"
+%token <tok> TOKEN_SUBSTRACT_ASSIGN                  "-="
+%token <tok> TOKEN_SARROW                            "->"
+%token <tok> TOKEN_DOT                               "."
+%token <tok> TOKEN_ELIPSIS                           "..."
+%token <tok> TOKEN_FSLASH                            "/"
+%token <tok> TOKEN_FLOOR_DIVIDE                      "//"
+%token <tok> TOKEN_FLOOR_DIVIDE_ASSIGN               "//="
+%token <tok> TOKEN_DIVIDE_ASSIGN                     "/="
+%token <tok> TOKEN_COLON                             ":"
+%token <tok> TOKEN_DCOLON                            "::"
+%token <tok> TOKEN_SEMICOLON                         ";"
+%token <tok> TOKEN_LBRACE_ANGULAR                    "<"
+%token <tok> TOKEN_BITWISE_LSHIFT                    "<<"
+%token <tok> TOKEN_BITWISE_LSHIFT_ASSIGN             "<<="
+%token <tok> TOKEN_LOGICAL_LESSER_EQUAL              "<="
+%token <tok> TOKEN_ASSIGN                            "="
+%token <tok> TOKEN_LOGICAL_EQUAL                     "=="
+%token <tok> TOKEN_LOGICAL_IDENTICAL                 "==="
+%token <tok> TOKEN_DARROW                            "=>"
+%token <tok> TOKEN_RBRACE_ANGULAR                    ">"
+%token <tok> TOKEN_LOGICAL_GREATER_EQUAL             ">="
+%token <tok> TOKEN_BITWISE_RSHIFT                    ">>"
+%token <tok> TOKEN_BITWISE_RSHIFT_ASSIGN             ">>="
+%token <tok> TOKEN_ARITH_RSHIFT                      ">>>"
+%token <tok> TOKEN_ARITH_RSHIFT_ASSIGN               ">>>="
+%token <tok> TOKEN_QUESTION                          "?"
+%token <tok> TOKEN_AT                                "@"
+%token <tok> TOKEN_LBRACE_SQUARE                     "["
+%token <tok> TOKEN_BSLASH                            "\\"
+%token <tok> TOKEN_RBRACE_SQUARE                     "]"
+%token <tok> TOKEN_CARET                             "^"
+%token <tok> TOKEN_BITWISE_XOR_ASSIGN                "^="
+%token <tok> TOKEN_BACKTICK                          "`"
+%token <tok> TOKEN_LBRACE_CURLY                      "{"
+%token <tok> TOKEN_PIPE                              "|"
+%token <tok> TOKEN_BITWISE_OR_ASSIGN                 "|="
+%token <tok> TOKEN_PIPEOUT                           "|>"
+%token <tok> TOKEN_LOGICAL_OR                        "||"
+%token <tok> TOKEN_LOGICAL_OR_ASSIGN                 "||="
+%token <tok> TOKEN_RBRACE_CURLY                      "}"
+%token <tok> TOKEN_TILDE                             "~"
 
 /* special operation values */
 %token TOKOP_NOP
@@ -90,60 +90,60 @@ FILE *yyin = NULL;
 %token TOKOP_TERNARY_COND
 %token TOKOP_FNARGS_INDEXING
 
-%token LEXTOK_NEWLINE                                 "\n"
+%token TOKEN_NEWLINE                                 "\n"
 
 /* keywords */
-%token LEXTOK_KWD_MODULE                              "module"
-%token LEXTOK_KWD_PROC                                "proc"
-%token LEXTOK_KWD_START                               "start"
-%token LEXTOK_KWD_END                                 "end"
-%token LEXTOK_KWD_BLOCK                               "block"
-%token LEXTOK_KWD_IF                                  "if"
-%token LEXTOK_KWD_THEN                                "then"
-%token LEXTOK_KWD_ELIF                                "elif"
-%token LEXTOK_KWD_ELSE                                "else"
-%token LEXTOK_KWD_WHILE                               "while"
-%token LEXTOK_KWD_BREAK                               "break"
-%token LEXTOK_KWD_CONTINUE                            "continue"
-%token LEXTOK_KWD_FOR                                 "for"
-%token LEXTOK_KWD_FROM                                "from"
-%token LEXTOK_KWD_TO                                  "to"
-%token LEXTOK_KWD_BY                                  "by"
-%token LEXTOK_KWD_IN                                  "in"
-%token LEXTOK_KWD_DO                                  "do"
-%token LEXTOK_KWD_VAR                                 "var"
-%token LEXTOK_KWD_PASS                                "pass"
-%token LEXTOK_KWD_RETURN                              "return"
+%token TOKEN_KWD_MODULE                              "module"
+%token TOKEN_KWD_PROC                                "proc"
+%token TOKEN_KWD_START                               "start"
+%token TOKEN_KWD_END                                 "end"
+%token TOKEN_KWD_BLOCK                               "block"
+%token TOKEN_KWD_IF                                  "if"
+%token TOKEN_KWD_THEN                                "then"
+%token TOKEN_KWD_ELIF                                "elif"
+%token TOKEN_KWD_ELSE                                "else"
+%token TOKEN_KWD_WHILE                               "while"
+%token TOKEN_KWD_BREAK                               "break"
+%token TOKEN_KWD_CONTINUE                            "continue"
+%token TOKEN_KWD_FOR                                 "for"
+%token TOKEN_KWD_FROM                                "from"
+%token TOKEN_KWD_TO                                  "to"
+%token TOKEN_KWD_BY                                  "by"
+%token TOKEN_KWD_IN                                  "in"
+%token TOKEN_KWD_DO                                  "do"
+%token TOKEN_KWD_VAR                                 "var"
+%token TOKEN_KWD_PASS                                "pass"
+%token TOKEN_KWD_RETURN                              "return"
 
 /* default cases */
-%token LEXTOK_EOF 0                                   "<eof>"
-%token LEXTOK_INVALID                                 "<invalid>"
+%token TOKEN_EOF 0                                   "<eof>"
+%token TOKEN_INVALID                                 "<invalid>"
 
 /* literals */
-%token <literal_bool> LEXTOK_BOOL_LITERAL             "<boollit>"
-%token <literal_char> LEXTOK_CHAR_LITERAL             "<charlit>"
-%token <literal_f64>  LEXTOK_BINFLOAT_LITERAL         "<binfloattlit>"
-%token <literal_f64>  LEXTOK_OCTFLOAT_LITERAL         "<octfloattlit>"
-%token <literal_f64>  LEXTOK_DECFLOAT_LITERAL         "<decfloattlit>"
-%token <literal_f64>  LEXTOK_HEXFLOAT_LITERAL         "<hexfloattlit>"
-%token <literal_i64>  LEXTOK_BININT_LITERAL           "<binintlit>"
-%token <literal_i64>  LEXTOK_OCTINT_LITERAL           "<octintlit>"
-%token <literal_i64>  LEXTOK_DECINT_LITERAL           "<decintlit>"
-%token <literal_i64>  LEXTOK_HEXINT_LITERAL           "<hexintlit>"
-%token <literal_str>  LEXTOK_STR_LITERAL              "<strlit>"
-%token <literal_str>  LEXTOK_INTERP_STR_LITERAL       "<interpstrlit>"
+%token <literal_bool> TOKEN_BOOL_LITERAL             "<boollit>"
+%token <literal_char> TOKEN_CHAR_LITERAL             "<charlit>"
+%token <literal_f64>  TOKEN_BINFLOAT_LITERAL         "<binfloattlit>"
+%token <literal_f64>  TOKEN_OCTFLOAT_LITERAL         "<octfloattlit>"
+%token <literal_f64>  TOKEN_DECFLOAT_LITERAL         "<decfloattlit>"
+%token <literal_f64>  TOKEN_HEXFLOAT_LITERAL         "<hexfloattlit>"
+%token <literal_i64>  TOKEN_BININT_LITERAL           "<binintlit>"
+%token <literal_i64>  TOKEN_OCTINT_LITERAL           "<octintlit>"
+%token <literal_i64>  TOKEN_DECINT_LITERAL           "<decintlit>"
+%token <literal_i64>  TOKEN_HEXINT_LITERAL           "<hexintlit>"
+%token <literal_str>  TOKEN_STR_LITERAL              "<strlit>"
+%token <literal_str>  TOKEN_INTERP_STR_LITERAL       "<interpstrlit>"
 
 /* identifier */
-%token <identifier_name> LEXTOK_IDENTIFIER            "<identifier>"
+%token <identifier_name> TOKEN_IDENTIFIER            "<identifier>"
 
-%precedence LEXTOK_PERCENT
-%precedence LEXTOK_ASTERIX
-%precedence LEXTOK_EXPONENT
-%precedence LEXTOK_FSLASH
-%precedence LEXTOK_FLOOR_DIVIDE
+%precedence TOKEN_PERCENT
+%precedence TOKEN_ASTERIX
+%precedence TOKEN_EXPONENT
+%precedence TOKEN_FSLASH
+%precedence TOKEN_FLOOR_DIVIDE
 
-%precedence LEXTOK_KWD_IF
-%precedence LEXTOK_KWD_ELSE
+%precedence TOKEN_KWD_IF
+%precedence TOKEN_KWD_ELSE
 
 %union
 {
@@ -437,7 +437,7 @@ postfix_expression:
     | postfix_expression "[" expression "]"             { $$ = ast_Expression(TOKOP_INDEXING, $1, $3, NULL); }
     | "$" "[" expression "]"                            { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
     | "$" "(" expression ")"                            { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
-    | "$" LEXTOK_DECINT_LITERAL                         { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL,
+    | "$" TOKEN_DECINT_LITERAL                          { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL,
                                                             ast_Expression_Literal(
                                                                 ast_Literal_i64($2)), NULL);
                                                         }
@@ -452,7 +452,7 @@ postfix_expression:
     | postfix_expression "::" identifier                { $$ = ast_Expression($2, $1,
                                                             ast_Expression_Identifier($3), NULL);
                                                         }
-    | postfix_expression ":" identifier                 { $$ = ast_Expression(LEXTOK_DCOLON, $1,
+    | postfix_expression ":" identifier                 { $$ = ast_Expression(TOKEN_DCOLON, $1,
                                                             ast_Expression_Identifier($3), NULL);
                                                         }
     ;
@@ -476,24 +476,24 @@ assoc_list:
     ;
 
 literal:
-    LEXTOK_BOOL_LITERAL                                 { $$ = ast_Literal_bul($1); }
-    | LEXTOK_CHAR_LITERAL                               { $$ = ast_Literal_chr($1); }
-    | LEXTOK_BINFLOAT_LITERAL                           { $$ = ast_Literal_f64($1); }
-    | LEXTOK_OCTFLOAT_LITERAL                           { $$ = ast_Literal_f64($1); }
-    | LEXTOK_DECFLOAT_LITERAL                           { $$ = ast_Literal_f64($1); }
-    | LEXTOK_HEXFLOAT_LITERAL                           { $$ = ast_Literal_f64($1); }
-    | LEXTOK_BININT_LITERAL                             { $$ = ast_Literal_i64($1); }
-    | LEXTOK_OCTINT_LITERAL                             { $$ = ast_Literal_i64($1); }
-    | LEXTOK_DECINT_LITERAL                             { $$ = ast_Literal_i64($1); }
-    | LEXTOK_HEXINT_LITERAL                             { $$ = ast_Literal_i64($1); }
+    TOKEN_BOOL_LITERAL                                  { $$ = ast_Literal_bul($1); }
+    | TOKEN_CHAR_LITERAL                                { $$ = ast_Literal_chr($1); }
+    | TOKEN_BINFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
+    | TOKEN_OCTFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
+    | TOKEN_DECFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
+    | TOKEN_HEXFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
+    | TOKEN_BININT_LITERAL                              { $$ = ast_Literal_i64($1); }
+    | TOKEN_OCTINT_LITERAL                              { $$ = ast_Literal_i64($1); }
+    | TOKEN_DECINT_LITERAL                              { $$ = ast_Literal_i64($1); }
+    | TOKEN_HEXINT_LITERAL                              { $$ = ast_Literal_i64($1); }
     | string_literal                                    { $$ = $1; }
     | list_literal                                      { $$ = $1; }
     | map_literal                                       { $$ = $1; }
     ;
 
 string_literal:
-    LEXTOK_STR_LITERAL                                  { $$ = ast_Literal_str($1); }
-    | LEXTOK_INTERP_STR_LITERAL                         { $$ = ast_Literal_interp_str($1); }
+    TOKEN_STR_LITERAL                                   { $$ = ast_Literal_str($1); }
+    | TOKEN_INTERP_STR_LITERAL                          { $$ = ast_Literal_interp_str($1); }
     ;
 
 list_literal:
@@ -507,7 +507,7 @@ map_literal:
     ;
 
 identifier:
-    LEXTOK_IDENTIFIER                                   { $$ = ast_Identifier($1); }
+    TOKEN_IDENTIFIER                                    { $$ = ast_Identifier($1); }
     ;
 
 %%
@@ -533,24 +533,24 @@ void parse_interpret(FILE *f)
         "%s", VERSION, ">> "
     );
 #ifdef LEX_DEBUG
-    LexToken tok = lex_get_nexttok(yyin);
-    while (tok != LEXTOK_EOF) {
-        printf("%s: %s\n", lex_get_tokcode(tok), lex_get_symbol(tok));
-        tok = lex_get_nexttok(f);
+    lex_Token_t tok = lex_Token_getnext(yyin);
+    while (tok != TOKEN_EOF) {
+        printf("%s: %s\n", lex_Token_getcode(tok), lex_Token_getsymbol(tok));
+        tok = lex_Token_getnext(f);
     }
-    printf("%s\n", lex_get_tokcode(tok));
+    printf("%s\n", lex_Token_getcode(tok));
 #else
     yyparse();
 #endif
-    lex_buffree();
+    lex_Buffer_free();
 }
 
 void parse_throw(const char *msg, bool on)
 {
     if (!msg) abort();
     int line = lex_line_no;
-    if (lex_currtok == LEXTOK_NEWLINE) --line;
-    if (on) io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_get_symbol(lex_currtok));
+    if (lex_currtok == TOKEN_NEWLINE) --line;
+    if (on) io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_Token_getsymbol(lex_currtok));
     else io_print_srcerr(line, lex_char_no, "parsing error: %s", msg);
     exit(ERR_PARSER);
 }

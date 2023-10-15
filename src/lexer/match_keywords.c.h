@@ -6,9 +6,9 @@
 
 #include "lexer.h"
 
-LexToken lex_match_keywords(FILE *f, char ch)
+lex_Token_t lex_match_keywords(FILE *f, char ch)
 {
-    if (!isalpha(ch)) return LEXTOK_INVALID;
+    if (!isalpha(ch)) return TOKEN_INVALID;
     /* start at 1 as ch is already in buffer */
     size_t kwdlen = 1;
     while (true) {
@@ -20,33 +20,33 @@ LexToken lex_match_keywords(FILE *f, char ch)
         }
         kwdlen++;
     }
-    if (!strcmp(lex_get_buffstr(), "module"))    return LEXTOK_KWD_MODULE;
-    if (!strcmp(lex_get_buffstr(), "proc"))      return LEXTOK_KWD_PROC;
-    if (!strcmp(lex_get_buffstr(), "start"))     return LEXTOK_KWD_START;
-    if (!strcmp(lex_get_buffstr(), "end"))       return LEXTOK_KWD_END;
-    if (!strcmp(lex_get_buffstr(), "block"))     return LEXTOK_KWD_BLOCK;
-    if (!strcmp(lex_get_buffstr(), "if"))        return LEXTOK_KWD_IF;
-    if (!strcmp(lex_get_buffstr(), "then"))      return LEXTOK_KWD_THEN;
-    if (!strcmp(lex_get_buffstr(), "elif"))      return LEXTOK_KWD_ELIF;
-    if (!strcmp(lex_get_buffstr(), "else"))      return LEXTOK_KWD_ELSE;
-    if (!strcmp(lex_get_buffstr(), "while"))     return LEXTOK_KWD_WHILE;
-    if (!strcmp(lex_get_buffstr(), "break"))     return LEXTOK_KWD_BREAK;
-    if (!strcmp(lex_get_buffstr(), "continue"))  return LEXTOK_KWD_CONTINUE;
-    if (!strcmp(lex_get_buffstr(), "for"))       return LEXTOK_KWD_FOR;
-    if (!strcmp(lex_get_buffstr(), "from"))      return LEXTOK_KWD_FROM;
-    if (!strcmp(lex_get_buffstr(), "in"))        return LEXTOK_KWD_IN;
-    if (!strcmp(lex_get_buffstr(), "to"))        return LEXTOK_KWD_TO;
-    if (!strcmp(lex_get_buffstr(), "by"))        return LEXTOK_KWD_BY;
-    if (!strcmp(lex_get_buffstr(), "do"))        return LEXTOK_KWD_DO;
-    if (!strcmp(lex_get_buffstr(), "var"))       return LEXTOK_KWD_VAR;
-    if (!strcmp(lex_get_buffstr(), "pass"))      return LEXTOK_KWD_PASS;
-    if (!strcmp(lex_get_buffstr(), "return"))    return LEXTOK_KWD_RETURN;
+    if (!strcmp(lex_Buffer_getstr(), "module"))    return TOKEN_KWD_MODULE;
+    if (!strcmp(lex_Buffer_getstr(), "proc"))      return TOKEN_KWD_PROC;
+    if (!strcmp(lex_Buffer_getstr(), "start"))     return TOKEN_KWD_START;
+    if (!strcmp(lex_Buffer_getstr(), "end"))       return TOKEN_KWD_END;
+    if (!strcmp(lex_Buffer_getstr(), "block"))     return TOKEN_KWD_BLOCK;
+    if (!strcmp(lex_Buffer_getstr(), "if"))        return TOKEN_KWD_IF;
+    if (!strcmp(lex_Buffer_getstr(), "then"))      return TOKEN_KWD_THEN;
+    if (!strcmp(lex_Buffer_getstr(), "elif"))      return TOKEN_KWD_ELIF;
+    if (!strcmp(lex_Buffer_getstr(), "else"))      return TOKEN_KWD_ELSE;
+    if (!strcmp(lex_Buffer_getstr(), "while"))     return TOKEN_KWD_WHILE;
+    if (!strcmp(lex_Buffer_getstr(), "break"))     return TOKEN_KWD_BREAK;
+    if (!strcmp(lex_Buffer_getstr(), "continue"))  return TOKEN_KWD_CONTINUE;
+    if (!strcmp(lex_Buffer_getstr(), "for"))       return TOKEN_KWD_FOR;
+    if (!strcmp(lex_Buffer_getstr(), "from"))      return TOKEN_KWD_FROM;
+    if (!strcmp(lex_Buffer_getstr(), "in"))        return TOKEN_KWD_IN;
+    if (!strcmp(lex_Buffer_getstr(), "to"))        return TOKEN_KWD_TO;
+    if (!strcmp(lex_Buffer_getstr(), "by"))        return TOKEN_KWD_BY;
+    if (!strcmp(lex_Buffer_getstr(), "do"))        return TOKEN_KWD_DO;
+    if (!strcmp(lex_Buffer_getstr(), "var"))       return TOKEN_KWD_VAR;
+    if (!strcmp(lex_Buffer_getstr(), "pass"))      return TOKEN_KWD_PASS;
+    if (!strcmp(lex_Buffer_getstr(), "return"))    return TOKEN_KWD_RETURN;
     /* unget all characters except the first if all matches failed */
     while (kwdlen > 1) {
         lex_ungetc(&ch, f);
         kwdlen--;
     }
-    return LEXTOK_INVALID;
+    return TOKEN_INVALID;
 }
 
 #else

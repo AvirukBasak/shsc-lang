@@ -4,18 +4,18 @@
 #include <ctype.h>
 #include "lexer.h"
 
-LexToken lex_match_identifiers(FILE *f, char ch)
+lex_Token_t lex_match_identifiers(FILE *f, char ch)
 {
-    if (!isalpha(ch) && ch != '_') return LEXTOK_INVALID;
+    if (!isalpha(ch) && ch != '_') return TOKEN_INVALID;
     while (true) {
         ch = lex_getc(f);
-        if (!lex_isalmun_undr(ch)) {
+        if (!lex_is_alnumundr(ch)) {
             // unget last non identifier char
             lex_ungetc(&ch, f);
             break;
         }
     }
-    return LEXTOK_IDENTIFIER;
+    return TOKEN_IDENTIFIER;
 }
 
 #else

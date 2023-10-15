@@ -22,7 +22,7 @@ char lex_getc(FILE *f)
     }
     if (c == '\n') { lex_line_no++; lex_char_no = 0; }
     else if (lex_is_printable(c)) lex_char_no++;
-    if (!lex_is_delimiter(c)) lex_buffpush(c);
+    if (!lex_is_delimiter(c)) lex_Buffer_push(c);
     return c;
 }
 
@@ -30,9 +30,9 @@ char lex_ungetc(char *c, FILE *f)
 {
     if (lex_is_printable(*c)) lex_char_no--;
     if (*c == '\n') { lex_line_no--; lex_char_no = -1; }
-    if (*c != (char) EOF && !lex_is_delimiter(*c)) lex_buffpop();
+    if (*c != (char) EOF && !lex_is_delimiter(*c)) lex_Buffer_pop();
     if (*c != (char) EOF) ungetc(*c, f);
-    const char *tmp = lex_get_buffstr();
+    const char *tmp = lex_Buffer_getstr();
     return *c = tmp ? tmp[lex_buffer->push_i -1] : 0;
 }
 
@@ -47,7 +47,7 @@ bool lex_is_printable(char c)
         || lex_is_delimiter(c);
 }
 
-bool lex_isalmun_undr(char c)
+bool lex_is_alnumundr(char c)
 {
     return isalnum(c) || c == '_';
 }

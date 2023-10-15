@@ -15,7 +15,7 @@
 #include "ast/nodes/destructors.h"
 #include "ast/nodes/enums.h"
 
-typedef LexToken ast_Operator_t;
+typedef lex_Token_t ast_Operator_t;
 
 struct ast_Statements_t {
     ast_Statements_t *statements;

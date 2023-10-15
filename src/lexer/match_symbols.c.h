@@ -3,7 +3,7 @@
 
 #include "lexer.h"
 
-LexToken lex_match_symbols(FILE *f, char ch)
+lex_Token_t lex_match_symbols(FILE *f, char ch)
 {
     switch (ch) {
         case '!': {
@@ -12,24 +12,24 @@ LexToken lex_match_symbols(FILE *f, char ch)
                 case '=': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '=': return LEXTOK_LOGICAL_UNIDENTICAL;
+                        case '=': return TOKEN_LOGICAL_UNIDENTICAL;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_LOGICAL_UNEQUAL;
+                    return TOKEN_LOGICAL_UNEQUAL;
                 }
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_BANG;
+            return TOKEN_BANG;
         }
-        case '"': return LEXTOK_DQUOTE;
-        case '$': return LEXTOK_DOLLAR;
+        case '"': return TOKEN_DQUOTE;
+        case '$': return TOKEN_DOLLAR;
         case '%': {
             char ch = lex_getc(f);
             switch (ch) {
-                case '=': return LEXTOK_MODULO_ASSIGN;
+                case '=': return TOKEN_MODULO_ASSIGN;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_PERCENT;
+            return TOKEN_PERCENT;
         }
         case '&': {
             char ch = lex_getc(f);
@@ -37,54 +37,54 @@ LexToken lex_match_symbols(FILE *f, char ch)
                 case '&': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '=': return LEXTOK_LOGICAL_AND_ASSIGN;
+                        case '=': return TOKEN_LOGICAL_AND_ASSIGN;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_LOGICAL_AND;
+                    return TOKEN_LOGICAL_AND;
                 }
-                case '=': return LEXTOK_BITWISE_AND_ASSIGN;
+                case '=': return TOKEN_BITWISE_AND_ASSIGN;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_AMPERSAND;
+            return TOKEN_AMPERSAND;
         }
-        case '\'': return LEXTOK_SQUOTE;
-        case '(': return LEXTOK_LBRACE_PAREN;
-        case ')': return LEXTOK_RBRACE_PAREN;
+        case '\'': return TOKEN_SQUOTE;
+        case '(': return TOKEN_LBRACE_PAREN;
+        case ')': return TOKEN_RBRACE_PAREN;
         case '*': {
             char ch = lex_getc(f);
             switch (ch) {
                 case '*': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '=': return LEXTOK_EXPONENT_ASSIGN;
+                        case '=': return TOKEN_EXPONENT_ASSIGN;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_EXPONENT;
+                    return TOKEN_EXPONENT;
                 }
-                case '=': return LEXTOK_MULTIPLY_ASSIGN;
+                case '=': return TOKEN_MULTIPLY_ASSIGN;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_ASTERIX;
+            return TOKEN_ASTERIX;
         }
         case '+': {
             char ch = lex_getc(f);
             switch (ch) {
-                case '+': return LEXTOK_INCREMENT;
-                case '=': return LEXTOK_ADD_ASSIGN;
+                case '+': return TOKEN_INCREMENT;
+                case '=': return TOKEN_ADD_ASSIGN;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_PLUS;
+            return TOKEN_PLUS;
         }
-        case ',': return LEXTOK_COMMA;
+        case ',': return TOKEN_COMMA;
         case '-': {
             char ch = lex_getc(f);
             switch (ch) {
-                case '-': return LEXTOK_DECREMENT;
-                case '=': return LEXTOK_SUBSTRACT_ASSIGN;
-                case '>': return LEXTOK_SARROW;
+                case '-': return TOKEN_DECREMENT;
+                case '=': return TOKEN_SUBSTRACT_ASSIGN;
+                case '>': return TOKEN_SARROW;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_MINUS;
+            return TOKEN_MINUS;
         }
         case '.': {
             char ch = lex_getc(f);
@@ -92,13 +92,13 @@ LexToken lex_match_symbols(FILE *f, char ch)
                 case '.': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '.': return LEXTOK_ELIPSIS;
+                        case '.': return TOKEN_ELIPSIS;
                         default: lex_ungetc(&ch, f);
                     }
                 }
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_DOT;
+            return TOKEN_DOT;
         }
         case '/': {
             char ch = lex_getc(f);
@@ -106,40 +106,40 @@ LexToken lex_match_symbols(FILE *f, char ch)
                 case '/': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '=': return LEXTOK_FLOOR_DIVIDE_ASSIGN;
+                        case '=': return TOKEN_FLOOR_DIVIDE_ASSIGN;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_FLOOR_DIVIDE;
+                    return TOKEN_FLOOR_DIVIDE;
                 }
-                case '=': return LEXTOK_DIVIDE_ASSIGN;
+                case '=': return TOKEN_DIVIDE_ASSIGN;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_FSLASH;
+            return TOKEN_FSLASH;
         }
         case ':': {
             char ch = lex_getc(f);
             switch (ch) {
-                case ':': return LEXTOK_DCOLON;
+                case ':': return TOKEN_DCOLON;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_COLON;
+            return TOKEN_COLON;
         }
-        case ';': return LEXTOK_SEMICOLON;
+        case ';': return TOKEN_SEMICOLON;
         case '<': {
             char ch = lex_getc(f);
             switch (ch) {
                 case '<': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '=': return LEXTOK_BITWISE_LSHIFT_ASSIGN;
+                        case '=': return TOKEN_BITWISE_LSHIFT_ASSIGN;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_BITWISE_LSHIFT;
+                    return TOKEN_BITWISE_LSHIFT;
                 }
-                case '=': return LEXTOK_LOGICAL_LESSER_EQUAL;
+                case '=': return TOKEN_LOGICAL_LESSER_EQUAL;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_LBRACE_ANGULAR;
+            return TOKEN_LBRACE_ANGULAR;
         }
         case '=': {
             char ch = lex_getc(f);
@@ -147,15 +147,15 @@ LexToken lex_match_symbols(FILE *f, char ch)
                 case '=': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '=': return LEXTOK_LOGICAL_IDENTICAL;
+                        case '=': return TOKEN_LOGICAL_IDENTICAL;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_LOGICAL_EQUAL;
+                    return TOKEN_LOGICAL_EQUAL;
                 }
-                case '>': return LEXTOK_DARROW;
+                case '>': return TOKEN_DARROW;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_ASSIGN;
+            return TOKEN_ASSIGN;
         }
         case '>': {
             char ch = lex_getc(f);
@@ -166,63 +166,63 @@ LexToken lex_match_symbols(FILE *f, char ch)
                         case '>': {
                             char ch = lex_getc(f);
                             switch (ch) {
-                                case '=': return LEXTOK_ARITH_RSHIFT_ASSIGN;
+                                case '=': return TOKEN_ARITH_RSHIFT_ASSIGN;
                                 default: lex_ungetc(&ch, f);
                             }
-                            return LEXTOK_ARITH_RSHIFT;
+                            return TOKEN_ARITH_RSHIFT;
                         }
-                        case '=': return LEXTOK_BITWISE_RSHIFT_ASSIGN;
+                        case '=': return TOKEN_BITWISE_RSHIFT_ASSIGN;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_BITWISE_RSHIFT;
+                    return TOKEN_BITWISE_RSHIFT;
                 }
-                case '=': return LEXTOK_LOGICAL_GREATER_EQUAL;
+                case '=': return TOKEN_LOGICAL_GREATER_EQUAL;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_RBRACE_ANGULAR;
+            return TOKEN_RBRACE_ANGULAR;
         }
-        case '?': return LEXTOK_QUESTION;
-        case '@': return LEXTOK_AT;
-        case '[': return LEXTOK_LBRACE_SQUARE;
-        case '\\': return LEXTOK_BSLASH;
-        case ']': return LEXTOK_RBRACE_SQUARE;
+        case '?': return TOKEN_QUESTION;
+        case '@': return TOKEN_AT;
+        case '[': return TOKEN_LBRACE_SQUARE;
+        case '\\': return TOKEN_BSLASH;
+        case ']': return TOKEN_RBRACE_SQUARE;
         case '^': {
             char ch = lex_getc(f);
             switch (ch) {
-                case '=': return LEXTOK_BITWISE_XOR_ASSIGN;
+                case '=': return TOKEN_BITWISE_XOR_ASSIGN;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_CARET;
+            return TOKEN_CARET;
         }
-        case '`': return LEXTOK_BACKTICK;
-        case '{': return LEXTOK_LBRACE_CURLY;
+        case '`': return TOKEN_BACKTICK;
+        case '{': return TOKEN_LBRACE_CURLY;
         case '|': {
             char ch = lex_getc(f);
             switch (ch) {
                 case '|': {
                     char ch = lex_getc(f);
                     switch (ch) {
-                        case '=': return LEXTOK_LOGICAL_OR_ASSIGN;
+                        case '=': return TOKEN_LOGICAL_OR_ASSIGN;
                         default: lex_ungetc(&ch, f);
                     }
-                    return LEXTOK_LOGICAL_OR;
+                    return TOKEN_LOGICAL_OR;
                 }
-                case '=': return LEXTOK_BITWISE_OR_ASSIGN;
-                case '>': return LEXTOK_PIPEOUT;
+                case '=': return TOKEN_BITWISE_OR_ASSIGN;
+                case '>': return TOKEN_PIPEOUT;
                 default: lex_ungetc(&ch, f);
             }
-            return LEXTOK_PIPE;
+            return TOKEN_PIPE;
         }
-        case '}': return LEXTOK_RBRACE_CURLY;
-        case '~': return LEXTOK_TILDE;
+        case '}': return TOKEN_RBRACE_CURLY;
+        case '~': return TOKEN_TILDE;
         case (char) EOF: {
-            lex_buffree();
-            return LEXTOK_EOF;
+            lex_Buffer_free();
+            return TOKEN_EOF;
         }
-        case '\n': return LEXTOK_NEWLINE;
-        default: return LEXTOK_INVALID;
+        case '\n': return TOKEN_NEWLINE;
+        default: return TOKEN_INVALID;
     }
-    return LEXTOK_INVALID;
+    return TOKEN_INVALID;
 }
 
 #else
