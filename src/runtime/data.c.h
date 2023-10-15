@@ -16,7 +16,7 @@
 #include "runtime/data/list.h"
 #include "runtime/data/map.h"
 #include "runtime/io.h"
-#include "runtime/vartable.h"
+#include "runtime/VarTable.h"
 
 RT_Data_t RT_Data_bul(bool val)
 {

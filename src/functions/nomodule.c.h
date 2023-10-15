@@ -6,7 +6,7 @@
 #include "runtime/data.h"
 #include "runtime/data/string.h"
 #include "runtime/data/list.h"
-#include "runtime/vartable.h"
+#include "runtime/VarTable.h"
 
 RT_Data_t FN_isnull()
 {

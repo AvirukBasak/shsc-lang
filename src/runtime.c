@@ -14,11 +14,11 @@
 #include "runtime/data/string.h"
 #include "runtime/data/map.h"
 #include "runtime/io.h"
-#include "runtime/vartable.h"
+#include "runtime/VarTable.h"
 
 #include "runtime/data.c.h"
 #include "runtime/io.c.h"
-#include "runtime/vartable.c.h"
+#include "runtime/VarTable.c.h"
 
 typedef enum {
     RT_CTRL_PASS,

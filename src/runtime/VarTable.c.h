@@ -16,7 +16,7 @@
 #include "runtime/data/string.h"
 #include "runtime/data/map.h"
 #include "runtime/io.h"
-#include "runtime/vartable.h"
+#include "runtime/VarTable.h"
 
 typedef RT_DataMap_t *RT_VarTable_Scope_t;
 
@@ -25,11 +25,11 @@ typedef struct {
     RT_VarTable_Scope_t *scopes;
     int64_t curr_scope_ptr;
     size_t capacity;
-} RT_VarTable_Proc_t;
+} RT_VarTable_proc_t;
 
 /** the VarTable is basically the call stack */
 typedef struct {
-    RT_VarTable_Proc_t *procs;
+    RT_VarTable_proc_t *procs;
     int64_t curr_proc_ptr;
     size_t capacity;
 } RT_VarTable_t;
@@ -83,7 +83,7 @@ void RT_VarTable_create(const char *varname, RT_Data_t value)
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) rt_throw("cannot use 'var' with reserved global identifier '%s'", varname);
     }
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    RT_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
     RT_DataMap_insert(*current_scope, varname, value);
 }
@@ -107,7 +107,7 @@ RT_Data_t *RT_VarTable_getref__n(const char *varname)
         RT_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) return globvar;
     }
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    RT_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     /* go down the scopes stack to find the right local variable */
     for (int64_t i = current_proc->curr_scope_ptr; i >= 0; i--) {
         RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
@@ -162,7 +162,7 @@ void RT_VarTable_push_proc(const char *procname)
     /* increase the capacity if needed */
     if (rt_vtable->curr_proc_ptr >= rt_vtable->capacity -1) {
         rt_vtable->capacity = rt_vtable->capacity * 2 +1;
-        rt_vtable->procs = (RT_VarTable_Proc_t*) realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(RT_VarTable_Proc_t));
+        rt_vtable->procs = (RT_VarTable_proc_t*) realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(RT_VarTable_proc_t));
         if (!rt_vtable->procs) io_errndie("RT_VarTable_push_proc:" ERR_MSG_REALLOCFAIL);
     }
     /* push the new procedure scope */
@@ -179,7 +179,7 @@ RT_Data_t RT_VarTable_pop_proc(void)
     if (rt_vtable == NULL || rt_vtable->curr_proc_ptr == -1)
         /* nothing to pop, return NULL */
         return RT_VarTable_rsv_null;
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    RT_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     /* pop all scopes in that proc */
     while (current_proc->curr_scope_ptr >= 0) {
         RT_VarTable_pop_scope();
@@ -206,7 +206,7 @@ RT_Data_t RT_VarTable_pop_proc(void)
 
 void RT_VarTable_push_scope()
 {
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    RT_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     /* increase the capacity if needed */
     if (current_proc->curr_scope_ptr >= current_proc->capacity -1) {
         current_proc->capacity = current_proc->capacity * 2 +1;
@@ -222,7 +222,7 @@ RT_Data_t RT_VarTable_pop_scope(void)
 {
     if (!rt_vtable || rt_vtable->curr_proc_ptr == -1)
         return RT_Data_null();
-    RT_VarTable_Proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    RT_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     if (!current_proc || current_proc->curr_scope_ptr == -1)
         return RT_Data_null();
     RT_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
@@ -238,7 +238,7 @@ RT_Data_t RT_VarTable_pop_scope(void)
     return *RT_ACC_DATA;
 }
 
-/** clear memory of the vartable */
+/** clear memory of the VarTable */
 void RT_VarTable_destroy()
 {
     io_errndie("RT_VarTable_destroy: unimplemented");
@@ -246,5 +246,5 @@ void RT_VarTable_destroy()
 }
 
 #else
-    #warning re-inclusion of module 'runtime/vartable.c.h'
+    #warning re-inclusion of module 'runtime/VarTable.c.h'
 #endif
