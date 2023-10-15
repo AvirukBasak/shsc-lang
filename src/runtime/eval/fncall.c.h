@@ -25,7 +25,7 @@ void rt_call_function(const ast_Identifier_t *module, const ast_Identifier_t *pr
         rt_current_module = module;
         rt_current_proc = proc;
     } else if (fn != fn_UNDEFINED) {
-        rt_currfile = "<built-in>";
+        /* rt_currfile = rt_currfile; */
         rt_current_module = module;
         rt_current_proc = proc;
     }
