@@ -5,7 +5,7 @@ proc main start
     var c = 'c'
     var d = null
     var e = "xyz"
-    print(
+    io:print(
         dbg:typename(x),
         dbg:typename(a),
         dbg:typename(b),
