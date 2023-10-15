@@ -1,5 +1,5 @@
-#ifndef ast_NODES_CONSTRUCTORS_H
-#define ast_NODES_CONSTRUCTORS_H
+#ifndef AST_NODES_CONSTRUCTORS_H
+#define AST_NODES_CONSTRUCTORS_H
 
 #include <stdint.h>
 

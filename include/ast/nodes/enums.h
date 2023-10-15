@@ -1,5 +1,5 @@
-#ifndef ast_ENUMS_H
-#define ast_ENUMS_H
+#ifndef AST_ENUMS_H
+#define AST_ENUMS_H
 
 enum ast_StatementType_t {
     STATEMENT_TYPE_EMPTY,

@@ -1,5 +1,5 @@
-#ifndef ast_NODES_DESTRUCTORS_C_H
-#define ast_NODES_DESTRUCTORS_C_H
+#ifndef AST_NODES_DESTRUCTORS_C_H
+#define AST_NODES_DESTRUCTORS_C_H
 
 #include <stdlib.h>
 #include "ast/nodes.h"

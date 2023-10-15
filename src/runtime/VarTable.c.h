@@ -1,5 +1,5 @@
-#ifndef rt_VARTABLE_C_H
-#define rt_VARTABLE_C_H
+#ifndef RT_VARTABLE_C_H
+#define RT_VARTABLE_C_H
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -201,7 +201,7 @@ rt_Data_t rt_VarTable_pop_proc(void)
         rt_vtable->procs = NULL;
         rt_vtable->capacity = 0;
     }
-    return *rt_ACC_DATA;
+    return *RT_ACC_DATA;
 }
 
 void rt_VarTable_push_scope()
@@ -235,7 +235,7 @@ rt_Data_t rt_VarTable_pop_scope(void)
         current_proc->scopes = NULL;
         current_proc->capacity = 0;
     }
-    return *rt_ACC_DATA;
+    return *RT_ACC_DATA;
 }
 
 /** clear memory of the VarTable */

@@ -1,5 +1,5 @@
-#ifndef rt_DATA_LIST_H
-#define rt_DATA_LIST_H
+#ifndef RT_DATA_LIST_H
+#define RT_DATA_LIST_H
 
 #include <stddef.h>
 

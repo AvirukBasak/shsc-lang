@@ -1,5 +1,5 @@
-#ifndef ast_NODES_DESTRUCTORS_H
-#define ast_NODES_DESTRUCTORS_H
+#ifndef AST_NODES_DESTRUCTORS_H
+#define AST_NODES_DESTRUCTORS_H
 
 #include "ast.h"
 

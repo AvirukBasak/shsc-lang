@@ -1,5 +1,5 @@
-#ifndef ast_NODES_H
-#define ast_NODES_H
+#ifndef AST_NODES_H
+#define AST_NODES_H
 
 /* the following includes are absolutely needed
    - #include "ast.h"

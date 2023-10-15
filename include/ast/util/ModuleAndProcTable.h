@@ -1,5 +1,5 @@
-#ifndef ast_UTIL_MODULE_AND_PROC_TABLE_H
-#define ast_UTIL_MODULE_AND_PROC_TABLE_H
+#ifndef AST_UTIL_MODULE_AND_PROC_TABLE_H
+#define AST_UTIL_MODULE_AND_PROC_TABLE_H
 
 #include <stdbool.h>
 

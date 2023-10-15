@@ -1,5 +1,5 @@
-#ifndef rt_DATA_STRING_H
-#define rt_DATA_STRING_H
+#ifndef RT_DATA_STRING_H
+#define RT_DATA_STRING_H
 
 #include <stddef.h>
 #include <stdint.h>
