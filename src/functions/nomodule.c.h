@@ -1,8 +1,11 @@
 #ifndef FN_NOMODULE_C_H
 #define FN_NOMODULE_C_H
 
+#include "io.h"
+#include "functions/nomodule.h"
 #include "runtime/data.h"
 #include "runtime/data/string.h"
+#include "runtime/data/list.h"
 #include "runtime/vartable.h"
 
 RT_Data_t FN_isnull()

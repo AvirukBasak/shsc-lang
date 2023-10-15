@@ -15,6 +15,7 @@
 #include "runtime/io.h"
 #include "runtime/data.h"
 #include "runtime/data/string.h"
+#include "runtime/data/list.h"
 #include "runtime/vartable.h"
 
 bool fn_io_input_type_isvalid(enum RT_DataType_t type);

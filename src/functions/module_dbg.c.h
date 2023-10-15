@@ -1,6 +1,8 @@
 #ifndef FN_MODULE_DBG_C_H
 #define FN_MODULE_DBG_C_H
 
+#include "io.h"
+#include "functions/module_dbg.h"
 #include "runtime/data.h"
 #include "runtime/data/string.h"
 #include "runtime/data/list.h"
