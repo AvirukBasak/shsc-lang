@@ -299,7 +299,7 @@ ast_CommaSepList_t *ast_CommaSepList(ast_CommaSepList_t *comma_list, ast_Express
 ast_AssociativeList_t *ast_AssociativeList(ast_AssociativeList_t *assoc_list, ast_Literal_t *key, ast_Expression_t *value)
 {
     ast_AssociativeList_t *associative_list = (ast_AssociativeList_t*) malloc(sizeof(ast_AssociativeList_t));
-    if (!associative_list) io_errndie("ast_AssociativeList_t:" ERR_MSG_MALLOCFAIL);
+    if (!associative_list) io_errndie("ast_AssociativeList:" ERR_MSG_MALLOCFAIL);
     associative_list->assoc_list = assoc_list;
     associative_list->key = key;
     associative_list->value = value;
