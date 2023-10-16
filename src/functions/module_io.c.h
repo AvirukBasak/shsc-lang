@@ -1,5 +1,5 @@
-#ifndef fn_MODULE_IO_C_H
-#define fn_MODULE_IO_C_H
+#ifndef FN_MODULE_IO_C_H
+#define FN_MODULE_IO_C_H
 
 #include <errno.h>
 #include <stdbool.h>

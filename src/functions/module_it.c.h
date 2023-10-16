@@ -1,5 +1,5 @@
-#ifndef fn_MODULE_IT_C_H
-#define fn_MODULE_IT_C_H
+#ifndef FN_MODULE_IT_C_H
+#define FN_MODULE_IT_C_H
 
 #include "io.h"
 #include "functions/module_it.h"

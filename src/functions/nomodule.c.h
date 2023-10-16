@@ -1,5 +1,5 @@
-#ifndef fn_NOMODULE_C_H
-#define fn_NOMODULE_C_H
+#ifndef FN_NOMODULE_C_H
+#define FN_NOMODULE_C_H
 
 #include <stdlib.h>
 

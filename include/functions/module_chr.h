@@ -1,4 +1,4 @@
-#ifndef fn_MODULE_CHR_H
-#define fn_MODULE_CHR_H
+#ifndef FN_MODULE_CHR_H
+#define FN_MODULE_CHR_H
 
 #endif

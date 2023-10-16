@@ -1,5 +1,5 @@
-#ifndef fn_MODULE_IT_H
-#define fn_MODULE_IT_H
+#ifndef FN_MODULE_IT_H
+#define FN_MODULE_IT_H
 
 #include "runtime/data/Data.h"
 
