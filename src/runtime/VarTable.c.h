@@ -159,6 +159,9 @@ void rt_VarTable_push_proc(const char *procname)
         rt_vtable->curr_proc_ptr = -1;
         rt_vtable->capacity = 0;
     }
+    /* check if call stack has exceeded a default limit */
+    if (rt_vtable->curr_proc_ptr >= RT_DEFAULT_CALL_STACK_LIMIT)
+        rt_throw("call stack limit exceeded");
     /* increase the capacity if needed */
     if (rt_vtable->curr_proc_ptr >= rt_vtable->capacity -1) {
         rt_vtable->capacity = rt_vtable->capacity * 2 +1;
