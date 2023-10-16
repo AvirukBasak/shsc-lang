@@ -3,15 +3,63 @@
 
 #include <inttypes.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "ast.h"
 #include "ast/api.h"
 #include "io.h"
 #include "runtime.h"
+#include "runtime/data/Data.h"
 #include "runtime/data/DataList.h"
 #include "runtime/eval.h"
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
+
+rt_Data_t *rt_eval_Expression_operand(
+    const ast_Operator_t op,
+    const union ast_ExpressionUnion_t oprnd,
+    const enum ast_ExpressionType_t oprnd_type,
+    rt_Data_t *oprnd_data,
+    bool is_lhs
+) {
+    /* during function call, if lhs is a single identifier only
+       then skip normal lhs evaluation to prevent conflict with
+       rt_VarTable_getref during identifier value resolution.
+       intead generate a procedure type data and return */
+    if (is_lhs && op == TOKOP_FNCALL && oprnd_type == EXPR_TYPE_IDENTIFIER) {
+        rt_VarTable_acc_setval((rt_Data_t) {
+            .data.proc = {
+                .modulename = rt_modulename_get(),
+                .procname = oprnd.variable,
+            },
+            .type = rt_DATA_TYPE_PROC
+        });
+    } else {
+        /* evaluate operand normally */
+        switch (oprnd_type) {
+            case EXPR_TYPE_EXPRESSION:
+                rt_eval_Expression(oprnd.expr);
+            case EXPR_TYPE_LITERAL:
+                rt_eval_Literal(oprnd.literal);
+                break;
+            case EXPR_TYPE_IDENTIFIER:
+                rt_eval_Identifier(oprnd.variable);
+                break;
+            case EXPR_TYPE_NULL:
+                /* this makes sure that for TOKOP_NOP where rhs and condition are null,
+                   a new value is not assigned to the accumulator.
+                   otherwise, the accumulator will destroy its previous value, causing a
+                   potential heap-use-after-free bug */
+                return NULL;
+        }
+    }
+
+rt_eval_Expression_operand_return:
+    /* copy accumulator value into temporary memory as accumulator gets
+       modified when evaluating other operands */
+    *oprnd_data = *RT_ACC_DATA;
+    return rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : oprnd_data;
+}
 
 void rt_eval_Expression(const ast_Expression_t *expr)
 {
@@ -19,6 +67,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         rt_VarTable_acc_setval(rt_Data_null());
         return;
     }
+
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
         case TOKEN_DOT:
@@ -43,92 +92,20 @@ void rt_eval_Expression(const ast_Expression_t *expr)
     }
 
     /* handle lhs and evaluate it */
-    rt_Data_t lhs_, *lhs = NULL;
-
-    /* during function call, if lhs is a single identifier only
-       then skip normal lhs evaluation to prevent conflict with
-       rt_VarTable_getref during identifier value resolution */
-    if (expr->op == TOKOP_FNCALL && expr->lhs_type == EXPR_TYPE_IDENTIFIER) {
-        rt_VarTable_acc_setval((rt_Data_t) {
-            .data.proc = {
-                .modulename = rt_modulename_get(),
-                .procname = expr->lhs.variable,
-            },
-            .type = rt_DATA_TYPE_PROC
-        });
-        /* copy accumulator value into temporary memory as accumulator gets
-           modified when evaluating other operands */
-        lhs_ = *RT_ACC_DATA;
-        lhs = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &lhs_;
-        goto rt_eval_Expression_eval_skip_lhs;
-    }
-
-    switch (expr->lhs_type) {
-        case EXPR_TYPE_EXPRESSION:
-            rt_eval_Expression(expr->lhs.expr);
-            /* copy accumulator value into temporary memory as accumulator gets
-               modified when evaluating other operands */
-            lhs_ = *RT_ACC_DATA;
-            lhs = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &lhs_;
-            break;
-        case EXPR_TYPE_LITERAL:
-            rt_eval_Literal(expr->lhs.literal);
-            lhs_ = *RT_ACC_DATA;
-            lhs = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &lhs_;
-            break;
-        case EXPR_TYPE_IDENTIFIER:
-            rt_eval_Identifier(expr->lhs.variable);
-            lhs_ = *RT_ACC_DATA;
-            lhs = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &lhs_;
-            break;
-        case EXPR_TYPE_NULL: break;
-    }
+    rt_Data_t lhs_;
+    rt_Data_t *lhs = rt_eval_Expression_operand(
+        expr->op, expr->lhs, expr->lhs_type, &lhs_, true);
 
     /* handle rhs and evaluate it */
-    rt_Data_t rhs_, *rhs = NULL;
-rt_eval_Expression_eval_skip_lhs:
-    switch (expr->rhs_type) {
-        case EXPR_TYPE_EXPRESSION:
-            rt_eval_Expression(expr->rhs.expr);
-            rhs_ = *RT_ACC_DATA;
-            rhs = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rhs_;
-            break;
-        case EXPR_TYPE_LITERAL:
-            rt_eval_Literal(expr->rhs.literal);
-            rhs_ = *RT_ACC_DATA;
-            rhs = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rhs_;
-            break;
-        case EXPR_TYPE_IDENTIFIER:
-            rt_eval_Identifier(expr->rhs.variable);
-            rhs_ = *RT_ACC_DATA;
-            rhs = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rhs_;
-            break;
-        case EXPR_TYPE_NULL: break;
-    }
+    rt_Data_t rhs_;
+    rt_Data_t *rhs = rt_eval_Expression_operand(
+        expr->op, expr->rhs, expr->rhs_type, &rhs_, false);
 
-    /* handle condition and evaluate it */
-    rt_Data_t condition_, *condition = NULL;
-rt_eval_Expression_eval_skip_lhs_and_rhs:
-    switch (expr->condition_type) {
-        case EXPR_TYPE_EXPRESSION:
-            rt_eval_Expression(expr->condition.expr);
-            condition_ = *RT_ACC_DATA;
-            condition = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &condition_;
-            break;
-        case EXPR_TYPE_LITERAL:
-            rt_eval_Literal(expr->condition.literal);
-            condition_ = *RT_ACC_DATA;
-            condition = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &condition_;
-            break;
-        case EXPR_TYPE_IDENTIFIER:
-            rt_eval_Identifier(expr->condition.variable);
-            condition_ = *RT_ACC_DATA;
-            condition = rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &condition_;
-            break;
-        case EXPR_TYPE_NULL: break;
-    }
+    /* handle rhs and evaluate it */
+    rt_Data_t condition_;
+    rt_Data_t *condition = rt_eval_Expression_operand(
+        expr->op, expr->condition, expr->condition_type, &condition_, false);
 
-rt_eval_Expression_eval_skip_all_3_operands:
     switch (expr->op) {
         /* shortcut assignment operators */
         case TOKEN_ADD_ASSIGN:
