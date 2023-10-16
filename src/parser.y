@@ -17,6 +17,42 @@ FILE *yyin = NULL;
 
 %}
 
+%union
+{
+    /* line count */
+    int line_count;
+
+    /* just the token id */
+    enum yytokentype tok;
+
+    /* base literals */
+    bool     literal_bool;
+    char     literal_char;
+    double   literal_f64;
+    int64_t  literal_i64;
+    char    *literal_str;
+    void    *literal_any;
+
+    /* identifier name */
+    char    *identifier_name;
+
+    /* ast nodes */
+    ast_Statements_t       *astnode_statements;           /* statements */
+    ast_Statement_t        *astnode_statement;            /* statement */
+    ast_Assignment_t       *astnode_assignment;           /* assignment */
+    ast_CompoundSt_t       *astnode_compound_statement;   /* compound_statement */
+    ast_IfBlock_t          *astnode_if_block;             /* if_block */
+    ast_ElseBlock_t        *astnode_else_block;           /* else_block */
+    ast_WhileBlock_t       *astnode_while_block;          /* while_block */
+    ast_ForBlock_t         *astnode_for_block;            /* for_block */
+    ast_Block_t            *astnode_block;                /* block */
+    ast_Expression_t       *astnode_expression;           /* expression */
+    ast_CommaSepList_t     *astnode_comma_list;           /* comma_list */
+    ast_AssociativeList_t  *astnode_assoc_list;           /* assoc_list */
+    ast_Literal_t          *astnode_literal;              /* literal */
+    ast_Identifier_t       *astnode_identifier;           /* identifier */
+}
+
 %token <tok> TOKEN_BANG                              "!"
 %token <tok> TOKEN_LOGICAL_UNEQUAL                   "!="
 %token <tok> TOKEN_LOGICAL_UNIDENTICAL               "!=="
@@ -145,43 +181,6 @@ FILE *yyin = NULL;
 %precedence TOKEN_KWD_IF
 %precedence TOKEN_KWD_ELSE
 
-%union
-{
-    /* line count */
-    int line_count;
-
-    /* just the token id */
-    enum yytokentype tok;
-
-    /* base literals */
-    bool     literal_bool;
-    char     literal_char;
-    double   literal_f64;
-    int64_t  literal_i64;
-    char    *literal_str;
-    void    *literal_any;
-
-    /* identifier name */
-    char    *identifier_name;
-
-    /* ast nodes */
-    ast_Statements_t       *astnode_statements;           /* statements */
-    ast_Statement_t        *astnode_statement;            /* statement */
-    ast_Assignment_t       *astnode_assignment;           /* assignment */
-    ast_CompoundSt_t       *astnode_compound_statement;   /* compound_statement */
-    ast_IfBlock_t          *astnode_if_block;             /* if_block */
-    ast_ElseBlock_t        *astnode_else_block;           /* else_block */
-    ast_WhileBlock_t       *astnode_while_block;          /* while_block */
-    ast_ForBlock_t         *astnode_for_block;            /* for_block */
-    ast_Block_t            *astnode_block;                /* block */
-    ast_Expression_t       *astnode_expression;           /* expression */
-    ast_CommaSepList_t     *astnode_comma_list;           /* comma_list */
-    ast_AssociativeList_t  *astnode_assoc_list;           /* assoc_list */
-    ast_Literal_t          *astnode_literal;              /* literal */
-    ast_Identifier_t       *astnode_identifier;           /* identifier */
-}
-
-
 %type <line_count> nws
 %type <line_count> nwp
 %type <line_count> trm
@@ -264,41 +263,41 @@ program:
 
 /* Map each module name to a map of procedures */
 procedure:
-    "proc" identifier "start" nwp statements "end" trm  { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, $5);
-                                                            ast_Identifier_destroy(&$2);
-                                                        }
+    "proc" identifier "start" nwp statements "end" trm       { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, $5);
+                                                                 ast_Identifier_destroy(&$2);
+                                                             }
     ;
 
 statements:
-    %empty                                              { $$ = NULL; }
-    | statement statements                              { $$ = ast_Statements($2, $1); }
+    %empty                                                   { $$ = NULL; }
+    | statement statements                                   { $$ = ast_Statements($2, $1); }
     ;
 
 statement:
-    "pass" trm                                          { $$ = ast_Statement_empty(lex_line_no - $2); }
-    | "break" trm                                       { $$ = ast_Statement_break(lex_line_no - $2); }
-    | "continue" trm                                    { $$ = ast_Statement_continue(lex_line_no - $2); }
-    | "return" expression trm                           { $$ = ast_Statement_return($2, lex_line_no - $3); }
-    | "return" trm                                      { $$ = ast_Statement_return(NULL, lex_line_no - $2); }
-    | assignment trm                                    { $$ = ast_Statement_Assignment($1, lex_line_no - $2); }
-    | compound_statement trm                            { $$ = ast_Statement_CompoundSt($1, lex_line_no - $2); }
+    "pass" trm                                               { $$ = ast_Statement_empty(lex_line_no - $2); }
+    | "break" trm                                            { $$ = ast_Statement_break(lex_line_no - $2); }
+    | "continue" trm                                         { $$ = ast_Statement_continue(lex_line_no - $2); }
+    | "return" expression trm                                { $$ = ast_Statement_return($2, lex_line_no - $3); }
+    | "return" trm                                           { $$ = ast_Statement_return(NULL, lex_line_no - $2); }
+    | assignment trm                                         { $$ = ast_Statement_Assignment($1, lex_line_no - $2); }
+    | compound_statement trm                                 { $$ = ast_Statement_CompoundSt($1, lex_line_no - $2); }
     ;
 
 assignment:
-    "var" identifier "=" expression                     { $$ = ast_Assignment_create($2, $4); } /* shadow or create new var */
-    | expression                                        { $$ = ast_Assignment_tovoid($1); }     /* assignment to void */
+    "var" identifier "=" expression                          { $$ = ast_Assignment_create($2, $4); } /* shadow or create new var */
+    | expression                                             { $$ = ast_Assignment_tovoid($1); }     /* assignment to void */
     ;
 
 compound_statement:
-    if_block                                            { $$ = ast_CompoundSt_IfBlock($1); }
-    | while_block                                       { $$ = ast_CompoundSt_WhileBlock($1); }
-    | for_block                                         { $$ = ast_CompoundSt_ForBlock($1); }
-    | block                                             { $$ = ast_CompoundSt_Block($1); }
+    if_block                                                 { $$ = ast_CompoundSt_IfBlock($1); }
+    | while_block                                            { $$ = ast_CompoundSt_WhileBlock($1); }
+    | for_block                                              { $$ = ast_CompoundSt_ForBlock($1); }
+    | block                                                  { $$ = ast_CompoundSt_Block($1); }
     ;
 
 if_block:
-    "if" condition "then" nwp statements "end"          { $$ = ast_IfBlock($2, $5, NULL); }
-    | "if" condition "then" nwp statements else_block   { $$ = ast_IfBlock($2, $5, $6); }
+    "if" condition "then" nwp statements "end"               { $$ = ast_IfBlock($2, $5, NULL); }
+    | "if" condition "then" nwp statements else_block        { $$ = ast_IfBlock($2, $5, $6); }
     ;
 
 else_block:
@@ -310,7 +309,7 @@ else_block:
     ;
 
 while_block:
-    "while" condition "do" nwp statements "end"         { $$ = ast_WhileBlock($2, $5); }
+    "while" condition "do" nwp statements "end"              { $$ = ast_WhileBlock($2, $5); }
     ;
 
 for_block:
@@ -321,193 +320,193 @@ for_block:
     ;
 
 block:
-    "block" nwp statements "end"                        { $$ = ast_Block($3); }
+    "block" nwp statements "end"                             { $$ = ast_Block($3); }
     ;
 
 condition:
-    conditional_expression                              { $$ = $1; }
+    conditional_expression                                   { $$ = $1; }
     ;
 
 expression:
-    assignment_expression                               { $$ = $1; }
+    assignment_expression                                    { $$ = $1; }
     ;
 
 assignment_expression:
-    conditional_expression                              { $$ = $1; }
-    | postfix_expression "=" assignment_expression      { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "||=" assignment_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "&&=" assignment_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "|=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "^=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "&=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression ">>>=" assignment_expression   { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "<<=" assignment_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression ">>=" assignment_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "+=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "-=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "*=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "/=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "%=" assignment_expression     { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "**=" assignment_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "//=" assignment_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
+    conditional_expression                                   { $$ = $1; }
+    | postfix_expression "=" assignment_expression           { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "||=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "&&=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "|=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "^=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "&=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression ">>>=" assignment_expression        { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "<<=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression ">>=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "+=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "-=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "*=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "/=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "%=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "**=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | postfix_expression "//=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 conditional_expression:
-    logical_or_expression                               { $$ = $1; }
+    logical_or_expression                                    { $$ = $1; }
     | conditional_expression "if" condition "else" conditional_expression { $$ = ast_Expression(TOKOP_TERNARY_COND, $1, $5, $3); }
     ;
 
 logical_or_expression:
-    logical_and_expression                              { $$ = $1; }
-    | logical_or_expression "||" logical_and_expression { $$ = ast_Expression($2, $1, $3, NULL); }
+    logical_and_expression                                   { $$ = $1; }
+    | logical_or_expression "||" logical_and_expression      { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 logical_and_expression:
-    bitwise_or_expression                               { $$ = $1; }
-    | logical_and_expression "&&" bitwise_or_expression { $$ = ast_Expression($2, $1, $3, NULL); }
+    bitwise_or_expression                                    { $$ = $1; }
+    | logical_and_expression "&&" bitwise_or_expression      { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 bitwise_or_expression:
-    bitwise_xor_expression                              { $$ = $1; }
-    | bitwise_or_expression "|" bitwise_xor_expression  { $$ = ast_Expression($2, $1, $3, NULL); }
+    bitwise_xor_expression                                   { $$ = $1; }
+    | bitwise_or_expression "|" bitwise_xor_expression       { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 bitwise_xor_expression:
-    bitwise_and_expression                              { $$ = $1; }
-    | bitwise_xor_expression "^" bitwise_and_expression { $$ = ast_Expression($2, $1, $3, NULL); }
+    bitwise_and_expression                                   { $$ = $1; }
+    | bitwise_xor_expression "^" bitwise_and_expression      { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 bitwise_and_expression:
-    equality_expression                                 { $$ = $1; }
-    | bitwise_and_expression "&" equality_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
+    equality_expression                                      { $$ = $1; }
+    | bitwise_and_expression "&" equality_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 equality_expression:
-    relational_expression                               { $$ = $1; }
-    | equality_expression "==" relational_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | equality_expression "!=" relational_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
+    relational_expression                                    { $$ = $1; }
+    | equality_expression "==" relational_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | equality_expression "!=" relational_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 relational_expression:
-    shift_expression                                    { $$ = $1; }
-    | relational_expression "<" shift_expression        { $$ = ast_Expression($2, $1, $3, NULL); }
-    | relational_expression ">" shift_expression        { $$ = ast_Expression($2, $1, $3, NULL); }
-    | relational_expression "<=" shift_expression       { $$ = ast_Expression($2, $1, $3, NULL); }
-    | relational_expression ">=" shift_expression       { $$ = ast_Expression($2, $1, $3, NULL); }
+    shift_expression                                         { $$ = $1; }
+    | relational_expression "<" shift_expression             { $$ = ast_Expression($2, $1, $3, NULL); }
+    | relational_expression ">" shift_expression             { $$ = ast_Expression($2, $1, $3, NULL); }
+    | relational_expression "<=" shift_expression            { $$ = ast_Expression($2, $1, $3, NULL); }
+    | relational_expression ">=" shift_expression            { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 shift_expression:
-    additive_expression                                 { $$ = $1; }
-    | shift_expression ">>>" additive_expression        { $$ = ast_Expression($2, $1, $3, NULL); }
-    | shift_expression "<<" additive_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
-    | shift_expression ">>" additive_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    additive_expression                                      { $$ = $1; }
+    | shift_expression ">>>" additive_expression             { $$ = ast_Expression($2, $1, $3, NULL); }
+    | shift_expression "<<" additive_expression              { $$ = ast_Expression($2, $1, $3, NULL); }
+    | shift_expression ">>" additive_expression              { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 additive_expression:
-    multiplicative_expression                           { $$ = $1; }
-    | additive_expression "+" multiplicative_expression { $$ = ast_Expression($2, $1, $3, NULL); }
-    | additive_expression "-" multiplicative_expression { $$ = ast_Expression($2, $1, $3, NULL); }
+    multiplicative_expression                                { $$ = $1; }
+    | additive_expression "+" multiplicative_expression      { $$ = ast_Expression($2, $1, $3, NULL); }
+    | additive_expression "-" multiplicative_expression      { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 multiplicative_expression:
-    unary_expression                                    { $$ = $1; }
-    | multiplicative_expression "*" unary_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | multiplicative_expression "/" unary_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | multiplicative_expression "%" unary_expression    { $$ = ast_Expression($2, $1, $3, NULL); }
-    | unary_expression "**" multiplicative_expression   { $$ = ast_Expression($2, $1, $3, NULL); }
-    | multiplicative_expression "//" unary_expression   { $$ = ast_Expression($2, $1, $3, NULL); }
+    unary_expression                                         { $$ = $1; }
+    | multiplicative_expression "*" unary_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | multiplicative_expression "/" unary_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | multiplicative_expression "%" unary_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
+    | unary_expression "**" multiplicative_expression        { $$ = ast_Expression($2, $1, $3, NULL); }
+    | multiplicative_expression "//" unary_expression        { $$ = ast_Expression($2, $1, $3, NULL); }
     ;
 
 unary_expression:
-    postfix_expression                                  { $$ = $1; }
-    | "+" unary_expression                              { $$ = ast_Expression($1, NULL, $2, NULL); }
-    | "-" unary_expression                              { $$ = ast_Expression($1, NULL, $2, NULL); }
-    | "!" unary_expression                              { $$ = ast_Expression($1, NULL, $2, NULL); }
-    | "~" unary_expression                              { $$ = ast_Expression($1, NULL, $2, NULL); }
-    | "++" unary_expression                             { $$ = ast_Expression($1, NULL, $2, NULL); }
-    | "--" unary_expression                             { $$ = ast_Expression($1, NULL, $2, NULL); }
+    postfix_expression                                       { $$ = $1; }
+    | "+" unary_expression                                   { $$ = ast_Expression($1, NULL, $2, NULL); }
+    | "-" unary_expression                                   { $$ = ast_Expression($1, NULL, $2, NULL); }
+    | "!" unary_expression                                   { $$ = ast_Expression($1, NULL, $2, NULL); }
+    | "~" unary_expression                                   { $$ = ast_Expression($1, NULL, $2, NULL); }
+    | "++" unary_expression                                  { $$ = ast_Expression($1, NULL, $2, NULL); }
+    | "--" unary_expression                                  { $$ = ast_Expression($1, NULL, $2, NULL); }
     ;
 
 postfix_expression:
-    primary_expression                                  { $$ = $1; }
-    | postfix_expression "(" ")"                        { $$ = ast_Expression(TOKOP_FNCALL, $1, NULL, NULL); }
-    | postfix_expression "(" nws comma_list ")"         { $$ = ast_Expression(TOKOP_FNCALL, $1,
-                                                            ast_Expression_CommaSepList($4), NULL);
-                                                        }
-    | postfix_expression "[" expression "]"             { $$ = ast_Expression(TOKOP_INDEXING, $1, $3, NULL); }
-    | "$" "[" expression "]"                            { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
-    | "$" "(" expression ")"                            { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
-    | "$" TOKEN_DECINT_LITERAL                          { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL,
-                                                            ast_Expression_Literal(
-                                                                ast_Literal_i64($2)), NULL);
-                                                        }
-    | "$" identifier                                    { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL,
-                                                            ast_Expression_Identifier($2), NULL);
-                                                        }
-    | postfix_expression "++"                           { $$ = ast_Expression($2, $1, NULL, NULL); }
-    | postfix_expression "--"                           { $$ = ast_Expression($2, $1, NULL, NULL); }
-    | postfix_expression "." identifier                 { $$ = ast_Expression($2, $1,
-                                                            ast_Expression_Identifier($3), NULL);
-                                                        }
-    | postfix_expression "::" identifier                { $$ = ast_Expression($2, $1,
-                                                            ast_Expression_Identifier($3), NULL);
-                                                        }
-    | postfix_expression ":" identifier                 { $$ = ast_Expression(TOKEN_DCOLON, $1,
-                                                            ast_Expression_Identifier($3), NULL);
-                                                        }
+    primary_expression                                       { $$ = $1; }
+    | postfix_expression "(" ")"                             { $$ = ast_Expression(TOKOP_FNCALL, $1, NULL, NULL); }
+    | postfix_expression "(" nws comma_list ")"              { $$ = ast_Expression(TOKOP_FNCALL, $1,
+                                                                 ast_Expression_CommaSepList($4), NULL);
+                                                             }
+    | postfix_expression "[" expression "]"                  { $$ = ast_Expression(TOKOP_INDEXING, $1, $3, NULL); }
+    | "$" "[" expression "]"                                 { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
+    | "$" "(" expression ")"                                 { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL, $3, NULL); }
+    | "$" TOKEN_DECINT_LITERAL                               { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL,
+                                                                 ast_Expression_Literal(
+                                                                     ast_Literal_i64($2)), NULL);
+                                                             }
+    | "$" identifier                                         { $$ = ast_Expression(TOKOP_FNARGS_INDEXING, NULL,
+                                                                 ast_Expression_Identifier($2), NULL);
+                                                             }
+    | postfix_expression "++"                                { $$ = ast_Expression($2, $1, NULL, NULL); }
+    | postfix_expression "--"                                { $$ = ast_Expression($2, $1, NULL, NULL); }
+    | postfix_expression "." identifier                      { $$ = ast_Expression($2, $1,
+                                                                 ast_Expression_Identifier($3), NULL);
+                                                             }
+    | postfix_expression "::" identifier                     { $$ = ast_Expression($2, $1,
+                                                                 ast_Expression_Identifier($3), NULL);
+                                                             }
+    | postfix_expression ":" identifier                      { $$ = ast_Expression(TOKEN_DCOLON, $1,
+                                                                 ast_Expression_Identifier($3), NULL);
+                                                             }
     ;
 
 primary_expression:
-    literal                                             { $$ = ast_Expression_Literal($1); }
-    | identifier                                        { $$ = ast_Expression_Identifier($1); }
-    | "(" expression ")"                                { $$ = $2; }
+    literal                                                  { $$ = ast_Expression_Literal($1); }
+    | identifier                                             { $$ = ast_Expression_Identifier($1); }
+    | "(" expression ")"                                     { $$ = $2; }
     ;
 
 comma_list:
-    expression nws                                      { $$ = ast_CommaSepList(NULL, $1); }
-    | expression "," nws                                { $$ = ast_CommaSepList(NULL, $1); }
-    | expression "," nws comma_list                     { $$ = ast_CommaSepList($4, $1); }
+    expression nws                                           { $$ = ast_CommaSepList(NULL, $1); }
+    | expression "," nws                                     { $$ = ast_CommaSepList(NULL, $1); }
+    | expression "," nws comma_list                          { $$ = ast_CommaSepList($4, $1); }
     ;
 
 assoc_list:
-    string_literal ":" expression nws                   { $$ = ast_AssociativeList(NULL, $1, $3); }
-    | string_literal ":" expression "," nws             { $$ = ast_AssociativeList(NULL, $1, $3); }
-    | string_literal ":" expression "," nws assoc_list  { $$ = ast_AssociativeList($6, $1, $3); }
+    string_literal ":" expression nws                        { $$ = ast_AssociativeList(NULL, $1, $3); }
+    | string_literal ":" expression "," nws                  { $$ = ast_AssociativeList(NULL, $1, $3); }
+    | string_literal ":" expression "," nws assoc_list       { $$ = ast_AssociativeList($6, $1, $3); }
     ;
 
 literal:
-    TOKEN_BOOL_LITERAL                                  { $$ = ast_Literal_bul($1); }
-    | TOKEN_CHAR_LITERAL                                { $$ = ast_Literal_chr($1); }
-    | TOKEN_BINFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
-    | TOKEN_OCTFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
-    | TOKEN_DECFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
-    | TOKEN_HEXFLOAT_LITERAL                            { $$ = ast_Literal_f64($1); }
-    | TOKEN_BININT_LITERAL                              { $$ = ast_Literal_i64($1); }
-    | TOKEN_OCTINT_LITERAL                              { $$ = ast_Literal_i64($1); }
-    | TOKEN_DECINT_LITERAL                              { $$ = ast_Literal_i64($1); }
-    | TOKEN_HEXINT_LITERAL                              { $$ = ast_Literal_i64($1); }
-    | string_literal                                    { $$ = $1; }
-    | list_literal                                      { $$ = $1; }
-    | map_literal                                       { $$ = $1; }
+    TOKEN_BOOL_LITERAL                                       { $$ = ast_Literal_bul($1); }
+    | TOKEN_CHAR_LITERAL                                     { $$ = ast_Literal_chr($1); }
+    | TOKEN_BINFLOAT_LITERAL                                 { $$ = ast_Literal_f64($1); }
+    | TOKEN_OCTFLOAT_LITERAL                                 { $$ = ast_Literal_f64($1); }
+    | TOKEN_DECFLOAT_LITERAL                                 { $$ = ast_Literal_f64($1); }
+    | TOKEN_HEXFLOAT_LITERAL                                 { $$ = ast_Literal_f64($1); }
+    | TOKEN_BININT_LITERAL                                   { $$ = ast_Literal_i64($1); }
+    | TOKEN_OCTINT_LITERAL                                   { $$ = ast_Literal_i64($1); }
+    | TOKEN_DECINT_LITERAL                                   { $$ = ast_Literal_i64($1); }
+    | TOKEN_HEXINT_LITERAL                                   { $$ = ast_Literal_i64($1); }
+    | string_literal                                         { $$ = $1; }
+    | list_literal                                           { $$ = $1; }
+    | map_literal                                            { $$ = $1; }
     ;
 
 string_literal:
-    TOKEN_STR_LITERAL                                   { $$ = ast_Literal_str($1); }
-    | TOKEN_INTERP_STR_LITERAL                          { $$ = ast_Literal_interp_str($1); }
+    TOKEN_STR_LITERAL                                        { $$ = ast_Literal_str($1); }
+    | TOKEN_INTERP_STR_LITERAL                               { $$ = ast_Literal_interp_str($1); }
     ;
 
 list_literal:
-    "[" "]"                                             { $$ = ast_Literal_lst(NULL); }
-    | "[" nws comma_list "]"                            { $$ = ast_Literal_lst($3); }
+    "[" "]"                                                  { $$ = ast_Literal_lst(NULL); }
+    | "[" nws comma_list "]"                                 { $$ = ast_Literal_lst($3); }
     ;
 
 map_literal:
-    "{" "}"                                             { $$ = ast_Literal_map(NULL); }
-    | "{" nws assoc_list "}"                            { $$ = ast_Literal_map($3); }
+    "{" "}"                                                  { $$ = ast_Literal_map(NULL); }
+    | "{" nws assoc_list "}"                                 { $$ = ast_Literal_map($3); }
     ;
 
 identifier:
-    TOKEN_IDENTIFIER                                    { $$ = ast_Identifier($1); }
+    TOKEN_IDENTIFIER                                         { $$ = ast_Identifier($1); }
     ;
 
 %%
