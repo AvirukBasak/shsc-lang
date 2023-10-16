@@ -14,6 +14,7 @@ Before you get started, please take a moment to read and follow these guidelines
 - [Memory Management](#memory-management)
 - [Address Sanitizer](#address-sanitizer)
 - [Clangd LSP](#clangd)
+- [Devtools Directory](#devtools-directory)
 - [Contributing Guidelines](#contributing-guidelines)
 - [Lexer Guidelines](LexerInterface.md)
 - [Language Docs](LanguageDocs.md)
@@ -85,6 +86,18 @@ This section will apply to you only if you're using `clangd` LSP.
 
 You'll need to ignore clangd errors and warnings in `bison` generated files.
 Clangd will use the `compile_flags.txt` file.
+
+## Devtools directory
+The `devtools` directory contains scripts and tools to help with development.
+List of tools:
+- `mk_header_guards.sh` Auto generate header guards for all files given a header prefix and the directory.
+- `ren_files.sh` Bulk rename files by replacing a string in old filenames with a new string.
+    Only works on files with extensions `.c`, `.h` or `.c.h`.
+- `ren_idfs.sh` Bulk rename identifiers in files by replacing a string in old identifiers with a new string.
+    Only works on files with extensions `.c`, `.h` or `.c.h`.
+- `rm_trailing_ws.sh` Remove trailing whitespace from all `.c`, `.h` or `.c.h` files.
+- `run_clangd.sh` Runs `clangd --check` on all `.c`, `.h` or `.c.h` files.
+    This produces a rather large output, so it is recommended to redirect the output to a file.
 
 ## Expression AST
 The functions `ast_Expression_Literal()`, `ast_Expression_Identifier()` and `ast_Expression_CommaSepList()` produce an `ast_Expression_t` with `op` set to `TOKOP_NOP`.
