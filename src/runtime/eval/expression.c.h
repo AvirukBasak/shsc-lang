@@ -13,6 +13,7 @@
 #include "runtime/data/DataList.h"
 #include "runtime/eval.h"
 #include "runtime/io.h"
+#include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
 rt_Data_t *rt_eval_Expression_operand(
@@ -158,34 +159,8 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKEN_TILDE:
             rt_throw("unimplemented operators");
             break;
-        case TOKOP_FNARGS_INDEXING: {
-            if (!rhs || rhs->type != rt_DATA_TYPE_I64)
-                rt_throw("argument index should evaluate to an `i64`");
-            rt_Data_t args = *rt_VarTable_getref("$");
-            if (args.type != rt_DATA_TYPE_LST)
-                io_errndie("rt_eval_Expression: TOKOP_FNARGS_INDEXING: "
-                           "received arguments list as type '%s'", rt_Data_typename(args));
-            rt_VarTable_acc_setadr(
-                rt_DataList_getref(args.data.lst, rhs->data.i64));
-            break;
-        }
-        case TOKOP_FNCALL: {
-            if (lhs->type != rt_DATA_TYPE_PROC)
-                rt_throw("cannot make procedure call to type '%s'", rt_Data_typename(*lhs));
-            if (!rhs) {
-                rhs_ = rt_Data_list(rt_DataList_init());
-                rhs = &rhs_;
-            }
-            if (rhs->type != rt_DATA_TYPE_LST)
-                rt_throw("cannot pass type '%s' as procedure argument", rt_Data_typename(*rhs));
-            /* copy fn args into temporary location */
-            rt_VarTable_modf(rt_VarTable_getref("$"), *rhs);
-            /* get fn code and push code to stack */
-            rt_call_function(lhs->data.proc.modulename, lhs->data.proc.procname);
-            /* set no data to accumulator as data is already set by procedure called above
-               return early to prevent accumulator being modified by some other code */
-            return;
-        }
+        case TOKOP_FNARGS_INDEXING: rt_op_fnargs_indexing(lhs, rhs); break;
+        case TOKOP_FNCALL:          rt_op_fncall(lhs, rhs); break;
         case TOKOP_INDEXING:
             rt_throw("unimplemented operators");
             break;
@@ -199,6 +174,41 @@ void rt_eval_Expression(const ast_Expression_t *expr)
                 lex_Token_getcode(expr->op));
     }
 }
+
+#include "runtime/operators/ampersand.c.h"
+#include "runtime/operators/arith_rshift.c.h"
+#include "runtime/operators/assign.c.h"
+#include "runtime/operators/asterix.c.h"
+#include "runtime/operators/bang.c.h"
+#include "runtime/operators/bitwise_lshift.c.h"
+#include "runtime/operators/bitwise_rshift.c.h"
+#include "runtime/operators/caret.c.h"
+#include "runtime/operators/dcolon.c.h"
+#include "runtime/operators/decrement.c.h"
+#include "runtime/operators/dot.c.h"
+#include "runtime/operators/exponent.c.h"
+#include "runtime/operators/floor_divide.c.h"
+#include "runtime/operators/fncall.c.h"
+#include "runtime/operators/fslash.c.h"
+#include "runtime/operators/increment.c.h"
+#include "runtime/operators/lbrace_angular.c.h"
+#include "runtime/operators/logical_and.c.h"
+#include "runtime/operators/logical_equal.c.h"
+#include "runtime/operators/logical_greater_equal.c.h"
+#include "runtime/operators/logical_lesser_equal.c.h"
+#include "runtime/operators/logical_or.c.h"
+#include "runtime/operators/logical_unequal.c.h"
+#include "runtime/operators/minus.c.h"
+#include "runtime/operators/percent.c.h"
+#include "runtime/operators/pipe.c.h"
+#include "runtime/operators/plus.c.h"
+#include "runtime/operators/rbrace_angular.c.h"
+#include "runtime/operators/tilde.c.h"
+#include "runtime/operators/tokop_fnargs_indexing.c.h"
+#include "runtime/operators/tokop_fncall.c.h"
+#include "runtime/operators/tokop_indexing.c.h"
+#include "runtime/operators/tokop_nop.c.h"
+#include "runtime/operators/tokop_ternary_cond.c.h"
 
 #else
     #warning re-inclusion of module 'runtime/eval/expression.c.h'

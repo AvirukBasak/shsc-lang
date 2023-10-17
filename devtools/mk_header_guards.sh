@@ -46,11 +46,15 @@ for file in $directory/*; do
         fname="${fname}_C"
     fi
     # print the header guards
-    echo "#ifndef ${prefix}_${fname}" >> $file
+    echo "#ifndef ${prefix}_${fname}"  > $file
     echo "#define ${prefix}_${fname}" >> $file
     echo "" >> $file
     echo "" >> $file
     echo "" >> $file
+    if [[ $base == *.c.h ]]; then
+        echo "#else" >> $file
+        echo "    #warning re-inclusion of module '$directory/$(basename $file)'" >> $file
+    fi
     echo "#endif" >> $file
     echo "Updated $file"
 done
