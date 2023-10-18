@@ -34,7 +34,7 @@ void rt_op_tilde                (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_fnargs_indexing      (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_fncall               (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_indexing             (rt_Data_t *lhs, rt_Data_t *rhs);
-void rt_op_nop                  (rt_Data_t *lhs, rt_Data_t *rhs);
-void rt_op_ternary_cond         (rt_Data_t *lhs, rt_Data_t *rhs, rt_Data_t *cond);
+void rt_op_nop                  (rt_Data_t *lhs);
+void rt_op_ternary_cond         (rt_Data_t *lhs, rt_Data_t *rhs, rt_Data_t *condition);
 
 #endif
