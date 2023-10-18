@@ -115,7 +115,7 @@ rt_Data_t rt_Data_any(void *ptr)
 
 rt_Data_t rt_Data_null(void)
 {
-    return rt_Data_any(NULL);
+    return rt_VarTable_rsv_null;
 }
 
 void rt_Data_copy(rt_Data_t *var)
