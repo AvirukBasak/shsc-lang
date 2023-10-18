@@ -55,7 +55,7 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     }
     rt_VarTable_push_proc(proc->identifier_name);
     /* store fn args into agrs location */
-    rt_VarTable_create(RT_ARGS_LIST_VARNAME, args);
+    rt_VarTable_create(RT_ARGS_LIST_VARNAME, args, true);
     if (code) {
         /* call user defined function */
         rt_eval_Statements(code);

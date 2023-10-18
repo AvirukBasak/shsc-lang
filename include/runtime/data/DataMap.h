@@ -26,6 +26,7 @@ int64_t rt_DataMap_length(const rt_DataMap_t *mp);
 void rt_DataMap_copy(rt_DataMap_t *mp);
 void rt_DataMap_destroy(rt_DataMap_t **ptr);
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value);
+const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key);
 /** unlike rt_DataMap_getref, returns NULL if key not found */
 rt_Data_t *rt_DataMap_getref_errnull(const rt_DataMap_t *mp, const char *key);
 /** unlike rt_DataMap_getref_errnull, CRASHES using rt_throw if key not found.

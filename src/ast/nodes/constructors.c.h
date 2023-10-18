@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "ast/nodes.h"
+#include "ast/nodes/enums.h"
 #include "errcodes.h"
 #include "io.h"
 
@@ -82,6 +83,16 @@ ast_Assignment_t *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expres
     assign->lhs = identifier;
     assign->rhs = expression;
     assign->type = ASSIGNMENT_TYPE_CREATE;
+    return assign;
+}
+
+ast_Assignment_t *ast_Assignment_mkconst(ast_Identifier_t *identifier, ast_Expression_t *expression)
+{
+    ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
+    if (!assign) io_errndie("ast_Assignment_mkconst:" ERR_MSG_MALLOCFAIL);
+    assign->lhs = identifier;
+    assign->rhs = expression;
+    assign->type = ASSIGNMENT_TYPE_MKCONST;
     return assign;
 }
 

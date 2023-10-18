@@ -144,22 +144,23 @@ extern int yydebug;
     TOKEN_KWD_IN = 345,            /* "in"  */
     TOKEN_KWD_DO = 346,            /* "do"  */
     TOKEN_KWD_VAR = 347,           /* "var"  */
-    TOKEN_KWD_PASS = 348,          /* "pass"  */
-    TOKEN_KWD_RETURN = 349,        /* "return"  */
-    TOKEN_INVALID = 350,           /* "<invalid>"  */
-    TOKEN_BOOL_LITERAL = 351,      /* "<boollit>"  */
-    TOKEN_CHAR_LITERAL = 352,      /* "<charlit>"  */
-    TOKEN_BINFLOAT_LITERAL = 353,  /* "<binfloattlit>"  */
-    TOKEN_OCTFLOAT_LITERAL = 354,  /* "<octfloattlit>"  */
-    TOKEN_DECFLOAT_LITERAL = 355,  /* "<decfloattlit>"  */
-    TOKEN_HEXFLOAT_LITERAL = 356,  /* "<hexfloattlit>"  */
-    TOKEN_BININT_LITERAL = 357,    /* "<binintlit>"  */
-    TOKEN_OCTINT_LITERAL = 358,    /* "<octintlit>"  */
-    TOKEN_DECINT_LITERAL = 359,    /* "<decintlit>"  */
-    TOKEN_HEXINT_LITERAL = 360,    /* "<hexintlit>"  */
-    TOKEN_STR_LITERAL = 361,       /* "<strlit>"  */
-    TOKEN_INTERP_STR_LITERAL = 362, /* "<interpstrlit>"  */
-    TOKEN_IDENTIFIER = 363         /* "<identifier>"  */
+    TOKEN_KWD_CONST = 348,         /* "const"  */
+    TOKEN_KWD_PASS = 349,          /* "pass"  */
+    TOKEN_KWD_RETURN = 350,        /* "return"  */
+    TOKEN_INVALID = 351,           /* "<invalid>"  */
+    TOKEN_BOOL_LITERAL = 352,      /* "<boollit>"  */
+    TOKEN_CHAR_LITERAL = 353,      /* "<charlit>"  */
+    TOKEN_BINFLOAT_LITERAL = 354,  /* "<binfloattlit>"  */
+    TOKEN_OCTFLOAT_LITERAL = 355,  /* "<octfloattlit>"  */
+    TOKEN_DECFLOAT_LITERAL = 356,  /* "<decfloattlit>"  */
+    TOKEN_HEXFLOAT_LITERAL = 357,  /* "<hexfloattlit>"  */
+    TOKEN_BININT_LITERAL = 358,    /* "<binintlit>"  */
+    TOKEN_OCTINT_LITERAL = 359,    /* "<octintlit>"  */
+    TOKEN_DECINT_LITERAL = 360,    /* "<decintlit>"  */
+    TOKEN_HEXINT_LITERAL = 361,    /* "<hexintlit>"  */
+    TOKEN_STR_LITERAL = 362,       /* "<strlit>"  */
+    TOKEN_INTERP_STR_LITERAL = 363, /* "<interpstrlit>"  */
+    TOKEN_IDENTIFIER = 364         /* "<identifier>"  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -203,7 +204,7 @@ union YYSTYPE
     ast_Literal_t          *astnode_literal;              /* literal */
     ast_Identifier_t       *astnode_identifier;           /* identifier */
 
-#line 207 "include/parser.yy.h"
+#line 208 "include/parser.yy.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

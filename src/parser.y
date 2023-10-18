@@ -148,6 +148,7 @@ FILE *yyin = NULL;
 %token TOKEN_KWD_IN                                  "in"
 %token TOKEN_KWD_DO                                  "do"
 %token TOKEN_KWD_VAR                                 "var"
+%token TOKEN_KWD_CONST                               "const"
 %token TOKEN_KWD_PASS                                "pass"
 %token TOKEN_KWD_RETURN                              "return"
 
@@ -284,8 +285,9 @@ statement:
     ;
 
 assignment:
-    "var" identifier "=" expression                          { $$ = ast_Assignment_create($2, $4); } /* shadow or create new var */
-    | expression                                             { $$ = ast_Assignment_tovoid($1); }     /* assignment to void */
+    "var" identifier "=" expression                          { $$ = ast_Assignment_create($2, $4); }   /* shadow or create new var */
+    | "const" identifier "=" expression                      { $$ = ast_Assignment_mkconst($2, $4); }  /* create new constant */
+    | expression                                             { $$ = ast_Assignment_tovoid($1); }       /* assignment to void */
     ;
 
 compound_statement:

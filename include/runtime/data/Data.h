@@ -46,6 +46,8 @@ struct rt_Data_t {
         void *any;
     } data;
     enum rt_DataType_t type;
+    bool is_const;
+    const char *varname;
 };
 
 rt_Data_t rt_Data_bul(bool val);

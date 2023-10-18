@@ -36,7 +36,7 @@ void rt_exec(int argc, char **argv)
     }
 
     rt_VarTable_push_proc(proc->identifier_name);
-    rt_VarTable_create(RT_ARGS_LIST_VARNAME, args);
+    rt_VarTable_create(RT_ARGS_LIST_VARNAME, args, true);
 
     rt_ControlStatus_t ctrl = rt_eval_Statements(code);
     if (ctrl == rt_CTRL_BREAK)
