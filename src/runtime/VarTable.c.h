@@ -77,8 +77,9 @@ rt_Data_t *rt_vtable_get_globvar(const char *varname)
 
 void rt_VarTable_create(const char *varname, rt_Data_t value)
 {
-    if ( (!isalpha(varname[0]) && varname[0] != '_') || isdigit(varname[0]) )
-        io_errndie("rt_VarTable_create: invalid new variable name '%s'", varname);
+    if ( (!isalpha(varname[0]) && varname[0] != '_'
+        && strcmp(varname, RT_ARGS_LIST_VARNAME)) || isdigit(varname[0]) )
+            io_errndie("rt_VarTable_create: invalid new variable name '%s'", varname);
     else {
         rt_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) rt_throw("cannot use 'var' with reserved global identifier '%s'", varname);
@@ -100,10 +101,10 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)
 
 rt_Data_t *rt_VarTable_getref_errnull(const char *varname)
 {
-    if ( (!isalpha(varname[0]) && varname[0] != '_' && varname[0] != '$') || isdigit(varname[0]) )
-        io_errndie("rt_VarTable_getref: invalid variable name '%s'", varname);
+    if ( (!isalpha(varname[0]) && varname[0] != '_'
+        && strcmp(varname, RT_ARGS_LIST_VARNAME)) || isdigit(varname[0]) )
+            io_errndie("rt_VarTable_getref: invalid variable name '%s'", varname);
     else {
-        if (!strcmp(varname, "$")) return &rt_vtable_argslist;
         rt_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) return globvar;
     }

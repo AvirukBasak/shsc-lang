@@ -11,7 +11,7 @@
 
 rt_Data_t fn_it_len()
 {
-    rt_Data_t args = *rt_VarTable_getref("$");
+    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_it_len: "
                    "received arguments list as type '%s'", rt_Data_typename(args));

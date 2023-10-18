@@ -27,7 +27,7 @@ int fn_io_input_str(char **val);
 
 rt_Data_t fn_io_print()
 {
-    rt_Data_t args = *rt_VarTable_getref("$");
+    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_io_print: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
@@ -50,7 +50,7 @@ rt_Data_t fn_io_print()
 
 rt_Data_t fn_io_input()
 {
-    rt_Data_t args = *rt_VarTable_getref("$");
+    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_io_input: "
                    "received arguments list as type '%s'", rt_Data_typename(args));

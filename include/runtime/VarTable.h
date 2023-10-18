@@ -7,6 +7,7 @@
 #include "runtime/data/Data.h"
 
 #define _rt_TMPVAR_CNT (32)
+#define RT_ARGS_LIST_VARNAME "args"
 #define RT_DEFAULT_CALL_STACK_LIMIT (1000)
 #define RT_ACC_DATA (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
 
