@@ -72,13 +72,13 @@ void rt_eval_Expression(const ast_Expression_t *expr)
     /* take care pf fn calls and membership operations */
     switch (expr->op) {
         case TOKEN_DOT:
-            rt_throw("unimplemented operators");
+            rt_throw("unimplemented operator");
             break;
         case TOKEN_DCOLON: {
             if (expr->lhs_type != EXPR_TYPE_IDENTIFIER
                 || expr->rhs_type != EXPR_TYPE_IDENTIFIER)
                     rt_throw("invalid use of module membership operator");
-            /* instead of evaluating the lhs and RHS, directly generate a
+            /* instead of evaluating the LHS and RHS, directly generate a
                procedure type literal and return it via accumulator */
             rt_VarTable_acc_setval((rt_Data_t) {
                 .data.proc = {
@@ -109,65 +109,57 @@ void rt_eval_Expression(const ast_Expression_t *expr)
 
     switch (expr->op) {
         /* shortcut assignment operators */
-        case TOKEN_ADD_ASSIGN:
-        case TOKEN_ARITH_RSHIFT_ASSIGN:
-        case TOKEN_BITWISE_AND_ASSIGN:
-        case TOKEN_BITWISE_LSHIFT_ASSIGN:
-        case TOKEN_BITWISE_OR_ASSIGN:
-        case TOKEN_BITWISE_RSHIFT_ASSIGN:
-        case TOKEN_BITWISE_XOR_ASSIGN:
-        case TOKEN_DIVIDE_ASSIGN:
-        case TOKEN_EXPONENT_ASSIGN:
-        case TOKEN_FLOOR_DIVIDE_ASSIGN:
-        case TOKEN_LOGICAL_AND_ASSIGN:
-        case TOKEN_LOGICAL_OR_ASSIGN:
-        case TOKEN_MODULO_ASSIGN:
-        case TOKEN_MULTIPLY_ASSIGN:
-        case TOKEN_SUBSTRACT_ASSIGN:
-        /* remaining operators */
-        case TOKEN_AMPERSAND:
-        case TOKEN_ARITH_RSHIFT:
-            rt_throw("unimplemented operators");
-            break;
+        case TOKEN_ADD_ASSIGN:            rt_throw("unimplemented operator"); break;
+        case TOKEN_ARITH_RSHIFT_ASSIGN:   rt_throw("unimplemented operator"); break;
+        case TOKEN_BITWISE_AND_ASSIGN:    rt_throw("unimplemented operator"); break;
+        case TOKEN_BITWISE_LSHIFT_ASSIGN: rt_throw("unimplemented operator"); break;
+        case TOKEN_BITWISE_OR_ASSIGN:     rt_throw("unimplemented operator"); break;
+        case TOKEN_BITWISE_RSHIFT_ASSIGN: rt_throw("unimplemented operator"); break;
+        case TOKEN_BITWISE_XOR_ASSIGN:    rt_throw("unimplemented operator"); break;
+        case TOKEN_DIVIDE_ASSIGN:         rt_throw("unimplemented operator"); break;
+        case TOKEN_EXPONENT_ASSIGN:       rt_throw("unimplemented operator"); break;
+        case TOKEN_FLOOR_DIVIDE_ASSIGN:   rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_AND_ASSIGN:    rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_OR_ASSIGN:     rt_throw("unimplemented operator"); break;
+        case TOKEN_MODULO_ASSIGN:         rt_throw("unimplemented operator"); break;
+        case TOKEN_MULTIPLY_ASSIGN:       rt_throw("unimplemented operator"); break;
+        case TOKEN_SUBSTRACT_ASSIGN:      rt_throw("unimplemented operator"); break;
+        /* remaining operators */         rt_throw("unimplemented operator"); break;
+        case TOKEN_AMPERSAND:             rt_throw("unimplemented operator"); break;
+        case TOKEN_ARITH_RSHIFT:          rt_throw("unimplemented operator"); break;
         case TOKEN_ASSIGN:
             rt_VarTable_acc_setval(*rt_VarTable_modf(lhs, *rhs));
             break;
-        case TOKEN_ASTERIX:
-        case TOKEN_BANG:
-        case TOKEN_BITWISE_LSHIFT:
-        case TOKEN_BITWISE_RSHIFT:
-        case TOKEN_CARET:
-        case TOKEN_DCOLON:
-        case TOKEN_DECREMENT:
-        case TOKEN_DOT:
-        case TOKEN_EXPONENT:
-        case TOKEN_FLOOR_DIVIDE:
-        case TOKEN_FSLASH:
-        case TOKEN_INCREMENT:
-        case TOKEN_LBRACE_ANGULAR:
-        case TOKEN_LOGICAL_AND:
-        case TOKEN_LOGICAL_EQUAL:
-        case TOKEN_LOGICAL_GREATER_EQUAL:
-        case TOKEN_LOGICAL_LESSER_EQUAL:
-        case TOKEN_LOGICAL_OR:
-        case TOKEN_LOGICAL_UNEQUAL:
-        case TOKEN_MINUS:
-        case TOKEN_PERCENT:
-        case TOKEN_PIPE:
-        case TOKEN_PLUS:
-        case TOKEN_RBRACE_ANGULAR:
-        case TOKEN_TILDE:
-            rt_throw("unimplemented operators");
-            break;
-        case TOKOP_FNARGS_INDEXING: rt_op_fnargs_indexing(lhs, rhs); break;
-        case TOKOP_FNCALL:          rt_op_fncall(lhs, rhs); break;
-        case TOKOP_INDEXING:
-            rt_throw("unimplemented operators");
-            break;
-        case TOKOP_NOP:
-            rt_VarTable_acc_setval(*lhs);
-            break;
-        case TOKOP_TERNARY_COND:
+        case TOKEN_ASTERIX:               rt_throw("unimplemented operator"); break;
+        case TOKEN_BANG:                  rt_throw("unimplemented operator"); break;
+        case TOKEN_BITWISE_LSHIFT:        rt_throw("unimplemented operator"); break;
+        case TOKEN_BITWISE_RSHIFT:        rt_throw("unimplemented operator"); break;
+        case TOKEN_CARET:                 rt_throw("unimplemented operator"); break;
+        case TOKEN_DCOLON:                rt_throw("unimplemented operator"); break;
+        case TOKEN_DECREMENT:             rt_throw("unimplemented operator"); break;
+        case TOKEN_DOT:                   rt_throw("unimplemented operator"); break;
+        case TOKEN_EXPONENT:              rt_throw("unimplemented operator"); break;
+        case TOKEN_FLOOR_DIVIDE:          rt_throw("unimplemented operator"); break;
+        case TOKEN_FSLASH:                rt_throw("unimplemented operator"); break;
+        case TOKEN_INCREMENT:             rt_throw("unimplemented operator"); break;
+        case TOKEN_LBRACE_ANGULAR:        rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_AND:           rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_EQUAL:         rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_GREATER_EQUAL: rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_LESSER_EQUAL:  rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_OR:            rt_throw("unimplemented operator"); break;
+        case TOKEN_LOGICAL_UNEQUAL:       rt_throw("unimplemented operator"); break;
+        case TOKEN_MINUS:                 rt_throw("unimplemented operator"); break;
+        case TOKEN_PERCENT:               rt_throw("unimplemented operator"); break;
+        case TOKEN_PIPE:                  rt_throw("unimplemented operator"); break;
+        case TOKEN_PLUS:                  rt_throw("unimplemented operator"); break;
+        case TOKEN_RBRACE_ANGULAR:        rt_throw("unimplemented operator"); break;
+        case TOKEN_TILDE:                 rt_throw("unimplemented operator"); break;
+        case TOKOP_FNARGS_INDEXING:       rt_op_fnargs_indexing(lhs, rhs);    break;
+        case TOKOP_FNCALL:                rt_op_fncall(lhs, rhs);             break;
+        case TOKOP_INDEXING:              rt_throw("unimplemented operator"); break;
+        case TOKOP_NOP:                   rt_VarTable_acc_setval(*lhs);       break;
+        case TOKOP_TERNARY_COND:          rt_throw("unimplemented operator"); break;
         /* stuff that doesn't form an operation */
         default:
             io_errndie("rt_eval_Expression: invalid operation '%s'",
