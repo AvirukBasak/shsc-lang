@@ -1,8 +1,11 @@
-#ifndef OP_BITWISE_LSHIFT_C_H
-#define OP_BITWISE_LSHIFT_C_H
+#ifndef RT_OP_BITWISE_LSHIFT_C_H
+#define RT_OP_BITWISE_LSHIFT_C_H
 
+#include "runtime/data/Data.h"
+#include "runtime/operators.h"
 
+void rt_op_bitwise_lshift(rt_Data_t *lhs, rt_Data_t *rhs) {}
 
 #else
-    #warning re-inclusion of module 'operators/bitwise_lshift.c.h'
+    #warning re-inclusion of module 'runtime/operators/bitwise_lshift.c.h'
 #endif

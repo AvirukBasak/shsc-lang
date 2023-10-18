@@ -1,5 +1,5 @@
-#ifndef OP_TOKOP_FNCALL_C_H
-#define OP_TOKOP_FNCALL_C_H
+#ifndef RT_OP_TOKOP_FNCALL_C_H
+#define RT_OP_TOKOP_FNCALL_C_H
 
 #include "ast.h"
 #include "ast/api.h"
@@ -74,5 +74,5 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
 }
 
 #else
-    #warning re-inclusion of module 'operators/tokop_fncall.c.h'
+    #warning re-inclusion of module 'runtime/operators/tokop_fncall.c.h'
 #endif

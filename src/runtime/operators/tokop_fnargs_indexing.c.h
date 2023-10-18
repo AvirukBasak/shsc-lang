@@ -1,5 +1,5 @@
-#ifndef OP_TOKOP_FNARGS_INDEXING_C_H
-#define OP_TOKOP_FNARGS_INDEXING_C_H
+#ifndef RT_OP_TOKOP_FNARGS_INDEXING_C_H
+#define RT_OP_TOKOP_FNARGS_INDEXING_C_H
 
 #include "io.h"
 #include "runtime/data/Data.h"
@@ -21,5 +21,5 @@ void rt_op_fnargs_indexing(rt_Data_t *lhs, rt_Data_t *rhs)
 }
 
 #else
-    #warning re-inclusion of module 'operators/tokop_fnargs_indexing.c.h'
+    #warning re-inclusion of module 'runtime/operators/tokop_fnargs_indexing.c.h'
 #endif

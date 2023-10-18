@@ -180,7 +180,6 @@ void rt_eval_Expression(const ast_Expression_t *expr)
 #include "runtime/operators/dot.c.h"
 #include "runtime/operators/exponent.c.h"
 #include "runtime/operators/floor_divide.c.h"
-#include "runtime/operators/fncall.c.h"
 #include "runtime/operators/fslash.c.h"
 #include "runtime/operators/increment.c.h"
 #include "runtime/operators/lbrace_angular.c.h"

@@ -1,8 +1,11 @@
-#ifndef OP_DOT_C_H
-#define OP_DOT_C_H
+#ifndef RT_OP_DOT_C_H
+#define RT_OP_DOT_C_H
 
+#include "runtime/data/Data.h"
+#include "runtime/operators.h"
 
+void rt_op_dot(rt_Data_t *lhs, rt_Data_t *rhs) {}
 
 #else
-    #warning re-inclusion of module 'operators/dot.c.h'
+    #warning re-inclusion of module 'runtime/operators/dot.c.h'
 #endif

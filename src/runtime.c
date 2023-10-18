@@ -50,7 +50,6 @@ const ast_Identifier_t *rt_procname_get(void)
 #include "runtime/eval/associativelist.c.h"
 #include "runtime/eval/commaseplist.c.h"
 #include "runtime/eval/expression.c.h"
-#include "runtime/eval/fncall.c.h"
 #include "runtime/eval/forblock.c.h"
 #include "runtime/eval/identifier.c.h"
 #include "runtime/eval/ifblock.c.h"
