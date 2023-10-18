@@ -39,7 +39,7 @@ make run ARGS="examples/helloworld.txt"
 - [x] Call stack
 - [x] Variables
 - [x] Variable Shadowing
-- [ ] Constants
+- [x] Constants
 - [x] Local scopes
 - [x] Function scopes
 - [x] Literals
