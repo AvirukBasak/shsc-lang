@@ -16,7 +16,6 @@ void rt_op_decrement            (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_dot                  (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_exponent             (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_floor_divide         (rt_Data_t *lhs, rt_Data_t *rhs);
-void rt_op_fncall               (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_fslash               (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_increment            (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_lbrace_angular       (rt_Data_t *lhs, rt_Data_t *rhs);
