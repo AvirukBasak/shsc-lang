@@ -106,7 +106,7 @@ int main(int argc, char **argv)
         ast2json_convert(ast_filename, ast_format);
     else
         /* execute the program */
-        rt_exec();
+        rt_exec(argc, argv);
 #endif
 
     /* clear the entire AST */
