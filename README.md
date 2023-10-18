@@ -35,7 +35,7 @@ make run ARGS="examples/helloworld.txt"
 - [x] Modules
 - [x] Procedure definitions
 - [x] Procedure calls
-- [x] Function arguments (unreliable)
+- [x] Function arguments
 - [x] Call stack
 - [x] Variables
 - [x] Variable Shadowing
