@@ -1,5 +1,5 @@
-#ifndef fn_MODULE_DBG_H
-#define fn_MODULE_DBG_H
+#ifndef FN_MODULE_DBG_H
+#define FN_MODULE_DBG_H
 
 #include "runtime/data/Data.h"
 

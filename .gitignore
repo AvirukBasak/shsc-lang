@@ -7,8 +7,6 @@ target/
 *.out
 core
 lib/*.h
-*.yac.*
-*.yy.*
 *.log
 
 # Prerequisites

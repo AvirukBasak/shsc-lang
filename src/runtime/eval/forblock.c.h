@@ -47,7 +47,7 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
                     (start_i <= end_i && i < end_i) || i > end_i; i += by_i) {
                 rt_VarTable_push_scope();
                 rt_VarTable_create(for_block->val->identifier_name,
-                    rt_Data_i64(i));
+                    rt_Data_i64(i), true);
                 rt_ControlStatus_t ctrl = rt_eval_Statements(for_block->statements);
                 rt_VarTable_pop_scope();
                 if (ctrl == rt_CTRL_PASS)
@@ -84,8 +84,8 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
                     rt_DataMapEntry_t entry = *rt_DataMap_get(iterable.data.mp, entry_it);
                     rt_VarTable_push_scope();
                     if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
-                        rt_Data_str(rt_DataStr_init(entry.key)));
-                    rt_VarTable_create(for_block->val->identifier_name, entry.value);
+                        rt_Data_str(rt_DataStr_init(entry.key)), true);
+                    rt_VarTable_create(for_block->val->identifier_name, entry.value, true);
                     rt_ControlStatus_t ctrl = rt_eval_Statements(for_block->statements);
                     rt_VarTable_pop_scope();
                     if (ctrl == rt_CTRL_PASS)
@@ -100,15 +100,15 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
                 switch (iterable.type) {
                     case rt_DATA_TYPE_LST:
                         if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
-                            rt_Data_i64(i));
+                            rt_Data_i64(i), true);
                         rt_VarTable_create(for_block->val->identifier_name,
-                            *rt_DataList_getref(iterable.data.lst, i));
+                            *rt_DataList_getref(iterable.data.lst, i), true);
                         break;
                     case rt_DATA_TYPE_STR:
                         if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
-                            rt_Data_i64(i));
+                            rt_Data_i64(i), true);
                         rt_VarTable_create(for_block->val->identifier_name,
-                            rt_Data_chr(*rt_DataStr_getref(iterable.data.str, i)));
+                            rt_Data_chr(*rt_DataStr_getref(iterable.data.str, i)), true);
                         break;
                     default:
                         rt_throw("not a for loop iterable type: '%s'", rt_Data_typename(iterable));

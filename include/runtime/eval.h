@@ -31,6 +31,4 @@ void rt_eval_AssociativeList(const ast_AssociativeList_t *assoc_list);
 void rt_eval_Literal(const ast_Literal_t *literal);
 void rt_eval_Identifier(const ast_Identifier_t *identifier);
 
-void rt_call_function(const ast_Identifier_t *module, const ast_Identifier_t *proc);
-
 #endif

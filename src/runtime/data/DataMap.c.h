@@ -78,6 +78,15 @@ void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
     kh_value(mp->data_map, entry_it).value = value;
 }
 
+const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key)
+{
+    khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
+    /* key found, return its const copy */
+    if (entry_it != kh_end(mp->data_map))
+        return kh_value(mp->data_map, entry_it).key;
+    return NULL;
+}
+
 rt_Data_t *rt_DataMap_getref_errnull(const rt_DataMap_t *mp, const char *key)
 {
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
@@ -100,6 +109,7 @@ void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
     if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
     rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
     free(kh_value(mp->data_map, entry_it).key);
+    kh_del(rt_DataMap_t, mp->data_map, entry_it);
     --mp->length;
 }
 

@@ -103,10 +103,10 @@ int main(int argc, char **argv)
 #ifndef LEX_DEBUG
     if (ast_filename)
         /* save the AST as JSON */
-        AST2JSON_convert(ast_filename, ast_format);
+        ast2json_convert(ast_filename, ast_format);
     else
         /* execute the program */
-        rt_exec();
+        rt_exec(argc, argv);
 #endif
 
     /* clear the entire AST */

@@ -1,4 +1,4 @@
-**Last updated on Oct 13, 2023**
+**Last updated on Oct 19, 2023**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -10,6 +10,65 @@ This language is inspired by C, Python and Javascript.
 However, it introduces its own unique features and has a limited set of datatypes.
 
 Shsc is a dynamically and weakly typed language with coercion rules that make sense (unlike JS).
+
+## Index
+- [File structure](#file-structure)
+- [Code organization](#code-organization)
+    - [Indentation](#indentation)
+    - [Module declaration](#module-declaration)
+    - [Default main module](#default-main-module)
+    - [Module access](#module-access)
+    - [Procedure declaration](#procedure-declaration)
+    - [Entry point](#entry-point)
+    - [Naming collision](#naming-collision)
+    - [End of file](#end-of-file)
+- [Valid identifiers](#valid-identifiers)
+    - [The dollar sign](#the-dollar-sign)
+- [Statements](#statements)
+    - [Variable declaration](#variable-declaration)
+    - [Variable shadowing](#variable-shadowing)
+    - [Constants](#constants)
+    - [Semicolons](#semicolons)
+        - [Example](#example)
+- [If statements](#if-statements)
+    - [Example 1](#example-1)
+    - [Example 2](#example-2)
+- [While loops](#while-loops)
+    - [Example](#example-1)
+- [For loops](#for-loops)
+    - [Default increment](#default-increment)
+    - [Specified increment](#specified-increment)
+    - [Iterable](#iterable)
+- [Block statement](#block-statement)
+- [Functions](#functions)
+    - [Example](#example-2)
+    - [Function arguments](#function-arguments)
+    - [Arguments to `main:main`](#arguments-to-mainmain)
+- [Expressions](#expressions)
+    - [Ternary expression](#ternary-expression)
+    - [Assignments](#assignments)
+        - [Example](#example-3)
+- [Data and literals](#data-and-literals)
+    - [Coercion Rules](#coercion-rules)
+    - [Special types](#special-types)
+    - [Hidden types](#hidden-types)
+    - [Special global variables](#special-global-variables)
+    - [Global variables for types](#global-variables-for-types)
+    - [Memory management](#memory-management)
+    - [Memory allocation](#memory-allocation)
+        - [Example](#example-4)
+    - [Memory ownership](#memory-ownership)
+        - [Accumulator](#accumulator)
+    - [Format strings](#format-strings)
+    - [Lists](#lists)
+        - [Example](#example-5)
+    - [Maps](#maps)
+        - [Example](#example-6)
+- [Built-in functions](#built-in-functions)
+    - [Global](#global)
+    - [Module `dbg`](#module-dbg)
+    - [Module `io`](#module-io)
+    - [Module `it`](#module-it)
 
 ## File structure
 The interpreter accepts file paths as command-line arguments for the files you want to run.
@@ -85,6 +144,10 @@ Ensure that each file ends with a newline character, or a syntax error will be t
 - Should start with either a letter or an underscore.
 - Can have alphanumeric characters and underscores.
 - Note that `$` is not a valid identifier character.
+
+### The dollar sign
+The dollar sign is used to access arguments to a procedure. In compiler terms `$` acts as a special operator.
+For details, see [Function arguments](#function-arguments).
 
 ## Statements
 All statements end with a newline.
@@ -257,15 +320,31 @@ proc main start
 end
 ```
 
-**WARNING:** Note that `$0`, `$1`, `$2` and so on make references to index of a global list of arguments and the list is modified on every function call.
-For this reason, you **must** copy the data from all `$i` (`i` belongs to set of whole numbers) to some local variables as soon as the function opens.
+### Function arguments
 
-You can use `$[expression]` or `$(expression)`.
-However, without the braces, the syntax becomes either `$i` where `i` is an `i64`, or `$variable`.
+#### Example
+Four ways to access the first (0th) argument to a function.
+```
+var x = $0
+var y = $[0]
+var z = $(0)
+var w = args[0]
+```
 
 Arguments to a function is defined by the actual parameters (i.e. at the caller side).
 
 Functions have no prototypes or formal parameters.
+
+Arguments are stored in the `args` built-in `lst` type variable.
+
+However, you may access arguments using the syntax `$i` where `i` is and identifier or literal that evaluates to a valid `i64` index.
+
+You may also use `$(expr)` or `$[expr]` where `expr` is an expression that evaluates to a valid `i64` index.
+
+Of course, you may also use the `args` list to access the arguments, as in `args[expr]`.
+
+### Arguments to `main:main`
+The arguments to `main:main` are the command-line arguments passed to the interpreter.
 
 ## Expressions
 Expressions are basically C expressions with some additional operators.
@@ -340,7 +419,7 @@ The language has built-in support for complex composite data structures which ca
 ### Memory management
 Memory is managed by allocating data in the heap, and maintaining a reference count.
 
-The reference count is updated when data is assigned b/w variables, and also b/w the accumulator and the arguments variable.
+The reference count is updated when data is assigned among the variables and also the accumulator.
 
 In case the reference count becomes `0`, the data is freed immediately.
 
@@ -363,16 +442,9 @@ Ownership in our case is being able to destroy the data (free memory).
 The following takes memory ownership
 - Any variable to whom data is assigned (until reassigned)
 - Accumulator; or else function returns won't work (temporarily)
-- Temporary variables (temporarily)
 
 #### Accumulator
 The language uses a temporary location called the `accumulator` to store the result of operations and return values.
-
-#### Arguments variable
-It's a global memory location that is used to pass the function arguments list.
-It's ever-changing and the arguments it contains should be copied to some local scope variables.
-
-It's data will change on any function call.
 
 ### Format strings
 ```

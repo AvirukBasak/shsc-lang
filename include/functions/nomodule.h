@@ -1,5 +1,5 @@
-#ifndef fn_NOMODULE_H
-#define fn_NOMODULE_H
+#ifndef FN_NOMODULE_H
+#define FN_NOMODULE_H
 
 #include "runtime/data/Data.h"
 

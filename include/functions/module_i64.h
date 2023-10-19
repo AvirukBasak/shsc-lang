@@ -1,4 +1,4 @@
-#ifndef fn_MODULE_I64_H
-#define fn_MODULE_I64_H
+#ifndef FN_MODULE_I64_H
+#define FN_MODULE_I64_H
 
 #endif

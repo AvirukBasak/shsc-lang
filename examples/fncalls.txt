@@ -14,6 +14,6 @@ proc main start
         dbg:typename(e),
         lf
     )
-    var y = 3
+    var y = 0
     io:print($y, lf)
 end

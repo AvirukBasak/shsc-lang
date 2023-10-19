@@ -7,6 +7,8 @@
 #include "runtime/data/Data.h"
 
 #define _rt_TMPVAR_CNT (32)
+#define RT_ARGS_LIST_VARNAME "args"
+#define RT_DEFAULT_CALL_STACK_LIMIT (1000)
 #define RT_ACC_DATA (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
 
 /** accumulator stores procedure return values
@@ -27,15 +29,13 @@ rt_Data_t rt_VarTable_rsv_lf,
           rt_VarTable_typeid_i64,
           rt_VarTable_typeid_f64,
           rt_VarTable_typeid_str,
-          rt_VarTable_typeid_interp_str,
           rt_VarTable_typeid_lst,
           rt_VarTable_typeid_any,
           rt_VarTable_typeid_map,
-          rt_VarTable_typeid_proc,
           rt_VarTable_rsv_null;
 
 /** create a new variable in the current scope */
-void rt_VarTable_create(const char *varname, rt_Data_t value);
+void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const);
 
 /** modify data directly by address instead of querying via identifier */
 rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src);

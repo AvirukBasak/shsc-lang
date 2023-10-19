@@ -4,6 +4,9 @@
 #include "ast.h"
 #include "ast/api.h"
 #include "runtime.h"
+#include "runtime/data/Data.h"
+#include "runtime/data/DataList.h"
+#include "runtime/data/DataStr.h"
 #include "runtime/eval.h"
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
@@ -16,18 +19,31 @@ const ast_Identifier_t *rt_current_module = NULL;
 const ast_Identifier_t *rt_current_proc = NULL;
 
 
-void rt_exec(void)
+void rt_exec(int argc, char **argv)
 {
     const ast_Identifier_t *module = ast_util_ModuleAndProcTable_idfmain();
     const ast_Identifier_t *proc = ast_util_ModuleAndProcTable_idfmain();
     const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
     rt_currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
+
+    /* generate args list w/ cli args passed from main
+       here we do skip the path to the interpreter so args[0]
+       will be path to the script only */
+    rt_Data_t args = rt_Data_list(rt_DataList_init());
+    for (int i = 1; i < argc; ++i) {
+        rt_Data_t arg = rt_Data_str(rt_DataStr_init(argv[i]));
+        rt_DataList_append(args.data.lst, arg);
+    }
+
     rt_VarTable_push_proc(proc->identifier_name);
+    rt_VarTable_create(RT_ARGS_LIST_VARNAME, args, true);
+
     rt_ControlStatus_t ctrl = rt_eval_Statements(code);
     if (ctrl == rt_CTRL_BREAK)
         rt_throw("unexpected `break` statement outside loop");
     if (ctrl == rt_CTRL_CONTINUE)
         rt_throw("unexpected `continue` statement outside loop");
+
     rt_VarTable_pop_proc();
 }
 
@@ -50,7 +66,6 @@ const ast_Identifier_t *rt_procname_get(void)
 #include "runtime/eval/associativelist.c.h"
 #include "runtime/eval/commaseplist.c.h"
 #include "runtime/eval/expression.c.h"
-#include "runtime/eval/fncall.c.h"
 #include "runtime/eval/forblock.c.h"
 #include "runtime/eval/identifier.c.h"
 #include "runtime/eval/ifblock.c.h"

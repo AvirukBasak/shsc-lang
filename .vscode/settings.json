@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/aviruk/git/shsc-lang/target",
+            "binaryPath": "/home/aviruk/git/shsc-lang/target/shsc-dbg",
+            "binaryArgs": []
+        }
+    ]
+}

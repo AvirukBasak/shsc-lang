@@ -15,6 +15,8 @@ enum ast_AssignmentType_t {
     ASSIGNMENT_TYPE_TOVOID,
     /** create or shadow existing variable */
     ASSIGNMENT_TYPE_CREATE,
+    /** create a constant */
+    ASSIGNMENT_TYPE_MKCONST,
 };
 
 enum ast_CompoundStType_t {

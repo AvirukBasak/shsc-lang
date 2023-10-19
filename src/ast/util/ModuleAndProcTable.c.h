@@ -98,11 +98,11 @@ void ast_util_ModuleAndProcTable_add(const ast_Identifier_t *module_name, const 
 const ast_util_ModuleAndProcTable_procedure_t ast_util_ModuleAndProcTable_get(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
     if (!ast_util_mptable)
-        io_errndie("ast_procedure_get:" ERR_MSG_NULLPTR " for `ast_util_mptable`");
+        io_errndie("ast_util_ModuleAndProcTable_get:" ERR_MSG_NULLPTR " for `ast_util_mptable`");
     else if (!module_name)
-        io_errndie("ast_procedure_get:" ERR_MSG_NULLPTR " for `module_name`");
+        io_errndie("ast_util_ModuleAndProcTable_get:" ERR_MSG_NULLPTR " for `module_name`");
     else if (!proc_name)
-        io_errndie("ast_procedure_get:" ERR_MSG_NULLPTR " for `proc_name`");
+        io_errndie("ast_util_ModuleAndProcTable_get:" ERR_MSG_NULLPTR " for `proc_name`");
     khash_t(ast_procedure_t) *procmap;
     /* Check if the module exists in the top-level map */
     khint_t k = kh_get(ast_module_t, ast_util_mptable, module_name->identifier_name);

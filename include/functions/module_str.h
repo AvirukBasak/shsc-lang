@@ -1,4 +1,4 @@
-#ifndef fn_MODULE_STR_H
-#define fn_MODULE_STR_H
+#ifndef FN_MODULE_STR_H
+#define FN_MODULE_STR_H
 
 #endif

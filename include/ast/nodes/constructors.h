@@ -18,6 +18,7 @@ ast_Statement_t     *ast_Statement_Assignment(ast_Assignment_t *assignment, int 
 ast_Statement_t     *ast_Statement_CompoundSt(ast_CompoundSt_t *compund, int line_no);
 
 ast_Assignment_t    *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expression_t *expression);
+ast_Assignment_t    *ast_Assignment_mkconst(ast_Identifier_t *identifier, ast_Expression_t *expression);
 ast_Assignment_t    *ast_Assignment_tovoid(ast_Expression_t *expression);
 
 ast_CompoundSt_t    *ast_CompoundSt_IfBlock(ast_IfBlock_t *block);

@@ -1,4 +1,4 @@
-#ifndef fn_MODULE_MAP_H
-#define fn_MODULE_MAP_H
+#ifndef FN_MODULE_MAP_H
+#define FN_MODULE_MAP_H
 
 #endif

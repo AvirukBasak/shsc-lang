@@ -1,5 +1,5 @@
-#ifndef fn_NOMODULE_C_H
-#define fn_NOMODULE_C_H
+#ifndef FN_NOMODULE_C_H
+#define FN_NOMODULE_C_H
 
 #include <stdlib.h>
 
@@ -12,7 +12,7 @@
 
 rt_Data_t fn_isnull()
 {
-    rt_Data_t args = *rt_VarTable_getref("$");
+    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_isnull: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
@@ -22,7 +22,7 @@ rt_Data_t fn_isnull()
 
 rt_Data_t fn_tostr()
 {
-    rt_Data_t args = *rt_VarTable_getref("$");
+    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_tostr: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
@@ -36,7 +36,7 @@ rt_Data_t fn_tostr()
 
 rt_Data_t fn_type()
 {
-    rt_Data_t args = *rt_VarTable_getref("$");
+    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_type: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
@@ -52,17 +52,15 @@ rt_Data_t fn_type()
             return rt_VarTable_typeid_f64;
         case rt_DATA_TYPE_STR:
             return rt_VarTable_typeid_str;
-        case rt_DATA_TYPE_INTERP_STR:
-            return rt_VarTable_typeid_interp_str;
         case rt_DATA_TYPE_LST:
             return rt_VarTable_typeid_lst;
         case rt_DATA_TYPE_MAP:
             return rt_VarTable_typeid_map;
+        case rt_DATA_TYPE_INTERP_STR:
+        case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_ANY:
             return rt_Data_isnull(data) ?
                 rt_VarTable_rsv_null : rt_VarTable_typeid_any;
-        case rt_DATA_TYPE_PROC:
-            return rt_VarTable_typeid_proc;
     }
     return rt_VarTable_typeid_any;
 }
