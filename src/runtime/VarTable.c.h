@@ -48,10 +48,6 @@ rt_VarTable_Acc_t rt_vtable_accumulator = {
 };
 
 
-/** arguments list */
-rt_Data_t rt_vtable_argslist;
-
-
 /* few globally defined variables */
 rt_Data_t rt_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = rt_DATA_TYPE_CHR },
 /* list of globally defined typename variables */
@@ -66,7 +62,7 @@ rt_Data_t rt_VarTable_rsv_lf            = { .data.chr = '\n',                   
           rt_VarTable_rsv_null          = { .data.any = NULL,                    .type = rt_DATA_TYPE_ANY };
 
 
-rt_Data_t *rt_vtable_get_globvar(const char *varname)
+rt_Data_t *rt_VarTable_get_globvar(const char *varname)
 {
     if (!strcmp("lf", varname))         return &rt_VarTable_rsv_lf;
     if (!strcmp("bul", varname))        return &rt_VarTable_typeid_bul;
@@ -87,7 +83,7 @@ void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const)
         && strcmp(varname, RT_ARGS_LIST_VARNAME)) || isdigit(varname[0]) )
             io_errndie("rt_VarTable_create: invalid new variable name '%s'", varname);
     else {
-        rt_Data_t *globvar = rt_vtable_get_globvar(varname);
+        rt_Data_t *globvar = rt_VarTable_get_globvar(varname);
         if (globvar) rt_throw("cannot create new variable with reserved identifier '%s'", varname);
     }
     rt_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
@@ -124,7 +120,7 @@ rt_Data_t *rt_VarTable_getref_errnull(const char *varname)
         && strcmp(varname, RT_ARGS_LIST_VARNAME)) || isdigit(varname[0]) )
             io_errndie("rt_VarTable_getref: invalid variable name '%s'", varname);
     else {
-        rt_Data_t *globvar = rt_vtable_get_globvar(varname);
+        rt_Data_t *globvar = rt_VarTable_get_globvar(varname);
         if (globvar) return globvar;
     }
     rt_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
