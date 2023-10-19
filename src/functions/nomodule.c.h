@@ -52,17 +52,15 @@ rt_Data_t fn_type()
             return rt_VarTable_typeid_f64;
         case rt_DATA_TYPE_STR:
             return rt_VarTable_typeid_str;
-        case rt_DATA_TYPE_INTERP_STR:
-            return rt_VarTable_typeid_interp_str;
         case rt_DATA_TYPE_LST:
             return rt_VarTable_typeid_lst;
         case rt_DATA_TYPE_MAP:
             return rt_VarTable_typeid_map;
+        case rt_DATA_TYPE_INTERP_STR:
+        case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_ANY:
             return rt_Data_isnull(data) ?
                 rt_VarTable_rsv_null : rt_VarTable_typeid_any;
-        case rt_DATA_TYPE_PROC:
-            return rt_VarTable_typeid_proc;
     }
     return rt_VarTable_typeid_any;
 }

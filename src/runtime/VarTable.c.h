@@ -74,12 +74,12 @@ rt_Data_t *rt_vtable_get_globvar(const char *varname)
     if (!strcmp("i64", varname))        return &rt_VarTable_typeid_i64;
     if (!strcmp("f64", varname))        return &rt_VarTable_typeid_f64;
     if (!strcmp("str", varname))        return &rt_VarTable_typeid_str;
-    if (!strcmp("interp_str", varname)) return &rt_VarTable_typeid_interp_str;
     if (!strcmp("lst", varname))        return &rt_VarTable_typeid_lst;
     if (!strcmp("map", varname))        return &rt_VarTable_typeid_map;
     if (!strcmp("null", varname))       return &rt_VarTable_rsv_null;
     return NULL;
 }
+
 
 void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const)
 {
@@ -209,17 +209,6 @@ rt_Data_t rt_VarTable_pop_proc(void)
     while (current_proc->curr_scope_ptr >= 0) {
         rt_VarTable_pop_scope();
     }
-    // for (int64_t i = current_proc->top; i >= 0; i--) {
-    //     /* free all the scopes and their variables in the current procedure */
-    //     rt_VarTable_Scope_t *current_scope = &(current_proc->scopes[i]);
-    //     khiter_t iter;
-    //     for (iter = kh_begin(current_scope->var_map); iter != kh_end(current_scope->var_map); ++iter) {
-    //         if (kh_exist(current_scope->var_map, iter))
-    //             /* decrement refcnt, if 0, data gets destroyed */
-    //             rt_Data_destroy(&(kh_value(current_scope->var_map, iter)));
-    //     }
-    //     kh_destroy(rt_Data_t, current_scope->var_map);
-    // }
     --rt_vtable->curr_proc_ptr;
     if (rt_vtable->curr_proc_ptr == -1) {
         free(rt_vtable->procs);
