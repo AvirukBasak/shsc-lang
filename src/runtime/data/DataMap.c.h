@@ -109,6 +109,7 @@ void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
     if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
     rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
     free(kh_value(mp->data_map, entry_it).key);
+    kh_del(rt_DataMap_t, mp->data_map, entry_it);
     --mp->length;
 }
 
