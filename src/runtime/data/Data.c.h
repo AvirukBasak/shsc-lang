@@ -23,8 +23,6 @@ rt_Data_t rt_Data_bul(bool val)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_BUL;
     var.data.bul = val;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -33,8 +31,6 @@ rt_Data_t rt_Data_chr(char val)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_CHR;
     var.data.chr = val;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -43,8 +39,6 @@ rt_Data_t rt_Data_i64(int64_t val)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_I64;
     var.data.i64 = val;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -53,8 +47,6 @@ rt_Data_t rt_Data_f64(double val)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_F64;
     var.data.f64 = val;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -67,8 +59,6 @@ rt_Data_t rt_Data_str(rt_DataStr_t *str)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_STR;
     var.data.str = str;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -78,8 +68,6 @@ rt_Data_t rt_Data_interp_str(const char *str)
     rt_Data_t var = rt_Data_str(
         rt_DataStr_init(parsed_str));
     free(parsed_str);
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -88,8 +76,6 @@ rt_Data_t rt_Data_list(rt_DataList_t *lst)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_LST;
     var.data.lst = lst;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -98,8 +84,6 @@ rt_Data_t rt_Data_map(rt_DataMap_t *mp)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_MAP;
     var.data.mp = mp;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 
@@ -108,8 +92,6 @@ rt_Data_t rt_Data_any(void *ptr)
     rt_Data_t var;
     var.type = rt_DATA_TYPE_ANY;
     var.data.any = ptr;
-    var.is_const = false;
-    var.varname = NULL;
     return var;
 }
 

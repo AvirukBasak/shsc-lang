@@ -20,12 +20,14 @@
 
 typedef rt_DataMap_t *rt_VarTable_Scope_t;
 
+
 /** the scopes stack of a procedure */
 typedef struct {
     rt_VarTable_Scope_t *scopes;
     int64_t curr_scope_ptr;
     size_t capacity;
 } rt_VarTable_proc_t;
+
 
 /** the VarTable is basically the call stack */
 typedef struct {
@@ -34,8 +36,10 @@ typedef struct {
     size_t capacity;
 } rt_VarTable_t;
 
+
 /** gloablly allocated stack pointer */
 rt_VarTable_t *rt_vtable = NULL;
+
 
 /** the accumulator */
 rt_VarTable_Acc_t rt_vtable_accumulator = {
@@ -43,23 +47,24 @@ rt_VarTable_Acc_t rt_vtable_accumulator = {
     .adr = NULL
 };
 
+
 /** arguments list */
 rt_Data_t rt_vtable_argslist;
 
+
 /* few globally defined variables */
-rt_Data_t rt_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = rt_DATA_TYPE_CHR, .is_const = true, .varname = "lf" },
+rt_Data_t rt_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = rt_DATA_TYPE_CHR },
 /* list of globally defined typename variables */
-          rt_VarTable_typeid_bul        = { .data.i64 = rt_DATA_TYPE_BUL,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "bul" },
-          rt_VarTable_typeid_chr        = { .data.i64 = rt_DATA_TYPE_CHR,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "chr" },
-          rt_VarTable_typeid_i64        = { .data.i64 = rt_DATA_TYPE_I64,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "i64" },
-          rt_VarTable_typeid_f64        = { .data.i64 = rt_DATA_TYPE_F64,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "f64" },
-          rt_VarTable_typeid_str        = { .data.i64 = rt_DATA_TYPE_STR,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "str" },
-          rt_VarTable_typeid_interp_str = { .data.i64 = rt_DATA_TYPE_INTERP_STR, .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "interp_str" },
-          rt_VarTable_typeid_lst        = { .data.i64 = rt_DATA_TYPE_LST,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "lst" },
-          rt_VarTable_typeid_any        = { .data.i64 = rt_DATA_TYPE_ANY,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "any" },
-          rt_VarTable_typeid_map        = { .data.i64 = rt_DATA_TYPE_MAP,        .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "map" },
-          rt_VarTable_typeid_proc       = { .data.i64 = rt_DATA_TYPE_PROC,       .type = rt_DATA_TYPE_I64, .is_const = true, .varname = "proc" },
-          rt_VarTable_rsv_null          = { .data.any = NULL,                    .type = rt_DATA_TYPE_ANY, .is_const = true, .varname = "null" };
+          rt_VarTable_typeid_bul        = { .data.i64 = rt_DATA_TYPE_BUL,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_typeid_chr        = { .data.i64 = rt_DATA_TYPE_CHR,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_typeid_i64        = { .data.i64 = rt_DATA_TYPE_I64,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_typeid_f64        = { .data.i64 = rt_DATA_TYPE_F64,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_typeid_str        = { .data.i64 = rt_DATA_TYPE_STR,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_typeid_lst        = { .data.i64 = rt_DATA_TYPE_LST,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_typeid_any        = { .data.i64 = rt_DATA_TYPE_ANY,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_typeid_map        = { .data.i64 = rt_DATA_TYPE_MAP,        .type = rt_DATA_TYPE_I64 },
+          rt_VarTable_rsv_null          = { .data.any = NULL,                    .type = rt_DATA_TYPE_ANY };
+
 
 rt_Data_t *rt_vtable_get_globvar(const char *varname)
 {
@@ -85,30 +90,33 @@ void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const)
         rt_Data_t *globvar = rt_vtable_get_globvar(varname);
         if (globvar) rt_throw("cannot create new variable with reserved identifier '%s'", varname);
     }
-
-    /* get the current scope */
     rt_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     rt_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
-
-    /* check if variable already exists in current scope */
-    rt_Data_t *var = rt_DataMap_getref_errnull(*current_scope, varname);
-    if (var && var->is_const) rt_throw("cannot re-create a constant variable '%s'", varname);
-
-    if (is_const) value.is_const = true;
     rt_DataMap_insert(*current_scope, varname, value);
-    rt_DataMap_getref_errnull(*current_scope, varname)->varname
-        = rt_DataMap_getkey_copy(*current_scope, varname);
 }
+
 
 rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)
 {
     if (!dest) return NULL;
-    if (dest->is_const) rt_throw("cannot assign to constant variable '%s'", dest->varname);
+    /* if data is one of the global built-in vars, throw appropriate error */
+    {
+        if (dest == &rt_VarTable_rsv_lf)         rt_throw("cannot modify built-in variable 'lf'");
+        if (dest == &rt_VarTable_typeid_bul)     rt_throw("cannot modify built-in variable 'bul'");
+        if (dest == &rt_VarTable_typeid_chr)     rt_throw("cannot modify built-in variable 'chr'");
+        if (dest == &rt_VarTable_typeid_i64)     rt_throw("cannot modify built-in variable 'i64'");
+        if (dest == &rt_VarTable_typeid_f64)     rt_throw("cannot modify built-in variable 'f64'");
+        if (dest == &rt_VarTable_typeid_str)     rt_throw("cannot modify built-in variable 'str'");
+        if (dest == &rt_VarTable_typeid_lst)     rt_throw("cannot modify built-in variable 'lst'");
+        if (dest == &rt_VarTable_typeid_map)     rt_throw("cannot modify built-in variable 'map'");
+        if (dest == &rt_VarTable_rsv_null)       rt_throw("cannot modify built-in variable 'null'");
+    }
     rt_Data_copy(&src);
     rt_Data_destroy(dest);
     *dest = src;
     return dest;
 }
+
 
 rt_Data_t *rt_VarTable_getref_errnull(const char *varname)
 {
@@ -137,6 +145,7 @@ rt_Data_t *rt_VarTable_getref(const char *varname)
     return data;
 }
 
+
 rt_VarTable_Acc_t *rt_VarTable_acc_get(void)
 {
     return &rt_vtable_accumulator;
@@ -160,6 +169,7 @@ void rt_VarTable_acc_setadr(rt_Data_t *adr)
     rt_vtable_accumulator.val = rt_Data_null();
     rt_vtable_accumulator.adr = adr;
 }
+
 
 void rt_VarTable_push_proc(const char *procname)
 {
@@ -219,6 +229,7 @@ rt_Data_t rt_VarTable_pop_proc(void)
     return *RT_ACC_DATA;
 }
 
+
 void rt_VarTable_push_scope()
 {
     rt_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
@@ -252,6 +263,7 @@ rt_Data_t rt_VarTable_pop_scope(void)
     }
     return *RT_ACC_DATA;
 }
+
 
 /** clear memory of the VarTable */
 void rt_VarTable_destroy()
