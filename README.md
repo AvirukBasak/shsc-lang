@@ -134,6 +134,7 @@ shsc -tf ast.json examples/factorial.txt
 - Language docs at [`docs/LanguageDocs.md`](docs/LanguageDocs.md)
 - Bytecode specs at [`ShscIrSpec.md`](https://github.com/AvirukBasak/shsc-runtime/blob/main/docs/ShscIrSpec.md)
 - Contribution guidelines at [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
+- Memory usage test [`docs/memprofile`](docs/memprofile)
 
 ### Tests
 - Tested on [`tests/test.txt`](tests/test.txt).

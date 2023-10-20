@@ -1,0 +1,4 @@
+proc main start
+    for i from 0 to 10000000000 do
+    end
+end

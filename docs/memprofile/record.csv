@@ -1,0 +1,8 @@
+push/pop scope, create i, var x = "Hi", Stable RES, Stable ETA (s)
+no,             no,       no,              6.2 MiB, 0
+no,             no,       yes,             6.4 MiB, 0
+no,             yes,      no,              7.4 MiB, 0
+no,             yes,      yes,            15.4 MiB, 0
+yes,            no,       no,            470.0 MiB, 5
+yes,            no,       yes,           503.9 MiB, 5
+yes,            yes,      yes,           522.4 MiB, 7
