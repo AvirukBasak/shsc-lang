@@ -23,11 +23,11 @@ CDBGFLAGS      := -Wall -Wno-unused-but-set-variable -Wno-unused-label -g -fsani
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
-LIB            := -L$(LIB_DIR) -lm -lavl -lxalloc
-DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg -lxalloc-dbg
+LIB            := -L$(LIB_DIR) -lm -lavl
+DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg
 
-LIBRARIES      := $(LIB_DIR)/libavl.a $(LIB_DIR)/libxalloc.a
-DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a $(LIB_DIR)/libxalloc-dbg.a
+LIBRARIES      := $(LIB_DIR)/libavl.a
+DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a
 
 ## targets
 # Detect the operating system
