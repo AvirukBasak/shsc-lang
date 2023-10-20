@@ -41,7 +41,7 @@ ssize_t io_getline(char **lineptr, size_t *n, FILE *stream) {
     }
 
     if (*lineptr == NULL) {
-        *lineptr = shsc_malloc(128);
+        *lineptr = malloc(128);
         if (*lineptr == NULL) {
             return -1;
         }
@@ -55,7 +55,7 @@ ssize_t io_getline(char **lineptr, size_t *n, FILE *stream) {
             if (new_size < 128) {
                 new_size = 128;
             }
-            char *new_ptr = shsc_realloc(*lineptr, new_size);
+            char *new_ptr = realloc(*lineptr, new_size);
             if (new_ptr == NULL) {
                 return -1;
             }
@@ -106,7 +106,7 @@ char **io_read_lines(const char *filepath, size_t *line_cnt)
         const size_t line_len = strlen(line);
         if (line[line_len -1] == '\n') line[line_len -1] = '\0';
         if (*line_cnt >= list_sz) {
-            ret_lines = (char**) shsc_realloc(ret_lines, (list_sz += list_sz *2 +1) * sizeof(char*));
+            ret_lines = (char**) realloc(ret_lines, (list_sz += list_sz *2 +1) * sizeof(char*));
             if (!ret_lines) io_errndie("io_read_lines:" ERR_MSG_REALLOCFAIL);
         }
         ret_lines[(*line_cnt)++] = line;
@@ -119,7 +119,7 @@ char *io_full_escape_string(const char *str)
 {
     if (!str) return NULL;
     size_t len = strlen(str);
-    char *escaped = (char*) shsc_malloc((4 * len +1) * sizeof(char));
+    char *escaped = (char*) malloc((4 * len +1) * sizeof(char));
     if (!escaped) io_errndie("io_full_escape_string:" ERR_MSG_MALLOCFAIL);
     char *ptr = escaped;
     while (*str != '\0') {
@@ -155,7 +155,7 @@ char *io_partial_escape_string(const char *str)
 {
     if (!str) return NULL;
     size_t len = strlen(str);
-    char *escaped = (char*) shsc_malloc((4 * len +1) * sizeof(char));
+    char *escaped = (char*) malloc((4 * len +1) * sizeof(char));
     if (!escaped) io_errndie("io_partial_escape_string:" ERR_MSG_MALLOCFAIL);
     char *ptr = escaped;
     while (*str != '\0') {

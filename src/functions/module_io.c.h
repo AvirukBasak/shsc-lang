@@ -11,7 +11,6 @@
 #include "errcodes.h"
 #include "functions.h"
 #include "functions/module_io.h"
-#include "globals.h"
 #include "io.h"
 #include "runtime/io.h"
 #include "runtime/data/Data.h"
@@ -65,7 +64,7 @@ rt_Data_t fn_io_input()
             "  valid parameters are bul, chr, i64, f64 or str\n"
             "  respective values are %d, %d, %d, %d or %d", s,
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
-        shsc_free(s);
+        free(s);
     }
     enum rt_DataType_t type = type_.data.i64;
     if (!fn_io_input_type_isvalid(type_.data.i64))
@@ -104,7 +103,7 @@ rt_Data_t fn_io_input()
             char *val = NULL;
             fn_io_input_str(&val);
             ret = rt_Data_str(rt_DataStr_init(val));
-            shsc_free(val);
+            free(val);
             break;
         }
         default: rt_throw(
@@ -141,7 +140,7 @@ void fn_io_input_bul(bool *val)
     else if (!strncmp("true", str, len)) *val = true;
     else if (!strncmp("false", str, len)) *val = false;
     else rt_throw("input: invalid input for type bul: '%s'", str);
-    shsc_free(str);
+    free(str);
 }
 
 void fn_io_input_chr(char *val)
@@ -152,7 +151,7 @@ void fn_io_input_chr(char *val)
     if (len == 1) *val = str[0];
     else if (len == 0) *val = 0;
     else rt_throw("input: invalid input for type chr: '%s'", str);
-    shsc_free(str);
+    free(str);
 }
 
 void fn_io_input_i64(int64_t *val)
@@ -165,7 +164,7 @@ void fn_io_input_i64(int64_t *val)
     *val = (int64_t) strtoll(str, &endptr, 10);
     if (errno || *endptr != '\0')
         rt_throw("input: invalid input for type i64: '%s'", str);
-    shsc_free(str);
+    free(str);
 }
 
 void fn_io_input_f64(double *val)
@@ -178,7 +177,7 @@ void fn_io_input_f64(double *val)
     *val = (double) strtod(str, &endptr);
     if (errno || *endptr != '\0')
         rt_throw("input: invalid input for type f64: '%s'", str);
-    shsc_free(str);
+    free(str);
 }
 
 int fn_io_input_str(char **val)

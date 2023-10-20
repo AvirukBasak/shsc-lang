@@ -6,12 +6,11 @@
 #include "ast/nodes.h"
 #include "ast/nodes/enums.h"
 #include "errcodes.h"
-#include "globals.h"
 #include "io.h"
 
 ast_Statements_t *ast_Statements(ast_Statements_t *statements, ast_Statement_t *statement)
 {
-    ast_Statements_t *stmts = (ast_Statements_t*) shsc_malloc(sizeof(ast_Statements_t));
+    ast_Statements_t *stmts = (ast_Statements_t*) malloc(sizeof(ast_Statements_t));
     if (!stmts) io_errndie("ast_Statements:" ERR_MSG_MALLOCFAIL);
     stmts->statements = statements;
     stmts->statement = statement;
@@ -19,7 +18,7 @@ ast_Statements_t *ast_Statements(ast_Statements_t *statements, ast_Statement_t *
 }
 
 ast_Statement_t *ast_Statement_empty(int line_no) {
-    ast_Statement_t *stmt = (ast_Statement_t*) shsc_malloc(sizeof(ast_Statement_t));
+    ast_Statement_t *stmt = (ast_Statement_t*) malloc(sizeof(ast_Statement_t));
     if (!stmt) io_errndie("ast_Statement_empty:" ERR_MSG_MALLOCFAIL);
     stmt->type = STATEMENT_TYPE_EMPTY;
     stmt->statement.assignment = NULL;
@@ -29,7 +28,7 @@ ast_Statement_t *ast_Statement_empty(int line_no) {
 
 ast_Statement_t *ast_Statement_break(int line_no)
 {
-    ast_Statement_t *stmt = (ast_Statement_t*) shsc_malloc(sizeof(ast_Statement_t));
+    ast_Statement_t *stmt = (ast_Statement_t*) malloc(sizeof(ast_Statement_t));
     if (!stmt) io_errndie("ast_Statement_break:" ERR_MSG_MALLOCFAIL);
     stmt->type = STATEMENT_TYPE_BREAK;
     stmt->statement.assignment = NULL;
@@ -39,7 +38,7 @@ ast_Statement_t *ast_Statement_break(int line_no)
 
 ast_Statement_t *ast_Statement_continue(int line_no)
 {
-    ast_Statement_t *stmt = (ast_Statement_t*) shsc_malloc(sizeof(ast_Statement_t));
+    ast_Statement_t *stmt = (ast_Statement_t*) malloc(sizeof(ast_Statement_t));
     if (!stmt) io_errndie("ast_Statement_continue:" ERR_MSG_MALLOCFAIL);
     stmt->type = STATEMENT_TYPE_CONTINUE;
     stmt->statement.assignment = NULL;
@@ -49,7 +48,7 @@ ast_Statement_t *ast_Statement_continue(int line_no)
 
 ast_Statement_t *ast_Statement_return(ast_Expression_t *expression, int line_no)
 {
-    ast_Statement_t *stmt = (ast_Statement_t*) shsc_malloc(sizeof(ast_Statement_t));
+    ast_Statement_t *stmt = (ast_Statement_t*) malloc(sizeof(ast_Statement_t));
     if (!stmt) io_errndie("ast_Statement_return:" ERR_MSG_MALLOCFAIL);
     stmt->type = STATEMENT_TYPE_RETURN;
     stmt->statement.expression = expression;
@@ -59,7 +58,7 @@ ast_Statement_t *ast_Statement_return(ast_Expression_t *expression, int line_no)
 
 ast_Statement_t *ast_Statement_Assignment(ast_Assignment_t *assignment, int line_no)
 {
-    ast_Statement_t *stmt = (ast_Statement_t*) shsc_malloc(sizeof(ast_Statement_t));
+    ast_Statement_t *stmt = (ast_Statement_t*) malloc(sizeof(ast_Statement_t));
     if (!stmt) io_errndie("ast_Statement_Assignment:" ERR_MSG_MALLOCFAIL);
     stmt->type = STATEMENT_TYPE_ASSIGNMENT;
     stmt->statement.assignment = assignment;
@@ -69,7 +68,7 @@ ast_Statement_t *ast_Statement_Assignment(ast_Assignment_t *assignment, int line
 
 ast_Statement_t *ast_Statement_CompoundSt(ast_CompoundSt_t *compound, int line_no)
 {
-    ast_Statement_t *stmt = (ast_Statement_t*) shsc_malloc(sizeof(ast_Statement_t));
+    ast_Statement_t *stmt = (ast_Statement_t*) malloc(sizeof(ast_Statement_t));
     if (!stmt) io_errndie("ast_Statement_CompoundSt:" ERR_MSG_MALLOCFAIL);
     stmt->type = STATEMENT_TYPE_COMPOUND;
     stmt->statement.compound_statement = compound;
@@ -79,7 +78,7 @@ ast_Statement_t *ast_Statement_CompoundSt(ast_CompoundSt_t *compound, int line_n
 
 ast_Assignment_t *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expression_t *expression)
 {
-    ast_Assignment_t *assign = (ast_Assignment_t*) shsc_malloc(sizeof(ast_Assignment_t));
+    ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
     if (!assign) io_errndie("ast_Assignment_create:" ERR_MSG_MALLOCFAIL);
     assign->lhs = identifier;
     assign->rhs = expression;
@@ -89,7 +88,7 @@ ast_Assignment_t *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expres
 
 ast_Assignment_t *ast_Assignment_mkconst(ast_Identifier_t *identifier, ast_Expression_t *expression)
 {
-    ast_Assignment_t *assign = (ast_Assignment_t*) shsc_malloc(sizeof(ast_Assignment_t));
+    ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
     if (!assign) io_errndie("ast_Assignment_mkconst:" ERR_MSG_MALLOCFAIL);
     assign->lhs = identifier;
     assign->rhs = expression;
@@ -99,7 +98,7 @@ ast_Assignment_t *ast_Assignment_mkconst(ast_Identifier_t *identifier, ast_Expre
 
 ast_Assignment_t *ast_Assignment_tovoid(ast_Expression_t *expression)
 {
-    ast_Assignment_t *assign = (ast_Assignment_t*) shsc_malloc(sizeof(ast_Assignment_t));
+    ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
     if (!assign) io_errndie("ast_Assignment_tovoid:" ERR_MSG_MALLOCFAIL);
     assign->lhs = NULL;
     assign->rhs = expression;
@@ -109,7 +108,7 @@ ast_Assignment_t *ast_Assignment_tovoid(ast_Expression_t *expression)
 
 ast_CompoundSt_t *ast_CompoundSt_IfBlock(ast_IfBlock_t *block)
 {
-    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) shsc_malloc(sizeof(ast_CompoundSt_t));
+    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) malloc(sizeof(ast_CompoundSt_t));
     if (!compound) io_errndie("ast_CompoundSt_IfBlock:" ERR_MSG_MALLOCFAIL);
     compound->type = COMPOUNDST_TYPE_IF;
     compound->compound_statement.if_block = block;
@@ -118,7 +117,7 @@ ast_CompoundSt_t *ast_CompoundSt_IfBlock(ast_IfBlock_t *block)
 
 ast_CompoundSt_t *ast_CompoundSt_WhileBlock(ast_WhileBlock_t *block)
 {
-    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) shsc_malloc(sizeof(ast_CompoundSt_t));
+    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) malloc(sizeof(ast_CompoundSt_t));
     if (!compound) io_errndie("ast_CompoundSt_WhileBlock:" ERR_MSG_MALLOCFAIL);
     compound->type = COMPOUNDST_TYPE_WHILE;
     compound->compound_statement.while_block = block;
@@ -127,7 +126,7 @@ ast_CompoundSt_t *ast_CompoundSt_WhileBlock(ast_WhileBlock_t *block)
 
 ast_CompoundSt_t *ast_CompoundSt_ForBlock(ast_ForBlock_t *block)
 {
-    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) shsc_malloc(sizeof(ast_CompoundSt_t));
+    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) malloc(sizeof(ast_CompoundSt_t));
     if (!compound) io_errndie("ast_CompoundSt_ForBlock:" ERR_MSG_MALLOCFAIL);
     compound->type = COMPOUNDST_TYPE_FOR;
     compound->compound_statement.for_block = block;
@@ -136,7 +135,7 @@ ast_CompoundSt_t *ast_CompoundSt_ForBlock(ast_ForBlock_t *block)
 
 ast_CompoundSt_t *ast_CompoundSt_Block(ast_Block_t *block)
 {
-    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) shsc_malloc(sizeof(ast_CompoundSt_t));
+    ast_CompoundSt_t *compound = (ast_CompoundSt_t*) malloc(sizeof(ast_CompoundSt_t));
     if (!compound) io_errndie("ast_CompoundSt_Block:" ERR_MSG_MALLOCFAIL);
     compound->type = COMPOUNDST_TYPE_BLOCK;
     compound->compound_statement.block = block;
@@ -145,7 +144,7 @@ ast_CompoundSt_t *ast_CompoundSt_Block(ast_Block_t *block)
 
 ast_IfBlock_t *ast_IfBlock(ast_Condition_t *condition, ast_Statements_t *if_st, ast_ElseBlock_t *else_block)
 {
-    ast_IfBlock_t *if_block = (ast_IfBlock_t*) shsc_malloc(sizeof(ast_IfBlock_t));
+    ast_IfBlock_t *if_block = (ast_IfBlock_t*) malloc(sizeof(ast_IfBlock_t));
     if (!if_block) io_errndie("ast_IfBlock:" ERR_MSG_MALLOCFAIL);
     if_block->condition = condition;
     if_block->if_st = if_st;
@@ -155,7 +154,7 @@ ast_IfBlock_t *ast_IfBlock(ast_Condition_t *condition, ast_Statements_t *if_st, 
 
 ast_ElseBlock_t *ast_ElseBlock(ast_Condition_t *condition, ast_Statements_t *else_if_st, ast_ElseBlock_t *else_block)
 {
-    ast_ElseBlock_t *block = (ast_ElseBlock_t*) shsc_malloc(sizeof(ast_ElseBlock_t));
+    ast_ElseBlock_t *block = (ast_ElseBlock_t*) malloc(sizeof(ast_ElseBlock_t));
     if (!block) io_errndie("ast_ElseBlock:" ERR_MSG_MALLOCFAIL);
     block->condition = condition;
     block->else_if_st = else_if_st;
@@ -165,7 +164,7 @@ ast_ElseBlock_t *ast_ElseBlock(ast_Condition_t *condition, ast_Statements_t *els
 
 ast_WhileBlock_t *ast_WhileBlock(ast_Condition_t *condition, ast_Statements_t *while_st)
 {
-    ast_WhileBlock_t *while_block = (ast_WhileBlock_t*) shsc_malloc(sizeof(ast_WhileBlock_t));
+    ast_WhileBlock_t *while_block = (ast_WhileBlock_t*) malloc(sizeof(ast_WhileBlock_t));
     if (!while_block) io_errndie("ast_WhileBlock:" ERR_MSG_MALLOCFAIL);
     while_block->condition = condition;
     while_block->statements = while_st;
@@ -174,7 +173,7 @@ ast_WhileBlock_t *ast_WhileBlock(ast_Condition_t *condition, ast_Statements_t *w
 
 ast_ForBlock_t *ast_ForBlock(ast_Identifier_t *val, ast_Expression_t *start, ast_Expression_t *end, ast_Expression_t *by, ast_Statements_t *for_st)
 {
-    ast_ForBlock_t *for_block = (ast_ForBlock_t*) shsc_malloc(sizeof(ast_ForBlock_t));
+    ast_ForBlock_t *for_block = (ast_ForBlock_t*) malloc(sizeof(ast_ForBlock_t));
     if (!for_block) io_errndie("ast_ForBlock:" ERR_MSG_MALLOCFAIL);
     for_block->idx = NULL;
     for_block->val = val;
@@ -188,7 +187,7 @@ ast_ForBlock_t *ast_ForBlock(ast_Identifier_t *val, ast_Expression_t *start, ast
 
 ast_ForBlock_t *ast_ForBlock_iterate(ast_Identifier_t *idx, ast_Identifier_t *val, ast_Expression_t *iterable, ast_Statements_t *for_st)
 {
-    ast_ForBlock_t *for_block = (ast_ForBlock_t*) shsc_malloc(sizeof(ast_ForBlock_t));
+    ast_ForBlock_t *for_block = (ast_ForBlock_t*) malloc(sizeof(ast_ForBlock_t));
     if (!for_block) io_errndie("ast_ForBlock_iterate:" ERR_MSG_MALLOCFAIL);
     for_block->idx = idx;
     for_block->val = val;
@@ -200,7 +199,7 @@ ast_ForBlock_t *ast_ForBlock_iterate(ast_Identifier_t *idx, ast_Identifier_t *va
 
 ast_Block_t *ast_Block(ast_Statements_t *statements)
 {
-    ast_Block_t *block = (ast_Block_t*) shsc_malloc(sizeof(ast_Block_t));
+    ast_Block_t *block = (ast_Block_t*) malloc(sizeof(ast_Block_t));
     if (!block) io_errndie("ast_Block:" ERR_MSG_MALLOCFAIL);
     block->statements = statements;
     return block;
@@ -217,7 +216,7 @@ ast_Block_t *ast_Block(ast_Statements_t *statements)
 
 ast_Expression_t *ast_Expression(ast_Operator_t op, ast_Expression_t *lhs, ast_Expression_t *rhs, ast_Expression_t *condition)
 {
-    ast_Expression_t *expression = (ast_Expression_t*) shsc_malloc(sizeof(ast_Expression_t));
+    ast_Expression_t *expression = (ast_Expression_t*) malloc(sizeof(ast_Expression_t));
     if (!expression) io_errndie("ast_Expression:" ERR_MSG_MALLOCFAIL);
     expression->op = op;
 
@@ -259,7 +258,7 @@ ast_Expression_t *ast_Expression(ast_Operator_t op, ast_Expression_t *lhs, ast_E
 
 ast_Expression_t *ast_Expression_Literal(ast_Literal_t *literal)
 {
-    ast_Expression_t *expression = (ast_Expression_t*) shsc_malloc(sizeof(ast_Expression_t));
+    ast_Expression_t *expression = (ast_Expression_t*) malloc(sizeof(ast_Expression_t));
     if (!expression) io_errndie("ast_Expression_Literal:" ERR_MSG_MALLOCFAIL);
     expression->op = TOKOP_NOP;
     expression->lhs_type = EXPR_TYPE_LITERAL;
@@ -273,7 +272,7 @@ ast_Expression_t *ast_Expression_Literal(ast_Literal_t *literal)
 
 ast_Expression_t *ast_Expression_Identifier(ast_Identifier_t *identifier)
 {
-    ast_Expression_t *expression = (ast_Expression_t*) shsc_malloc(sizeof(ast_Expression_t));
+    ast_Expression_t *expression = (ast_Expression_t*) malloc(sizeof(ast_Expression_t));
     if (!expression) io_errndie("ast_Expression_Identifier:" ERR_MSG_MALLOCFAIL);
     expression->op = TOKOP_NOP;
     expression->lhs_type = EXPR_TYPE_IDENTIFIER;
@@ -287,7 +286,7 @@ ast_Expression_t *ast_Expression_Identifier(ast_Identifier_t *identifier)
 
 ast_Expression_t *ast_Expression_CommaSepList(ast_CommaSepList_t *comma_list)
 {
-    ast_Expression_t *expression = (ast_Expression_t*) shsc_malloc(sizeof(ast_Expression_t));
+    ast_Expression_t *expression = (ast_Expression_t*) malloc(sizeof(ast_Expression_t));
     if (!expression) io_errndie("ast_Expression_CommaSepList:" ERR_MSG_MALLOCFAIL);
     expression->op = TOKOP_NOP;
     expression->lhs_type = EXPR_TYPE_LITERAL;
@@ -301,7 +300,7 @@ ast_Expression_t *ast_Expression_CommaSepList(ast_CommaSepList_t *comma_list)
 
 ast_CommaSepList_t *ast_CommaSepList(ast_CommaSepList_t *comma_list, ast_Expression_t *expression)
 {
-    ast_CommaSepList_t *comma_sep_list = (ast_CommaSepList_t*) shsc_malloc(sizeof(ast_CommaSepList_t));
+    ast_CommaSepList_t *comma_sep_list = (ast_CommaSepList_t*) malloc(sizeof(ast_CommaSepList_t));
     if (!comma_sep_list) io_errndie("ast_CommaSepList:" ERR_MSG_MALLOCFAIL);
     comma_sep_list->comma_list = comma_list;
     comma_sep_list->expression = expression;
@@ -310,7 +309,7 @@ ast_CommaSepList_t *ast_CommaSepList(ast_CommaSepList_t *comma_list, ast_Express
 
 ast_AssociativeList_t *ast_AssociativeList(ast_AssociativeList_t *assoc_list, ast_Literal_t *key, ast_Expression_t *value)
 {
-    ast_AssociativeList_t *associative_list = (ast_AssociativeList_t*) shsc_malloc(sizeof(ast_AssociativeList_t));
+    ast_AssociativeList_t *associative_list = (ast_AssociativeList_t*) malloc(sizeof(ast_AssociativeList_t));
     if (!associative_list) io_errndie("ast_AssociativeList:" ERR_MSG_MALLOCFAIL);
     associative_list->assoc_list = assoc_list;
     associative_list->key = key;
@@ -320,7 +319,7 @@ ast_AssociativeList_t *ast_AssociativeList(ast_AssociativeList_t *assoc_list, as
 
 ast_Literal_t *ast_Literal_bul(bool literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_bul:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_BUL;
     ast_literal->data.bul = literal;
@@ -329,7 +328,7 @@ ast_Literal_t *ast_Literal_bul(bool literal)
 
 ast_Literal_t *ast_Literal_chr(char literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_chr:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_CHR;
     ast_literal->data.chr = literal;
@@ -338,7 +337,7 @@ ast_Literal_t *ast_Literal_chr(char literal)
 
 ast_Literal_t *ast_Literal_f64(double literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_f64:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_F64;
     ast_literal->data.f64 = literal;
@@ -347,7 +346,7 @@ ast_Literal_t *ast_Literal_f64(double literal)
 
 ast_Literal_t *ast_Literal_i64(int64_t literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_i64:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_I64;
     ast_literal->data.i64 = literal;
@@ -356,7 +355,7 @@ ast_Literal_t *ast_Literal_i64(int64_t literal)
 
 ast_Literal_t *ast_Literal_str(char *literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_str:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_STR;
     ast_literal->data.str = literal;
@@ -365,7 +364,7 @@ ast_Literal_t *ast_Literal_str(char *literal)
 
 ast_Literal_t *ast_Literal_interp_str(char *literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_interp_str:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_INTERP_STR;
     ast_literal->data.str = literal;
@@ -374,7 +373,7 @@ ast_Literal_t *ast_Literal_interp_str(char *literal)
 
 ast_Literal_t *ast_Literal_lst(ast_CommaSepList_t *literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_lst:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_LST;
     ast_literal->data.lst = literal;
@@ -383,7 +382,7 @@ ast_Literal_t *ast_Literal_lst(ast_CommaSepList_t *literal)
 
 ast_Literal_t *ast_Literal_map(ast_AssociativeList_t *literal)
 {
-    ast_Literal_t *ast_literal = (ast_Literal_t*) shsc_malloc(sizeof(ast_Literal_t));
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
     if (!ast_literal) io_errndie("ast_Literal_map:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_MAP;
     ast_literal->data.mp = literal;
@@ -392,7 +391,7 @@ ast_Literal_t *ast_Literal_map(ast_AssociativeList_t *literal)
 
 ast_Identifier_t *ast_Identifier(char *identifier_name)
 {
-    ast_Identifier_t *identifier = (ast_Identifier_t*) shsc_malloc(sizeof(ast_Identifier_t));
+    ast_Identifier_t *identifier = (ast_Identifier_t*) malloc(sizeof(ast_Identifier_t));
     if (!identifier) io_errndie("ast_Identifier:" ERR_MSG_MALLOCFAIL);
     identifier->identifier_name = identifier_name;
     return identifier;

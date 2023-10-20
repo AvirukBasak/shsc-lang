@@ -10,7 +10,6 @@
 
 #include "ast/api.h"
 #include "errcodes.h"
-#include "globals.h"
 #include "io.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
@@ -68,7 +67,7 @@ rt_Data_t rt_Data_interp_str(const char *str)
     char *parsed_str = rt_Data_interp_str_parse(str);
     rt_Data_t var = rt_Data_str(
         rt_DataStr_init(parsed_str));
-    shsc_free(parsed_str);
+    free(parsed_str);
     return var;
 }
 
@@ -136,7 +135,7 @@ void rt_Data_destroy(rt_Data_t *var)
             if (!var->data.mp) *var = rt_Data_null();
             break;
         case rt_DATA_TYPE_ANY:
-            if (var->data.any) shsc_free(var->data.any);
+            if (var->data.any) free(var->data.any);
             var->data.any = NULL;
             *var = rt_Data_null();
             break;
@@ -173,7 +172,7 @@ char *rt_Data_interp_str_parse(const char *str_)
     size_t str_sz = strlen(str);
     for (int64_t i = 0; i < str_sz; ++i) {
         if (p >= ret_sz) {
-            ret = (char*) shsc_realloc(ret, (ret_sz += ret_sz * 2 +1) * sizeof(char));
+            ret = (char*) realloc(ret, (ret_sz += ret_sz * 2 +1) * sizeof(char));
             if (!ret) io_errndie("rt_Data_interp_str_parse:" ERR_MSG_REALLOCFAIL);
         }
         if (str[i] != '{') {
@@ -191,15 +190,15 @@ char *rt_Data_interp_str_parse(const char *str_)
             rt_throw("undeclared identifier: '%s'", &str[i] +1);
         char *val = rt_Data_tostr(var);
         size_t sz = strlen(val) +1;
-        ret = (char*) shsc_realloc(ret, (ret_sz += sz) * sizeof(char));
+        ret = (char*) realloc(ret, (ret_sz += sz) * sizeof(char));
         if (!ret) io_errndie("rt_Data_interp_str_parse:" ERR_MSG_REALLOCFAIL);
         sprintf(ret +p, "%s", val);
-        shsc_free(val);
+        free(val);
         val = NULL;
         p += sz -1;
         i += idflen +1;
     }
-    shsc_free(str);
+    free(str);
     str = NULL;
     ret[p] = 0;
     return ret;
@@ -236,26 +235,26 @@ char *rt_Data_tostr(const rt_Data_t var)
 {
     switch (var.type) {
         case rt_DATA_TYPE_BUL: {
-            char *str = (char*) shsc_malloc(5 +1 * sizeof(char));
+            char *str = (char*) malloc(5 +1 * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%s", var.data.bul ? "true" : "false");
             return str;
         }
         case rt_DATA_TYPE_CHR: {
-            char *str = (char*) shsc_malloc(1 +1 * sizeof(char));
+            char *str = (char*) malloc(1 +1 * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%c", var.data.chr);
             return str;
         }
         case rt_DATA_TYPE_I64: {
-            char *str = (char*) shsc_malloc(20 +1 * sizeof(char));
+            char *str = (char*) malloc(20 +1 * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%" PRId64, var.data.i64);
             return str;
         }
         case rt_DATA_TYPE_F64: {
             size_t sz = snprintf(NULL, 0, "%lf", var.data.f64);
-            char *str = (char*) shsc_malloc((sz +1) * sizeof(char));
+            char *str = (char*) malloc((sz +1) * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%lf", var.data.f64);
             return str;
@@ -274,7 +273,7 @@ char *rt_Data_tostr(const rt_Data_t var)
         }
         case rt_DATA_TYPE_ANY: {
             if (!var.data.any) return strdup("null");
-            char *str = (char*) shsc_malloc(16 +1 * sizeof(char));
+            char *str = (char*) malloc(16 +1 * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%p", var.data.any);
             return str;
@@ -305,7 +304,7 @@ int rt_Data_print(rt_Data_t var)
 {
     char *str = rt_Data_tostr(var);
     int bytes = printf("%s", str);
-    shsc_free(str);
+    free(str);
     return bytes;
 }
 

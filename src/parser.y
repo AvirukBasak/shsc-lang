@@ -1,10 +1,5 @@
 %{
 
-#define YYMALLOC shsc_malloc
-#define YYREALLOC shsc_realloc
-#define YYCALLOC shsc_calloc
-#define YYFREE shsc_free
-
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>

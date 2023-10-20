@@ -1,21 +1,8 @@
 #ifndef RT_DATA_MAP_H
 #define RT_DATA_MAP_H
 
-#undef kcalloc
-#define kcalloc(N,Z) shsc_calloc(N,Z)
-
-#undef kmalloc
-#define kmalloc(Z) shsc_malloc(Z)
-
-#undef krealloc
-#define krealloc(P,Z) shsc_realloc(P,Z)
-
-#undef kfree
-#define kfree(P) shsc_free(P)
-
 #include <stddef.h>
 
-#include "globals.h"
 #include "tlib/khash/khash.h"
 #include "runtime/data/Data.h"
 

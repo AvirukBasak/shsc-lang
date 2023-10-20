@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "globals.h"
 #include "io.h"
 #include "errcodes.h"
 #include "runtime/data/Data.h"
@@ -18,7 +17,7 @@
 
 rt_DataMap_t *rt_DataMap_init()
 {
-    rt_DataMap_t *mp = (rt_DataMap_t*) shsc_malloc(sizeof(rt_DataMap_t));
+    rt_DataMap_t *mp = (rt_DataMap_t*) malloc(sizeof(rt_DataMap_t));
     if (!mp) io_errndie("rt_DataMap_init:" ERR_MSG_MALLOCFAIL);
     mp->data_map = kh_init(rt_DataMap_t);
     mp->length = 0;
@@ -52,11 +51,11 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
         /* decrement refcnt, if 0, data gets destroyed */
         rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
         /* free the key */
-        shsc_free(kh_value(mp->data_map, entry_it).key);
+        free(kh_value(mp->data_map, entry_it).key);
     }
     kh_destroy(rt_DataMap_t, mp->data_map);
     mp->data_map = NULL;
-    shsc_free(mp);
+    free(mp);
     *ptr = NULL;
 }
 
@@ -109,7 +108,7 @@ void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
     if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
     rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
-    shsc_free(kh_value(mp->data_map, entry_it).key);
+    free(kh_value(mp->data_map, entry_it).key);
     kh_del(rt_DataMap_t, mp->data_map, entry_it);
     --mp->length;
 }
@@ -117,7 +116,7 @@ void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
 char *rt_DataMap_tostr(const rt_DataMap_t *mp)
 {
     size_t size = 3;
-    char *str = (char*) shsc_malloc(size * sizeof(char));
+    char *str = (char*) malloc(size * sizeof(char));
     if (!str) io_errndie("rt_DataMap_tostr:" ERR_MSG_MALLOCFAIL);
     int p = 0,
         count_len = 0;
@@ -130,7 +129,7 @@ char *rt_DataMap_tostr(const rt_DataMap_t *mp)
         const rt_Data_t data_val = kh_value(mp->data_map, entry_it).value;
         char *mp_el = rt_Data_tostr(data_val);
         char *mp_el_escaped = io_partial_escape_string(mp_el);
-        shsc_free(mp_el);
+        free(mp_el);
         mp_el = NULL;
 
         char *delim = "";
@@ -140,16 +139,16 @@ char *rt_DataMap_tostr(const rt_DataMap_t *mp)
 
         /** size values:  "        %s         "   : \x20     <delim>                 %s              <delim>    \x00 */
         const size_t sz = 1 + strlen(mp_ky) + 1 + 1 + 1 + strlen(delim) + strlen(mp_el_escaped) + strlen(delim) + 1;
-        str = (char*) shsc_realloc(str, (size += sz) * sizeof(char));
+        str = (char*) realloc(str, (size += sz) * sizeof(char));
         if (!str) io_errndie("rt_DataMap_tostr:" ERR_MSG_REALLOCFAIL);
 
         sprintf(&str[p], "\"%s\": %s%s%s", mp_ky, delim, mp_el_escaped, delim);
 
-        shsc_free(mp_el_escaped);
+        free(mp_el_escaped);
         mp_ky = mp_el_escaped = NULL;
         p += sz -1;
         if (count_len++ < mp->length -1) {
-            str = (char*) shsc_realloc(str, (size += 2) * sizeof(char));
+            str = (char*) realloc(str, (size += 2) * sizeof(char));
             if (!str) io_errndie("rt_DataMap_tostr:" ERR_MSG_REALLOCFAIL);
             sprintf(&str[p], ", ");
             p += 2;

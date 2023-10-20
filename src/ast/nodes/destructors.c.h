@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include "ast/nodes.h"
-#include "globals.h"
 
 void ast_Statements_destroy(ast_Statements_t **ptr)
 {
@@ -15,7 +14,7 @@ void ast_Statements_destroy(ast_Statements_t **ptr)
         ast_Statement_destroy(&node->statement);
         ast_Statements_t *tmp = node;
         node = node->statements;
-        shsc_free(tmp);
+        free(tmp);
     }
     *ptr = NULL;
 }
@@ -40,7 +39,7 @@ void ast_Statement_destroy(ast_Statement_t **ptr)
             ast_CompoundSt_destroy(&statement->statement.compound_statement);
             break;
     }
-    shsc_free(statement);
+    free(statement);
     *ptr = NULL;
 }
 
@@ -51,7 +50,7 @@ void ast_Assignment_destroy(ast_Assignment_t **ptr)
     if (!assignment) return;
     ast_Identifier_destroy(&assignment->lhs);
     ast_Expression_destroy(&assignment->rhs);
-    shsc_free(assignment);
+    free(assignment);
     *ptr = NULL;
 }
 
@@ -74,7 +73,7 @@ void ast_CompoundSt_destroy(ast_CompoundSt_t **ptr)
             ast_Block_destroy(&compound_statement->compound_statement.block);
             break;
     }
-    shsc_free(compound_statement);
+    free(compound_statement);
     *ptr = NULL;
 }
 
@@ -86,7 +85,7 @@ void ast_IfBlock_destroy(ast_IfBlock_t **ptr)
     ast_Expression_destroy(&if_block->condition);
     ast_Statements_destroy(&if_block->if_st);
     ast_ElseBlock_destroy(&if_block->else_block);
-    shsc_free(if_block);
+    free(if_block);
     *ptr = NULL;
 }
 
@@ -98,7 +97,7 @@ void ast_ElseBlock_destroy(ast_ElseBlock_t **ptr)
     ast_Expression_destroy(&else_block->condition);
     ast_Statements_destroy(&else_block->else_if_st);
     ast_ElseBlock_destroy(&else_block->else_block);
-    shsc_free(else_block);
+    free(else_block);
     *ptr = NULL;
 }
 
@@ -109,7 +108,7 @@ void ast_WhileBlock_destroy(ast_WhileBlock_t **ptr)
     if (!while_block) return;
     ast_Expression_destroy(&while_block->condition);
     ast_Statements_destroy(&while_block->statements);
-    shsc_free(while_block);
+    free(while_block);
     *ptr = NULL;
 }
 
@@ -131,7 +130,7 @@ void ast_ForBlock_destroy(ast_ForBlock_t **ptr)
             break;
     }
     ast_Statements_destroy(&for_block->statements);
-    shsc_free(for_block);
+    free(for_block);
     *ptr = NULL;
 }
 
@@ -141,7 +140,7 @@ void ast_Block_destroy(ast_Block_t **ptr)
     ast_Block_t *block = *ptr;
     if (!block) return;
     ast_Statements_destroy(&block->statements);
-    shsc_free(block);
+    free(block);
     *ptr = NULL;
 }
 
@@ -189,7 +188,7 @@ void ast_Expression_destroy(ast_Expression_t **ptr)
         case EXPR_TYPE_NULL:
             break;
     }
-    shsc_free(expression);
+    free(expression);
     *ptr = NULL;
 }
 
@@ -201,7 +200,7 @@ void ast_CommaSepList_destroy(ast_CommaSepList_t **ptr)
         ast_Expression_destroy(&comma_list->expression);
         ast_CommaSepList_t *rm = comma_list;
         comma_list = comma_list->comma_list;
-        shsc_free(rm);
+        free(rm);
     }
     *ptr = NULL;
 }
@@ -215,7 +214,7 @@ void ast_AssociativeList_destroy(ast_AssociativeList_t **ptr)
         ast_Expression_destroy(&assoc_list->value);
         ast_AssociativeList_t *rm = assoc_list;
         assoc_list = assoc_list->assoc_list;
-        shsc_free(rm);
+        free(rm);
     }
     *ptr = NULL;
 }
@@ -228,7 +227,7 @@ void ast_Literal_destroy(ast_Literal_t **ptr)
     switch (literal->type) {
         case DATA_TYPE_STR:
         case DATA_TYPE_INTERP_STR:
-            shsc_free(literal->data.str);
+            free(literal->data.str);
             break;
         case DATA_TYPE_LST:
             ast_CommaSepList_destroy(&literal->data.lst);
@@ -238,7 +237,7 @@ void ast_Literal_destroy(ast_Literal_t **ptr)
             break;
         default: break;
     }
-    shsc_free(literal);
+    free(literal);
     *ptr = NULL;
 }
 
@@ -248,9 +247,9 @@ void ast_Identifier_destroy(ast_Identifier_t **ptr)
     ast_Identifier_t *identifier = *ptr;
     if (!identifier) return;
     if (!identifier->identifier_name) return;
-    shsc_free(identifier->identifier_name);
+    free(identifier->identifier_name);
     identifier->identifier_name = NULL;
-    shsc_free(identifier);
+    free(identifier);
     *ptr = NULL;
 }
 

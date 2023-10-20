@@ -3,7 +3,6 @@
 
 #include "ast.h"
 #include "ast/api.h"
-#include "globals.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataMap.h"
 #include "runtime/eval.h"
@@ -26,7 +25,7 @@ void rt_eval_AssociativeList(const ast_AssociativeList_t *assoc_list)
         rt_eval_Expression(ptr->value);
         rt_DataMap_insert(new_map, key_cstr, *RT_ACC_DATA);
         ptr = ptr->assoc_list;
-        shsc_free(key_cstr);
+        free(key_cstr);
     }
     rt_VarTable_acc_setval(
         rt_Data_map(new_map));
