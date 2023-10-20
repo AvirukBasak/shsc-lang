@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "globals.h"
 #include "io.h"
 #include "errcodes.h"
 #include "parser.h"
@@ -14,7 +15,7 @@ char *parse_str(const char *str)
 {
     if (!str || !strcmp(str, "NULL")) str = "\0";
     const size_t len = strlen(str);
-    char *parsed_str = (char*) malloc(len +1);
+    char *parsed_str = (char*) shsc_malloc(len +1);
     if (!parsed_str) io_errndie("parse_str:" ERR_MSG_MALLOCFAIL);
     int parsed_index = 0;
     for (int i = 0; i < len; ++i) {
@@ -24,7 +25,7 @@ char *parse_str(const char *str)
             ++i;
             if (i >= len) {
                 parse_throw("incomplete escape sequence", true);
-                free(parsed_str);
+                shsc_free(parsed_str);
             }
             /* octal escape sequence */
             if ( isdigit(str[i]) && len - (i+1) >= 2 && isdigit(str[i+1]) && isdigit(str[i+2]) ) {

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "globals.h"
 #include "io.h"
 #include "errcodes.h"
 #include "runtime/data/Data.h"
@@ -15,12 +16,12 @@
 
 rt_DataStr_t *rt_DataStr_init(const char *s)
 {
-    rt_DataStr_t *str = (rt_DataStr_t*) malloc(sizeof(rt_DataStr_t));
+    rt_DataStr_t *str = (rt_DataStr_t*) shsc_malloc(sizeof(rt_DataStr_t));
     if (!str) io_errndie("rt_DataStr_init:" ERR_MSG_MALLOCFAIL);
     str->length = !s ? 0 : strlen(s);
     str->capacity = !s ? 0 : (str->length +1);
     if (s) {
-        str->var = (char*) malloc(str->capacity * sizeof(char) +1);
+        str->var = (char*) shsc_malloc(str->capacity * sizeof(char) +1);
         if (!str->var) io_errndie("rt_DataStr_init:" ERR_MSG_MALLOCFAIL);
         strncpy(str->var, s, str->length);
         str->var[str->length] = 0;
@@ -52,9 +53,9 @@ void rt_DataStr_destroy(rt_DataStr_t **ptr)
     if (str->rc < 0) str->rc = 0;
     if (str->rc > 0) return;
     /* free if rc 0 */
-    free(str->var);
+    shsc_free(str->var);
     str->var = NULL;
-    free(str);
+    shsc_free(str);
     *ptr = NULL;
 }
 
@@ -62,7 +63,7 @@ void rt_DataStr_append(rt_DataStr_t *str, char var)
 {
     if (str->length >= str->capacity) {
         str->capacity = str->capacity * 2 +2;
-        str->var = (char*) realloc(str->var, str->capacity * sizeof(char));
+        str->var = (char*) shsc_realloc(str->var, str->capacity * sizeof(char));
         if (!str->var) io_errndie("rt_DataStr_append:" ERR_MSG_REALLOCFAIL);
     }
     str->var[str->length++] = var;

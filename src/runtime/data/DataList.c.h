@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "globals.h"
 #include "io.h"
 #include "errcodes.h"
 #include "runtime/data/Data.h"
@@ -16,7 +17,7 @@
 
 rt_DataList_t *rt_DataList_init()
 {
-    rt_DataList_t *lst = (rt_DataList_t*) malloc(sizeof(rt_DataList_t));
+    rt_DataList_t *lst = (rt_DataList_t*) shsc_malloc(sizeof(rt_DataList_t));
     if (!lst) io_errndie("rt_DataList_init:" ERR_MSG_MALLOCFAIL);
     lst->var = NULL;
     lst->length = 0;
@@ -48,9 +49,9 @@ void rt_DataList_destroy(rt_DataList_t **ptr)
     /* free if rc 0 */
     for (int64_t i = 0; i < lst->length; i++)
         rt_Data_destroy(&lst->var[i]);
-    free(lst->var);
+    shsc_free(lst->var);
     lst->var = NULL;
-    free(lst);
+    shsc_free(lst);
     *ptr = NULL;
 }
 
@@ -59,7 +60,7 @@ void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var)
     rt_Data_copy(&var);
     if (lst->length >= lst->capacity) {
         lst->capacity = lst->capacity * 2 +1;
-        lst->var = (rt_Data_t*) realloc(lst->var, lst->capacity * sizeof(rt_Data_t));
+        lst->var = (rt_Data_t*) shsc_realloc(lst->var, lst->capacity * sizeof(rt_Data_t));
         if (!lst->var) io_errndie("rt_DataList_append:" ERR_MSG_REALLOCFAIL);
     }
     lst->var[lst->length++] = var;
@@ -96,7 +97,7 @@ void rt_DataList_del_val(rt_DataList_t *lst, rt_Data_t var)
 char *rt_DataList_tostr(const rt_DataList_t *lst)
 {
     size_t size = 3;
-    char *str = (char*) malloc(size * sizeof(char));
+    char *str = (char*) shsc_malloc(size * sizeof(char));
     if (!str) io_errndie("rt_DataList_tostr:" ERR_MSG_MALLOCFAIL);
     int p = 0;
     sprintf(&str[p++], "[");
@@ -104,7 +105,7 @@ char *rt_DataList_tostr(const rt_DataList_t *lst)
         const rt_Data_t data_val = lst->var[i];
         char *lst_el = rt_Data_tostr(data_val);
         char *lst_el_escaped = io_partial_escape_string(lst_el);
-        free(lst_el);
+        shsc_free(lst_el);
         lst_el = NULL;
 
         char *delim = "";
@@ -114,16 +115,16 @@ char *rt_DataList_tostr(const rt_DataList_t *lst)
 
         /** size values:  "   <delim>               %s               <delim>     \x00 */
         const size_t sz = strlen(delim) + strlen(lst_el_escaped) + strlen(delim) + 1;
-        str = (char*) realloc(str, (size += sz) * sizeof(char));
+        str = (char*) shsc_realloc(str, (size += sz) * sizeof(char));
         if (!str) io_errndie("rt_DataList_tostr:" ERR_MSG_REALLOCFAIL);
 
         sprintf(&str[p], "%s%s%s", delim, lst_el_escaped, delim);
 
-        free(lst_el_escaped);
+        shsc_free(lst_el_escaped);
         lst_el_escaped = NULL;
         p += sz -1;
         if (i < lst->length - 1) {
-            str = (char*) realloc(str, (size += 2) * sizeof(char));
+            str = (char*) shsc_realloc(str, (size += 2) * sizeof(char));
             if (!str) io_errndie("rt_DataList_tostr:" ERR_MSG_REALLOCFAIL);
             sprintf(&str[p], ", ");
             p += 2;

@@ -79,11 +79,11 @@ void ast_util_ModuleAndProcTable_add(const ast_Identifier_t *module_name, const 
     khint_t pk = kh_get(ast_procedure_t, procmap, proc_name->identifier_name);
     if (pk != kh_end(procmap)) {
         size_t sz = snprintf(NULL, 0, "duplicate method '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
-        char *errmsg = (char*) malloc((sz +1) * sizeof(char));
+        char *errmsg = (char*) shsc_malloc((sz +1) * sizeof(char));
         if (!errmsg) io_errndie("ast_util_ModuleAndProcTable_add:" ERR_MSG_MALLOCFAIL);
         sprintf(errmsg, "duplicate method '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
         parse_throw(errmsg, false);
-        free(errmsg);
+        shsc_free(errmsg);
     }
 
     /* Insert the proc_name and code into the sub map */
@@ -144,16 +144,16 @@ void ast_util_ModuleAndProcTable_clear(void)
     ast_util_ModuleAndProcTable_module_t module;
     /* Iterate over the top-level map */
     kh_foreach(ast_util_mptable, key, module, {
-        free(module.modulename);
+        shsc_free(module.modulename);
         module.modulename = NULL;
         khash_t(ast_procedure_t) *procmap = module.procmap;
         /* Iterate over the sub map */
         ast_util_ModuleAndProcTable_procedure_t proc;
         kh_foreach(procmap, key, proc, {
             /* Free procedure name and statements */
-            free(proc.procname);
+            shsc_free(proc.procname);
             proc.procname = NULL;
-            free(proc.src_filename);
+            shsc_free(proc.src_filename);
             proc.src_filename = NULL;
             ast_Statements_destroy(&proc.code);
         });

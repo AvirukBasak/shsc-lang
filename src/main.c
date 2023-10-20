@@ -96,8 +96,8 @@ int main(int argc, char **argv)
 
     if (!from_argv && lines) {
         for (size_t i = 0; i < line_cnt; ++i)
-            free(lines[i]);
-        free(lines);
+            shsc_free(lines[i]);
+        shsc_free(lines);
     }
 
 #ifndef LEX_DEBUG

@@ -9,6 +9,7 @@
 #include "ast/api.h"
 #include "ast/nodes/enums.h"
 #include "io.h"
+#include "globals.h"
 #include "errcodes.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataList.h"
@@ -171,7 +172,7 @@ void rt_VarTable_push_proc(const char *procname)
 {
     /* check if the stack is already initialized */
     if (rt_vtable == NULL) {
-        rt_vtable = (rt_VarTable_t*) malloc(sizeof(rt_VarTable_t));
+        rt_vtable = (rt_VarTable_t*) shsc_malloc(sizeof(rt_VarTable_t));
         if (!rt_vtable) io_errndie("rt_VarTable_push_proc:" ERR_MSG_MALLOCFAIL);
         rt_vtable->procs = NULL;
         rt_vtable->curr_proc_ptr = -1;
@@ -183,7 +184,7 @@ void rt_VarTable_push_proc(const char *procname)
     /* increase the capacity if needed */
     if (rt_vtable->curr_proc_ptr >= rt_vtable->capacity -1) {
         rt_vtable->capacity = rt_vtable->capacity * 2 +1;
-        rt_vtable->procs = (rt_VarTable_proc_t*) realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(rt_VarTable_proc_t));
+        rt_vtable->procs = (rt_VarTable_proc_t*) shsc_realloc(rt_vtable->procs, rt_vtable->capacity * sizeof(rt_VarTable_proc_t));
         if (!rt_vtable->procs) io_errndie("rt_VarTable_push_proc:" ERR_MSG_REALLOCFAIL);
     }
     /* push the new procedure scope */
@@ -207,7 +208,7 @@ rt_Data_t rt_VarTable_pop_proc(void)
     }
     --rt_vtable->curr_proc_ptr;
     if (rt_vtable->curr_proc_ptr == -1) {
-        free(rt_vtable->procs);
+        shsc_free(rt_vtable->procs);
         rt_vtable->procs = NULL;
         rt_vtable->capacity = 0;
     }
@@ -221,7 +222,7 @@ void rt_VarTable_push_scope()
     /* increase the capacity if needed */
     if (current_proc->curr_scope_ptr >= current_proc->capacity -1) {
         current_proc->capacity = current_proc->capacity * 2 +1;
-        current_proc->scopes = (rt_VarTable_Scope_t*) realloc(current_proc->scopes, current_proc->capacity * sizeof(rt_VarTable_Scope_t));
+        current_proc->scopes = (rt_VarTable_Scope_t*) shsc_realloc(current_proc->scopes, current_proc->capacity * sizeof(rt_VarTable_Scope_t));
         if (!current_proc->scopes) io_errndie("rt_VarTable_push_scope:" ERR_MSG_REALLOCFAIL);
     }
     /* push the new local scope */
@@ -242,7 +243,7 @@ rt_Data_t rt_VarTable_pop_scope(void)
     --current_proc->curr_scope_ptr;
     /* if there are no scopes left in the current procedure free the stack */
     if (current_proc->curr_scope_ptr == -1) {
-        free(current_proc->scopes);
+        shsc_free(current_proc->scopes);
         current_proc->scopes = NULL;
         current_proc->capacity = 0;
     }

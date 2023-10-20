@@ -8,6 +8,7 @@
 #include "ast/api.h"
 #include "ast2json.h"
 #include "errcodes.h"
+#include "globals.h"
 #include "io.h"
 #include "lexer.h"
 
@@ -543,7 +544,7 @@ void ast2json_Literal(const ast_Literal_t *literal)
             ast2json_printf("\"data\": ");
             if (escaped_chr) {
                 ast2json_printf("\"%s\"", escaped_chr);
-                free(escaped_chr);
+                shsc_free(escaped_chr);
             } else {
                 ast2json_printf("null");
             }
@@ -572,7 +573,7 @@ void ast2json_Literal(const ast_Literal_t *literal)
             char *escaped_str = io_full_escape_string(literal->data.str);
             if (escaped_str) {
                 ast2json_printf("\"%s\"", escaped_str);
-                free(escaped_str);
+                shsc_free(escaped_str);
             } else {
                 ast2json_printf("null");
             }

@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#include "globals.h"
 #include "io.h"
 #include "functions/nomodule.h"
 #include "runtime/data/Data.h"
@@ -29,7 +30,7 @@ rt_Data_t fn_tostr()
     const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
     char *strdata = rt_Data_tostr(data);
     const rt_Data_t retdata = rt_Data_str(rt_DataStr_init(strdata));
-    free(strdata);
+    shsc_free(strdata);
     strdata = NULL;
     return retdata;
 }
