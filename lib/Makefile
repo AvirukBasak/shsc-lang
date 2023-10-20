@@ -36,6 +36,15 @@ $(LIB_DIR)/libdummy.a:
 $(LIB_DIR)/libdummy-dbg.a:
 	@cd libdummy && $(MAKE) dbg
 
+## libxalloc
+
+$(LIB_DIR)/libxalloc.a:
+	@cd libxalloc && $(MAKE)
+
+$(LIB_DIR)/libxalloc-dbg.a:
+	@cd libxalloc && $(MAKE) dbg
+
+
 ## libavl
 
 $(LIB_DIR)/libavl.a:
@@ -48,8 +57,10 @@ $(LIB_DIR)/libavl-dbg.a:
 
 clean:
 	@cd libdummy && $(MAKE) clean
+	@cd libxalloc && $(MAKE) clean
 	@cd libavl && $(MAKE) clean
 
 cleaner:
 	@cd libdummy && $(MAKE) cleaner
+	@cd libxalloc && $(MAKE) cleaner
 	@cd libavl && $(MAKE) cleaner
