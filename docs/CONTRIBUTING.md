@@ -79,7 +79,10 @@ The Makefile has a target `run-sanitize` for this purpose.
 
 Debug builds are built with `-fsanitize=address`.
 
-Notes that you cannot run the address sanitizer on Windows.
+**WARNING** Using address sanitizer will significantly increase memory usage (like about 500+ MiB for a single loop).
+For more information, see [`Memory Usage Tests`](memprofile/README.md#memory-usage-tests).
+
+Note that you cannot run the address sanitizer on Windows.
 
 ## Clangd
 This section will apply to you only if you're using `clangd` LSP.

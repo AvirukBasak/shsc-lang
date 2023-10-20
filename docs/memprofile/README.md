@@ -1,6 +1,16 @@
 # Memory Usage Tests
 
-This README provides a comprehensive comparison of different configuration options in a code execution scenario, including the impact on memory usage and execution time. The configurations under consideration are "push/pop scope," "create i," and the presence of the variable assignment `var x = "Hi"`. We will also analyze the stability of resident memory usage (Stable RES) and the time taken for process memory to stabilize (Stable ETA) in seconds.
+## Address Sanitizer v/s Memory Usage
+
+High memory usage is noticed during the debug build.
+Where the debug build may use `522 MiB`, the release build may use less than `5 MiB` under similar conditions.
+
+After disabling address sanitizer in debug flags, the debug build is noticed to have reduced memory usage similar to the release build.
+This indicates that the address sanitizer is the cause of the high memory usage.
+
+## Memory Usage Tests
+
+This README provides a comparison of different configuration options in a code execution scenario of the **DEBUG BUILD ONLY**, including the impact on memory usage and execution time. The configurations under consideration are "push/pop scope," "create i," and the presence of the variable assignment `var x = "Hi"`. We will also analyze the stability of resident memory usage (Stable RES) and the time taken for process memory to stabilize (Stable ETA) in seconds.
 
 ## Configuration Options
 
