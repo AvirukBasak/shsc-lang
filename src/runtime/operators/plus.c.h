@@ -14,7 +14,7 @@
 #define RT_OP_PLUS +
 #define RT_OP_PLUS_STR "+"
 
-void rt_op_plus(rt_Data_t *lhs, rt_Data_t *rhs)
+void rt_op_plus(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
     /* this takes care of unary ops by considering lhs = 0 */
     rt_Data_t lhs_ = rt_Data_i64(0);

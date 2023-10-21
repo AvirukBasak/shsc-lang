@@ -14,7 +14,7 @@
 
 void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args);
 
-void rt_op_fncall(rt_Data_t *lhs, rt_Data_t *rhs) {
+void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
     if (lhs->type != rt_DATA_TYPE_PROC)
         rt_throw("cannot make procedure call to type '%s'", rt_Data_typename(*lhs));
     /** temporary data variable for rhs */

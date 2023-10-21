@@ -9,7 +9,7 @@
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
-void rt_op_ternary_cond(rt_Data_t *lhs, rt_Data_t *rhs, rt_Data_t *condition)
+void rt_op_ternary_cond(const rt_Data_t *lhs, const rt_Data_t *rhs, const rt_Data_t *condition)
 {
     if (!lhs) io_errndie("rt_op_ternary_cond:" ERR_MSG_NULLPTR " for `lhs`");
     if (!rhs) io_errndie("rt_op_ternary_cond:" ERR_MSG_NULLPTR " for `rhs`");

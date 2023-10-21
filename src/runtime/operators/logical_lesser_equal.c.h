@@ -4,7 +4,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/operators.h"
 
-void rt_op_logical_lesser_equal(rt_Data_t *lhs, rt_Data_t *rhs) {}
+void rt_op_logical_lesser_equal(const rt_Data_t *lhs, const rt_Data_t *rhs) {}
 
 #else
     #warning re-inclusion of module 'runtime/operators/logical_lesser_equal.c.h'

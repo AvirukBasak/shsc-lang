@@ -9,7 +9,7 @@
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
-void rt_op_bang(rt_Data_t *lhs, rt_Data_t *rhs)
+void rt_op_bang(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
     if (!lhs) io_errndie("rt_op_bang:" ERR_MSG_NULLPTR " for `lhs`");
     if (rhs) io_errndie("rt_op_bang: expected `rhs` to be null");
