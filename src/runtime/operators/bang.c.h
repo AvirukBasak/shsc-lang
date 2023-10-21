@@ -11,10 +11,10 @@
 
 void rt_op_bang(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
-    if (!lhs) io_errndie("rt_op_bang:" ERR_MSG_NULLPTR " for `lhs`");
-    if (rhs) io_errndie("rt_op_bang: expected `rhs` to be null");
+    if (lhs) io_errndie("rt_op_bang: expected `lhs` to be null");
+    if (!rhs) io_errndie("rt_op_bang:" ERR_MSG_NULLPTR " for `rhs`");
 
-    bool cond = rt_Data_tobool(*lhs);
+    bool cond = rt_Data_tobool(*rhs);
     rt_VarTable_acc_setval(rt_Data_bul(!cond));
 }
 
