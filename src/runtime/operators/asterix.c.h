@@ -28,6 +28,12 @@ void rt_op_asterix(const rt_Data_t *lhs, const rt_Data_t *rhs)
           rt_throw("no operator '" RT_OP_ASTERIX_STR "' for types `%s` and `%s`",
             rt_Data_typename(*lhs), rt_Data_typename(*rhs));
 
+    /* check and throw error if lhs or rhs is of invalid type for multiplication */
+    if (   (lhs->type == rt_DATA_TYPE_LST || lhs->type == rt_DATA_TYPE_MAP)
+        || (rhs->type == rt_DATA_TYPE_LST || rhs->type == rt_DATA_TYPE_MAP) )
+          rt_throw("no operator '" RT_OP_ASTERIX_STR "' for types `%s` and `%s`",
+            rt_Data_typename(*lhs), rt_Data_typename(*rhs));
+
     switch (lhs->type) {
         case rt_DATA_TYPE_BUL:
             switch (rhs->type) {
