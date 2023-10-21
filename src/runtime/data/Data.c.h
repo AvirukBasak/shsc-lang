@@ -22,7 +22,7 @@ rt_Data_t rt_Data_bul(bool val)
 {
     rt_Data_t var;
     var.type = rt_DATA_TYPE_BUL;
-    var.data.bul = val;
+    var.data.bul = !!val;
     return var;
 }
 
