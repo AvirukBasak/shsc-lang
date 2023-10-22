@@ -19,7 +19,7 @@ const ast_Identifier_t *rt_current_module = NULL;
 const ast_Identifier_t *rt_current_proc = NULL;
 
 
-void rt_exec(int argc, char **argv)
+int rt_exec(int argc, char **argv)
 {
     const ast_Identifier_t *module = ast_util_ModuleAndProcTable_idfmain();
     const ast_Identifier_t *proc = ast_util_ModuleAndProcTable_idfmain();
@@ -44,7 +44,7 @@ void rt_exec(int argc, char **argv)
     if (ctrl == rt_CTRL_CONTINUE)
         rt_throw("unexpected `continue` statement outside loop");
 
-    rt_VarTable_pop_proc();
+    return rt_VarTable_pop_proc().data.i64;
 }
 
 const ast_Identifier_t *rt_modulename_get(void)

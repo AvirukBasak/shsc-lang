@@ -11,6 +11,6 @@ extern int rt_currline;
 const ast_Identifier_t *rt_modulename_get(void);
 const ast_Identifier_t *rt_procname_get(void);
 
-void rt_exec(int argc, char **argv);
+int rt_exec(int argc, char **argv);
 
 #endif
