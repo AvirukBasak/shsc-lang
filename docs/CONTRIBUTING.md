@@ -93,6 +93,13 @@ If a function can call `free` upon a pointer without any casts and causing no er
 - If a function does not modify a passed heap pointer or object, the pointer **MUST** be marked as `const` in the formal parameters.
 - If a function must make changes to a heap object **ONLY** then should the pointer be passed as non-`const`.
 
+#### Explicitly casting to non-const
+If you have a pointer to memory and want to explicitly pass ownership, even if you don't currently own it, you may explicitly cast it to non-`const`.
+However, be cautious as this can result in poor code quality, so use it judiciously.
+
+For example, a list of `const` struct pointers may be created, but the functions of the list can't free them coz they may still have other references.
+So you may need to explicitly cast to non-`const` and free them from the list only if you're **SURE** that there is no other reference.
+
 ## Using the `RT_ACC_DATA` macro
 Definitiion
 ```
@@ -106,14 +113,6 @@ Clearly, this is a very dangerous macro to use. This macro must be used **IF AND
 This is because the accumulator is a two-faced serpent. It can either be a pointer to a heap object or a direct value copy. This takes care of both l-values and r-values but in a very dangerous way.
 
 In the event that it a pointer to a heap object, by chance if that scope is popped, the pointer will be dangling and the program will crash.
-
-
-#### Explicitly casting to non-const
-If you have a pointer to memory and want to explicitly pass ownership, even if you don't currently own it, you may explicitly cast it to non-`const`.
-However, be cautious as this can result in poor code quality, so use it judiciously.
-
-For example, a list of `const` struct pointers may be created, but the functions of the list can't free them coz they may still have other references.
-So you may need to explicitly cast to non-`const` and free them from the list only if you're **SURE** that there is no other reference.
 
 ## Address Sanitizer
 Using an address sanitizer is **mandatory** to ensure code quality and catch memory issues early.
