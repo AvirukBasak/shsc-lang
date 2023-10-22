@@ -1,19 +1,16 @@
 proc main start
-    var x = [1,2,3,4,5]
-    var a = i64
-    var b = f64
-    var c = 'c'
-    var d = null
-    var e = "xyz"
-    io:print(
-        dbg:typename(x),
-        dbg:typename(a),
-        dbg:typename(b),
-        dbg:typename(c),
-        dbg:typename(d),
-        dbg:typename(e),
-        lf
-    )
-    var y = 0
-    io:print($y, lf)
+   var x = test()
+   io:print(x, lf)
+end
+
+proc test start
+    return test1(4) + test2(8)
+end
+
+proc test1 start
+    return $0
+end
+
+proc test2 start
+    return $0
 end
