@@ -5,7 +5,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/operators.h"
 
-void rt_op_nop(rt_Data_t *lhs)
+void rt_op_nop(const rt_Data_t *lhs)
 {
     rt_VarTable_acc_setval(*lhs);
 }

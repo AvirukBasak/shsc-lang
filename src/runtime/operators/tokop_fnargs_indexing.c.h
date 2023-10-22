@@ -8,7 +8,7 @@
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
-void rt_op_fnargs_indexing(rt_Data_t *lhs, rt_Data_t *rhs)
+void rt_op_fnargs_indexing(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
     if (!rhs || rhs->type != rt_DATA_TYPE_I64)
         rt_throw("argument index should evaluate to an `i64`");

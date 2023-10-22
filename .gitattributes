@@ -1,0 +1,3 @@
+*.shsc linguist-language=ruby
+examples/*.txt linguist-language=ruby
+tests/test.txt linguist-language=ruby

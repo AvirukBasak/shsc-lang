@@ -40,6 +40,7 @@ rt_Data_t *rt_eval_Expression_operand(
         switch (oprnd_type) {
             case EXPR_TYPE_EXPRESSION:
                 rt_eval_Expression(oprnd.expr);
+                break;
             case EXPR_TYPE_LITERAL:
                 rt_eval_Literal(oprnd.literal);
                 break;

@@ -5,7 +5,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/operators.h"
 
-void rt_op_assign(rt_Data_t *lhs, rt_Data_t *rhs)
+void rt_op_assign(rt_Data_t *lhs, const rt_Data_t *rhs)
 {
     rt_VarTable_acc_setadr(
         rt_VarTable_modf(lhs, *rhs));
