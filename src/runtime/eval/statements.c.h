@@ -22,7 +22,7 @@ rt_ControlStatus_t rt_eval_Statements(const ast_Statements_t *code)
         if (   !ptr->statements
             && !strcmp(rt_modulename_get()->identifier_name, "main")
             && !strcmp(rt_procname_get()->identifier_name, "main")
-            && ptr->statement->type != STATEMENT_TYPE_RETURN) {
+            && ptr->statement && ptr->statement->type != STATEMENT_TYPE_RETURN) {
             exit_code = rt_Data_i64(0);
         }
 
