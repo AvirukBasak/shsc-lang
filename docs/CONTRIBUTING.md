@@ -55,6 +55,33 @@ If you encounter linker errors, double-check if you have missed any necessary `.
 - For headers and source files dedicated to a struct type, name the file as the struct name.
 - For eg, if struct type is `rt_Data_t`, files maybe named as `Data.h` and `Data.c.h`.
 
+## The eval functions
+These are the functions listed in the `src/runtime/eval.h` and defined in `src/runtime/*.c.h` files.
+
+Each of these functions evaluate a part of the AST.
+
+### Code evaluation
+The following functions evaluate code and return a `rt_ControlStatus_t`. The control status is used to control the flow of the program.
+- `rt_eval_Statements`
+- `rt_eval_Statements_newscope`
+- `rt_eval_Statement`
+- `rt_eval_CompoundSt`
+- `rt_eval_IfBlock`
+- `rt_eval_ElseBlock`
+- `rt_eval_WhileBlock`
+- `rt_eval_ForBlock`
+
+### Expression evaluation
+The following functions evaluate expressions and **MUST** make a call to either `rt_VarTable_acc_setadr()` or `rt_VarTable_acc_setval()` to set the accumulator.
+
+- `rt_eval_Expression`
+- `rt_eval_Literal`
+- `rt_eval_Identifier`
+- `rt_eval_CommaSepList`
+- `rt_eval_AssociativeList`
+
+The `RT_ACC_DATA` macro is used to get the accumulator data **ONLY** if one of the above functions was called immediately before.
+
 ## Memory Management
 If a function can call `free` upon a pointer without any casts and causing no error or warning, the function is said to own it.
 
@@ -63,6 +90,21 @@ If a function can call `free` upon a pointer without any casts and causing no er
 - A destructor function should take a pointer to a pointer and assign the original pointer to `NULL` once freed.
 - If a function does not modify a passed heap pointer or object, the pointer **MUST** be marked as `const` in the formal parameters.
 - If a function must make changes to a heap object **ONLY** then should the pointer be passed as non-`const`.
+
+## Using the `RT_ACC_DATA` macro
+Definitiion
+```
+rt_VarTable_acc_get()->adr
+    ? rt_VarTable_acc_get()->adr
+    : &rt_VarTable_acc_get()->val
+```
+
+Clearly, this is a very dangerous macro to use. This macro must be used **IF AND ONLY IF** it is immediately preceeded by one of the functions listed in the `src/runtime/eval.h` and defined in `src/runtime/*.c.h` files.
+
+This is because the accumulator is a two-faced serpent. It can either be a pointer to a heap object or a direct value copy. This takes care of both l-values and r-values but in a very dangerous way.
+
+In the event that it a pointer to a heap object, by chance if that scope is popped, the pointer will be dangling and the program will crash.
+
 
 #### Explicitly casting to non-const
 If you have a pointer to memory and want to explicitly pass ownership, even if you don't currently own it, you may explicitly cast it to non-`const`.

@@ -201,6 +201,11 @@ rt_Data_t rt_VarTable_pop_proc(void)
         /* nothing to pop, return NULL */
         return rt_VarTable_rsv_null;
     rt_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
+    /* copy data in accumulator before pop so that it may be returned
+       in the event that the accumulator data is not a val but an adr
+       i.e. a ref to some value in the table.
+       thus, we use this to convert the adr into a val */
+    rt_VarTable_acc_setval(*RT_ACC_DATA);
     /* pop all scopes in that proc */
     while (current_proc->curr_scope_ptr >= 0) {
         rt_VarTable_pop_scope();
@@ -236,6 +241,12 @@ rt_Data_t rt_VarTable_pop_scope(void)
     rt_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     if (!current_proc || current_proc->curr_scope_ptr == -1)
         return rt_Data_null();
+    /* copy data in accumulator before pop so that it may be returned
+       in the event that the accumulator data is not a val but an adr
+       i.e. a ref to some value in the table.
+       thus, we use this to convert the adr into a val */
+    rt_VarTable_acc_setval(*RT_ACC_DATA);
+    /* get the current scope */
     rt_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
     /* destroy map of values */
     rt_DataMap_destroy(current_scope);
