@@ -1,6 +1,6 @@
-module math
+module main
 
-proc test start
+proc main start
     var inp = io:input("Enter a number: ", i64)
     var res = factorial(inp)
     io:print(f"result = {res}\n")
@@ -9,7 +9,7 @@ end
 # factorial(num)
 proc factorial start
     var n = $0
-    if n <= 1 then
+    if !n then
         return 1
     else
         return n * factorial(n - 1)

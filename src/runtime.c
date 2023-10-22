@@ -55,8 +55,8 @@ const ast_Identifier_t *rt_modulename_get(void)
 
 const ast_Identifier_t *rt_procname_get(void)
 {
-    if (!rt_current_module) rt_current_module = ast_util_ModuleAndProcTable_idfmain();
-    return rt_current_module;
+    if (!rt_current_proc) rt_current_proc = ast_util_ModuleAndProcTable_idfmain();
+    return rt_current_proc;
 }
 
 
