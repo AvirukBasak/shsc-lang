@@ -1,0 +1,16 @@
+module main
+
+proc main start
+    var inp = io:input("Enter a number: ", i64)
+    var res = fibonacci(inp)
+    io:print(f"result = {res}\n")
+end
+
+#fibonacci(num)
+proc fibonacci start
+    if !$0 then
+        return $0
+    else
+        return fibonacci($0 - 1) + fibonacci($0 - 2)
+    end
+end
