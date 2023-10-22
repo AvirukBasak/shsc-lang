@@ -100,19 +100,20 @@ int main(int argc, char **argv)
         free(lines);
     }
 
+    int exit_code = 0;
 #ifndef LEX_DEBUG
     if (ast_filename)
         /* save the AST as JSON */
         ast2json_convert(ast_filename, ast_format);
     else
         /* execute the program */
-        rt_exec(argc, argv);
+        exit_code = rt_exec(argc, argv);
 #endif
 
     /* clear the entire AST */
     ast_util_ModuleAndProcTable_clear();
 
-    return 0;
+    return exit_code;
 }
 
 void main_parsefiles(const char **filepaths, int file_cnt)
