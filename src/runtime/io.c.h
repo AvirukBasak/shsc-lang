@@ -8,6 +8,7 @@
 #include "errcodes.h"
 #include "runtime.h"
 #include "runtime/io.h"
+#include "runtime/VarTable.h"
 
 #define RT_THROW_PRINT_FN      "%s:%s: "
 #define RT_THROW_DONT_PRINT_FN ""
@@ -25,6 +26,21 @@ void rt_throw(const char *fmt, ...)
     va_end(args);
     fflush(stderr);
     fprintf(stderr, "\n");
+
+#if 0
+    /* print stack trace */
+    while (rt_VarTable_proc_top()) {
+        fprintf(stderr, "    at " RT_THROW_PRINT_FN "(%s:%d)\n",
+            rt_VarTable_proc_top()->modulename->identifier_name,
+            rt_VarTable_proc_top()->procname->identifier_name,
+            rt_VarTable_proc_top()->filepath,
+            rt_VarTable_proc_top()->line
+        );
+        rt_VarTable_pop_proc();
+    }
+    fflush(stderr);
+#endif
+
 #ifdef DEBUG
     abort();
 #else
