@@ -5,15 +5,22 @@ proc main start
 
     s[3] = "x"
     l[3] = 42
-    # m[0] = 100
+
+    m[0] = 100
+    m[l] = 200
 
     for i from 0 to it:len(s) do
-        io:print(s[i], lf)
+        io:print(s[i])
+        io:print(",")
     end
+    io:print(lf)
+
     for i from 0 to it:len(l) do
-        io:print(l[i], lf)
+        io:print(l[i])
+        io:print(",")
     end
-    io:print(m["a"], lf)
-    io:print(m["b"], lf)
-    io:print(m["0"], lf)
+    io:print(lf)
+
+    io:print(m["a"], m["b"], m["0"], m[1], m[l], lf)
+    io:print(m, lf)
 end
