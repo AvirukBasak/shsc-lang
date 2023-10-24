@@ -132,7 +132,9 @@ const char *ast_util_ModuleAndProcTable_get_filename(const ast_Identifier_t *mod
 {
     const ast_util_ModuleAndProcTable_procedure_t proc = ast_util_ModuleAndProcTable_get(module_name, proc_name);
     if (!proc.procname)
-        rt_throw("ast_util_ModuleAndProcTable_get_filename: undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
+        /* not printing current fn name as this error is most likely to occur when
+           main:main is not defined */
+        io_errndie("undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
     return proc.src_filename;
 }
 

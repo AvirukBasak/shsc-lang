@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "ast.h"
 #include "ast/api.h"
 #include "ast/nodes/enums.h"
 #include "io.h"
@@ -17,24 +18,6 @@
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 #include "tlib/khash/khash.h"
-
-typedef rt_DataMap_t *rt_VarTable_Scope_t;
-
-
-/** the scopes stack of a procedure */
-typedef struct {
-    rt_VarTable_Scope_t *scopes;
-    int64_t curr_scope_ptr;
-    size_t capacity;
-} rt_VarTable_proc_t;
-
-
-/** the VarTable is basically the call stack */
-typedef struct {
-    rt_VarTable_proc_t *procs;
-    int64_t curr_proc_ptr;
-    size_t capacity;
-} rt_VarTable_t;
 
 
 /** gloablly allocated stack pointer */
@@ -80,7 +63,7 @@ rt_Data_t *rt_VarTable_get_globvar(const char *varname)
 void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const)
 {
     if ( (!isalpha(varname[0]) && varname[0] != '_'
-        && strcmp(varname, RT_ARGS_LIST_VARNAME)) || isdigit(varname[0]) )
+        && strcmp(varname, RT_VTABLE_ARGSVAR)) || isdigit(varname[0]) )
             io_errndie("rt_VarTable_create: invalid new variable name '%s'", varname);
     else {
         rt_Data_t *globvar = rt_VarTable_get_globvar(varname);
@@ -117,7 +100,7 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)
 rt_Data_t *rt_VarTable_getref_errnull(const char *varname)
 {
     if ( (!isalpha(varname[0]) && varname[0] != '_'
-        && strcmp(varname, RT_ARGS_LIST_VARNAME)) || isdigit(varname[0]) )
+        && strcmp(varname, RT_VTABLE_ARGSVAR)) || isdigit(varname[0]) )
             io_errndie("rt_VarTable_getref: invalid variable name '%s'", varname);
     else {
         rt_Data_t *globvar = rt_VarTable_get_globvar(varname);
@@ -167,8 +150,11 @@ void rt_VarTable_acc_setadr(rt_Data_t *adr)
 }
 
 
-void rt_VarTable_push_proc(const char *procname)
-{
+void rt_VarTable_push_proc(
+    const ast_Identifier_t *modulename,
+    const ast_Identifier_t *procname,
+    const char *filepath
+) {
     /* check if the stack is already initialized */
     if (rt_vtable == NULL) {
         rt_vtable = (rt_VarTable_t*) malloc(sizeof(rt_VarTable_t));
@@ -178,7 +164,7 @@ void rt_VarTable_push_proc(const char *procname)
         rt_vtable->capacity = 0;
     }
     /* check if call stack has exceeded a default limit */
-    if (rt_vtable->curr_proc_ptr >= RT_DEFAULT_CALL_STACK_LIMIT)
+    if (rt_vtable->curr_proc_ptr >= RT_VTABLE_CALLSTACK_LIMIT)
         rt_throw("call stack limit exceeded");
     /* increase the capacity if needed */
     if (rt_vtable->curr_proc_ptr >= rt_vtable->capacity -1) {
@@ -191,8 +177,19 @@ void rt_VarTable_push_proc(const char *procname)
     rt_vtable->procs[rt_vtable->curr_proc_ptr].scopes = NULL;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].curr_scope_ptr = -1;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].capacity = 0;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].modulename = modulename;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].procname = procname;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].filepath = filepath;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].current_line = -1;
     /* push a new local scope */
     rt_VarTable_push_scope();
+}
+
+rt_VarTable_proc_t *rt_VarTable_top_proc(void)
+{
+    if (rt_vtable == NULL || rt_vtable->curr_proc_ptr == -1)
+        return NULL;
+    return &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
 }
 
 rt_Data_t rt_VarTable_pop_proc(void)
@@ -205,7 +202,7 @@ rt_Data_t rt_VarTable_pop_proc(void)
        in the event that the accumulator data is not a val but an adr
        i.e. a ref to some value in the table.
        thus, we use this to convert the adr into a val */
-    rt_VarTable_acc_setval(*RT_ACC_DATA);
+    rt_VarTable_acc_setval(*RT_VTABLE_ACC);
     /* pop all scopes in that proc */
     while (current_proc->curr_scope_ptr >= 0) {
         rt_VarTable_pop_scope();
@@ -216,7 +213,7 @@ rt_Data_t rt_VarTable_pop_proc(void)
         rt_vtable->procs = NULL;
         rt_vtable->capacity = 0;
     }
-    return *RT_ACC_DATA;
+    return *RT_VTABLE_ACC;
 }
 
 
@@ -245,7 +242,7 @@ rt_Data_t rt_VarTable_pop_scope(void)
        in the event that the accumulator data is not a val but an adr
        i.e. a ref to some value in the table.
        thus, we use this to convert the adr into a val */
-    rt_VarTable_acc_setval(*RT_ACC_DATA);
+    rt_VarTable_acc_setval(*RT_VTABLE_ACC);
     /* get the current scope */
     rt_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
     /* destroy map of values */
@@ -257,7 +254,7 @@ rt_Data_t rt_VarTable_pop_scope(void)
         current_proc->scopes = NULL;
         current_proc->capacity = 0;
     }
-    return *RT_ACC_DATA;
+    return *RT_VTABLE_ACC;
 }
 
 

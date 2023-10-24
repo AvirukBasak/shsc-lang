@@ -13,7 +13,7 @@ Before you get started, please take a moment to read and follow these guidelines
 - [Naming Conventions](#naming-conventions)
 - [The eval functions](#the-eval-functions)
 - [Memory Management](#memory-management)
-- [Using the `RT_ACC_DATA` macro](#using-the-rt_acc_data-macro)
+- [Using the `RT_VTABLE_ACC` macro](#using-the-rt_acc_data-macro)
 - [Address Sanitizer](#address-sanitizer)
 - [Clangd LSP](#clangd)
 - [Devtools Directory](#devtools-directory)
@@ -82,7 +82,7 @@ The following functions evaluate expressions and **MUST** make a call to either 
 - `rt_eval_CommaSepList`
 - `rt_eval_AssociativeList`
 
-The `RT_ACC_DATA` macro is used to get the accumulator data **ONLY** if one of the above functions was called immediately before.
+The `RT_VTABLE_ACC` macro is used to get the accumulator data **ONLY** if one of the above functions was called immediately before.
 
 ## Memory Management
 If a function can call `free` upon a pointer without any casts and causing no error or warning, the function is said to own it.
@@ -100,7 +100,7 @@ However, be cautious as this can result in poor code quality, so use it judiciou
 For example, a list of `const` struct pointers may be created, but the functions of the list can't free them coz they may still have other references.
 So you may need to explicitly cast to non-`const` and free them from the list only if you're **SURE** that there is no other reference.
 
-## Using the `RT_ACC_DATA` macro
+## Using the `RT_VTABLE_ACC` macro
 Definitiion
 ```
 rt_VarTable_acc_get()->adr

@@ -4,11 +4,12 @@
 #include "ast.h"
 #include "ast/api.h"
 #include "runtime/eval.h"
+#include "runtime/VarTable.h"
 
 rt_ControlStatus_t rt_eval_Statement(const ast_Statement_t *statement)
 {
     if (!statement) return rt_CTRL_PASS;
-    rt_currline = statement->line_no;
+    rt_VarTable_top_proc()->current_line = statement->line_no;
     switch (statement->type) {
         case STATEMENT_TYPE_EMPTY:
             return rt_CTRL_PASS;

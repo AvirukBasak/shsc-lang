@@ -11,7 +11,7 @@
 
 rt_Data_t fn_dbg_typename()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
+    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_dbg_typename: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
@@ -22,7 +22,7 @@ rt_Data_t fn_dbg_typename()
 
 rt_Data_t fn_dbg_refcnt()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
+    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("fn_dbg_refcnt: "
                    "received arguments list as type '%s'", rt_Data_typename(args));

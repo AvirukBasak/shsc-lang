@@ -13,7 +13,7 @@ rt_ControlStatus_t rt_eval_WhileBlock(const ast_WhileBlock_t *while_block)
 {
     if (!while_block) return rt_CTRL_PASS;
     rt_eval_Expression(while_block->condition);
-    bool cond = rt_Data_tobool(*RT_ACC_DATA);
+    bool cond = rt_Data_tobool(*RT_VTABLE_ACC);
     while (cond) {
         rt_ControlStatus_t ctrl = rt_eval_Statements_newscope(while_block->statements);
         if (ctrl == rt_CTRL_PASS)

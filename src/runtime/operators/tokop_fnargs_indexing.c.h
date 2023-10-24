@@ -12,7 +12,7 @@ void rt_op_fnargs_indexing(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
     if (!rhs || rhs->type != rt_DATA_TYPE_I64)
         rt_throw("argument index should evaluate to an `i64`");
-    rt_Data_t args = *rt_VarTable_getref(RT_ARGS_LIST_VARNAME);
+    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
     if (args.type != rt_DATA_TYPE_LST)
         io_errndie("rt_eval_Expression: TOKOP_FNARGS_INDEXING: "
                    "received arguments list as type '%s'", rt_Data_typename(args));

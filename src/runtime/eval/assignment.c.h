@@ -16,13 +16,13 @@ void rt_eval_Assignment(const ast_Assignment_t *assignment)
         case ASSIGNMENT_TYPE_CREATE: {
             const char *idf = assignment->lhs->identifier_name;
             rt_eval_Expression(assignment->rhs);
-            rt_VarTable_create(idf, *RT_ACC_DATA, false);
+            rt_VarTable_create(idf, *RT_VTABLE_ACC, false);
             break;
         }
         case ASSIGNMENT_TYPE_MKCONST: {
             const char *idf = assignment->lhs->identifier_name;
             rt_eval_Expression(assignment->rhs);
-            rt_VarTable_create(idf, *RT_ACC_DATA, true);
+            rt_VarTable_create(idf, *RT_VTABLE_ACC, true);
             break;
         }
     }

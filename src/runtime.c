@@ -11,20 +11,12 @@
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 
-
-const char *rt_currfile = NULL;
-int rt_currline = 0;
-
-const ast_Identifier_t *rt_current_module = NULL;
-const ast_Identifier_t *rt_current_proc = NULL;
-
-
 int rt_exec(int argc, char **argv)
 {
     const ast_Identifier_t *module = ast_util_ModuleAndProcTable_idfmain();
     const ast_Identifier_t *proc = ast_util_ModuleAndProcTable_idfmain();
     const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
-    rt_currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
+    const char *currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
 
     /* generate args list w/ cli args passed from main
        here we do skip the path to the interpreter so args[0]
@@ -35,8 +27,8 @@ int rt_exec(int argc, char **argv)
         rt_DataList_append(args.data.lst, arg);
     }
 
-    rt_VarTable_push_proc(proc->identifier_name);
-    rt_VarTable_create(RT_ARGS_LIST_VARNAME, args, true);
+    rt_VarTable_push_proc(module, proc, currfile);
+    rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true);
 
     rt_ControlStatus_t ctrl = rt_eval_Statements(code);
     if (ctrl == rt_CTRL_BREAK)
@@ -46,19 +38,6 @@ int rt_exec(int argc, char **argv)
 
     return rt_VarTable_pop_proc().data.i64;
 }
-
-const ast_Identifier_t *rt_modulename_get(void)
-{
-    if (!rt_current_module) rt_current_module = ast_util_ModuleAndProcTable_idfmain();
-    return rt_current_module;
-}
-
-const ast_Identifier_t *rt_procname_get(void)
-{
-    if (!rt_current_proc) rt_current_proc = ast_util_ModuleAndProcTable_idfmain();
-    return rt_current_proc;
-}
-
 
 #include "runtime/data/Data.c.h"
 #include "runtime/io.c.h"

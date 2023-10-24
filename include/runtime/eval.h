@@ -10,12 +10,6 @@ typedef enum {
     rt_CTRL_CONTINUE,
 } rt_ControlStatus_t;
 
-extern const char *rt_currfile;
-extern int rt_currline;
-
-extern const ast_Identifier_t *rt_current_module;
-extern const ast_Identifier_t *rt_current_proc;
-
 rt_ControlStatus_t rt_eval_Statements(const ast_Statements_t *code);
 rt_ControlStatus_t rt_eval_Statements_newscope(const ast_Statements_t *code);
 rt_ControlStatus_t rt_eval_Statement(const ast_Statement_t *statement);

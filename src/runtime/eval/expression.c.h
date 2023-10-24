@@ -30,7 +30,7 @@ rt_Data_t *rt_eval_Expression_operand(
     if (is_lhs && op == TOKOP_FNCALL && oprnd_type == EXPR_TYPE_IDENTIFIER) {
         rt_VarTable_acc_setval((rt_Data_t) {
             .data.proc = {
-                .modulename = rt_modulename_get(),
+                .modulename = rt_VarTable_top_proc()->modulename,
                 .procname = oprnd.variable,
             },
             .type = rt_DATA_TYPE_PROC
@@ -59,7 +59,7 @@ rt_Data_t *rt_eval_Expression_operand(
 rt_eval_Expression_operand_return:
     /* copy accumulator value into temporary memory as accumulator gets
        modified when evaluating other operands */
-    *oprnd_data = *RT_ACC_DATA;
+    *oprnd_data = *RT_VTABLE_ACC;
     return rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : oprnd_data;
 }
 

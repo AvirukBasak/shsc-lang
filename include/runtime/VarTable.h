@@ -1,24 +1,53 @@
 #ifndef RT_VARTABLE_H
 #define RT_VARTABLE_H
 
+#include <ctype.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 #include "ast.h"
 #include "runtime/data/Data.h"
 
-#define _rt_TMPVAR_CNT (32)
-#define RT_ARGS_LIST_VARNAME "args"
-#define RT_DEFAULT_CALL_STACK_LIMIT (1000)
-#define RT_ACC_DATA (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
+#define _RT_VTABLE_TMPVAR_CNT     (32)
+#define RT_VTABLE_ARGSVAR         "args"
+#define RT_VTABLE_CALLSTACK_LIMIT (1000)
+#define RT_VTABLE_ACC             (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
+
+
+typedef rt_DataMap_t *rt_VarTable_Scope_t;
+typedef struct rt_VarTable_proc_t rt_VarTable_proc_t;
+typedef struct rt_VarTable_t rt_VarTable_t;
+typedef struct rt_VarTable_Acc_t rt_VarTable_Acc_t;
+
+
+/** the VarTable is basically the call stack */
+struct rt_VarTable_t {
+    rt_VarTable_proc_t *procs;
+    int64_t curr_proc_ptr;
+    size_t capacity;
+};
+
+/** the scopes stack of a procedure */
+struct rt_VarTable_proc_t {
+    rt_VarTable_Scope_t *scopes;
+    int64_t curr_scope_ptr;
+    size_t capacity;
+    /* info for stack trace */
+    const ast_Identifier_t *modulename;
+    const ast_Identifier_t *procname;
+    const char *filepath;
+    int current_line;
+};
 
 /** accumulator stores procedure return values
     and also the address from which the value was obtained
     if the value is temporary (no place in variable), it's set
     to .adr = NULL */
-typedef struct {
+struct rt_VarTable_Acc_t{
     rt_Data_t val;
     rt_Data_t *adr;
-} rt_VarTable_Acc_t;
+};
 
 /* few globally defined variables */
 extern
@@ -58,7 +87,10 @@ void rt_VarTable_acc_setval(rt_Data_t val);
 void rt_VarTable_acc_setadr(rt_Data_t *adr);
 
 /** push a new function scope into the stack and store the procedure name and return address */
-void rt_VarTable_push_proc(const char *procname);
+void rt_VarTable_push_proc(const ast_Identifier_t *modulename, const ast_Identifier_t *procname, const char *filepath);
+
+/** get the procedure from the top of the stack */
+rt_VarTable_proc_t *rt_VarTable_top_proc(void);
 
 /** pop the procedure off the stack, return the return address and clear the scope from memory */
 rt_Data_t rt_VarTable_pop_proc(void);

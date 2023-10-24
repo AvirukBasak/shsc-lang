@@ -18,12 +18,12 @@ void rt_eval_AssociativeList(const ast_AssociativeList_t *assoc_list)
     rt_DataMap_t *new_map = rt_DataMap_init();
     while (ptr) {
         rt_eval_Literal(ptr->key);
-        char *key_cstr = rt_Data_tostr(*RT_ACC_DATA);
+        char *key_cstr = rt_Data_tostr(*RT_VTABLE_ACC);
         /* note that the rt_Data_t string returned above is not
            manually cleaned coz it's reference counted l, and is
            freed when accumulator value is changed below */
         rt_eval_Expression(ptr->value);
-        rt_DataMap_insert(new_map, key_cstr, *RT_ACC_DATA);
+        rt_DataMap_insert(new_map, key_cstr, *RT_VTABLE_ACC);
         ptr = ptr->assoc_list;
         free(key_cstr);
     }

@@ -5,19 +5,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ast/api.h"
 #include "errcodes.h"
 #include "runtime.h"
 #include "runtime/io.h"
+#include "runtime/VarTable.h"
 
-#define RT_THROW_PRINT_FN      "%s:%s: "
-#define RT_THROW_DONT_PRINT_FN ""
+#define RT_IO_TRACE_LIMIT         (100)
+#define RT_IO_THROW_PRINT_FN      "%s:%s"
+#define RT_IO_THROW_DONT_PRINT_FN ""
 
 void rt_throw(const char *fmt, ...)
 {
-    fprintf(stderr, "shsc: " RT_THROW_DONT_PRINT_FN "%s:%d: ",
-        /* rt_modulename_get()->identifier_name, */
-            /* rt_procname_get()->identifier_name, */
-                rt_currfile, rt_currline);
+    fprintf(stderr, "shsc: " RT_IO_THROW_DONT_PRINT_FN "%s:%d: ",
+        /* rt_VarTable_top_proc()->modulename->identifier_name, */
+        /* rt_VarTable_top_proc()->procname->identifier_name, */
+        rt_VarTable_top_proc()->filepath,
+        rt_VarTable_top_proc()->current_line);
     fflush(stderr);
     va_list args;
     va_start(args, fmt);
@@ -25,6 +29,23 @@ void rt_throw(const char *fmt, ...)
     va_end(args);
     fflush(stderr);
     fprintf(stderr, "\n");
+
+    /* print stack trace */
+    int trace_lim_i = 0;
+    while (rt_VarTable_top_proc() && trace_lim_i++ < RT_IO_TRACE_LIMIT) {
+        fprintf(stderr, "    at " RT_IO_THROW_PRINT_FN " (%s:%d)\n",
+            rt_VarTable_top_proc()->modulename->identifier_name,
+            rt_VarTable_top_proc()->procname->identifier_name,
+            rt_VarTable_top_proc()->filepath,
+            rt_VarTable_top_proc()->current_line
+        );
+        rt_VarTable_pop_proc();
+    }
+    if (trace_lim_i >= RT_IO_TRACE_LIMIT) {
+        fprintf(stderr, "    ...\n");
+    }
+    fflush(stderr);
+
 #ifdef DEBUG
     abort();
 #else
