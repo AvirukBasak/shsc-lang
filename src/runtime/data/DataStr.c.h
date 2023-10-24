@@ -40,6 +40,8 @@ void rt_DataStr_destroy(rt_DataStr_t **ptr)
 {
     if (!ptr || !*ptr) return;
     rt_DataList_destroy(&(*ptr)->var);
+    /* free wrapper only if the list inside was freed and nulled */
+    if ((*ptr)->var) return;
     free(*ptr);
     *ptr = NULL;
 }

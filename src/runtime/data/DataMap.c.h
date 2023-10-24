@@ -99,8 +99,13 @@ rt_Data_t *rt_DataMap_getref_errnull(const rt_DataMap_t *mp, const char *key)
 rt_Data_t *rt_DataMap_getref(const rt_DataMap_t *mp, const char *key)
 {
     rt_Data_t *data = rt_DataMap_getref_errnull(mp, key);
-    if (!data) rt_throw("map has no key '%s'", key);
-    return NULL;
+    if (!data) {
+        /* for the absent key insert null data into the map
+           WARNING: using explicit cast to non-const */
+        rt_DataMap_insert((rt_DataMap_t*) mp, key, rt_Data_null());
+        data = rt_DataMap_getref_errnull(mp, key);
+    }
+    return data;
 }
 
 void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
