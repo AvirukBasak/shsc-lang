@@ -56,7 +56,11 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true);
     if (code) {
         /* call user defined function */
-        rt_eval_Statements(code);
+        rt_ControlStatus_t ctrl = rt_eval_Statements(code);
+        if (ctrl == rt_CTRL_BREAK)
+            rt_throw("unexpected `break` statement outside loop");
+        if (ctrl == rt_CTRL_CONTINUE)
+            rt_throw("unexpected `continue` statement outside loop");
     } else {
         /* call in-built function */
         rt_VarTable_acc_setval(fn_FunctionsList_call(fn));
