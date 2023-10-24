@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "ast.h"
 #include "ast/api.h"
 #include "ast/nodes/enums.h"
 #include "io.h"
@@ -17,24 +18,6 @@
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 #include "tlib/khash/khash.h"
-
-typedef rt_DataMap_t *rt_VarTable_Scope_t;
-
-
-/** the scopes stack of a procedure */
-typedef struct {
-    rt_VarTable_Scope_t *scopes;
-    int64_t curr_scope_ptr;
-    size_t capacity;
-} rt_VarTable_proc_t;
-
-
-/** the VarTable is basically the call stack */
-typedef struct {
-    rt_VarTable_proc_t *procs;
-    int64_t curr_proc_ptr;
-    size_t capacity;
-} rt_VarTable_t;
 
 
 /** gloablly allocated stack pointer */
@@ -167,8 +150,11 @@ void rt_VarTable_acc_setadr(rt_Data_t *adr)
 }
 
 
-void rt_VarTable_push_proc(const char *procname)
-{
+void rt_VarTable_push_proc(
+    const ast_Identifier_t *modulename,
+    const ast_Identifier_t *procname,
+    const char *filepath
+) {
     /* check if the stack is already initialized */
     if (rt_vtable == NULL) {
         rt_vtable = (rt_VarTable_t*) malloc(sizeof(rt_VarTable_t));
@@ -191,6 +177,10 @@ void rt_VarTable_push_proc(const char *procname)
     rt_vtable->procs[rt_vtable->curr_proc_ptr].scopes = NULL;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].curr_scope_ptr = -1;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].capacity = 0;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].modulename = modulename;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].procname = procname;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].filepath = filepath;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].current_line = -1;
     /* push a new local scope */
     rt_VarTable_push_scope();
 }
