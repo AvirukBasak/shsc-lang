@@ -1,11 +1,11 @@
 proc main start
     var s = "hello world"
     var l = [1, 2, 3, 4, 5]
-    var m = {"a": 1, "b": 2, "0": 7}
+    var m = {"a": 1, "b": 2}
 
     s[3] = "x"
     l[3] = 42
-    m[0] = 100
+    # m[0] = 100
 
     for i from 0 to it:len(s) do
         io:print(s[i], lf)
