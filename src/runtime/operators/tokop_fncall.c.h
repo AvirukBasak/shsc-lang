@@ -46,7 +46,10 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     if (code) {
         currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
     } else if (fn != fn_UNDEFINED) {
-        currfile = rt_VarTable_top_proc()->filepath;
+        currfile = "built-in";
+    } else {
+        rt_throw("undefined procedure '%s:%s'",
+            module->identifier_name, proc->identifier_name);
     }
     rt_VarTable_push_proc(module, proc, currfile);
     /* store fn args into agrs location */
@@ -55,10 +58,7 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
         /* call user defined function */
         rt_eval_Statements(code);
     } else {
-        /* attempt to call in-built function */
-        if (fn == fn_UNDEFINED)
-            rt_throw("undefined procedure '%s:%s'",
-                module->identifier_name, proc->identifier_name);
+        /* call in-built function */
         rt_VarTable_acc_setval(fn_FunctionsList_call(fn));
     }
     rt_VarTable_pop_proc();
