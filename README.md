@@ -101,6 +101,7 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `map:find`
     - [ ] `map:keys`
 - [ ] Operators
+- [x] Error stack traces
 
 ### List File
  - Each line of the list file has a single file path
