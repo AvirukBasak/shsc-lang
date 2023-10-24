@@ -11,8 +11,9 @@
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 
-#define RT_THROW_PRINT_FN      "%s:%s: "
-#define RT_THROW_DONT_PRINT_FN ""
+#define RT_IO_TRACE_LIMIT         (100)
+#define RT_IO_THROW_PRINT_FN      "%s:%s"
+#define RT_IO_THROW_DONT_PRINT_FN ""
 
 void rt_throw(const char *fmt, ...)
 {
