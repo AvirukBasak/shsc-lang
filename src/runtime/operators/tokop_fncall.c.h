@@ -40,21 +40,15 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     /* get a descriptor to in-built function */
     const fn_FunctionDescriptor_t fn = fn_FunctionsList_getfn(
         module->identifier_name, proc->identifier_name);
-    /* backup metadata on current module and function */
-    const char *currfile_bkp = rt_currfile;
-    const ast_Identifier_t *currmodule_bkp = rt_current_module;
-    const ast_Identifier_t *currproc_bkp = rt_current_proc;
+
+    const char *currfile = NULL;
     /* update metadata to new module and function */
     if (code) {
-        rt_currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
-        rt_current_module = module;
-        rt_current_proc = proc;
+        currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
     } else if (fn != fn_UNDEFINED) {
-        /* rt_currfile = rt_currfile; */
-        rt_current_module = module;
-        rt_current_proc = proc;
+        currfile = rt_VarTable_proc_top()->filepath;
     }
-    rt_VarTable_push_proc(proc, module, rt_currfile);
+    rt_VarTable_push_proc(module, proc, currfile);
     /* store fn args into agrs location */
     rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true);
     if (code) {
@@ -68,10 +62,6 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
         rt_VarTable_acc_setval(fn_FunctionsList_call(fn));
     }
     rt_VarTable_pop_proc();
-    /* restore metadata to previous module and function */
-    rt_currfile = currfile_bkp;
-    rt_current_module = currmodule_bkp;
-    rt_current_proc = currproc_bkp;
 }
 
 #else
