@@ -1,7 +1,11 @@
 module main
 
+proc input start
+    return io:input($0, $1)
+end
+
 proc main start
-    var inp = io:input("Enter a number: ", i64)
+    var inp = input("Enter a number: ", i64)
     var res = factorial(inp)
     io:print(f"result = {res}\n")
 end
