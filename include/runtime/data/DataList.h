@@ -17,6 +17,7 @@ int64_t rt_DataList_length(const rt_DataList_t *lst);
 void rt_DataList_copy(rt_DataList_t *lst);
 void rt_DataList_destroy(rt_DataList_t **ptr);
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var);
+rt_Data_t *rt_DataList_getref_errnull(const rt_DataList_t *lst, int64_t idx);
 /** data should be updated only by calling
     `void rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)`
     on the returned data pointer, that'll take care of reference counts */
