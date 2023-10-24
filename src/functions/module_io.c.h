@@ -61,8 +61,8 @@ rt_Data_t fn_io_input()
         char *s = rt_Data_tostr(type_);
         rt_throw(
             "input: invalid type parameter: '%s'\n"
-            "  valid parameters are bul, chr, i64, f64 or str\n"
-            "  respective values are %d, %d, %d, %d or %d", s,
+            "valid parameters are bul, chr, i64, f64 or str\n"
+            "respective values are %d, %d, %d, %d or %d", s,
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
         free(s);
     }
@@ -70,8 +70,8 @@ rt_Data_t fn_io_input()
     if (!fn_io_input_type_isvalid(type_.data.i64))
         rt_throw(
             "input: invalid type parameter\n"
-            "  valid parameters are bul, chr, i64, f64 or str\n"
-            "  respective values are %d, %d, %d, %d or %d",
+            "valid parameters are bul, chr, i64, f64 or str\n"
+            "respective values are %d, %d, %d, %d or %d",
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
     rt_Data_print(prompt);
     switch (type) {
@@ -108,8 +108,8 @@ rt_Data_t fn_io_input()
         }
         default: rt_throw(
             "input: invalid type parameter\n"
-            "  valid parameters are bul, chr, i64, f64 or str\n"
-            "  respective values are %d, %d, %d, %d or %d",
+            "valid parameters are bul, chr, i64, f64 or str\n"
+            "respective values are %d, %d, %d, %d or %d",
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
             break;
     }
