@@ -185,7 +185,7 @@ void rt_VarTable_push_proc(
     rt_VarTable_push_scope();
 }
 
-rt_VarTable_proc_t *rt_VarTable_proc_top(void)
+rt_VarTable_proc_t *rt_VarTable_top_proc(void)
 {
     if (rt_vtable == NULL || rt_vtable->curr_proc_ptr == -1)
         return NULL;

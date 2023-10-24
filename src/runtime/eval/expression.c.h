@@ -30,7 +30,7 @@ rt_Data_t *rt_eval_Expression_operand(
     if (is_lhs && op == TOKOP_FNCALL && oprnd_type == EXPR_TYPE_IDENTIFIER) {
         rt_VarTable_acc_setval((rt_Data_t) {
             .data.proc = {
-                .modulename = rt_VarTable_proc_top()->modulename,
+                .modulename = rt_VarTable_top_proc()->modulename,
                 .procname = oprnd.variable,
             },
             .type = rt_DATA_TYPE_PROC

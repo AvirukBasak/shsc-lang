@@ -46,7 +46,7 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     if (code) {
         currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
     } else if (fn != fn_UNDEFINED) {
-        currfile = rt_VarTable_proc_top()->filepath;
+        currfile = rt_VarTable_top_proc()->filepath;
     }
     rt_VarTable_push_proc(module, proc, currfile);
     /* store fn args into agrs location */

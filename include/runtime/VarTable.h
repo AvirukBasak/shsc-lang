@@ -90,7 +90,7 @@ void rt_VarTable_acc_setadr(rt_Data_t *adr);
 void rt_VarTable_push_proc(const ast_Identifier_t *modulename, const ast_Identifier_t *procname, const char *filepath);
 
 /** get the procedure from the top of the stack */
-rt_VarTable_proc_t *rt_VarTable_proc_top(void);
+rt_VarTable_proc_t *rt_VarTable_top_proc(void);
 
 /** pop the procedure off the stack, return the return address and clear the scope from memory */
 rt_Data_t rt_VarTable_pop_proc(void);
