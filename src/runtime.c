@@ -47,19 +47,6 @@ int rt_exec(int argc, char **argv)
     return rt_VarTable_pop_proc().data.i64;
 }
 
-const ast_Identifier_t *rt_modulename_get(void)
-{
-    if (!rt_current_module) rt_current_module = ast_util_ModuleAndProcTable_idfmain();
-    return rt_current_module;
-}
-
-const ast_Identifier_t *rt_procname_get(void)
-{
-    if (!rt_current_proc) rt_current_proc = ast_util_ModuleAndProcTable_idfmain();
-    return rt_current_proc;
-}
-
-
 #include "runtime/data/Data.c.h"
 #include "runtime/io.c.h"
 #include "runtime/eval/assignment.c.h"
