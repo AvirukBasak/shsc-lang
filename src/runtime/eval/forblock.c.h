@@ -108,7 +108,7 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
                         if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
                             rt_Data_i64(i), true);
                         rt_VarTable_create(for_block->val->identifier_name,
-                            rt_Data_chr(*rt_DataStr_getref(iterable.data.str, i)), true);
+                            *rt_DataStr_getref(iterable.data.str, i), true);
                         break;
                     default:
                         rt_throw("not a for loop iterable type: '%s'", rt_Data_typename(iterable));
