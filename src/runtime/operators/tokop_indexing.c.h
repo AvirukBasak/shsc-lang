@@ -12,20 +12,24 @@
 
 void rt_op_indexing(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
-    if (!rhs || rhs->type != rt_DATA_TYPE_I64)
-        rt_throw("index should evaluate to an `i64`");
     if (lhs->type != rt_DATA_TYPE_LST && lhs->type != rt_DATA_TYPE_STR && lhs->type != rt_DATA_TYPE_MAP)
         rt_throw("cannot index type '%s'", rt_Data_typename(*lhs));
     switch (lhs->type) {
-        case rt_DATA_TYPE_LST:
-            rt_VarTable_acc_setadr(
-                rt_DataList_getref(lhs->data.lst, rhs->data.i64));
-            break;
         case rt_DATA_TYPE_STR:
+            if (!rhs || rhs->type != rt_DATA_TYPE_I64)
+                rt_throw("index should evaluate to `i64` for type `str`");
             rt_VarTable_acc_setadr(
                 rt_DataStr_getref(lhs->data.str, rhs->data.i64));
             break;
+        case rt_DATA_TYPE_LST:
+            if (!rhs || rhs->type != rt_DATA_TYPE_I64)
+                rt_throw("index should evaluate to `i64` for type `lst`");
+            rt_VarTable_acc_setadr(
+                rt_DataList_getref(lhs->data.lst, rhs->data.i64));
+            break;
         case rt_DATA_TYPE_MAP: {
+            if (!rhs)
+                rt_throw("index should evaluate to `str` for type `map`");
             char *key = rt_Data_tostr(*rhs);
             rt_VarTable_acc_setadr(
                 rt_DataMap_getref(lhs->data.mp, key));
