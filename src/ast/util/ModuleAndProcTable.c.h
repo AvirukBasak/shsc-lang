@@ -98,7 +98,7 @@ void ast_util_ModuleAndProcTable_add(const ast_Identifier_t *module_name, const 
 const ast_util_ModuleAndProcTable_procedure_t ast_util_ModuleAndProcTable_get(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
     if (!ast_util_mptable)
-        io_errndie("ast_util_ModuleAndProcTable_get:" ERR_MSG_NULLPTR " for `ast_util_mptable`");
+        io_errndie("undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
     else if (!module_name)
         io_errndie("ast_util_ModuleAndProcTable_get:" ERR_MSG_NULLPTR " for `module_name`");
     else if (!proc_name)
