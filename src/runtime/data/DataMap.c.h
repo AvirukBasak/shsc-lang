@@ -100,7 +100,7 @@ rt_Data_t *rt_DataMap_getref(const rt_DataMap_t *mp, const char *key)
 {
     rt_Data_t *data = rt_DataMap_getref_errnull(mp, key);
     if (!data) rt_throw("map has no key '%s'", key);
-    return NULL;
+    return data;
 }
 
 void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
