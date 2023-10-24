@@ -46,7 +46,7 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     if (code) {
         currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
     } else if (fn != fn_UNDEFINED) {
-        currfile = "built-in";
+        currfile = module->identifier_name;
     } else {
         rt_throw("undefined procedure '%s:%s'",
             module->identifier_name, proc->identifier_name);
