@@ -21,17 +21,17 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
         case FORBLOCK_TYPE_RANGE: {
             /* calculate start, end and by */
             rt_eval_Expression(for_block->it.range.start);
-            rt_Data_t start = *RT_ACC_DATA;
+            rt_Data_t start = *RT_VTABLE_ACC;
             if (start.type != rt_DATA_TYPE_I64)
                 rt_throw("for loop range start should be an i64, not '%s'", rt_Data_typename(start));
             rt_eval_Expression(for_block->it.range.end);
-            rt_Data_t end = *RT_ACC_DATA;
+            rt_Data_t end = *RT_VTABLE_ACC;
             if (end.type != rt_DATA_TYPE_I64)
                 rt_throw("for loop range end should be an i64, not '%s'", rt_Data_typename(start));
             rt_Data_t by = rt_Data_null();
             if (for_block->it.range.by) {
                 rt_eval_Expression(for_block->it.range.by);
-                by = *RT_ACC_DATA;
+                by = *RT_VTABLE_ACC;
                 if (by.type != rt_DATA_TYPE_I64)
                     rt_throw("for loop by value should be an i64, not '%s'", rt_Data_typename(start));
             }
@@ -61,7 +61,7 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
         case FORBLOCK_TYPE_LIST: {
             /* convert expression to a data list */
             rt_eval_Expression(for_block->it.iterable);
-            rt_Data_t iterable = *RT_ACC_DATA;
+            rt_Data_t iterable = *RT_VTABLE_ACC;
             rt_Data_copy(&iterable);
             int64_t length = 0;
             switch (iterable.type) {

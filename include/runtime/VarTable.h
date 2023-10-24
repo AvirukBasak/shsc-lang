@@ -9,10 +9,10 @@
 #include "ast.h"
 #include "runtime/data/Data.h"
 
-#define _rt_TMPVAR_CNT (32)
-#define RT_ARGS_LIST_VARNAME "args"
-#define RT_DEFAULT_CALL_STACK_LIMIT (1000)
-#define RT_ACC_DATA (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
+#define _RT_VTABLE_TMPVAR_CNT     (32)
+#define RT_VTABLE_ARGSVAR         "args"
+#define RT_VTABLE_CALLSTACK_LIMIT (1000)
+#define RT_VTABLE_ACC             (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
 
 
 typedef rt_DataMap_t *rt_VarTable_Scope_t;

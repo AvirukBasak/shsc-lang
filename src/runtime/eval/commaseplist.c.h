@@ -17,7 +17,7 @@ void rt_eval_CommaSepList(const ast_CommaSepList_t *comma_list)
     rt_DataList_t *new_list = rt_DataList_init();
     while (ptr) {
         rt_eval_Expression(ptr->expression);
-        rt_DataList_append(new_list, *RT_ACC_DATA);
+        rt_DataList_append(new_list, *RT_VTABLE_ACC);
         ptr = ptr->comma_list;
     }
     rt_VarTable_acc_setval(
