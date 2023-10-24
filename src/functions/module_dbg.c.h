@@ -30,7 +30,7 @@ rt_Data_t fn_dbg_refcnt()
     switch (data.type) {
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:
-            return rt_Data_i64(data.data.str->rc);
+            return rt_Data_i64(data.data.str->var->rc);
         case rt_DATA_TYPE_LST:
             return rt_Data_i64(data.data.lst->rc);
         case rt_DATA_TYPE_MAP:

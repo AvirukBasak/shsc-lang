@@ -65,12 +65,18 @@ void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var)
     lst->var[lst->length++] = var;
 }
 
-rt_Data_t *rt_DataList_getref(const rt_DataList_t *lst, int64_t idx)
+rt_Data_t *rt_DataList_getref_errnull(const rt_DataList_t *lst, int64_t idx)
 {
     if (idx >= 0 && idx < lst->length)
         return &lst->var[idx];
-    else rt_throw("list out of bounds for index '%" PRId64 "'", idx);
     return NULL;
+}
+
+rt_Data_t *rt_DataList_getref(const rt_DataList_t *lst, int64_t idx)
+{
+    rt_Data_t *data = rt_DataList_getref_errnull(lst, idx);
+    if (!data) rt_throw("list out of bounds for index '%" PRId64 "'", idx);
+    return data;
 }
 
 void rt_DataList_del_index(rt_DataList_t *lst, int64_t idx)

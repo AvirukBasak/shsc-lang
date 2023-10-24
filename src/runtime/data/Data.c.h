@@ -218,11 +218,11 @@ bool rt_Data_tobool(const rt_Data_t var)
             return !!var.data.f64;
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:
-            return !!var.data.str->var && !!var.data.str->length;
+            return !!var.data.str->var && !!rt_DataStr_length(var.data.str);
         case rt_DATA_TYPE_LST:
-            return !!var.data.lst->var && !!var.data.lst->length;
+            return !!var.data.lst->var && !!rt_DataList_length(var.data.lst);
         case rt_DATA_TYPE_MAP:
-            return !!var.data.mp->data_map && !!var.data.mp->length;
+            return !!var.data.mp->data_map && !!rt_DataMap_length(var.data.mp);
         case rt_DATA_TYPE_ANY:
             return !!var.data.any;
         default:
@@ -260,10 +260,14 @@ char *rt_Data_tostr(const rt_Data_t var)
             return str;
         }
         case rt_DATA_TYPE_STR: {
-            return strdup(var.data.str->var);
+            return rt_DataStr_tostr(var.data.str);
         }
         case rt_DATA_TYPE_INTERP_STR: {
-            return rt_Data_interp_str_parse(var.data.str->var);
+            char *istr = rt_DataStr_tostr(var.data.str);
+            char *res_str = rt_Data_interp_str_parse(istr);
+            free(istr);
+            istr = NULL;
+            return res_str;
         }
         case rt_DATA_TYPE_LST: {
             return rt_DataList_tostr(var.data.lst);

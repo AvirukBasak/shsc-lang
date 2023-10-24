@@ -34,7 +34,7 @@ rt_Data_t fn_io_print()
     int bytes = 0;
     for (int i = 0; i < rt_DataList_length(args.data.lst); ++i) {
         const rt_Data_t data = *rt_DataList_getref(args.data.lst, i);
-        if (rt_Data_isnull(data)) continue;
+        /* if (rt_Data_isnull(data)) continue; */
         /* print a space before data conditions:
            - no space before 1st element
            - no space before `lf` */
