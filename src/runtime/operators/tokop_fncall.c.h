@@ -5,6 +5,7 @@
 #include "ast/api.h"
 #include "functions.h"
 #include "io.h"
+#include "runtime.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataList.h"
 #include "runtime/eval.h"
@@ -53,7 +54,7 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
         rt_current_module = module;
         rt_current_proc = proc;
     }
-    rt_VarTable_push_proc(proc->identifier_name);
+    rt_VarTable_push_proc(proc, module, rt_currfile);
     /* store fn args into agrs location */
     rt_VarTable_create(RT_ARGS_LIST_VARNAME, args, true);
     if (code) {
