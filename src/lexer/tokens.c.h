@@ -76,11 +76,11 @@ const char *lex_Token_getcode(lex_Token_t code)
         case TOKEN_TILDE:                 return "TOKEN_TILDE";
         case TOKEN_NEWLINE:               return "TOKEN_NEWLINE";
         /* special operations */
-        case TOKOP_NOP:                    return "TOKOP_NOP";
-        case TOKOP_FNCALL:                 return "TOKOP_FNCALL";
-        case TOKOP_INDEXING:               return "TOKOP_INDEXING";
-        case TOKOP_TERNARY_COND:           return "TOKOP_TERNARY_COND";
-        case TOKOP_FNARGS_INDEXING:        return "TOKOP_FNARGS_INDEXING";
+        case TOKOP_NOP:                   return "TOKOP_NOP";
+        case TOKOP_FNCALL:                return "TOKOP_FNCALL";
+        case TOKOP_INDEXING:              return "TOKOP_INDEXING";
+        case TOKOP_TERNARY_COND:          return "TOKOP_TERNARY_COND";
+        case TOKOP_FNARGS_INDEXING:       return "TOKOP_FNARGS_INDEXING";
         /* keywords */
         case TOKEN_KWD_MODULE:            return "TOKEN_KWD_MODULE";
         case TOKEN_KWD_PROC:              return "TOKEN_KWD_PROC";
@@ -96,10 +96,12 @@ const char *lex_Token_getcode(lex_Token_t code)
         case TOKEN_KWD_CONTINUE:          return "TOKEN_KWD_CONTINUE";
         case TOKEN_KWD_FOR:               return "TOKEN_KWD_FOR";
         case TOKEN_KWD_FROM:              return "TOKEN_KWD_FROM";
+        case TOKEN_KWD_IN:                return "TOKEN_KWD_IN";
         case TOKEN_KWD_TO:                return "TOKEN_KWD_TO";
         case TOKEN_KWD_BY:                return "TOKEN_KWD_BY";
         case TOKEN_KWD_DO:                return "TOKEN_KWD_DO";
         case TOKEN_KWD_VAR:               return "TOKEN_KWD_VAR";
+        case TOKEN_KWD_CONST:             return "TOKEN_KWD_CONST";
         case TOKEN_KWD_PASS:              return "TOKEN_KWD_PASS";
         case TOKEN_KWD_RETURN:            return "TOKEN_KWD_RETURN";
         /* identifier */
@@ -120,7 +122,9 @@ const char *lex_Token_getcode(lex_Token_t code)
         /* default cases */
         case TOKEN_EOF:                   return "TOKEN_EOF";
         case TOKEN_INVALID:               return "TOKEN_INVALID";
-        default:                           return "INTERNAL";
+        case YYEMPTY:                     return "YYEMPTY";
+        case YYerror:                     return "YYerror";
+        case YYUNDEF:                     return "YYUNDEF";
     }
     return "INTERNAL";
 }
@@ -197,11 +201,11 @@ const char *lex_Token_getsymbol(lex_Token_t code)
         case TOKEN_TILDE:                 return "~";
         case TOKEN_NEWLINE:               return "\\n";
         /* special operations */
-        case TOKOP_NOP:                    return "NOP";
-        case TOKOP_FNCALL:                 return "()";
-        case TOKOP_INDEXING:               return "[]";
-        case TOKOP_TERNARY_COND:           return "?:";
-        case TOKOP_FNARGS_INDEXING:        return "$[]";
+        case TOKOP_NOP:                   return "NOP";
+        case TOKOP_FNCALL:                return "()";
+        case TOKOP_INDEXING:              return "[]";
+        case TOKOP_TERNARY_COND:          return "?:";
+        case TOKOP_FNARGS_INDEXING:       return "$[]";
         /* keywords */
         case TOKEN_KWD_MODULE:            return "module";
         case TOKEN_KWD_PROC:              return "proc";
@@ -217,10 +221,12 @@ const char *lex_Token_getsymbol(lex_Token_t code)
         case TOKEN_KWD_CONTINUE:          return "continue";
         case TOKEN_KWD_FOR:               return "for";
         case TOKEN_KWD_FROM:              return "from";
+        case TOKEN_KWD_IN:                return "in";
         case TOKEN_KWD_TO:                return "to";
         case TOKEN_KWD_BY:                return "by";
         case TOKEN_KWD_DO:                return "do";
         case TOKEN_KWD_VAR:               return "var";
+        case TOKEN_KWD_CONST:             return "const";
         case TOKEN_KWD_PASS:              return "pass";
         case TOKEN_KWD_RETURN:            return "return";
         /* identifier */
@@ -241,7 +247,9 @@ const char *lex_Token_getsymbol(lex_Token_t code)
         /* default cases */
         case TOKEN_EOF:                   return "end-of-file";
         case TOKEN_INVALID:               return "invalid token";
-        default:                           return "<internal>";
+        case YYEMPTY:                     return "<YYEMPTY>";
+        case YYerror:                     return "<YYerror>";
+        case YYUNDEF:                     return "<YYUNDEF>";
     }
     return "<internal>";
 }

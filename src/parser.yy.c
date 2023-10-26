@@ -2613,16 +2613,15 @@ void parse_interpret(FILE *f)
         "Enter your code and when done, press CTRL+D\n"
         "%s", VERSION, ">> "
     );
-#ifdef LEX_DEBUG
-    lex_Token_t tok = lex_Token_getnext(yyin);
-    while (tok != TOKEN_EOF) {
-        printf("%s: %s\n", lex_Token_getcode(tok), lex_Token_getsymbol(tok));
-        tok = lex_Token_getnext(f);
+    if (global_lex_dbg) {
+        lex_Token_t tok = lex_Token_getnext(yyin);
+        while (tok != TOKEN_EOF) {
+            printf("%s: %s\n", lex_Token_getcode(tok), lex_Token_getsymbol(tok));
+            tok = lex_Token_getnext(f);
+        }
+        printf("%s\n", lex_Token_getcode(tok));
     }
-    printf("%s\n", lex_Token_getcode(tok));
-#else
-    yyparse();
-#endif
+    else yyparse();
     lex_Buffer_free();
 }
 
@@ -2633,5 +2632,9 @@ void parse_throw(const char *msg, bool on)
     if (lex_currtok == TOKEN_NEWLINE) --line;
     if (on) io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_Token_getsymbol(lex_currtok));
     else io_print_srcerr(line, lex_char_no, "parsing error: %s", msg);
+#ifdef DEBUG
+    abort();
+#else
     exit(ERR_PARSER);
+#endif
 }

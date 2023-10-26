@@ -90,6 +90,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
             });
             return;
         }
+        /* using default here coz there's a lot of cases */
         default: break;
     }
 
@@ -161,7 +162,8 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKOP_INDEXING:                           rt_op_indexing(lhs, rhs); break;
         case TOKOP_NOP:                                     rt_op_nop(lhs); break;
         case TOKOP_TERNARY_COND:                   rt_op_ternary_cond(lhs, rhs, condition); break;
-        /* stuff that doesn't form an operation */
+        /* using default here coz there's a lot of cases
+           the following are not operators */
         default:
             io_errndie("rt_eval_Expression: invalid operation '%s'",
                 lex_Token_getcode(expr->op));

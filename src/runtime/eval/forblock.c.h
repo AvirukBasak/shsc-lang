@@ -74,7 +74,13 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
                 case rt_DATA_TYPE_MAP:
                     length = rt_DataMap_length(iterable.data.mp);
                     break;
-                default:
+                case rt_DATA_TYPE_BUL:
+                case rt_DATA_TYPE_CHR:
+                case rt_DATA_TYPE_I64:
+                case rt_DATA_TYPE_F64:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_ANY:
+                case rt_DATA_TYPE_PROC:
                     rt_throw("not a for loop iterable type: '%s'", rt_Data_typename(iterable));
             }
             if (iterable.type == rt_DATA_TYPE_MAP) {
@@ -110,7 +116,14 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
                         rt_VarTable_create(for_block->val->identifier_name,
                             *rt_DataStr_getref(iterable.data.str, i), true);
                         break;
-                    default:
+                    case rt_DATA_TYPE_BUL:
+                    case rt_DATA_TYPE_CHR:
+                    case rt_DATA_TYPE_I64:
+                    case rt_DATA_TYPE_F64:
+                    case rt_DATA_TYPE_INTERP_STR:
+                    case rt_DATA_TYPE_ANY:
+                    case rt_DATA_TYPE_MAP:
+                    case rt_DATA_TYPE_PROC:
                         rt_throw("not a for loop iterable type: '%s'", rt_Data_typename(iterable));
                 }
                 rt_ControlStatus_t ctrl = rt_eval_Statements(for_block->statements);

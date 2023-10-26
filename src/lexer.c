@@ -61,6 +61,7 @@ lex_Token_t yylex(void)
         case TOKEN_HEXINT_LITERAL:
             yylval.literal_i64 = parse_int(lex_Buffer_getstr(), 16);
             break;
+        /* using default here coz there's a lot of cases */
         default:
             yylval.tok = token;
             break;
@@ -142,6 +143,16 @@ void lex_throw(const char *msg)
     if (!msg) abort();
     int line = lex_line_no;
     /* if (lex_currtok == TOKEN_NEWLINE) --line; */
-    io_print_srcerr(line, lex_char_no, "lexing error: after token '%s': %s", lex_Token_getsymbol(lex_currtok), msg);
+    io_print_srcerr(
+        line,
+        lex_char_no,
+        "lexing error: after token '%s': %s",
+        lex_Token_getsymbol(lex_currtok),
+        msg
+    );
+#ifdef DEBUG
+    abort();
+#else
     exit(ERR_LEXER);
+#endif
 }

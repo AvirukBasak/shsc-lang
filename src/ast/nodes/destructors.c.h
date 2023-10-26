@@ -235,7 +235,12 @@ void ast_Literal_destroy(ast_Literal_t **ptr)
         case DATA_TYPE_MAP:
             ast_AssociativeList_destroy(&literal->data.mp);
             break;
-        default: break;
+        case DATA_TYPE_BUL:
+        case DATA_TYPE_CHR:
+        case DATA_TYPE_I64:
+        case DATA_TYPE_F64:
+        case DATA_TYPE_ANY:
+            break;
     }
     free(literal);
     *ptr = NULL;
