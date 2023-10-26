@@ -24,7 +24,12 @@ rt_Data_t fn_it_len()
             return rt_Data_i64(rt_DataList_length(data.data.lst));
         case rt_DATA_TYPE_MAP:
             return rt_Data_i64(rt_DataMap_length(data.data.mp));
-        default:
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_PROC:
             return rt_Data_i64(1);
     }
     return rt_Data_i64(0);

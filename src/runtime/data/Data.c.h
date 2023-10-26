@@ -113,7 +113,12 @@ void rt_Data_copy(rt_Data_t *var)
         case rt_DATA_TYPE_MAP:
             rt_DataMap_copy(var->data.mp);
             break;
-        default:
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_PROC:
             break;
     }
 }
@@ -138,9 +143,12 @@ void rt_Data_destroy(rt_Data_t *var)
             if (var->data.any) free(var->data.any);
             var->data.any = NULL;
             *var = rt_Data_null();
-            break;
-        default:
-            /* assigning non-composite data to rt_VarTable_null
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_PROC:
+            /* assigning non-composite data to rt_VarTable_null on destroy
                corrupts data in case *var points to a rt_ global var */
             break;
     }
@@ -225,8 +233,8 @@ bool rt_Data_tobool(const rt_Data_t var)
             return !!var.data.mp->data_map && !!rt_DataMap_length(var.data.mp);
         case rt_DATA_TYPE_ANY:
             return !!var.data.any;
-        default:
-            return false;
+        case rt_DATA_TYPE_PROC:
+            return !!var.data.proc.procname && !!var.data.proc.modulename;
     }
 }
 

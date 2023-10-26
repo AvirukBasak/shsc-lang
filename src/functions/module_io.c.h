@@ -106,13 +106,16 @@ rt_Data_t fn_io_input()
             free(val);
             break;
         }
-        default: rt_throw(
+        case rt_DATA_TYPE_INTERP_STR:
+        case rt_DATA_TYPE_LST:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_MAP:
+        case rt_DATA_TYPE_PROC: rt_throw(
             "input: invalid type parameter\n"
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d",
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
-            break;
-    }
+        }
     return ret;
 }
 
@@ -125,7 +128,12 @@ bool fn_io_input_type_isvalid(enum rt_DataType_t type)
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_STR:
             return true;
-        default: return false;
+        case rt_DATA_TYPE_INTERP_STR:
+        case rt_DATA_TYPE_LST:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_MAP:
+        case rt_DATA_TYPE_PROC:
+            return false;
     }
     return false;
 }

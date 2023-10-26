@@ -61,6 +61,7 @@ lex_Token_t yylex(void)
         case TOKEN_HEXINT_LITERAL:
             yylval.literal_i64 = parse_int(lex_Buffer_getstr(), 16);
             break;
+        /* using default here coz there's a lot of cases */
         default:
             yylval.tok = token;
             break;

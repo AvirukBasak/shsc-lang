@@ -36,7 +36,13 @@ void rt_op_indexing(const rt_Data_t *lhs, const rt_Data_t *rhs)
             free(key);
             break;
         }
-        default:
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_INTERP_STR:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_PROC:
             rt_throw("cannot index type '%s'", rt_Data_typename(*lhs));
     }
 }

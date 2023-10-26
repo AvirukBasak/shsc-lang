@@ -35,7 +35,12 @@ rt_Data_t fn_dbg_refcnt()
             return rt_Data_i64(data.data.lst->rc);
         case rt_DATA_TYPE_MAP:
             return rt_Data_i64(data.data.mp->rc);
-        default:
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_PROC:
             return rt_Data_i64(1);
     }
     return rt_Data_i64(1);
