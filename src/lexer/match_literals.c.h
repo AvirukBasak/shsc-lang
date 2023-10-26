@@ -184,7 +184,6 @@ lex_Token_t lex_match_unum(FILE *f, char ch, enum LexBase base)
         ch = lex_getc(f);
         if (!lex_isdigit(ch)) {
             lex_ungetc(&ch, f);    /* unget ch */
-            lex_ungetc(&ch, f);    /* unget '.' */
             return retok;
         }
         ch = lex_match_digits(f, ch, base);
