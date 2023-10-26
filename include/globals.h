@@ -3,7 +3,8 @@
 
 #include <stdbool.h>
 
-#define VERSION "0.5 Alpha"
+#define VERSION "0.6 Alpha"
+#define AUTHORS "Aviruk Basak"
 #define GLOBAL_BYTES_BUFFER_LEN (128)
 
 extern const char *global_currfile;

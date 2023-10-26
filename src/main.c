@@ -29,21 +29,22 @@ int main(int argc, char **argv)
     if (!strcmp(argv[index], "-v") || !strcmp(argv[index], "--version")) {
         printf("Shsc Version %s\n"
                "License: GPL 3.0\n"
-               "Authors: Aviruk Basak\n", VERSION);
+               "Authors: %s\n", VERSION, AUTHORS);
         exit(0);
     }
 
     /* check if -h or --help is present */
     if (!strcmp(argv[index], "-h") || !strcmp(argv[index], "--help")) {
         printf("USAGE:\n"
-               "  shsc [FILENAMES]         execute files listed as args\n"
-               "  shsc <flags> [FILENAMES] provide with additional flags\n"
+               "  shsc              [FILENAMES] execute files listed as args\n"
+               "  shsc <flags>      [FILENAMES] provide with additional flags\n"
                "FLAGS:\n"
-               "  -r  --run  [FILENAME]    run files listed in file\n"
-               "  -t  --ast  [FILENAME]    save AST as JSON to file\n"
-               "  -tf --astf [FILENAME]    produce formatted JSON\n"
-               "  -h  --help               view this message\n"
-               "  -v  --version            version info\n"
+               "  -r    --run       [FILENAME]  run files listed in file\n"
+               "  -t    --ast       [FILENAME]  save AST as JSON to file\n"
+               "  -ldbg --lex-debug [FILENAME]  produce formatted JSON\n"
+               "  -tf   --astf      [FILENAME]  produce formatted JSON\n"
+               "  -h    --help                  view this message\n"
+               "  -v    --version               version info\n"
         );
         exit(0);
     }
