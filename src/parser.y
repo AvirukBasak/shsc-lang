@@ -553,5 +553,9 @@ void parse_throw(const char *msg, bool on)
     if (lex_currtok == TOKEN_NEWLINE) --line;
     if (on) io_print_srcerr(line, lex_char_no, "parsing error: %s on '%s'", msg, lex_Token_getsymbol(lex_currtok));
     else io_print_srcerr(line, lex_char_no, "parsing error: %s", msg);
+#ifdef DEBUG
+    abort();
+#else
     exit(ERR_PARSER);
+#endif
 }

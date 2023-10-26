@@ -143,6 +143,16 @@ void lex_throw(const char *msg)
     if (!msg) abort();
     int line = lex_line_no;
     /* if (lex_currtok == TOKEN_NEWLINE) --line; */
-    io_print_srcerr(line, lex_char_no, "lexing error: after token '%s': %s", lex_Token_getsymbol(lex_currtok), msg);
+    io_print_srcerr(
+        line,
+        lex_char_no,
+        "lexing error: after token '%s': %s",
+        lex_Token_getsymbol(lex_currtok),
+        msg
+    );
+#ifdef DEBUG
+    abort();
+#else
     exit(ERR_LEXER);
+#endif
 }
