@@ -107,17 +107,16 @@ int main(int argc, char **argv)
     }
 
     int exit_code = 0;
-#ifndef LEX_DEBUG
-    if (ast_filename)
-        /* save the AST as JSON */
-        ast2json_convert(ast_filename, ast_format);
-    else
-        /* execute the program */
-        exit_code = rt_exec(argc, argv);
-#endif
-
-    /* clear the entire AST */
-    ast_util_ModuleAndProcTable_clear();
+    if (!global_lex_dbg) {
+        if (ast_filename)
+            /* save the AST as JSON */
+            ast2json_convert(ast_filename, ast_format);
+        else
+            /* execute the program */
+            exit_code = rt_exec(argc, argv);
+        /* clear the entire AST */
+        ast_util_ModuleAndProcTable_clear();
+    }
 
     return exit_code;
 }

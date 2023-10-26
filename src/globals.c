@@ -4,4 +4,4 @@
 #include "globals.h"
 
 const char *global_currfile = NULL;
-bool global_lex_debug = false;
+bool global_lex_dbg = false;
