@@ -236,6 +236,7 @@ bool rt_Data_tobool(const rt_Data_t var)
         case rt_DATA_TYPE_PROC:
             return !!var.data.proc.procname && !!var.data.proc.modulename;
     }
+    return false;
 }
 
 /** used to convert a Data object to a printable char* */
@@ -304,6 +305,7 @@ char *rt_Data_tostr(const rt_Data_t var)
             return str;
         }
     }
+    return NULL;
 }
 
 const char *rt_Data_typename(const rt_Data_t var)
