@@ -48,6 +48,12 @@ int main(int argc, char **argv)
         exit(0);
     }
 
+    /* check if -ldbg or --lex-debug is present */
+    if (!strcmp(argv[index], "-ldbg") || !strcmp(argv[index], "--lex-debug")) {
+        global_lex_dbg = true;
+        ++index;
+    }
+
     /* check if -t or --ast is present */
     if (!strcmp(argv[index], "-t") || !strcmp(argv[index], "--ast")) {
         if (argc < 3) io_errnexit("no json file provided for '--ast'");
