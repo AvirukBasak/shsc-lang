@@ -488,10 +488,23 @@ logical_or_expression_p:
 
 
 
+/* A logical and expression -----------------------------------------------------------------------
+   left-recursive grammar
 logical_and_expression:
     bitwise_or_expression
     | logical_and_expression "&&" bitwise_or_expression
+    ; */
+
+/* right-recursive grammar */
+logical_and_expression:
+    bitwise_or_expression logical_and_expression_p
     ;
+logical_and_expression_p:
+    %empty
+    | "&&" bitwise_or_expression logical_and_expression_p
+    ;
+
+
 
 bitwise_or_expression:
     bitwise_xor_expression
