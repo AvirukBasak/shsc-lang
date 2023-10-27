@@ -1,19 +1,19 @@
-#ifndef FN_MODULE_IT_C_H
-#define FN_MODULE_IT_C_H
+#ifndef RT_FN_MODULE_IT_C_H
+#define RT_FN_MODULE_IT_C_H
 
 #include "io.h"
-#include "functions/module_it.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataMap.h"
+#include "runtime/functions/module_it.h"
 #include "runtime/VarTable.h"
 
-rt_Data_t fn_it_len()
+rt_Data_t rt_fn_it_len()
 {
     rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
     if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("fn_it_len: "
+        io_errndie("rt_fn_it_len: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
     const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
     switch (data.type) {

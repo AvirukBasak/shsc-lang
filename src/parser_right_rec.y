@@ -238,11 +238,8 @@ nws:
 
 /* \n* right recursive */
 nws:
-    %empty nws_p
-    ;
-nws_p:
     %empty
-    | "\n" nws_p
+    | "\n" nws
     ;
 
 
@@ -253,13 +250,9 @@ nwp:
     | nwp "\n"
     ; */
 
-/* \n+ right recursive */
+/* \n+ non-recursive */
 nwp:
-    "\n" nwp_p
-    ;
-nwp_p:
-    %empty
-    | "\n" nwp_p
+    "\n" nws
     ;
 
 
@@ -288,8 +281,8 @@ trm_p:
 /* Push module name to a stack --------------------------------------------------------------------
    non-recursive grammar */
 module:
-    program
-    | "module" identifier trm program
+    "module" identifier trm program
+    | program
     ;
 
 
@@ -506,46 +499,142 @@ logical_and_expression_p:
 
 
 
+/* A bitwise or expression ------------------------------------------------------------------------
+   left-recursive grammar
 bitwise_or_expression:
     bitwise_xor_expression
     | bitwise_or_expression "|" bitwise_xor_expression
+    ; */
+
+/* right-recursive grammar */
+bitwise_or_expression:
+    bitwise_xor_expression bitwise_or_expression_p
+    ;
+bitwise_or_expression_p:
+    %empty
+    | "|" bitwise_xor_expression bitwise_or_expression_p
     ;
 
+
+
+/* A bitwise xor expression -----------------------------------------------------------------------
+   left-recursive grammar
 bitwise_xor_expression:
     bitwise_and_expression
     | bitwise_xor_expression "^" bitwise_and_expression
+    ; */
+
+/* right-recursive grammar */
+bitwise_xor_expression:
+    bitwise_and_expression bitwise_xor_expression_p
+    ;
+bitwise_xor_expression_p:
+    %empty
+    | "^" bitwise_and_expression bitwise_xor_expression_p
     ;
 
+
+
+/* A bitwise and expression -----------------------------------------------------------------------
+    left-recursive grammar
 bitwise_and_expression:
     equality_expression
     | bitwise_and_expression "&" equality_expression
+    ; */
+
+/* right-recursive grammar */
+bitwise_and_expression:
+    equality_expression bitwise_and_expression_p
+    ;
+bitwise_and_expression_p:
+    %empty
+    | "&" equality_expression bitwise_and_expression_p
     ;
 
+
+
+/* An equality expression -------------------------------------------------------------------------
+   left-recursive grammar
 equality_expression:
     relational_expression
     | equality_expression "==" relational_expression
     | equality_expression "!=" relational_expression
+    ; */
+
+/* right-recursive grammar */
+equality_expression:
+    relational_expression equality_expression_p
+    ;
+equality_expression_p:
+    %empty
+    | "==" relational_expression equality_expression_p
+    | "!=" relational_expression equality_expression_p
     ;
 
+
+
+/* A relational expression ------------------------------------------------------------------------
+   left-recursive grammar
 relational_expression:
     shift_expression
     | relational_expression "<" shift_expression
     | relational_expression ">" shift_expression
     | relational_expression "<=" shift_expression
     | relational_expression ">=" shift_expression
+    ; */
+
+/* right-recursive grammar */
+relational_expression:
+    shift_expression relational_expression_p
+    ;
+relational_expression_p:
+    %empty
+    | "<" shift_expression relational_expression_p
+    | ">" shift_expression relational_expression_p
+    | "<=" shift_expression relational_expression_p
+    | ">=" shift_expression relational_expression_p
     ;
 
+
+
+/* A shift expression -----------------------------------------------------------------------------
+   left-recursive grammar
 shift_expression:
     additive_expression
     | shift_expression ">>>" additive_expression
     | shift_expression "<<" additive_expression
     | shift_expression ">>" additive_expression
+    ; */
+
+/* right-recursive grammar */
+shift_expression:
+    additive_expression shift_expression_p
+    ;
+shift_expression_p:
+    %empty
+    | ">>>" additive_expression shift_expression_p
+    | "<<" additive_expression shift_expression_p
+    | ">>" additive_expression shift_expression_p
     ;
 
+
+
+/* An additive expression -------------------------------------------------------------------------
+   left-recursive grammar
 additive_expression:
     multiplicative_expression
     | additive_expression "+" multiplicative_expression
     | additive_expression "-" multiplicative_expression
+    ; */
+
+/* right-recursive grammar */
+additive_expression:
+    multiplicative_expression additive_expression_p
+    ;
+additive_expression_p:
+    %empty
+    | "+" multiplicative_expression additive_expression_p
+    | "-" multiplicative_expression additive_expression_p
     ;
 
 
@@ -579,13 +668,13 @@ multiplicative_expression_p:
 /* A unary expression -----------------------------------------------------------------------------
    right-recursive grammar */
 unary_expression:
-    postfix_expression
-    | "+" unary_expression
+    "+" unary_expression
     | "-" unary_expression
     | "!" unary_expression
     | "~" unary_expression
     | "++" unary_expression
     | "--" unary_expression
+    | postfix_expression
     ;
 
 
