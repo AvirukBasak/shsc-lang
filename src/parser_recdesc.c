@@ -11,7 +11,7 @@
 #include "parser.h"
 
 bool parse_expect(lex_Token_t tok, bool recover) {
-    lex_Token_t t = lex_Token_getnext(yyin);
+    lex_Token_t t = yylex();
     if (t == tok) {
         return true;
     } else {
