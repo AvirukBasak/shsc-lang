@@ -3,12 +3,12 @@
 
 #include "ast.h"
 #include "ast/api.h"
-#include "functions.h"
 #include "io.h"
 #include "runtime.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataList.h"
 #include "runtime/eval.h"
+#include "runtime/functions.h"
 #include "runtime/io.h"
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
@@ -38,14 +38,14 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     /* get code as AST from user defined function */
     const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
     /* get a descriptor to in-built function */
-    const fn_FunctionDescriptor_t fn = fn_FunctionsList_getfn(
+    const rt_fn_FunctionDescriptor_t fn = rt_fn_FunctionsList_getfn(
         module->identifier_name, proc->identifier_name);
 
     const char *currfile = NULL;
     /* update metadata to new module and function */
     if (code) {
         currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
-    } else if (fn != fn_UNDEFINED) {
+    } else if (fn != rt_fn_UNDEFINED) {
         currfile = module->identifier_name;
     } else {
         rt_throw("undefined procedure '%s:%s'",
@@ -63,7 +63,7 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
             rt_throw("unexpected `continue` statement outside loop");
     } else {
         /* call in-built function */
-        rt_VarTable_acc_setval(fn_FunctionsList_call(fn));
+        rt_VarTable_acc_setval(rt_fn_FunctionsList_call(fn));
     }
     rt_VarTable_pop_proc();
 }

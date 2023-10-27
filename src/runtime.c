@@ -52,4 +52,6 @@ int rt_exec(int argc, char **argv)
 #include "runtime/eval/statement.c.h"
 #include "runtime/eval/statements.c.h"
 #include "runtime/eval/whileblock.c.h"
+#include "runtime/functions.c.h"
+#include "runtime/operators.c.h"
 #include "runtime/VarTable.c.h"

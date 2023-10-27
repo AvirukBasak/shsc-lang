@@ -4,27 +4,27 @@
 #include <stdlib.h>
 
 #include "io.h"
-#include "functions/nomodule.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
+#include "runtime/functions/nomodule.h"
 #include "runtime/VarTable.h"
 
-rt_Data_t fn_isnull()
+rt_Data_t rt_fn_isnull()
 {
     rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
     if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("fn_isnull: "
+        io_errndie("rt_fn_isnull: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
     const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
     return rt_Data_bul(rt_Data_isnull(data));
 }
 
-rt_Data_t fn_tostr()
+rt_Data_t rt_fn_tostr()
 {
     rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
     if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("fn_tostr: "
+        io_errndie("rt_fn_tostr: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
     const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
     char *strdata = rt_Data_tostr(data);
@@ -34,11 +34,11 @@ rt_Data_t fn_tostr()
     return retdata;
 }
 
-rt_Data_t fn_type()
+rt_Data_t rt_fn_type()
 {
     rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
     if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("fn_type: "
+        io_errndie("rt_fn_type: "
                    "received arguments list as type '%s'", rt_Data_typename(args));
     const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
     switch (data.type) {
