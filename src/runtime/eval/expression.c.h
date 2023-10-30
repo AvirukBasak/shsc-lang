@@ -20,8 +20,7 @@ rt_Data_t *rt_eval_Expression_operand(
     const ast_Operator_t op,
     const union ast_ExpressionUnion_t oprnd,
     const enum ast_ExpressionType_t oprnd_type,
-    rt_Data_t *oprnd_data,
-    bool is_lhs
+    rt_Data_t *oprnd_data
 ) {
     /* during function call, if lhs is a single identifier only
        then skip normal lhs evaluation to prevent conflict with
@@ -73,17 +72,17 @@ void rt_eval_Expression(const ast_Expression_t *expr)
     /* handle lhs and evaluate it */
     rt_Data_t lhs_;
     rt_Data_t *lhs = rt_eval_Expression_operand(
-        expr->op, expr->lhs, expr->lhs_type, &lhs_, true);
+        expr->op, expr->lhs, expr->lhs_type, &lhs_);
 
     /* handle rhs and evaluate it */
     rt_Data_t rhs_;
     rt_Data_t *rhs = rt_eval_Expression_operand(
-        expr->op, expr->rhs, expr->rhs_type, &rhs_, false);
+        expr->op, expr->rhs, expr->rhs_type, &rhs_);
 
     /* handle rhs and evaluate it */
     rt_Data_t condition_;
     rt_Data_t *condition = rt_eval_Expression_operand(
-        expr->op, expr->condition, expr->condition_type, &condition_, false);
+        expr->op, expr->condition, expr->condition_type, &condition_);
 
     switch (expr->op) {
         /* shortcut assignment operators */
