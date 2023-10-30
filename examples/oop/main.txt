@@ -1,0 +1,6 @@
+proc main start
+    var x = ComplexNo:init(1, 2)
+    var y = ComplexNo:init(4, 8)
+    var c = x.add(y)
+    c.show()
+end

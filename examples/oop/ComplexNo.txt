@@ -1,0 +1,38 @@
+module ComplexNo
+
+proc init start
+    if !it:len(args) then
+        $0 = 0
+        $1 = 0
+    end
+    var z = {
+        x: $0,
+        y: $1
+    }
+    z.show = show
+    z.add = add
+    return z
+end
+
+proc show start
+    var x = this.x
+    var y = this.y
+    io:print(f"{x}+i{y}", lf)
+end
+
+proc add start
+    var z = $0
+    var x = this.x + z.x
+    var y = this.y + z.y
+    return init(x, y)
+end
+
+# in some other file
+# module main
+
+proc main start
+    var x = ComplexNo:init(1, 2)
+    var y = ComplexNo:init(4, 8)
+    var c = x.add(y)
+    c.show()
+end
