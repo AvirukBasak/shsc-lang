@@ -391,7 +391,7 @@ proc add start
 end
 ```
 
-THe following should be in a seperate file to respect the module declaration syntax.
+The following should be in a seperate file to respect the module declaration syntax.
 
 ```ruby
 module main
