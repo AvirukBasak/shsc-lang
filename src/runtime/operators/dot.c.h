@@ -13,8 +13,16 @@ void rt_op_dot(const rt_Data_t *lhs, const rt_Data_t *rhs)
             if (!rhs)
                 rt_throw("invalid member name");
             char *key = rt_Data_tostr(*rhs);
-            rt_VarTable_acc_setadr(
-                rt_DataMap_getref(lhs->data.mp, key));
+            rt_Data_t *ref = rt_DataMap_getref(lhs->data.mp, key);
+            if (ref && ref->type == rt_DATA_TYPE_PROC) {
+                /* setting context object via reference only coz lhs
+                   is a ref to a map
+                   rc is not increased here as it increases when
+                   the fn is actually called when the context variable
+                   is created in scope */
+                ref->data.proc.context = lhs;
+            }
+            rt_VarTable_acc_setadr(ref);
             free(key);
             break;
         }
