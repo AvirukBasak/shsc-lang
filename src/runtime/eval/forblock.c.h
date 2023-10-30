@@ -37,19 +37,19 @@ void rt_eval_ForBlock_get_iterable_len(
 rt_ControlStatus_t rt_eval_ForBlock_str(
     const ast_ForBlock_t *for_block,
     const rt_Data_t iterable,
-    int64_t *length
+    int64_t length
 );
 
 rt_ControlStatus_t rt_eval_ForBlock_lst(
     const ast_ForBlock_t *for_block,
     const rt_Data_t iterable,
-    int64_t *length
+    int64_t length
 );
 
 rt_ControlStatus_t rt_eval_ForBlock_map(
     const ast_ForBlock_t *for_block,
     const rt_Data_t iterable,
-    int64_t *length
+    int64_t length
 );
 
 rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
@@ -115,9 +115,9 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
 
 void rt_eval_ForBlock_get_range_params(
     const ast_ForBlock_t *for_block,
-    int64_t *start_i,
-    int64_t *end_i,
-    int64_t *by_i
+    int64_t *start_ptr,
+    int64_t *end_ptr,
+    int64_t *by_ptr
 ) {
     /* calculate start, end and by */
     rt_eval_Expression(for_block->it.range.start);
@@ -200,7 +200,7 @@ void rt_eval_ForBlock_get_iterable_len(
 rt_ControlStatus_t rt_eval_ForBlock_str(
     const ast_ForBlock_t *for_block,
     const rt_Data_t iterable,
-    int64_t *length
+    int64_t length
 ) {
     rt_ControlStatus_t ctrl = rt_CTRL_PASS;
     for (int64_t i = 0; i < length; ++i) {
@@ -222,7 +222,7 @@ rt_ControlStatus_t rt_eval_ForBlock_str(
 rt_ControlStatus_t rt_eval_ForBlock_lst(
     const ast_ForBlock_t *for_block,
     const rt_Data_t iterable,
-    int64_t *length
+    int64_t length
 ) {
     rt_ControlStatus_t ctrl = rt_CTRL_PASS;
     for (int64_t i = 0; i < length; ++i) {
@@ -244,7 +244,7 @@ rt_ControlStatus_t rt_eval_ForBlock_lst(
 rt_ControlStatus_t rt_eval_ForBlock_map(
     const ast_ForBlock_t *for_block,
     const rt_Data_t iterable,
-    int64_t *length
+    int64_t length
 ) {
     rt_ControlStatus_t ctrl = rt_CTRL_PASS;
     for (rt_DataMap_iter_t entry_it = rt_DataMap_begin(iterable.data.mp);
