@@ -10,10 +10,13 @@
 
 void rt_eval_AssociativeList(const ast_AssociativeList_t *assoc_list)
 {
+    /* This is commented out so that empty lists which are
+       represented using NULL are also created instead of
+       just returning a null data
     if (!assoc_list) {
         rt_VarTable_acc_setval(rt_Data_null());
         return;
-    }
+    } */
     const ast_AssociativeList_t *ptr = assoc_list;
     rt_DataMap_t *new_map = rt_DataMap_init();
     while (ptr) {

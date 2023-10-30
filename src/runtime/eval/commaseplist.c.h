@@ -9,10 +9,13 @@
 
 void rt_eval_CommaSepList(const ast_CommaSepList_t *comma_list)
 {
+    /* This is commented out so that empty lists which are
+       represented using NULL are also created instead of
+       just returning a null data
     if (!comma_list) {
         rt_VarTable_acc_setval(rt_Data_null());
         return;
-    }
+    } */
     const ast_CommaSepList_t *ptr = comma_list;
     rt_DataList_t *new_list = rt_DataList_init();
     while (ptr) {
