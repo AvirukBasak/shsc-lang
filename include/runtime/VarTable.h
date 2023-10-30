@@ -11,6 +11,7 @@
 
 #define _RT_VTABLE_TMPVAR_CNT     (32)
 #define RT_VTABLE_ARGSVAR         "args"
+#define RT_VTABLE_CONTEXTVAR      "this"
 #define RT_VTABLE_CALLSTACK_LIMIT (1000)
 #define RT_VTABLE_ACC             (rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : &rt_VarTable_acc_get()->val)
 
