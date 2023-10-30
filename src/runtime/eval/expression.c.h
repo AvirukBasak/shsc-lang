@@ -70,30 +70,6 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         return;
     }
 
-    /* take care pf fn calls and membership operations */
-    switch (expr->op) {
-        case TOKEN_DOT:
-            rt_throw("unimplemented operator");
-            break;
-        case TOKEN_DCOLON: {
-            if (expr->lhs_type != EXPR_TYPE_IDENTIFIER
-                || expr->rhs_type != EXPR_TYPE_IDENTIFIER)
-                    rt_throw("invalid use of module membership operator");
-            /* instead of evaluating the LHS and RHS, directly generate a
-               procedure type literal and return it via accumulator */
-            rt_VarTable_acc_setval((rt_Data_t) {
-                .data.proc = {
-                    .modulename = expr->lhs.variable,
-                    .procname = expr->rhs.variable,
-                },
-                .type = rt_DATA_TYPE_PROC
-            });
-            return;
-        }
-        /* using default here coz there's a lot of cases */
-        default: break;
-    }
-
     /* handle lhs and evaluate it */
     rt_Data_t lhs_;
     rt_Data_t *lhs = rt_eval_Expression_operand(
@@ -137,7 +113,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKEN_BITWISE_LSHIFT:               rt_op_bitwise_lshift(lhs, rhs); break;
         case TOKEN_BITWISE_RSHIFT:               rt_op_bitwise_rshift(lhs, rhs); break;
         case TOKEN_CARET:                                 rt_op_caret(lhs, rhs); break;
-        case TOKEN_DCOLON:                               rt_op_dcolon(lhs, rhs); break;
+        case TOKEN_DCOLON:                               rt_op_dcolon(expr); break;
         case TOKEN_DECREMENT:                         rt_op_decrement(lhs, rhs); break;
         case TOKEN_DOT:                                     rt_op_dot(lhs, rhs); break;
         case TOKEN_EXPONENT:                           rt_op_exponent(lhs, rhs); break;

@@ -11,7 +11,7 @@ void rt_op_bang                 (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_bitwise_lshift       (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_bitwise_rshift       (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_caret                (const rt_Data_t *lhs, const rt_Data_t *rhs);
-void rt_op_dcolon               (const rt_Data_t *lhs, const rt_Data_t *rhs);
+void rt_op_dcolon               (const ast_Expression_t *expr);
 void rt_op_decrement            (rt_Data_t *lhs, rt_Data_t *rhs);
 void rt_op_dot                  (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_exponent             (const rt_Data_t *lhs, const rt_Data_t *rhs);
