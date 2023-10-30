@@ -22,40 +22,28 @@ rt_Data_t *rt_eval_Expression_operand(
     const enum ast_ExpressionType_t oprnd_type,
     rt_Data_t *oprnd_data
 ) {
-    /* during function call, if lhs is a single identifier only
-       then skip normal lhs evaluation to prevent conflict with
-       rt_VarTable_getref during identifier value resolution.
-       intead generate a procedure type data and return */
-    if (is_lhs && op == TOKOP_FNCALL && oprnd_type == EXPR_TYPE_IDENTIFIER) {
-        rt_VarTable_acc_setval((rt_Data_t) {
-            .data.proc = {
-                .modulename = rt_VarTable_top_proc()->modulename,
-                .procname = oprnd.variable,
-            },
-            .type = rt_DATA_TYPE_PROC
-        });
-    } else {
-        /* evaluate operand normally */
-        switch (oprnd_type) {
-            case EXPR_TYPE_EXPRESSION:
-                rt_eval_Expression(oprnd.expr);
-                break;
-            case EXPR_TYPE_LITERAL:
-                rt_eval_Literal(oprnd.literal);
-                break;
-            case EXPR_TYPE_IDENTIFIER:
-                rt_eval_Identifier(oprnd.variable);
-                break;
-            case EXPR_TYPE_NULL:
-                /* this makes sure that for TOKOP_NOP where rhs and condition are null,
-                   a new value is not assigned to the accumulator.
-                   otherwise, the accumulator will destroy its previous value, causing a
-                   potential heap-use-after-free bug */
-                return NULL;
-        }
+    /* do not evaluate operands in case operator is a
+       module membership operator */
+    if (op == TOKEN_DCOLON) return NULL;
+
+    switch (oprnd_type) {
+        case EXPR_TYPE_EXPRESSION:
+            rt_eval_Expression(oprnd.expr);
+            break;
+        case EXPR_TYPE_LITERAL:
+            rt_eval_Literal(oprnd.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            rt_eval_Identifier(oprnd.variable);
+            break;
+        case EXPR_TYPE_NULL:
+            /* this makes sure that for TOKOP_NOP where rhs and condition are null,
+               a new value is not assigned to the accumulator.
+               otherwise, the accumulator will destroy its previous value, causing a
+               potential heap-use-after-free bug */
+            return NULL;
     }
 
-rt_eval_Expression_operand_return:
     /* copy accumulator value into temporary memory as accumulator gets
        modified when evaluating other operands */
     *oprnd_data = *RT_VTABLE_ACC;
