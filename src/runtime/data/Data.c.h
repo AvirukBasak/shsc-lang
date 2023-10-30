@@ -87,6 +87,18 @@ rt_Data_t rt_Data_map(rt_DataMap_t *mp)
     return var;
 }
 
+rt_Data_t rt_Data_proc(
+    const ast_Identifier_t *modulename,
+    const ast_Identifier_t *procname
+) {
+    rt_Data_t var;
+    var.type = rt_DATA_TYPE_PROC;
+    var.data.proc.modulename = modulename;
+    var.data.proc.procname = procname;
+    var.data.proc.context = NULL;
+    return var;
+}
+
 rt_Data_t rt_Data_any(void *ptr)
 {
     rt_Data_t var;

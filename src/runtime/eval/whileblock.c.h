@@ -14,14 +14,21 @@ rt_ControlStatus_t rt_eval_WhileBlock(const ast_WhileBlock_t *while_block)
     if (!while_block) return rt_CTRL_PASS;
     rt_eval_Expression(while_block->condition);
     bool cond = rt_Data_tobool(*RT_VTABLE_ACC);
+    rt_ControlStatus_t ctrl = rt_CTRL_PASS;
+
+    rt_VarTable_push_scope();
     while (cond) {
-        rt_ControlStatus_t ctrl = rt_eval_Statements_newscope(while_block->statements);
+        ctrl = rt_eval_Statements(while_block->statements);
         if (ctrl == rt_CTRL_PASS)
             /* do nothing in pass */;
-        if (ctrl == rt_CTRL_RETURN)   return ctrl;
+        if (ctrl == rt_CTRL_RETURN)   break;
         if (ctrl == rt_CTRL_BREAK)    break;
         if (ctrl == rt_CTRL_CONTINUE) continue;
     }
+    rt_VarTable_pop_scope();
+
+    if (ctrl == rt_CTRL_RETURN)
+        return ctrl;
     return rt_CTRL_PASS;
 }
 

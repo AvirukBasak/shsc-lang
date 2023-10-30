@@ -1,0 +1,10 @@
+module main
+
+proc main start
+    var x = ComplexNo:init(1, 2)
+    var y = ComplexNo:init(4, 8)
+    # x set as context object of the ComplexNo:add procedure
+    var c = x.add(y)
+    # similarly, c set as context object of the ComplexNo:show procedure
+    c.show()
+end

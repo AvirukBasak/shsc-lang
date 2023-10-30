@@ -12,5 +12,13 @@ proc test1 start
 end
 
 proc test2 start
+    var x = test3
+    x()
     return $0
+end
+
+proc test3 start
+    var x = [1,2,3,4,5,6]
+    x[0] = io:print
+    x[0](dbg:typename(x), lf)
 end

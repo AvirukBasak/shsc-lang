@@ -15,10 +15,25 @@ rt_ControlStatus_t rt_eval_IfBlock(const ast_IfBlock_t *if_block)
     rt_eval_Expression(if_block->condition);
     bool cond = rt_Data_tobool(*RT_VTABLE_ACC);
     if (cond) return rt_eval_Statements_newscope(if_block->if_st);
-    else return rt_eval_ElseBlock(if_block->else_block);
+
+    const ast_ElseBlock_t *else_block = if_block->else_block;
+    while (else_block) {
+        /* takes care of [ else nwp statements end ] */
+        if (!else_block->condition && !else_block->else_block) {
+            return rt_eval_Statements_newscope(else_block->else_if_st);
+        }
+
+        /* takes care of [ else if condition then nwp statements ] */
+        rt_eval_Expression(else_block->condition);
+        bool cond = rt_Data_tobool(*RT_VTABLE_ACC);
+        if (cond) return rt_eval_Statements_newscope(else_block->else_if_st);
+
+        else_block = else_block->else_block;
+    }
+    return rt_CTRL_PASS;
 }
 
-rt_ControlStatus_t rt_eval_ElseBlock(const ast_ElseBlock_t *else_block)
+rt_ControlStatus_t _deprecated_rt_eval_ElseBlock(const ast_ElseBlock_t *else_block)
 {
     if (!else_block) return rt_CTRL_PASS;
     /* takes care of [ else nwp statements end ] */
@@ -29,7 +44,7 @@ rt_ControlStatus_t rt_eval_ElseBlock(const ast_ElseBlock_t *else_block)
     rt_eval_Expression(else_block->condition);
     bool cond = rt_Data_tobool(*RT_VTABLE_ACC);
     if (cond) return rt_eval_Statements_newscope(else_block->else_if_st);
-    else return rt_eval_ElseBlock(else_block->else_block);
+    else return _deprecated_rt_eval_ElseBlock(else_block->else_block);
 }
 
 #else

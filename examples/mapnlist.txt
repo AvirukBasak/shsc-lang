@@ -24,9 +24,10 @@ end
 
 proc test start
     var x = {"a":1, "b":2, "c":3, "d":{"e":4, "f":5}, "g":6}
+    x.fn = io:print
     var y = tostr(x)
     for k, v in x do
         io:print(f"{k}: {v}, ")
     end
-    io:print(lf)
+    x.fn(lf)
 end

@@ -20,43 +20,30 @@ rt_Data_t *rt_eval_Expression_operand(
     const ast_Operator_t op,
     const union ast_ExpressionUnion_t oprnd,
     const enum ast_ExpressionType_t oprnd_type,
-    rt_Data_t *oprnd_data,
-    bool is_lhs
+    rt_Data_t *oprnd_data
 ) {
-    /* during function call, if lhs is a single identifier only
-       then skip normal lhs evaluation to prevent conflict with
-       rt_VarTable_getref during identifier value resolution.
-       intead generate a procedure type data and return */
-    if (is_lhs && op == TOKOP_FNCALL && oprnd_type == EXPR_TYPE_IDENTIFIER) {
-        rt_VarTable_acc_setval((rt_Data_t) {
-            .data.proc = {
-                .modulename = rt_VarTable_top_proc()->modulename,
-                .procname = oprnd.variable,
-            },
-            .type = rt_DATA_TYPE_PROC
-        });
-    } else {
-        /* evaluate operand normally */
-        switch (oprnd_type) {
-            case EXPR_TYPE_EXPRESSION:
-                rt_eval_Expression(oprnd.expr);
-                break;
-            case EXPR_TYPE_LITERAL:
-                rt_eval_Literal(oprnd.literal);
-                break;
-            case EXPR_TYPE_IDENTIFIER:
-                rt_eval_Identifier(oprnd.variable);
-                break;
-            case EXPR_TYPE_NULL:
-                /* this makes sure that for TOKOP_NOP where rhs and condition are null,
-                   a new value is not assigned to the accumulator.
-                   otherwise, the accumulator will destroy its previous value, causing a
-                   potential heap-use-after-free bug */
-                return NULL;
-        }
+    /* do not evaluate operands in case operator is a
+       module membership operator */
+    if (op == TOKEN_DCOLON) return NULL;
+
+    switch (oprnd_type) {
+        case EXPR_TYPE_EXPRESSION:
+            rt_eval_Expression(oprnd.expr);
+            break;
+        case EXPR_TYPE_LITERAL:
+            rt_eval_Literal(oprnd.literal);
+            break;
+        case EXPR_TYPE_IDENTIFIER:
+            rt_eval_Identifier(oprnd.variable);
+            break;
+        case EXPR_TYPE_NULL:
+            /* this makes sure that for TOKOP_NOP where rhs and condition are null,
+               a new value is not assigned to the accumulator.
+               otherwise, the accumulator will destroy its previous value, causing a
+               potential heap-use-after-free bug */
+            return NULL;
     }
 
-rt_eval_Expression_operand_return:
     /* copy accumulator value into temporary memory as accumulator gets
        modified when evaluating other operands */
     *oprnd_data = *RT_VTABLE_ACC;
@@ -70,44 +57,20 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         return;
     }
 
-    /* take care pf fn calls and membership operations */
-    switch (expr->op) {
-        case TOKEN_DOT:
-            rt_throw("unimplemented operator");
-            break;
-        case TOKEN_DCOLON: {
-            if (expr->lhs_type != EXPR_TYPE_IDENTIFIER
-                || expr->rhs_type != EXPR_TYPE_IDENTIFIER)
-                    rt_throw("invalid use of module membership operator");
-            /* instead of evaluating the LHS and RHS, directly generate a
-               procedure type literal and return it via accumulator */
-            rt_VarTable_acc_setval((rt_Data_t) {
-                .data.proc = {
-                    .modulename = expr->lhs.variable,
-                    .procname = expr->rhs.variable,
-                },
-                .type = rt_DATA_TYPE_PROC
-            });
-            return;
-        }
-        /* using default here coz there's a lot of cases */
-        default: break;
-    }
-
     /* handle lhs and evaluate it */
     rt_Data_t lhs_;
     rt_Data_t *lhs = rt_eval_Expression_operand(
-        expr->op, expr->lhs, expr->lhs_type, &lhs_, true);
+        expr->op, expr->lhs, expr->lhs_type, &lhs_);
 
     /* handle rhs and evaluate it */
     rt_Data_t rhs_;
     rt_Data_t *rhs = rt_eval_Expression_operand(
-        expr->op, expr->rhs, expr->rhs_type, &rhs_, false);
+        expr->op, expr->rhs, expr->rhs_type, &rhs_);
 
     /* handle rhs and evaluate it */
     rt_Data_t condition_;
     rt_Data_t *condition = rt_eval_Expression_operand(
-        expr->op, expr->condition, expr->condition_type, &condition_, false);
+        expr->op, expr->condition, expr->condition_type, &condition_);
 
     switch (expr->op) {
         /* shortcut assignment operators */
@@ -137,7 +100,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKEN_BITWISE_LSHIFT:               rt_op_bitwise_lshift(lhs, rhs); break;
         case TOKEN_BITWISE_RSHIFT:               rt_op_bitwise_rshift(lhs, rhs); break;
         case TOKEN_CARET:                                 rt_op_caret(lhs, rhs); break;
-        case TOKEN_DCOLON:                               rt_op_dcolon(lhs, rhs); break;
+        case TOKEN_DCOLON:                               rt_op_dcolon(expr); break;
         case TOKEN_DECREMENT:                         rt_op_decrement(lhs, rhs); break;
         case TOKEN_DOT:                                     rt_op_dot(lhs, rhs); break;
         case TOKEN_EXPONENT:                           rt_op_exponent(lhs, rhs); break;

@@ -31,6 +31,7 @@ enum rt_DataType_t {
 struct rt_DataProc_t {
     const ast_Identifier_t *modulename;
     const ast_Identifier_t *procname;
+    const rt_Data_t *context;
 };
 
 struct rt_Data_t {
@@ -56,6 +57,10 @@ rt_Data_t rt_Data_str(rt_DataStr_t *str);
 rt_Data_t rt_Data_interp_str(const char *str);
 rt_Data_t rt_Data_list(rt_DataList_t *lst);
 rt_Data_t rt_Data_map(rt_DataMap_t *mp);
+rt_Data_t rt_Data_proc(
+    const ast_Identifier_t *modulename,
+    const ast_Identifier_t *procname
+);
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
 void rt_Data_copy(rt_Data_t *var);

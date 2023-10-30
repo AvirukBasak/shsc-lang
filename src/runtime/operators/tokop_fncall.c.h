@@ -13,7 +13,7 @@
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
-void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args);
+void rt_op_fncall_handler(const rt_Data_t context, const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args);
 
 void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
     if (lhs->type != rt_DATA_TYPE_PROC)
@@ -27,13 +27,16 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
     if (rhs->type != rt_DATA_TYPE_LST)
         rt_throw("cannot pass type '%s' as procedure argument", rt_Data_typename(*rhs));
     /* get fn code and push code to stack */
-    rt_op_fncall_handler(lhs->data.proc.modulename, lhs->data.proc.procname, *rhs);
+    rt_Data_t context = lhs->data.proc.context
+        ? *lhs->data.proc.context
+        : rt_Data_null();
+    rt_op_fncall_handler(context, lhs->data.proc.modulename, lhs->data.proc.procname, *rhs);
     /* set no data to accumulator as data is already set by procedure called above
        return early to prevent accumulator being modified by some other code */
     return;
 }
 
-void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args)
+void rt_op_fncall_handler(const rt_Data_t context, const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args)
 {
     /* get code as AST from user defined function */
     const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
@@ -54,6 +57,7 @@ void rt_op_fncall_handler(const ast_Identifier_t *module, const ast_Identifier_t
     rt_VarTable_push_proc(module, proc, currfile);
     /* store fn args into agrs location */
     rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true);
+    rt_VarTable_create(RT_VTABLE_CONTEXTVAR, context, true);
     if (code) {
         /* call user defined function */
         rt_ControlStatus_t ctrl = rt_eval_Statements(code);
