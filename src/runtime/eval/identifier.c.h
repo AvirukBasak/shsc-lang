@@ -27,13 +27,10 @@ void rt_eval_Identifier(const ast_Identifier_t *identifier)
     );
     /* if not null, return procedure type data */
     if (code) {
-        rt_VarTable_acc_setval((rt_Data_t) {
-            .data.proc = {
-                .modulename = rt_VarTable_top_proc()->modulename,
-                .procname = identifier
-            },
-            .type = rt_DATA_TYPE_PROC
-        });
+        rt_VarTable_acc_setval(rt_Data_proc(
+            rt_VarTable_top_proc()->modulename,
+            identifier
+        ));
         return;
     }
     /* get a descriptor to in-built function */
@@ -43,13 +40,10 @@ void rt_eval_Identifier(const ast_Identifier_t *identifier)
     );
     /* if defined, return procedure type data */
     if (fn != rt_fn_UNDEFINED) {
-        rt_VarTable_acc_setval((rt_Data_t) {
-            .data.proc = {
-                .modulename = rt_VarTable_top_proc()->modulename,
-                .procname = identifier
-            },
-            .type = rt_DATA_TYPE_PROC
-        });
+        rt_VarTable_acc_setval(rt_Data_proc(
+            rt_VarTable_top_proc()->modulename,
+            identifier
+        ));
         return;
     }
     /* if neither variable, procedure or built-in function */
