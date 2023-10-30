@@ -1,14 +1,17 @@
 module ComplexNo
 
 proc init start
+    # if no arguments are passed, default to 0
     if !it:len(args) then
         $0 = 0
         $1 = 0
     end
+    # create new object from the arguments
     var z = {
         x: $0,
         y: $1
     }
+    # bind proccedures to the object as methods
     z.show = show
     z.add = add
     return z
@@ -25,14 +28,4 @@ proc add start
     var x = this.x + z.x
     var y = this.y + z.y
     return init(x, y)
-end
-
-# in some other file
-# module main
-
-proc main start
-    var x = ComplexNo:init(1, 2)
-    var y = ComplexNo:init(4, 8)
-    var c = x.add(y)
-    c.show()
 end
