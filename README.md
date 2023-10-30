@@ -102,6 +102,7 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `map:keys`
 - [ ] Operators
 - [x] Error stack traces
+- [x] Contextual functions (OOP)
 
 ### List File
  - Each line of the list file has a single file path
