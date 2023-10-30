@@ -447,8 +447,9 @@ postfix_expression:
                                                              }
     | postfix_expression "++"                                { $$ = ast_Expression($2, $1, NULL, NULL); }
     | postfix_expression "--"                                { $$ = ast_Expression($2, $1, NULL, NULL); }
-    | postfix_expression "." identifier                      { $$ = ast_Expression($2, $1,
-                                                                 ast_Expression_Identifier($3), NULL);
+    | postfix_expression "." identifier                      { $$ = ast_Expression($2, $1, ast_Expression_Literal(
+                                                                     ast_Literal_str(strdup($3->identifier_name))), NULL);
+                                                                 ast_Identifier_destroy(&$3);
                                                              }
     | postfix_expression "::" identifier                     { $$ = ast_Expression($2, $1,
                                                                  ast_Expression_Identifier($3), NULL);
@@ -474,6 +475,18 @@ assoc_list:
     string_literal ":" expression nws                        { $$ = ast_AssociativeList(NULL, $1, $3); }
     | string_literal ":" expression "," nws                  { $$ = ast_AssociativeList(NULL, $1, $3); }
     | string_literal ":" expression "," nws assoc_list       { $$ = ast_AssociativeList($6, $1, $3); }
+    | identifier ":" expression nws                          { $$ = ast_AssociativeList(NULL,
+                                                                     ast_Literal_str(strdup($1->identifier_name)), $3);
+                                                                 ast_Identifier_destroy(&$1);
+                                                             }
+    | identifier ":" expression "," nws                      { $$ = ast_AssociativeList(NULL,
+                                                                     ast_Literal_str(strdup($1->identifier_name)), $3);
+                                                                 ast_Identifier_destroy(&$1);
+                                                             }
+    | identifier ":" expression "," nws assoc_list           { $$ = ast_AssociativeList($6,
+                                                                     ast_Literal_str(strdup($1->identifier_name)), $3);
+                                                                 ast_Identifier_destroy(&$1);
+                                                             }
     ;
 
 literal:
