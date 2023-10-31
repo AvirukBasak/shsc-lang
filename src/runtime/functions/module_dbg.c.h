@@ -1,6 +1,8 @@
 #ifndef RT_FN_MODULE_DBG_C_H
 #define RT_FN_MODULE_DBG_C_H
 
+#include <stdint.h>
+
 #include "io.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
@@ -44,6 +46,36 @@ rt_Data_t rt_fn_dbg_refcnt()
             return rt_Data_i64(1);
     }
     return rt_Data_i64(1);
+}
+
+rt_Data_t rt_fn_dbg_id()
+{
+    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
+    if (args.type != rt_DATA_TYPE_LST)
+        io_errndie("rt_fn_dbg_refcnt: "
+                   "received arguments list as type '%s'", rt_Data_typename(args));
+    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    void *id_ptr = NULL;
+    switch (data.type) {
+        case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR:
+            id_ptr = (void*) data.data.str->var;
+        case rt_DATA_TYPE_LST:
+            id_ptr = (void*) data.data.lst;
+        case rt_DATA_TYPE_MAP:
+            id_ptr = (void*) data.data.mp;
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_PROC:
+            id_ptr = (void*) &data;
+    }
+    /* convert void* to hex pointer string */
+    char id_str[64];
+    sprintf(id_str, "%p", id_ptr);
+    return rt_Data_str(rt_DataStr_init(id_str));
 }
 
 #else
