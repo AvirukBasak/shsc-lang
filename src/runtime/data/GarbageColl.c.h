@@ -144,7 +144,6 @@ void rt_data_GC_cyclic_count_helper(
             } else
                 rt_data_GC_cyclic_count_helper(*ref, target, count);
         }
-        printf("\n");
     }
 }
 
