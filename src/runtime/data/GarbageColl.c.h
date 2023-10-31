@@ -125,7 +125,12 @@ void rt_data_GC_cyclic_count_helper(
             } else if (ref->type == rt_DATA_TYPE_LST) {
                 if (ref->data.lst == target.lst) ++(*count);
             } else if (ref->type == rt_DATA_TYPE_MAP) {
-                printf("type: %s, ref: %p, target: %p\n", rt_Data_typename(*ref), ref, target.str);
+                printf(
+                    "type: %s, ref: %p, target: %p\n",
+                    rt_Data_typename(*ref),
+                    ref->data.mp,
+                    target.mp
+                );
                 if (ref->data.mp == target.mp) ++(*count);
             } else
                 rt_data_GC_cyclic_count_helper(*ref, target, count);

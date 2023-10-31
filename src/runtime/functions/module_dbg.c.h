@@ -60,10 +60,13 @@ rt_Data_t rt_fn_dbg_id()
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:
             id_ptr = (void*) data.data.str->var;
+            break;
         case rt_DATA_TYPE_LST:
             id_ptr = (void*) data.data.lst;
+            break;
         case rt_DATA_TYPE_MAP:
             id_ptr = (void*) data.data.mp;
+            break;
         case rt_DATA_TYPE_BUL:
         case rt_DATA_TYPE_CHR:
         case rt_DATA_TYPE_I64:
@@ -71,6 +74,7 @@ rt_Data_t rt_fn_dbg_id()
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
             id_ptr = (void*) &data;
+            break;
     }
     /* convert void* to hex pointer string */
     char id_str[64];
