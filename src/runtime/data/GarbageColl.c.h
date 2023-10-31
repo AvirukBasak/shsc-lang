@@ -10,6 +10,7 @@
 #include "runtime/data/DataMap.h"
 #include "runtime/data/GarbageColl.h"
 
+
 typedef union {
     rt_DataStr_t *str;
     rt_DataList_t *lst;
@@ -41,6 +42,15 @@ bool rt_data_GC_has_only_cyclic_refcnt(const rt_Data_t var)
     else return false;
 
     int64_t count = rt_data_GC_cyclic_count(var);
+#ifdef GC_DEBUG
+    printf(
+        "type: %s, ref: %p, count: %ld, refcnt: %ld\n",
+        rt_Data_typename(var),
+        var.data.mp,
+        count,
+        refcnt
+    );
+#endif
     return count == refcnt;
 }
 
@@ -104,12 +114,14 @@ void rt_data_GC_cyclic_count_helper(
             if ( ref->type == rt_DATA_TYPE_STR
               || ref->type == rt_DATA_TYPE_INTERP_STR) {
                 if (ref->data.str == target.str) ++(*count);
+                else rt_data_GC_cyclic_count_helper(*ref, target, count);
             } else if (ref->type == rt_DATA_TYPE_LST) {
                 if (ref->data.lst == target.lst) ++(*count);
+                else rt_data_GC_cyclic_count_helper(*ref, target, count);
             } else if (ref->type == rt_DATA_TYPE_MAP) {
                 if (ref->data.mp == target.mp) ++(*count);
-            } else
-                rt_data_GC_cyclic_count_helper(*ref, target, count);
+                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+            }
         }
     }
 
@@ -137,12 +149,14 @@ void rt_data_GC_cyclic_count_helper(
             if ( ref->type == rt_DATA_TYPE_STR
               || ref->type == rt_DATA_TYPE_INTERP_STR) {
                 if (ref->data.str == target.str) ++(*count);
+                else rt_data_GC_cyclic_count_helper(*ref, target, count);
             } else if (ref->type == rt_DATA_TYPE_LST) {
                 if (ref->data.lst == target.lst) ++(*count);
+                else rt_data_GC_cyclic_count_helper(*ref, target, count);
             } else if (ref->type == rt_DATA_TYPE_MAP) {
                 if (ref->data.mp == target.mp) ++(*count);
-            } else
-                rt_data_GC_cyclic_count_helper(*ref, target, count);
+                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+            }
         }
     }
 }
