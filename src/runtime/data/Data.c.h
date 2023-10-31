@@ -312,8 +312,8 @@ char *rt_Data_tostr(const rt_Data_t var)
             char *str = (char*) malloc((sz +1) * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%s:%s",
-                var.data.proc.procname->identifier_name,
-                var.data.proc.modulename->identifier_name
+                var.data.proc.modulename->identifier_name,
+                var.data.proc.procname->identifier_name
             );
             return str;
         }
