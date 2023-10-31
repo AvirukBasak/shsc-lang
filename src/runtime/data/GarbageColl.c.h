@@ -79,6 +79,14 @@ void rt_data_GC_cyclic_count_helper(
     /* use incomming node as default node */
     rt_Data_t node = node_;
 
+#ifdef GC_DEBUG
+    printf("type: %s, node: %p, target: %p\n",
+        rt_Data_typename(node),
+        (void*) node.data.mp,
+        (void*) target.mp
+    );
+#endif
+
     /* get inner list from string to prevent truncation into char
        in the process set node to the inner list */
     if (node.type == rt_DATA_TYPE_STR || node.type == rt_DATA_TYPE_INTERP_STR) {
@@ -119,22 +127,24 @@ void rt_data_GC_cyclic_count_helper(
             if (!entry) continue;
             const rt_Data_t *ref = &entry->value;
             if (!ref) continue;
+#ifdef GC_DEBUG
+            printf("    type: %s, ref: %p, target: %p\n",
+                rt_Data_typename(*ref),
+                (void*) ref->data.mp,
+                (void*) target.mp
+            );
+#endif
             if ( ref->type == rt_DATA_TYPE_STR
               || ref->type == rt_DATA_TYPE_INTERP_STR) {
                 if (ref->data.str == target.str) ++(*count);
             } else if (ref->type == rt_DATA_TYPE_LST) {
                 if (ref->data.lst == target.lst) ++(*count);
             } else if (ref->type == rt_DATA_TYPE_MAP) {
-                printf(
-                    "type: %s, ref: %p, target: %p\n",
-                    rt_Data_typename(*ref),
-                    ref->data.mp,
-                    target.mp
-                );
                 if (ref->data.mp == target.mp) ++(*count);
             } else
                 rt_data_GC_cyclic_count_helper(*ref, target, count);
         }
+        printf("\n");
     }
 }
 
