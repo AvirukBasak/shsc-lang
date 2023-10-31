@@ -45,7 +45,15 @@ void rt_DataList_destroy(rt_DataList_t **ptr)
     /* ref counting */
     --lst->rc;
     if (lst->rc < 0) lst->rc = 0;
-    if (lst->rc > 0) return;
+    if (lst->rc > 0) {
+        /* if rc > 0, check if the data has only cyclic references
+           if so, set rc to 0 to free the data */
+        if (rt_data_GC_has_only_cyclic_refcnt(rt_Data_list(lst))) {
+            rt_data_GC_break_cycle(rt_Data_list(lst), rt_Data_list(lst));
+            lst->rc = 0;
+        }
+        else return;
+    }
     /* free if rc 0 */
     for (int64_t i = 0; i < lst->length; i++)
         rt_Data_destroy(&lst->var[i]);

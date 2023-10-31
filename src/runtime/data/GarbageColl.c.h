@@ -1,6 +1,7 @@
 #ifndef RT_DATA_GARBAGECOLL_C_H
 #define RT_DATA_GARBAGECOLL_C_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -19,9 +20,10 @@ typedef union {
 
 
 void rt_data_GC_cyclic_count_helper(
-    const rt_Data_t node,
+    rt_Data_t node,
     const rt_data_GC_cyclic_count_target_t target,
-    int64_t *count
+    int64_t *count,
+    const bool break_ref
 );
 
 
@@ -55,6 +57,27 @@ bool rt_data_GC_has_only_cyclic_refcnt(const rt_Data_t var)
 }
 
 
+void rt_data_GC_break_cycle(const rt_Data_t var, const rt_Data_t tg)
+{
+    if (var.type != rt_DATA_TYPE_STR && var.type != rt_DATA_TYPE_INTERP_STR
+        && var.type != rt_DATA_TYPE_LST && var.type != rt_DATA_TYPE_MAP)
+            return;
+
+    rt_data_GC_cyclic_count_target_t target;
+
+    if (var.type == rt_DATA_TYPE_STR || var.type == rt_DATA_TYPE_INTERP_STR)
+        target.str = var.data.str;
+    else if (var.type == rt_DATA_TYPE_LST)
+        target.lst = var.data.lst;
+    else if (var.type == rt_DATA_TYPE_MAP)
+        target.mp = var.data.mp;
+    else return;
+
+    int64_t count = 0;
+    rt_data_GC_cyclic_count_helper(var, target, &count, true);
+}
+
+
 int64_t rt_data_GC_cyclic_count(const rt_Data_t var)
 {
     if (var.type != rt_DATA_TYPE_STR && var.type != rt_DATA_TYPE_INTERP_STR
@@ -72,15 +95,16 @@ int64_t rt_data_GC_cyclic_count(const rt_Data_t var)
     else return 0;
 
     int64_t count = 0;
-    rt_data_GC_cyclic_count_helper(var, target, &count);
+    rt_data_GC_cyclic_count_helper(var, target, &count, false);
     return count;
 }
 
 
 void rt_data_GC_cyclic_count_helper(
-    const rt_Data_t node_,
+    rt_Data_t node_,
     const rt_data_GC_cyclic_count_target_t target,
-    int64_t *count
+    int64_t *count,
+    const bool break_ref
 ) {
     if (node_.type != rt_DATA_TYPE_STR && node_.type != rt_DATA_TYPE_INTERP_STR
         && node_.type != rt_DATA_TYPE_LST && node_.type != rt_DATA_TYPE_MAP)
@@ -109,18 +133,27 @@ void rt_data_GC_cyclic_count_helper(
        counter if it is */
     if (node.type == rt_DATA_TYPE_LST) {
         for (int64_t i = 0; i < rt_DataList_length(node.data.lst); ++i) {
-            const rt_Data_t *ref = rt_DataList_getref_errnull(node.data.lst, i);
+            rt_Data_t *ref = rt_DataList_getref_errnull(node.data.lst, i);
             if (!ref) continue;
             if ( ref->type == rt_DATA_TYPE_STR
               || ref->type == rt_DATA_TYPE_INTERP_STR) {
-                if (ref->data.str == target.str) ++(*count);
-                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+                if (ref->data.str == target.str) {
+                    ++(*count);
+                    if (break_ref) *ref = rt_Data_null();
+                }
+                else rt_data_GC_cyclic_count_helper(*ref, target, count, break_ref);
             } else if (ref->type == rt_DATA_TYPE_LST) {
-                if (ref->data.lst == target.lst) ++(*count);
-                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+                if (ref->data.lst == target.lst) {
+                    ++(*count);
+                    if (break_ref) *ref = rt_Data_null();
+                }
+                else rt_data_GC_cyclic_count_helper(*ref, target, count, break_ref);
             } else if (ref->type == rt_DATA_TYPE_MAP) {
-                if (ref->data.mp == target.mp) ++(*count);
-                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+                if (ref->data.mp == target.mp) {
+                    ++(*count);
+                    if (break_ref) *ref = rt_Data_null();
+                }
+                else rt_data_GC_cyclic_count_helper(*ref, target, count, break_ref);
             }
         }
     }
@@ -137,7 +170,8 @@ void rt_data_GC_cyclic_count_helper(
             if (!rt_DataMap_exists(node.data.mp, it)) continue;
             const rt_DataMapEntry_t *entry = rt_DataMap_get(node.data.mp, it);
             if (!entry) continue;
-            const rt_Data_t *ref = &entry->value;
+            /* explicit cast to non-const */
+            rt_Data_t *ref = (rt_Data_t*) &entry->value;
             if (!ref) continue;
 #ifdef GC_DEBUG
             printf("    type: %s, ref: %p, target: %p\n",
@@ -148,14 +182,23 @@ void rt_data_GC_cyclic_count_helper(
 #endif
             if ( ref->type == rt_DATA_TYPE_STR
               || ref->type == rt_DATA_TYPE_INTERP_STR) {
-                if (ref->data.str == target.str) ++(*count);
-                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+                if (ref->data.str == target.str) {
+                    ++(*count);
+                    if (break_ref) *ref = rt_Data_null();
+                }
+                else rt_data_GC_cyclic_count_helper(*ref, target, count, break_ref);
             } else if (ref->type == rt_DATA_TYPE_LST) {
-                if (ref->data.lst == target.lst) ++(*count);
-                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+                if (ref->data.lst == target.lst) {
+                    ++(*count);
+                    if (break_ref) *ref = rt_Data_null();
+                }
+                else rt_data_GC_cyclic_count_helper(*ref, target, count, break_ref);
             } else if (ref->type == rt_DATA_TYPE_MAP) {
-                if (ref->data.mp == target.mp) ++(*count);
-                else rt_data_GC_cyclic_count_helper(*ref, target, count);
+                if (ref->data.mp == target.mp) {
+                    ++(*count);
+                    if (break_ref) *ref = rt_Data_null();
+                }
+                else rt_data_GC_cyclic_count_helper(*ref, target, count, break_ref);
             }
         }
     }

@@ -45,7 +45,15 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
     /* ref counting */
     --mp->rc;
     if (mp->rc < 0) mp->rc = 0;
-    if (mp->rc > 0) return;
+    if (mp->rc > 0) {
+        /* if rc > 0, check if the data has only cyclic references
+           if so, set rc to 0 to free the data */
+        if (rt_data_GC_has_only_cyclic_refcnt(rt_Data_map(mp))) {
+            rt_data_GC_break_cycle(rt_Data_map(mp), rt_Data_map(mp));
+            mp->rc = 0;
+        }
+        else return;
+    }
     /* free if rc 0, iterate through each entry and destroy it */
     for (khiter_t entry_it = kh_begin(mp->data_map); entry_it != kh_end(mp->data_map); ++entry_it) {
         if (!kh_exist(mp->data_map, entry_it)) continue;
