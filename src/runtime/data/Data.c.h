@@ -53,6 +53,7 @@ rt_Data_t rt_Data_f64(double val)
 #include "runtime/data/DataList.c.h"
 #include "runtime/data/DataStr.c.h"
 #include "runtime/data/DataMap.c.h"
+#include "runtime/data/GarbageColl.c.h"
 
 rt_Data_t rt_Data_str(rt_DataStr_t *str)
 {
