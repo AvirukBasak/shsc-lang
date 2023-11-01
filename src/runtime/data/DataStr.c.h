@@ -36,14 +36,19 @@ void rt_DataStr_copy(rt_DataStr_t *str)
     rt_DataList_copy(str->var);
 }
 
-void rt_DataStr_destroy(rt_DataStr_t **ptr)
+void rt_DataStr_destroy_circular(rt_DataStr_t **ptr, bool flag)
 {
     if (!ptr || !*ptr) return;
-    rt_DataList_destroy(&(*ptr)->var);
+    rt_DataList_destroy_circular(&(*ptr)->var, flag);
     /* free wrapper only if the list inside was freed and nulled */
     if ((*ptr)->var) return;
     free(*ptr);
     *ptr = NULL;
+}
+
+void rt_DataStr_destroy(rt_DataStr_t **ptr)
+{
+    rt_DataStr_destroy_circular(ptr, false);
 }
 
 void rt_DataStr_append(rt_DataStr_t *str, char var)

@@ -38,7 +38,7 @@ void rt_DataMap_copy(rt_DataMap_t *mp)
     ++mp->rc;
 }
 
-void rt_DataMap_destroy(rt_DataMap_t **ptr)
+void rt_DataMap_destroy_circular(rt_DataMap_t **ptr, bool flag)
 {
     if (!ptr || !*ptr) return;
     rt_DataMap_t *mp = *ptr;
@@ -48,7 +48,7 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
     if (mp->rc > 0) {
         /* if rc > 0, check if the data has only cyclic references
            if so, set rc to 0 to free the data */
-        if (rt_data_GC_has_only_cyclic_refcnt(rt_Data_map(mp))) {
+        if (flag && rt_data_GC_has_only_cyclic_refcnt(rt_Data_map(mp))) {
             rt_data_GC_break_cycle(rt_Data_map(mp), rt_Data_map(mp));
             mp->rc = 0;
         }
@@ -58,7 +58,10 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
     for (khiter_t entry_it = kh_begin(mp->data_map); entry_it != kh_end(mp->data_map); ++entry_it) {
         if (!kh_exist(mp->data_map, entry_it)) continue;
         /* decrement refcnt, if 0, data gets destroyed */
-        rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
+        rt_Data_destroy_circular(
+            &kh_value(mp->data_map, entry_it).value,
+            flag
+        );
         /* free the key */
         free(kh_value(mp->data_map, entry_it).key);
     }
@@ -66,6 +69,11 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
     mp->data_map = NULL;
     free(mp);
     *ptr = NULL;
+}
+
+void rt_DataMap_destroy(rt_DataMap_t **ptr)
+{
+    rt_DataMap_destroy_circular(ptr, false);
 }
 
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
