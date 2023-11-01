@@ -509,6 +509,13 @@ The language uses a temporary location called the `accumulator` to store the res
 
 #### Circular references
 This language is unable to detect and manage circular references.
+If a circular reference must be created, it must be set to `null` later on to let the GC clean up the memory.
+
+Running `tostr` or `io:print` on an object having a circular reference will most likely result in Segmentation fault.
+
+<!--
+
+This language is unable to detect and manage circular references.
 If a circular reference must be created, it must be a weak reference.
 
 A weak reference is created using the `weak` keyword.
@@ -563,6 +570,8 @@ var y = null
 Avoid using same variables for weak and strong references.
 
 Additionally, using circular strong references **WILL** cause memory leak.
+-->
+
 
 ### Format strings
 ```ruby
