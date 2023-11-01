@@ -1,0 +1,38 @@
+proc LinkedList start
+    var l = {}
+    l.head = null
+    l.append = LinkedList_append
+    l.popf = LinkedList_popf
+    l.show = LinkedList_show
+    return l
+end
+
+proc LinkedList_append start
+    var tmp = this.head
+    this.head = { val: $0, next: tmp }
+end
+
+proc LinkedList_popf start
+    var tmp = this.head
+    this.head = this.head.next
+    tmp = null
+end
+
+proc LinkedList_show start
+    var ptr = this.head
+    while ptr do
+        io:print(ptr.val, "")
+        ptr = ptr.next
+    end
+    io:print(lf)
+end
+
+proc main start
+    var x = LinkedList()
+    x.append(12)
+    x.append(44)
+    x.append(7)
+    x.show()
+    x.popf()
+    x.show()
+end
