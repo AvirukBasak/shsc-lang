@@ -42,6 +42,7 @@ lex_Token_t lex_match_keywords(FILE *f, char ch)
     if (!strcmp(lex_Buffer_getstr(), "const"))     return TOKEN_KWD_CONST;
     if (!strcmp(lex_Buffer_getstr(), "pass"))      return TOKEN_KWD_PASS;
     if (!strcmp(lex_Buffer_getstr(), "return"))    return TOKEN_KWD_RETURN;
+    /* if (!strcmp(lex_Buffer_getstr(), "weak"))   return TOKEN_KWD_WEAK; */
     /* unget all characters except the first if all matches failed */
     while (kwdlen > 1) {
         lex_ungetc(&ch, f);
