@@ -96,6 +96,28 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)
     return dest;
 }
 
+rt_Data_t *rt_VarTable_weak_modf(rt_Data_t *dest, rt_Data_t src)
+{
+    if (!dest) return NULL;
+    /* if data is one of the global built-in vars, throw appropriate error */
+    {
+        if (dest == &rt_VarTable_rsv_lf)         rt_throw("cannot modify built-in variable 'lf'");
+        if (dest == &rt_VarTable_typeid_bul)     rt_throw("cannot modify built-in variable 'bul'");
+        if (dest == &rt_VarTable_typeid_chr)     rt_throw("cannot modify built-in variable 'chr'");
+        if (dest == &rt_VarTable_typeid_i64)     rt_throw("cannot modify built-in variable 'i64'");
+        if (dest == &rt_VarTable_typeid_f64)     rt_throw("cannot modify built-in variable 'f64'");
+        if (dest == &rt_VarTable_typeid_str)     rt_throw("cannot modify built-in variable 'str'");
+        if (dest == &rt_VarTable_typeid_lst)     rt_throw("cannot modify built-in variable 'lst'");
+        if (dest == &rt_VarTable_typeid_map)     rt_throw("cannot modify built-in variable 'map'");
+        if (dest == &rt_VarTable_rsv_null)       rt_throw("cannot modify built-in variable 'null'");
+    }
+    /* do not change rc of objects
+       rt_Data_copy(&src);
+       rt_Data_destroy(dest); */
+    *dest = src;
+    return dest;
+}
+
 
 rt_Data_t *rt_VarTable_getref_errnull(const char *varname)
 {

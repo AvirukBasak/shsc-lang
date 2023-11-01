@@ -60,6 +60,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
         - [Example](#example-4)
     - [Memory ownership](#memory-ownership)
         - [Accumulator](#accumulator)
+        - [Circular references](#circular-references)
     - [Format strings](#format-strings)
     - [Lists](#lists)
         - [Example](#example-5)
@@ -505,6 +506,72 @@ The following takes memory ownership
 
 #### Accumulator
 The language uses a temporary location called the `accumulator` to store the result of operations and return values.
+
+#### Circular references
+This language is unable to detect and manage circular references.
+If a circular reference must be created, it must be set to `null` later on to let the GC clean up the memory.
+
+Running `tostr` or `io:print` on an object having a circular reference will most likely result in Segmentation fault.
+
+<!--
+
+This language is unable to detect and manage circular references.
+If a circular reference must be created, it must be a weak reference.
+
+A weak reference is created using the `weak` keyword.
+The following shows how to create a weak reference properly, without hindering the working of the reference counting GC.
+
+```ruby
+var x = "Hello"
+var z = { abc: [1,2,3] }
+var y = null
+```
+
+- **Strong to strong**:
+    ```ruby
+    y = z
+    y = x
+    ```
+
+- **Strong to weak**:
+
+    The following causes a leak as reference to `x` object is strong and reference count is not reduced.
+    ```ruby
+    # BAD PRACTICE
+    y weak = z
+    ```
+    You must strong assign `null` to reduce the reference count
+    ```ruby
+    # GOOD PRACTICE
+    y = null
+    y weak = z
+    ```
+
+- **Weak to weak**:
+    ```ruby
+    y weak = x
+    ```
+
+- **Weak to strong**:
+
+    The following reduces reference count of `x` object too much.
+    However, `x` was being weakly pointed to and the reference count shouldn't have changed.
+    ```ruby
+    # BAD PRACTICE
+    y = z
+    ```
+    You must weak assign `null` to keep the reference count unaffected.
+    ```ruby
+    # GOOD PRACTICE
+    y weak = null
+    y = z
+    ```
+
+Avoid using same variables for weak and strong references.
+
+Additionally, using circular strong references **WILL** cause memory leak.
+-->
+
 
 ### Format strings
 ```ruby

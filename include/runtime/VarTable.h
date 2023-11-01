@@ -70,6 +70,10 @@ void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const);
 /** modify data directly by address instead of querying via identifier */
 rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src);
 
+/** modify data directly by address instead of querying via identifier
+    but doesn't modify the reference counts of either the source or destination */
+rt_Data_t *rt_VarTable_weak_modf(rt_Data_t *dest, rt_Data_t src);
+
 rt_Data_t *rt_VarTable_getref_errnull(const char *varname);
 
 /** get the variable from the current scope if it exists, else error.
