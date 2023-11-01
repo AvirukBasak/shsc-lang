@@ -29,6 +29,10 @@ void rt_data_GC_cyclic_count_helper(
 
 bool rt_data_GC_has_only_cyclic_refcnt(const rt_Data_t var)
 {
+    /* this function is disabled as weak pointers were
+       added to make rcgc a lot simpler to implement */
+    return false;
+
     if (var.type != rt_DATA_TYPE_STR && var.type != rt_DATA_TYPE_INTERP_STR
         && var.type != rt_DATA_TYPE_LST && var.type != rt_DATA_TYPE_MAP)
             return false;
@@ -59,6 +63,10 @@ bool rt_data_GC_has_only_cyclic_refcnt(const rt_Data_t var)
 
 void rt_data_GC_break_cycle(const rt_Data_t var, const rt_Data_t tg)
 {
+    /* this function is disabled as weak pointers were
+       added to make rcgc a lot simpler to implement */
+    return;
+
     if (var.type != rt_DATA_TYPE_STR && var.type != rt_DATA_TYPE_INTERP_STR
         && var.type != rt_DATA_TYPE_LST && var.type != rt_DATA_TYPE_MAP)
             return;
@@ -80,6 +88,10 @@ void rt_data_GC_break_cycle(const rt_Data_t var, const rt_Data_t tg)
 
 int64_t rt_data_GC_cyclic_count(const rt_Data_t var)
 {
+    /* this function is disabled as weak pointers were
+       added to make rcgc a lot simpler to implement */
+    return 0;
+
     if (var.type != rt_DATA_TYPE_STR && var.type != rt_DATA_TYPE_INTERP_STR
         && var.type != rt_DATA_TYPE_LST && var.type != rt_DATA_TYPE_MAP)
             return 0;
@@ -106,6 +118,10 @@ void rt_data_GC_cyclic_count_helper(
     int64_t *count,
     const bool break_ref
 ) {
+    /* this function is disabled as weak pointers were
+       added to make rcgc a lot simpler to implement */
+    return;
+
     if (node_.type != rt_DATA_TYPE_STR && node_.type != rt_DATA_TYPE_INTERP_STR
         && node_.type != rt_DATA_TYPE_LST && node_.type != rt_DATA_TYPE_MAP)
             return;
