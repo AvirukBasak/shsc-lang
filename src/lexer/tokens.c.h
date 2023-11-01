@@ -79,6 +79,7 @@ const char *lex_Token_getcode(lex_Token_t code)
         case TOKOP_NOP:                   return "TOKOP_NOP";
         case TOKOP_FNCALL:                return "TOKOP_FNCALL";
         case TOKOP_INDEXING:              return "TOKOP_INDEXING";
+        case TOKOP_WEAK_ASSIGN:           return "TOKOP_WEAK_ASSIGN";
         case TOKOP_TERNARY_COND:          return "TOKOP_TERNARY_COND";
         case TOKOP_FNARGS_INDEXING:       return "TOKOP_FNARGS_INDEXING";
         /* keywords */
@@ -104,6 +105,7 @@ const char *lex_Token_getcode(lex_Token_t code)
         case TOKEN_KWD_CONST:             return "TOKEN_KWD_CONST";
         case TOKEN_KWD_PASS:              return "TOKEN_KWD_PASS";
         case TOKEN_KWD_RETURN:            return "TOKEN_KWD_RETURN";
+        case TOKEN_KWD_WEAK:              return "TOKEN_KWD_WEAK";
         /* identifier */
         case TOKEN_IDENTIFIER:            return "TOKEN_IDENTIFIER";
         /* literals */
@@ -204,6 +206,7 @@ const char *lex_Token_getsymbol(lex_Token_t code)
         case TOKOP_NOP:                   return "NOP";
         case TOKOP_FNCALL:                return "()";
         case TOKOP_INDEXING:              return "[]";
+        case TOKOP_WEAK_ASSIGN:           return "weak =";
         case TOKOP_TERNARY_COND:          return "?:";
         case TOKOP_FNARGS_INDEXING:       return "$[]";
         /* keywords */
@@ -229,6 +232,7 @@ const char *lex_Token_getsymbol(lex_Token_t code)
         case TOKEN_KWD_CONST:             return "const";
         case TOKEN_KWD_PASS:              return "pass";
         case TOKEN_KWD_RETURN:            return "return";
+        case TOKEN_KWD_WEAK:              return "weak";
         /* identifier */
         case TOKEN_IDENTIFIER:            return lex_Buffer_getstr() ? lex_Buffer_getstr() : "NULL";
         /* literals */

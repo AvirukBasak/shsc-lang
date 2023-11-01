@@ -429,6 +429,7 @@ assignment_expression:
     conditional_expression
     | postfix_expression "=" assignment_expression
     | postfix_expression "=" "weak" assignment_expression
+    | postfix_expression "weak" "=" assignment_expression
     | postfix_expression "||=" assignment_expression
     | postfix_expression "&&=" assignment_expression
     | postfix_expression "|=" assignment_expression
