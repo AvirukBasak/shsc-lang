@@ -95,6 +95,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKEN_AMPERSAND:                         rt_op_ampersand(lhs, rhs); break;
         case TOKEN_ARITH_RSHIFT:                   rt_op_arith_rshift(lhs, rhs); break;
         case TOKEN_ASSIGN:                               rt_op_assign(lhs, rhs); break;
+        case TOKOP_WEAK_ASSIGN:                     rt_op_weak_assign(lhs, rhs); break;
         case TOKEN_ASTERIX:                             rt_op_asterix(lhs, rhs); break;
         case TOKEN_BANG:                                   rt_op_bang(lhs, rhs); break;
         case TOKEN_BITWISE_LSHIFT:               rt_op_bitwise_lshift(lhs, rhs); break;
