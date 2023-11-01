@@ -53,6 +53,7 @@ rt_Data_t rt_Data_f64(double val)
 #include "runtime/data/DataList.c.h"
 #include "runtime/data/DataStr.c.h"
 #include "runtime/data/DataMap.c.h"
+#include "runtime/data/GarbageColl.c.h"
 
 rt_Data_t rt_Data_str(rt_DataStr_t *str)
 {
@@ -135,20 +136,20 @@ void rt_Data_copy(rt_Data_t *var)
     }
 }
 
-void rt_Data_destroy(rt_Data_t *var)
+void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
 {
     switch (var->type) {
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:
-            rt_DataStr_destroy(&var->data.str);
+            rt_DataStr_destroy_circular(&var->data.str, flag);
             if (!var->data.str) *var = rt_Data_null();
             break;
         case rt_DATA_TYPE_LST:
-            rt_DataList_destroy(&var->data.lst);
+            rt_DataList_destroy_circular(&var->data.lst, flag);
             if (!var->data.lst) *var = rt_Data_null();
             break;
         case rt_DATA_TYPE_MAP:
-            rt_DataMap_destroy(&var->data.mp);
+            rt_DataMap_destroy_circular(&var->data.mp, flag);
             if (!var->data.mp) *var = rt_Data_null();
             break;
         case rt_DATA_TYPE_ANY:
@@ -164,6 +165,11 @@ void rt_Data_destroy(rt_Data_t *var)
                corrupts data in case *var points to a rt_ global var */
             break;
     }
+}
+
+void rt_Data_destroy(rt_Data_t *var)
+{
+    rt_Data_destroy_circular(var, false);
 }
 
 bool rt_Data_isnull(const rt_Data_t var)
@@ -311,8 +317,8 @@ char *rt_Data_tostr(const rt_Data_t var)
             char *str = (char*) malloc((sz +1) * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%s:%s",
-                var.data.proc.procname->identifier_name,
-                var.data.proc.modulename->identifier_name
+                var.data.proc.modulename->identifier_name,
+                var.data.proc.procname->identifier_name
             );
             return str;
         }

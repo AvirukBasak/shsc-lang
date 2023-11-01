@@ -5,5 +5,6 @@
 
 rt_Data_t rt_fn_dbg_typename();
 rt_Data_t rt_fn_dbg_refcnt();
+rt_Data_t rt_fn_dbg_id();
 
 #endif

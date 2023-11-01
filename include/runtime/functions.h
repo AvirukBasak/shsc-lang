@@ -27,6 +27,7 @@ typedef enum {
     rt_fn_DBG_REFCNT,    /* dbg:refcnt */
     rt_fn_DBG_FILENAME,  /* dbg:filename */
     rt_fn_DBG_LINENO,    /* dbg:lineno */
+    rt_fn_DBG_ID,        /* dbg:id */
 
     rt_fn_IO_PRINT,      /* io:print */
     rt_fn_IO_INPUT,      /* io:input */

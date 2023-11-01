@@ -12,6 +12,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataStr.h"
+#include "runtime/data/GarbageColl.h"
 #include "runtime/io.h"
 
 rt_DataList_t *rt_DataList_init()
@@ -37,21 +38,34 @@ void rt_DataList_copy(rt_DataList_t *lst)
     ++lst->rc;
 }
 
-void rt_DataList_destroy(rt_DataList_t **ptr)
+void rt_DataList_destroy_circular(rt_DataList_t **ptr, bool flag)
 {
     if (!ptr || !*ptr) return;
     rt_DataList_t *lst = *ptr;
     /* ref counting */
     --lst->rc;
     if (lst->rc < 0) lst->rc = 0;
-    if (lst->rc > 0) return;
+    if (lst->rc > 0) {
+        /* if rc > 0, check if the data has only cyclic references
+           if so, set rc to 0 to free the data */
+        if (flag && rt_data_GC_has_only_cyclic_refcnt(rt_Data_list(lst))) {
+            rt_data_GC_break_cycle(rt_Data_list(lst), rt_Data_list(lst));
+            lst->rc = 0;
+        }
+        else return;
+    }
     /* free if rc 0 */
     for (int64_t i = 0; i < lst->length; i++)
-        rt_Data_destroy(&lst->var[i]);
+        rt_Data_destroy_circular(&lst->var[i], flag);
     free(lst->var);
     lst->var = NULL;
     free(lst);
     *ptr = NULL;
+}
+
+void rt_DataList_destroy(rt_DataList_t **ptr)
+{
+    rt_DataList_destroy_circular(ptr, false);
 }
 
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var)

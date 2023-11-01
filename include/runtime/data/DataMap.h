@@ -1,6 +1,7 @@
 #ifndef RT_DATA_MAP_H
 #define RT_DATA_MAP_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include "tlib/khash/khash.h"
@@ -24,6 +25,7 @@ typedef khiter_t rt_DataMap_iter_t;
 rt_DataMap_t *rt_DataMap_init();
 int64_t rt_DataMap_length(const rt_DataMap_t *mp);
 void rt_DataMap_copy(rt_DataMap_t *mp);
+void rt_DataMap_destroy_circular(rt_DataMap_t **ptr, bool flag);
 void rt_DataMap_destroy(rt_DataMap_t **ptr);
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value);
 const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key);

@@ -246,7 +246,7 @@ rt_Data_t rt_VarTable_pop_scope(void)
     /* get the current scope */
     rt_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
     /* destroy map of values */
-    rt_DataMap_destroy(current_scope);
+    rt_DataMap_destroy_circular(current_scope, true);
     --current_proc->curr_scope_ptr;
     /* if there are no scopes left in the current procedure free the stack */
     if (current_proc->curr_scope_ptr == -1) {
