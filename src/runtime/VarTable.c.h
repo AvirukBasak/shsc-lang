@@ -15,7 +15,6 @@
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataMap.h"
-#include "runtime/data/GarbageColl.h"
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 #include "tlib/khash/khash.h"
@@ -246,49 +245,7 @@ rt_Data_t rt_VarTable_pop_scope(void)
     rt_VarTable_acc_setval(*RT_VTABLE_ACC);
     /* get the current scope */
     rt_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
-
-    /* destroy map of values
-       uses the gc module to find and break circular refs */
-    for (
-        rt_DataMap_iter_t it = rt_DataMap_begin(*current_scope);
-        it != rt_DataMap_end(*current_scope);
-        ++it
-    ) {
-        if (!rt_DataMap_exists(*current_scope, it)) continue;
-        const rt_DataMapEntry_t *entry = rt_DataMap_get(*current_scope, it);
-        rt_Data_t *ref = (rt_Data_t*) &entry->value;
-        if (!ref) continue;
-        rt_Data_t data = *ref;
-        if (data.type == rt_DATA_TYPE_STR || data.type == rt_DATA_TYPE_INTERP_STR)
-            data = rt_Data_list(data.data.str->var);
-        if (data.type == rt_DATA_TYPE_LST) {
-            if (data.data.lst->rc > 0) {
-                /* if rc > 0, check if the data has only cyclic references
-                   if so, set rc to 0 to free the data */
-                if (rt_data_GC_has_only_cyclic_refcnt(rt_Data_list(data.data.lst))) {
-                    rt_data_GC_break_cycle(
-                        rt_Data_list(data.data.lst),
-                        rt_Data_list(data.data.lst)
-                    );
-                    data.data.lst->rc = 0;
-                }
-            }
-        }
-        else if (data.type == rt_DATA_TYPE_MAP) {
-            if (data.data.mp->rc > 0) {
-                /* if rc > 0, check if the data has only cyclic references
-                   if so, set rc to 0 to free the data */
-                if (rt_data_GC_has_only_cyclic_refcnt(rt_Data_map(data.data.mp))) {
-                    rt_data_GC_break_cycle(
-                        rt_Data_map(data.data.mp),
-                        rt_Data_map(data.data.mp)
-                    );
-                    data.data.mp->rc = 0;
-                }
-            }
-        }
-    }
-
+    /* destroy map of values */
     rt_DataMap_destroy(current_scope);
     --current_proc->curr_scope_ptr;
     /* if there are no scopes left in the current procedure free the stack */
