@@ -32,35 +32,35 @@ rt_VarTable_Acc_t rt_vtable_accumulator = {
 
 
 /* few globally defined variables */
-rt_Data_t rt_VarTable_rsv_lf            = { .data.chr = '\n',                    .type = rt_DATA_TYPE_CHR },
+rt_Data_t rt_VarTable_rsv_lf     = { .data.chr = '\n',            .type = rt_DATA_TYPE_CHR, .is_const = true, .is_weak = false },
 /* list of globally defined typename variables */
-          rt_VarTable_typeid_bul        = { .data.i64 = rt_DATA_TYPE_BUL,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_typeid_chr        = { .data.i64 = rt_DATA_TYPE_CHR,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_typeid_i64        = { .data.i64 = rt_DATA_TYPE_I64,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_typeid_f64        = { .data.i64 = rt_DATA_TYPE_F64,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_typeid_str        = { .data.i64 = rt_DATA_TYPE_STR,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_typeid_lst        = { .data.i64 = rt_DATA_TYPE_LST,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_typeid_any        = { .data.i64 = rt_DATA_TYPE_ANY,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_typeid_map        = { .data.i64 = rt_DATA_TYPE_MAP,        .type = rt_DATA_TYPE_I64 },
-          rt_VarTable_rsv_null          = { .data.any = NULL,                    .type = rt_DATA_TYPE_ANY };
+          rt_VarTable_typeid_bul = { .data.i64 = rt_DATA_TYPE_BUL,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_chr = { .data.i64 = rt_DATA_TYPE_CHR,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_i64 = { .data.i64 = rt_DATA_TYPE_I64,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_f64 = { .data.i64 = rt_DATA_TYPE_F64,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_str = { .data.i64 = rt_DATA_TYPE_STR,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_lst = { .data.i64 = rt_DATA_TYPE_LST,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_any = { .data.i64 = rt_DATA_TYPE_ANY,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_map = { .data.i64 = rt_DATA_TYPE_MAP,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_rsv_null   = { .data.any = NULL,            .type = rt_DATA_TYPE_ANY, .is_const = true, .is_weak = false };
 
 
 rt_Data_t *rt_VarTable_get_globvar(const char *varname)
 {
-    if (!strcmp("lf", varname))         return &rt_VarTable_rsv_lf;
-    if (!strcmp("bul", varname))        return &rt_VarTable_typeid_bul;
-    if (!strcmp("chr", varname))        return &rt_VarTable_typeid_chr;
-    if (!strcmp("i64", varname))        return &rt_VarTable_typeid_i64;
-    if (!strcmp("f64", varname))        return &rt_VarTable_typeid_f64;
-    if (!strcmp("str", varname))        return &rt_VarTable_typeid_str;
-    if (!strcmp("lst", varname))        return &rt_VarTable_typeid_lst;
-    if (!strcmp("map", varname))        return &rt_VarTable_typeid_map;
-    if (!strcmp("null", varname))       return &rt_VarTable_rsv_null;
+    if (!strcmp("lf", varname))   return &rt_VarTable_rsv_lf;
+    if (!strcmp("bul", varname))  return &rt_VarTable_typeid_bul;
+    if (!strcmp("chr", varname))  return &rt_VarTable_typeid_chr;
+    if (!strcmp("i64", varname))  return &rt_VarTable_typeid_i64;
+    if (!strcmp("f64", varname))  return &rt_VarTable_typeid_f64;
+    if (!strcmp("str", varname))  return &rt_VarTable_typeid_str;
+    if (!strcmp("lst", varname))  return &rt_VarTable_typeid_lst;
+    if (!strcmp("map", varname))  return &rt_VarTable_typeid_map;
+    if (!strcmp("null", varname)) return &rt_VarTable_rsv_null;
     return NULL;
 }
 
 
-void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const)
+void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const, bool is_weak)
 {
     if ( (!isalpha(varname[0]) && varname[0] != '_'
         && strcmp(varname, RT_VTABLE_ARGSVAR)) || isdigit(varname[0]) )
@@ -80,19 +80,29 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)
     if (!dest) return NULL;
     /* if data is one of the global built-in vars, throw appropriate error */
     {
-        if (dest == &rt_VarTable_rsv_lf)         rt_throw("cannot modify built-in variable 'lf'");
-        if (dest == &rt_VarTable_typeid_bul)     rt_throw("cannot modify built-in variable 'bul'");
-        if (dest == &rt_VarTable_typeid_chr)     rt_throw("cannot modify built-in variable 'chr'");
-        if (dest == &rt_VarTable_typeid_i64)     rt_throw("cannot modify built-in variable 'i64'");
-        if (dest == &rt_VarTable_typeid_f64)     rt_throw("cannot modify built-in variable 'f64'");
-        if (dest == &rt_VarTable_typeid_str)     rt_throw("cannot modify built-in variable 'str'");
-        if (dest == &rt_VarTable_typeid_lst)     rt_throw("cannot modify built-in variable 'lst'");
-        if (dest == &rt_VarTable_typeid_map)     rt_throw("cannot modify built-in variable 'map'");
-        if (dest == &rt_VarTable_rsv_null)       rt_throw("cannot modify built-in variable 'null'");
+        if (dest == &rt_VarTable_rsv_lf)     rt_throw("cannot modify reserved variable 'lf'");
+        if (dest == &rt_VarTable_typeid_bul) rt_throw("cannot modify reserved variable 'bul'");
+        if (dest == &rt_VarTable_typeid_chr) rt_throw("cannot modify reserved variable 'chr'");
+        if (dest == &rt_VarTable_typeid_i64) rt_throw("cannot modify reserved variable 'i64'");
+        if (dest == &rt_VarTable_typeid_f64) rt_throw("cannot modify reserved variable 'f64'");
+        if (dest == &rt_VarTable_typeid_str) rt_throw("cannot modify reserved variable 'str'");
+        if (dest == &rt_VarTable_typeid_lst) rt_throw("cannot modify reserved variable 'lst'");
+        if (dest == &rt_VarTable_typeid_map) rt_throw("cannot modify reserved variable 'map'");
+        if (dest == &rt_VarTable_rsv_null)   rt_throw("cannot modify reserved variable 'null'");
     }
-    rt_Data_copy(&src);
-    rt_Data_destroy(dest);
-    *dest = src;
+    /* if data is const, throw appropriate error */
+    if (dest->is_const) rt_throw("cannot modify const variable");
+    /* if src data is not weak, increase its reference count */
+    if (!src.is_weak) rt_Data_copy(&src);
+    /* if dest data is not weak, decrease its reference count */
+    if (!dest->is_weak) rt_Data_destroy(dest);
+    /* copy src data but keep dest weak and const attributes */
+    *dest = (rt_Data_t) {
+        .data = src.data,
+        .type = src.type,
+        .is_const = dest->is_const,
+        .is_weak = dest->is_weak
+    };
     return dest;
 }
 

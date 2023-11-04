@@ -65,7 +65,7 @@ rt_Data_t rt_VarTable_rsv_lf,
           rt_VarTable_rsv_null;
 
 /** create a new variable in the current scope */
-void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const);
+void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const, bool is_weak);
 
 /** modify data directly by address instead of querying via identifier */
 rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src);
