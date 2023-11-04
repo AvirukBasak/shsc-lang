@@ -5,7 +5,7 @@
 
 void rt_op_ampersand            (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_arith_rshift         (const rt_Data_t *lhs, const rt_Data_t *rhs);
-void rt_op_assign               (rt_Data_t *lhs, const rt_Data_t *rhs);
+void rt_op_assign               (rt_Data_t *lhs, const rt_Data_t *rhs, bool is_const, bool is_weak);
 void rt_op_asterix              (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_bang                 (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_bitwise_lshift       (const rt_Data_t *lhs, const rt_Data_t *rhs);
