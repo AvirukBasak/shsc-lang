@@ -56,8 +56,8 @@ void rt_op_fncall_handler(const rt_Data_t context, const ast_Identifier_t *modul
     }
     rt_VarTable_push_proc(module, proc, currfile);
     /* store fn args into agrs location */
-    rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true);
-    rt_VarTable_create(RT_VTABLE_CONTEXTVAR, context, true);
+    rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true, false);
+    rt_VarTable_create(RT_VTABLE_CONTEXTVAR, context, true, false);
     if (code) {
         /* call user defined function */
         rt_ControlStatus_t ctrl = rt_eval_Statements(code);

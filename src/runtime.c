@@ -28,7 +28,7 @@ int rt_exec(int argc, char **argv)
     }
 
     rt_VarTable_push_proc(module, proc, currfile);
-    rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true);
+    rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true, false);
 
     rt_ControlStatus_t ctrl = rt_eval_Statements(code);
     if (ctrl == rt_CTRL_BREAK)

@@ -158,7 +158,7 @@ rt_ControlStatus_t rt_eval_ForBlock_range(
     for (int64_t i = start_i;
             (start_i <= end_i && i < end_i) || i > end_i; i += by_i) {
         rt_VarTable_create(for_block->val->identifier_name,
-            rt_Data_i64(i), true);
+            rt_Data_i64(i), true, false);
         ctrl = rt_eval_Statements(for_block->statements);
         if (ctrl == rt_CTRL_PASS)
             /* do nothing in pass */;
@@ -205,9 +205,9 @@ rt_ControlStatus_t rt_eval_ForBlock_str(
     rt_ControlStatus_t ctrl = rt_CTRL_PASS;
     for (int64_t i = 0; i < length; ++i) {
         if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
-            rt_Data_i64(i), true);
+            rt_Data_i64(i), true, false);
         rt_VarTable_create(for_block->val->identifier_name,
-            *rt_DataStr_getref(iterable.data.str, i), true);
+            *rt_DataStr_getref(iterable.data.str, i), true, false);
         /* execute code */
         ctrl = rt_eval_Statements(for_block->statements);
         if (ctrl == rt_CTRL_PASS)
@@ -227,9 +227,9 @@ rt_ControlStatus_t rt_eval_ForBlock_lst(
     rt_ControlStatus_t ctrl = rt_CTRL_PASS;
     for (int64_t i = 0; i < length; ++i) {
         if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
-            rt_Data_i64(i), true);
+            rt_Data_i64(i), true, false);
         rt_VarTable_create(for_block->val->identifier_name,
-            *rt_DataList_getref(iterable.data.lst, i), true);
+            *rt_DataList_getref(iterable.data.lst, i), true, false);
         /* execute code */
         ctrl = rt_eval_Statements(for_block->statements);
         if (ctrl == rt_CTRL_PASS)
@@ -252,8 +252,8 @@ rt_ControlStatus_t rt_eval_ForBlock_map(
         if (!rt_DataMap_exists(iterable.data.mp, entry_it)) continue;
         rt_DataMap_Entry_t entry = *rt_DataMap_get(iterable.data.mp, entry_it);
         if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
-            rt_Data_str(rt_DataStr_init(entry.key)), true);
-        rt_VarTable_create(for_block->val->identifier_name, entry.value, true);
+            rt_Data_str(rt_DataStr_init(entry.key)), true, false);
+        rt_VarTable_create(for_block->val->identifier_name, entry.value, true, false);
         /* execute code */
         ctrl = rt_eval_Statements(for_block->statements);
         if (ctrl == rt_CTRL_PASS)
