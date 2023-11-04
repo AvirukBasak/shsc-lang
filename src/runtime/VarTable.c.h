@@ -71,7 +71,13 @@ void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const, boo
     }
     rt_VarTable_proc_t *current_proc = &(rt_vtable->procs[rt_vtable->curr_proc_ptr]);
     rt_VarTable_Scope_t *current_scope = &(current_proc->scopes[current_proc->curr_scope_ptr]);
-    rt_DataMap_insert(*current_scope, varname, value);
+    /* getref to the given key, this creates new data if it doesn't exist */
+    rt_Data_t *data = rt_DataMap_getref(*current_scope, varname);
+    if (!data)
+        io_errndie("rt_VarTable_create:" ERR_MSG_NULLPTR);
+    /* if data is const throw error */
+    if (data->is_const) rt_throw("cannot modify const variable");
+    rt_VarTable_modf(data, value, is_const, is_weak);
 }
 
 
