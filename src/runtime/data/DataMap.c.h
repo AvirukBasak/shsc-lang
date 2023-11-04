@@ -195,7 +195,7 @@ bool rt_DataMap_exists(rt_DataMap_t *mp, rt_DataMap_iter_t it)
     return kh_exist(mp->data_map, it);
 }
 
-const rt_DataMapEntry_t *rt_DataMap_get(rt_DataMap_t *mp, rt_DataMap_iter_t it)
+const rt_DataMap_Entry_t *rt_DataMap_get(rt_DataMap_t *mp, rt_DataMap_iter_t it)
 {
     if (!kh_exist(mp->data_map, it)) return NULL;
     return &kh_value(mp->data_map, it);

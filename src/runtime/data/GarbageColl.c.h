@@ -184,7 +184,7 @@ void rt_data_GC_cyclic_count_helper(
             ++it
         ) {
             if (!rt_DataMap_exists(node.data.mp, it)) continue;
-            const rt_DataMapEntry_t *entry = rt_DataMap_get(node.data.mp, it);
+            const rt_DataMap_Entry_t *entry = rt_DataMap_get(node.data.mp, it);
             if (!entry) continue;
             /* explicit cast to non-const */
             rt_Data_t *ref = (rt_Data_t*) &entry->value;

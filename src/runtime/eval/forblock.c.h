@@ -250,7 +250,7 @@ rt_ControlStatus_t rt_eval_ForBlock_map(
     for (rt_DataMap_iter_t entry_it = rt_DataMap_begin(iterable.data.mp);
             entry_it != rt_DataMap_end(iterable.data.mp); ++entry_it) {
         if (!rt_DataMap_exists(iterable.data.mp, entry_it)) continue;
-        rt_DataMapEntry_t entry = *rt_DataMap_get(iterable.data.mp, entry_it);
+        rt_DataMap_Entry_t entry = *rt_DataMap_get(iterable.data.mp, entry_it);
         if (for_block->idx) rt_VarTable_create(for_block->idx->identifier_name,
             rt_Data_str(rt_DataStr_init(entry.key)), true);
         rt_VarTable_create(for_block->val->identifier_name, entry.value, true);
