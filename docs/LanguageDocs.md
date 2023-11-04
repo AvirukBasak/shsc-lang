@@ -28,6 +28,9 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Variable declaration](#variable-declaration)
     - [Variable shadowing](#variable-shadowing)
     - [Constants](#constants)
+        - [Lazy const](#lazy-const)
+    - [Weak refs](#weak-refs)
+        - [Weak ref behaviour](#weak-ref-behaviour)
     - [Semicolons](#semicolons)
         - [Example](#example)
 - [If statements](#if-statements)
@@ -172,7 +175,6 @@ end
 ### Variable shadowing
 If you use `var` again, the original variable will be destroyed and replaced by the new one.
 
-**WARNING:** Experimental feature; may not be released during the beta (if the project ever leaves alpha).
 ```ruby
 proc test start
     var x = 5
@@ -191,10 +193,45 @@ end
 You'd use the `const` keyword to create a constant in current scope.
 ```ruby
 proc test start
-    const x = 5
+    var x = const 5
 end
 ```
 A constant cannot be shadowed.
+
+#### Lazy const
+Lazy `const` allows you to create a variable and later on make it constant.
+```ruby
+proc test start
+    var x = "default value"
+    x = const mod:get_some_value()
+end
+```
+
+### Weak refs
+You'd use the `weak` keyword to create a weak reference in current scope.
+```ruby
+proc test start
+    var x = { a: "some data", b: {} }
+    var x.b.circular = weak x
+end
+```
+
+Weak references are useful for creating circular references.
+
+Note that not using `weak` in a circular reference will cause a memory leak because the language uses reference counting GC. See [Circular references](#circular-references) for more details.
+
+#### Weak ref behaviour
+- Not using `weak` keyword automatically creates a strong reference.
+- Thus, strong references can be made to objects via a weak reference. For example:
+    ```ruby
+    var x = { a: "some data", b: {} }
+    var y = weak x
+    var z = y
+    # x and z are strong references but y is weak
+    ```
+- The `weak` keyword can be used only after the `=` operator.
+- It can be used in variable declaration as well as assignment.
+- It can be used in conjunction with `const` keyword.
 
 ### Semicolons
 Newlines or semicolons can be used to terminate a statement.
@@ -509,69 +546,13 @@ The language uses a temporary location called the `accumulator` to store the res
 
 #### Circular references
 This language is unable to detect and manage circular references.
-If a circular reference must be created, it must be set to `null` later on to let the GC clean up the memory.
+If a circular reference must be created, it must be a weak reference. See [Weak refs](#weak-refs) for more details.
 
-Running `tostr` or `io:print` on an object having a circular reference will most likely result in Segmentation fault.
-
-<!--
-
-This language is unable to detect and manage circular references.
-If a circular reference must be created, it must be a weak reference.
-
-A weak reference is created using the `weak` keyword.
-The following shows how to create a weak reference properly, without hindering the working of the reference counting GC.
-
-```ruby
-var x = "Hello"
-var z = { abc: [1,2,3] }
-var y = null
-```
-
-- **Strong to strong**:
-    ```ruby
-    y = z
-    y = x
-    ```
-
-- **Strong to weak**:
-
-    The following causes a leak as reference to `x` object is strong and reference count is not reduced.
-    ```ruby
-    # BAD PRACTICE
-    y weak = z
-    ```
-    You must strong assign `null` to reduce the reference count
-    ```ruby
-    # GOOD PRACTICE
-    y = null
-    y weak = z
-    ```
-
-- **Weak to weak**:
-    ```ruby
-    y weak = x
-    ```
-
-- **Weak to strong**:
-
-    The following reduces reference count of `x` object too much.
-    However, `x` was being weakly pointed to and the reference count shouldn't have changed.
-    ```ruby
-    # BAD PRACTICE
-    y = z
-    ```
-    You must weak assign `null` to keep the reference count unaffected.
-    ```ruby
-    # GOOD PRACTICE
-    y weak = null
-    y = z
-    ```
+Running `tostr` or `io:print` on an object having a circular reference will most likely result in stack overflow or Segmentation fault.
 
 Avoid using same variables for weak and strong references.
 
-Additionally, using circular strong references **WILL** cause memory leak.
--->
-
+Additionally, using non-weak circular references **WILL** cause memory leak.
 
 ### Format strings
 ```ruby
@@ -654,6 +635,7 @@ The language supports the following built-in functions (within built-in modules)
 #### Module `dbg`
 - `dbg:typename` returns identifier name of one of the [global variables for types](#global-variables-for-types)
 - `dbg:refcnt` returns total number of references to an object
+- `dbg:id` returns hex string of the memory address of an object
 
 #### Module `io`
 - `io:print` prints string form of data (calls `tostr`)

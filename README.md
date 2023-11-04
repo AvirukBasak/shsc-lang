@@ -14,14 +14,15 @@ Idk if you can compile it on MSVC so give it a shot and maybe contribute an `md`
 ### Usage
 ```
 USAGE:
-  shsc [FILENAMES]         execute files listed as args
-  shsc <flags> [FILENAMES] provide with additional flags
+  shsc              [FILENAMES] execute files listed as args
+  shsc <flags>      [FILENAMES] provide with additional flags
 FLAGS:
-  -r  --run  [FILENAME]    run files listed in file
-  -t  --ast  [FILENAME]    save AST as JSON to file
-  -tf --astf [FILENAME]    produce formatted JSON
-  -h  --help               view this message
-  -v  --version            version info
+  -r    --run       [FILENAME]  run files listed in file
+  -t    --ast       [FILENAME]  save AST as JSON to file
+  -ldbg --lex-debug [FILENAME]  produce formatted JSON
+  -tf   --astf      [FILENAME]  produce formatted JSON
+  -h    --help                  view this message
+  -v    --version               version info
 ```
 
 Examples at [`examples/`](examples/).
@@ -39,9 +40,12 @@ make run ARGS="examples/helloworld.txt"
 - [x] Call stack
 - [x] Variables
 - [x] Variable Shadowing
-- [ ] Constants
+- [x] Constants
+- [x] Weak references
 - [x] Local scopes
 - [x] Function scopes
+- [x] Error stack traces
+- [x] Contextual functions (OOP)
 - [x] Literals
     - [x] `bul` Boolean
     - [x] `chr` Char
@@ -56,7 +60,8 @@ make run ARGS="examples/helloworld.txt"
 - [x] Iterable based for
 - [x] While
 - [x] Break and continue
-- [ ] If-else (untested)
+- [x] If-else
+- [ ] Operators
 - [ ] Built-in functions
     - [x] `isnull`
     - [x] `tostr`
@@ -64,6 +69,7 @@ make run ARGS="examples/helloworld.txt"
     - [x] `dbg:typename`
     - [ ] `dbg:rtsize`
     - [x] `dbg:refcnt`
+    - [x] `dbg:id`
     - [ ] `dbg:filename`
     - [ ] `dbg:lineno`
     - [x] `io:print`
@@ -100,9 +106,6 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `map:concat`
     - [ ] `map:find`
     - [ ] `map:keys`
-- [ ] Operators
-- [x] Error stack traces
-- [x] Contextual functions (OOP)
 
 ### List File
  - Each line of the list file has a single file path
