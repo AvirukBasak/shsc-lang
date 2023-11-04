@@ -9,8 +9,13 @@
 
 void rt_op_assign(rt_Data_t *lhs, const rt_Data_t *rhs, bool is_const, bool is_weak)
 {
-    rt_VarTable_acc_setadr(
-        rt_VarTable_modf(lhs, *rhs, is_const, is_weak));
+    /* never use setadr here coz it is not needed
+       setadr is a rather unsafe fn as it causes the acc to
+       strongly point to a variable that is weakly pointing to
+       something else and as a result the acc ends up hiding the weak
+       ref property of that variable */
+    rt_VarTable_acc_setval(
+        *rt_VarTable_modf(lhs, *rhs, is_const, is_weak));
 }
 
 #else

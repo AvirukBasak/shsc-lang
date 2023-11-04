@@ -80,7 +80,7 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
 
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
 {
-    if (!value.is_weak) rt_Data_copy(&value);
+    rt_Data_copy(&value);
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
     if (entry_it != kh_end(mp->data_map)) {
         /* key exists, reduce original value ref count */
@@ -94,7 +94,12 @@ void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
         kh_value(mp->data_map, entry_it).key = key_internal;
         ++mp->length;
     }
-    kh_value(mp->data_map, entry_it).value = value;
+    kh_value(mp->data_map, entry_it).value = (rt_Data_t) {
+        .type = value.type,
+        .data = value.data,
+        .is_const = false,
+        .is_weak = false,
+    };
 }
 
 const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key)

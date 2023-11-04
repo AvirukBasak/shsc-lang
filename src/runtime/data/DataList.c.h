@@ -2,6 +2,7 @@
 #define RT_DATA_LIST_C_H
 
 #include <inttypes.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,13 +71,18 @@ void rt_DataList_destroy(rt_DataList_t **ptr)
 
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var)
 {
-    if (!var.is_weak) rt_Data_copy(&var);
+    rt_Data_copy(&var);
     if (lst->length >= lst->capacity) {
         lst->capacity = lst->capacity * 2 +1;
         lst->var = (rt_Data_t*) realloc(lst->var, lst->capacity * sizeof(rt_Data_t));
         if (!lst->var) io_errndie("rt_DataList_append:" ERR_MSG_REALLOCFAIL);
     }
-    lst->var[lst->length++] = var;
+    lst->var[lst->length++] = (rt_Data_t) {
+        .type = var.type,
+        .data = var.data,
+        .is_const = false,
+        .is_weak = false,
+    };
 }
 
 rt_Data_t *rt_DataList_getref_errnull(const rt_DataList_t *lst, int64_t idx)

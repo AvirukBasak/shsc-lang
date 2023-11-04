@@ -154,7 +154,12 @@ void rt_VarTable_acc_setval(rt_Data_t val)
     rt_Data_copy(&val);
     if (!rt_vtable_accumulator.adr) rt_Data_destroy(&rt_vtable_accumulator.val);
     else rt_Data_destroy(rt_vtable_accumulator.adr);
-    rt_vtable_accumulator.val = val;
+    rt_vtable_accumulator.val = (rt_Data_t) {
+        .type = val.type,
+        .data = val.data,
+        .is_const = false,
+        .is_weak = false,
+    };
     rt_vtable_accumulator.adr = NULL;
 }
 
