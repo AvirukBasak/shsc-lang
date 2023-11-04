@@ -35,6 +35,8 @@ struct ast_Statement_t {
 struct ast_Assignment_t {
     ast_Identifier_t *lhs;
     ast_Expression_t *rhs;
+    bool is_const;
+    bool is_weak;
     enum ast_AssignmentType_t type;
 };
 

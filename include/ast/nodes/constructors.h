@@ -1,6 +1,7 @@
 #ifndef AST_NODES_CONSTRUCTORS_H
 #define AST_NODES_CONSTRUCTORS_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "ast.h"
@@ -17,8 +18,7 @@ ast_Statement_t     *ast_Statement_return(ast_Expression_t *expression, int line
 ast_Statement_t     *ast_Statement_Assignment(ast_Assignment_t *assignment, int line_no);
 ast_Statement_t     *ast_Statement_CompoundSt(ast_CompoundSt_t *compund, int line_no);
 
-ast_Assignment_t    *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expression_t *expression);
-ast_Assignment_t    *ast_Assignment_mkconst(ast_Identifier_t *identifier, ast_Expression_t *expression);
+ast_Assignment_t    *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expression_t *expression, bool is_const, bool is_weak);
 ast_Assignment_t    *ast_Assignment_tovoid(ast_Expression_t *expression);
 
 ast_CompoundSt_t    *ast_CompoundSt_IfBlock(ast_IfBlock_t *block);
