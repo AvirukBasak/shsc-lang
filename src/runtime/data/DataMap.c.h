@@ -63,7 +63,9 @@ void rt_DataMap_destroy_circular(rt_DataMap_t **ptr, bool flag)
             flag
         );
         /* free the key */
-        free(kh_value(mp->data_map, entry_it).key);
+        if (kh_value(mp->data_map, entry_it).key)
+            free(kh_value(mp->data_map, entry_it).key);
+        kh_value(mp->data_map, entry_it).key = NULL;
     }
     kh_destroy(rt_DataMap_t, mp->data_map);
     mp->data_map = NULL;
