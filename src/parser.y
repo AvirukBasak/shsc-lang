@@ -123,7 +123,6 @@ FILE *yyin = NULL;
 %token TOKOP_NOP
 %token TOKOP_FNCALL
 %token TOKOP_INDEXING
-%token TOKOP_WEAK_ASSIGN
 %token TOKOP_TERNARY_COND
 %token TOKOP_FNARGS_INDEXING
 
@@ -338,8 +337,6 @@ expression:
 assignment_expression:
     conditional_expression                                   { $$ = $1; }
     | postfix_expression "=" assignment_expression           { $$ = ast_Expression($2, $1, $3, NULL); }
-    | postfix_expression "=" "weak" assignment_expression    { $$ = ast_Expression(TOKOP_WEAK_ASSIGN, $1, $4, NULL); }
-    | postfix_expression "weak" "=" assignment_expression    { $$ = ast_Expression(TOKOP_WEAK_ASSIGN, $1, $4, NULL); }
     | postfix_expression "||=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
     | postfix_expression "&&=" assignment_expression         { $$ = ast_Expression($2, $1, $3, NULL); }
     | postfix_expression "|=" assignment_expression          { $$ = ast_Expression($2, $1, $3, NULL); }
