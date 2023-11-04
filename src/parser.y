@@ -289,9 +289,12 @@ statement:
     ;
 
 assignment:
-    "var" identifier "=" expression        /* shadow or create new var */                          { $$ = ast_Assignment_create($2, $4); }
-    | "const" identifier "=" expression    /* create new constant */                               { $$ = ast_Assignment_mkconst($2, $4); }
-    | expression                           /* assignment to void */                                { $$ = ast_Assignment_tovoid($1); }
+    "var" identifier "=" expression                      /* shadow or create new var */            { $$ = ast_Assignment_create($2, $4, false, false); }
+    | "var" identifier "=" "const" expression            /* create new constant */                 { $$ = ast_Assignment_create($2, $5, true, false); }
+    | "var" identifier "=" "weak" expression             /* create weak ref */                     { $$ = ast_Assignment_create($2, $5, false, true); }
+    | "var" identifier "=" "const" "weak" expression     /* create const weak ref */               { $$ = ast_Assignment_create($2, $6, true, true); }
+    | "var" identifier "=" "weak" "const" expression     /* create const weak ref */               { $$ = ast_Assignment_create($2, $6, true, true); }
+    | expression                                         /* assignment to void */                  { $$ = ast_Assignment_tovoid($1); }
     ;
 
 compound_statement:

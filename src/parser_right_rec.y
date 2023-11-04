@@ -343,9 +343,12 @@ statement:
 /* A single assignment ----------------------------------------------------------------------------
    non-recursive grammar */
 assignment:
-    "var" identifier "=" expression      /* shadow or create new var */
-    | "const" identifier "=" expression  /* create new constant */
-    | expression                         /* assignment to void */
+    "var" identifier "=" expression                      /* shadow or create new var */
+    | "var" identifier "=" "const" expression            /* create new constant */
+    | "var" identifier "=" "weak" expression             /* create weak ref */
+    | "var" identifier "=" "const" "weak" expression     /* create const weak ref */
+    | "var" identifier "=" "weak" "const" expression     /* create const weak ref */
+    | expression                                         /* assignment to void */
     ;
 
 
