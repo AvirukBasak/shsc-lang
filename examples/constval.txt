@@ -1,0 +1,10 @@
+proc main start
+    var x = "default value"
+    x = const main:get_some_value()
+    io:print(x, lf)
+    x = "modify value"
+end
+
+proc get_some_value start
+    return "some value"
+end

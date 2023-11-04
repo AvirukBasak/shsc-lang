@@ -37,87 +37,87 @@ FILE *yyin = NULL;
     char    *identifier_name;
 
     /* ast nodes */
-    ast_Statements_t       *astnode_statements;           /* statements */
-    ast_Statement_t        *astnode_statement;            /* statement */
-    ast_Assignment_t       *astnode_assignment;           /* assignment */
-    ast_CompoundSt_t       *astnode_compound_statement;   /* compound_statement */
-    ast_IfBlock_t          *astnode_if_block;             /* if_block */
-    ast_ElseBlock_t        *astnode_else_block;           /* else_block */
-    ast_WhileBlock_t       *astnode_while_block;          /* while_block */
-    ast_ForBlock_t         *astnode_for_block;            /* for_block */
-    ast_Block_t            *astnode_block;                /* block */
-    ast_Expression_t       *astnode_expression;           /* expression */
-    ast_CommaSepList_t     *astnode_comma_list;           /* comma_list */
-    ast_AssociativeList_t  *astnode_assoc_list;           /* assoc_list */
-    ast_Literal_t          *astnode_literal;              /* literal */
-    ast_Identifier_t       *astnode_identifier;           /* identifier */
+    ast_Statements_t      *astnode_statements;         /* statements */
+    ast_Statement_t       *astnode_statement;          /* statement */
+    ast_Assignment_t      *astnode_assignment;         /* assignment */
+    ast_CompoundSt_t      *astnode_compound_statement; /* compound_statement */
+    ast_IfBlock_t         *astnode_if_block;           /* if_block */
+    ast_ElseBlock_t       *astnode_else_block;         /* else_block */
+    ast_WhileBlock_t      *astnode_while_block;        /* while_block */
+    ast_ForBlock_t        *astnode_for_block;          /* for_block */
+    ast_Block_t           *astnode_block;              /* block */
+    ast_Expression_t      *astnode_expression;         /* expression */
+    ast_CommaSepList_t    *astnode_comma_list;         /* comma_list */
+    ast_AssociativeList_t *astnode_assoc_list;         /* assoc_list */
+    ast_Literal_t         *astnode_literal;            /* literal */
+    ast_Identifier_t      *astnode_identifier;         /* identifier */
 }
 
-%token <tok> TOKEN_BANG                              "!"
-%token <tok> TOKEN_LOGICAL_UNEQUAL                   "!="
-%token <tok> TOKEN_LOGICAL_UNIDENTICAL               "!=="
-%token <tok> TOKEN_DQUOTE                            '"'
-%token <tok> TOKEN_DOLLAR                            "$"
-%token <tok> TOKEN_PERCENT                           "%"
-%token <tok> TOKEN_MODULO_ASSIGN                     "%="
-%token <tok> TOKEN_AMPERSAND                         "&"
-%token <tok> TOKEN_LOGICAL_AND                       "&&"
-%token <tok> TOKEN_LOGICAL_AND_ASSIGN                "&&="
-%token <tok> TOKEN_BITWISE_AND_ASSIGN                "&="
-%token <tok> TOKEN_SQUOTE                            "'"
-%token <tok> TOKEN_LBRACE_PAREN                      "("
-%token <tok> TOKEN_RBRACE_PAREN                      ")"
-%token <tok> TOKEN_ASTERIX                           "*"
-%token <tok> TOKEN_EXPONENT                          "**"
-%token <tok> TOKEN_EXPONENT_ASSIGN                   "**="
-%token <tok> TOKEN_MULTIPLY_ASSIGN                   "*="
-%token <tok> TOKEN_PLUS                              "+"
-%token <tok> TOKEN_INCREMENT                         "++"
-%token <tok> TOKEN_ADD_ASSIGN                        "+="
-%token <tok> TOKEN_COMMA                             ","
-%token <tok> TOKEN_MINUS                             "-"
-%token <tok> TOKEN_DECREMENT                         "--"
-%token <tok> TOKEN_SUBSTRACT_ASSIGN                  "-="
-%token <tok> TOKEN_SARROW                            "->"
-%token <tok> TOKEN_DOT                               "."
-%token <tok> TOKEN_ELIPSIS                           "..."
-%token <tok> TOKEN_FSLASH                            "/"
-%token <tok> TOKEN_FLOOR_DIVIDE                      "//"
-%token <tok> TOKEN_FLOOR_DIVIDE_ASSIGN               "//="
-%token <tok> TOKEN_DIVIDE_ASSIGN                     "/="
-%token <tok> TOKEN_COLON                             ":"
-%token <tok> TOKEN_DCOLON                            "::"
-%token <tok> TOKEN_SEMICOLON                         ";"
-%token <tok> TOKEN_LBRACE_ANGULAR                    "<"
-%token <tok> TOKEN_BITWISE_LSHIFT                    "<<"
-%token <tok> TOKEN_BITWISE_LSHIFT_ASSIGN             "<<="
-%token <tok> TOKEN_LOGICAL_LESSER_EQUAL              "<="
-%token <tok> TOKEN_ASSIGN                            "="
-%token <tok> TOKEN_LOGICAL_EQUAL                     "=="
-%token <tok> TOKEN_LOGICAL_IDENTICAL                 "==="
-%token <tok> TOKEN_DARROW                            "=>"
-%token <tok> TOKEN_RBRACE_ANGULAR                    ">"
-%token <tok> TOKEN_LOGICAL_GREATER_EQUAL             ">="
-%token <tok> TOKEN_BITWISE_RSHIFT                    ">>"
-%token <tok> TOKEN_BITWISE_RSHIFT_ASSIGN             ">>="
-%token <tok> TOKEN_ARITH_RSHIFT                      ">>>"
-%token <tok> TOKEN_ARITH_RSHIFT_ASSIGN               ">>>="
-%token <tok> TOKEN_QUESTION                          "?"
-%token <tok> TOKEN_AT                                "@"
-%token <tok> TOKEN_LBRACE_SQUARE                     "["
-%token <tok> TOKEN_BSLASH                            "\\"
-%token <tok> TOKEN_RBRACE_SQUARE                     "]"
-%token <tok> TOKEN_CARET                             "^"
-%token <tok> TOKEN_BITWISE_XOR_ASSIGN                "^="
-%token <tok> TOKEN_BACKTICK                          "`"
-%token <tok> TOKEN_LBRACE_CURLY                      "{"
-%token <tok> TOKEN_PIPE                              "|"
-%token <tok> TOKEN_BITWISE_OR_ASSIGN                 "|="
-%token <tok> TOKEN_PIPEOUT                           "|>"
-%token <tok> TOKEN_LOGICAL_OR                        "||"
-%token <tok> TOKEN_LOGICAL_OR_ASSIGN                 "||="
-%token <tok> TOKEN_RBRACE_CURLY                      "}"
-%token <tok> TOKEN_TILDE                             "~"
+%token <tok> TOKEN_BANG                         "!"
+%token <tok> TOKEN_LOGICAL_UNEQUAL              "!="
+%token <tok> TOKEN_LOGICAL_UNIDENTICAL          "!=="
+%token <tok> TOKEN_DQUOTE                       '"'
+%token <tok> TOKEN_DOLLAR                       "$"
+%token <tok> TOKEN_PERCENT                      "%"
+%token <tok> TOKEN_MODULO_ASSIGN                "%="
+%token <tok> TOKEN_AMPERSAND                    "&"
+%token <tok> TOKEN_LOGICAL_AND                  "&&"
+%token <tok> TOKEN_LOGICAL_AND_ASSIGN           "&&="
+%token <tok> TOKEN_BITWISE_AND_ASSIGN           "&="
+%token <tok> TOKEN_SQUOTE                       "'"
+%token <tok> TOKEN_LBRACE_PAREN                 "("
+%token <tok> TOKEN_RBRACE_PAREN                 ")"
+%token <tok> TOKEN_ASTERIX                      "*"
+%token <tok> TOKEN_EXPONENT                     "**"
+%token <tok> TOKEN_EXPONENT_ASSIGN              "**="
+%token <tok> TOKEN_MULTIPLY_ASSIGN              "*="
+%token <tok> TOKEN_PLUS                         "+"
+%token <tok> TOKEN_INCREMENT                    "++"
+%token <tok> TOKEN_ADD_ASSIGN                   "+="
+%token <tok> TOKEN_COMMA                        ","
+%token <tok> TOKEN_MINUS                        "-"
+%token <tok> TOKEN_DECREMENT                    "--"
+%token <tok> TOKEN_SUBSTRACT_ASSIGN             "-="
+%token <tok> TOKEN_SARROW                       "->"
+%token <tok> TOKEN_DOT                          "."
+%token <tok> TOKEN_ELIPSIS                      "..."
+%token <tok> TOKEN_FSLASH                       "/"
+%token <tok> TOKEN_FLOOR_DIVIDE                 "//"
+%token <tok> TOKEN_FLOOR_DIVIDE_ASSIGN          "//="
+%token <tok> TOKEN_DIVIDE_ASSIGN                "/="
+%token <tok> TOKEN_COLON                        ":"
+%token <tok> TOKEN_DCOLON                       "::"
+%token <tok> TOKEN_SEMICOLON                    ";"
+%token <tok> TOKEN_LBRACE_ANGULAR               "<"
+%token <tok> TOKEN_BITWISE_LSHIFT               "<<"
+%token <tok> TOKEN_BITWISE_LSHIFT_ASSIGN        "<<="
+%token <tok> TOKEN_LOGICAL_LESSER_EQUAL         "<="
+%token <tok> TOKEN_ASSIGN                       "="
+%token <tok> TOKEN_LOGICAL_EQUAL                "=="
+%token <tok> TOKEN_LOGICAL_IDENTICAL            "==="
+%token <tok> TOKEN_DARROW                       "=>"
+%token <tok> TOKEN_RBRACE_ANGULAR               ">"
+%token <tok> TOKEN_LOGICAL_GREATER_EQUAL        ">="
+%token <tok> TOKEN_BITWISE_RSHIFT               ">>"
+%token <tok> TOKEN_BITWISE_RSHIFT_ASSIGN        ">>="
+%token <tok> TOKEN_ARITH_RSHIFT                 ">>>"
+%token <tok> TOKEN_ARITH_RSHIFT_ASSIGN          ">>>="
+%token <tok> TOKEN_QUESTION                     "?"
+%token <tok> TOKEN_AT                           "@"
+%token <tok> TOKEN_LBRACE_SQUARE                "["
+%token <tok> TOKEN_BSLASH                       "\\"
+%token <tok> TOKEN_RBRACE_SQUARE                "]"
+%token <tok> TOKEN_CARET                        "^"
+%token <tok> TOKEN_BITWISE_XOR_ASSIGN           "^="
+%token <tok> TOKEN_BACKTICK                     "`"
+%token <tok> TOKEN_LBRACE_CURLY                 "{"
+%token <tok> TOKEN_PIPE                         "|"
+%token <tok> TOKEN_BITWISE_OR_ASSIGN            "|="
+%token <tok> TOKEN_PIPEOUT                      "|>"
+%token <tok> TOKEN_LOGICAL_OR                   "||"
+%token <tok> TOKEN_LOGICAL_OR_ASSIGN            "||="
+%token <tok> TOKEN_RBRACE_CURLY                 "}"
+%token <tok> TOKEN_TILDE                        "~"
 
 /* special operation values */
 %token TOKOP_NOP
@@ -125,54 +125,57 @@ FILE *yyin = NULL;
 %token TOKOP_INDEXING
 %token TOKOP_TERNARY_COND
 %token TOKOP_FNARGS_INDEXING
+%token TOKOP_ASSIGN_CONST
+%token TOKOP_ASSIGN_WEAK
+%token TOKOP_ASSIGN_CONST_WEAK
 
-%token TOKEN_NEWLINE                                 "\n"
+%token TOKEN_NEWLINE                            "\n"
 
 /* keywords */
-%token TOKEN_KWD_MODULE                              "module"
-%token TOKEN_KWD_PROC                                "proc"
-%token TOKEN_KWD_START                               "start"
-%token TOKEN_KWD_END                                 "end"
-%token TOKEN_KWD_BLOCK                               "block"
-%token TOKEN_KWD_IF                                  "if"
-%token TOKEN_KWD_THEN                                "then"
-%token TOKEN_KWD_ELIF                                "elif"
-%token TOKEN_KWD_ELSE                                "else"
-%token TOKEN_KWD_WHILE                               "while"
-%token TOKEN_KWD_BREAK                               "break"
-%token TOKEN_KWD_CONTINUE                            "continue"
-%token TOKEN_KWD_FOR                                 "for"
-%token TOKEN_KWD_FROM                                "from"
-%token TOKEN_KWD_TO                                  "to"
-%token TOKEN_KWD_BY                                  "by"
-%token TOKEN_KWD_IN                                  "in"
-%token TOKEN_KWD_DO                                  "do"
-%token TOKEN_KWD_VAR                                 "var"
-%token TOKEN_KWD_CONST                               "const"
-%token TOKEN_KWD_PASS                                "pass"
-%token TOKEN_KWD_RETURN                              "return"
-%token TOKEN_KWD_WEAK                                "weak"
+%token TOKEN_KWD_MODULE                         "module"
+%token TOKEN_KWD_PROC                           "proc"
+%token TOKEN_KWD_START                          "start"
+%token TOKEN_KWD_END                            "end"
+%token TOKEN_KWD_BLOCK                          "block"
+%token TOKEN_KWD_IF                             "if"
+%token TOKEN_KWD_THEN                           "then"
+%token TOKEN_KWD_ELIF                           "elif"
+%token TOKEN_KWD_ELSE                           "else"
+%token TOKEN_KWD_WHILE                          "while"
+%token TOKEN_KWD_BREAK                          "break"
+%token TOKEN_KWD_CONTINUE                       "continue"
+%token TOKEN_KWD_FOR                            "for"
+%token TOKEN_KWD_FROM                           "from"
+%token TOKEN_KWD_TO                             "to"
+%token TOKEN_KWD_BY                             "by"
+%token TOKEN_KWD_IN                             "in"
+%token TOKEN_KWD_DO                             "do"
+%token TOKEN_KWD_VAR                            "var"
+%token TOKEN_KWD_CONST                          "const"
+%token TOKEN_KWD_PASS                           "pass"
+%token TOKEN_KWD_RETURN                         "return"
+%token TOKEN_KWD_WEAK                           "weak"
 
 /* default cases */
-%token TOKEN_EOF 0                                   "<eof>"
-%token TOKEN_INVALID                                 "<invalid>"
+%token TOKEN_EOF 0                              "<eof>"
+%token TOKEN_INVALID                            "<invalid>"
 
 /* literals */
-%token <literal_bool> TOKEN_BOOL_LITERAL             "<boollit>"
-%token <literal_char> TOKEN_CHAR_LITERAL             "<charlit>"
-%token <literal_f64>  TOKEN_BINFLOAT_LITERAL         "<binfloattlit>"
-%token <literal_f64>  TOKEN_OCTFLOAT_LITERAL         "<octfloattlit>"
-%token <literal_f64>  TOKEN_DECFLOAT_LITERAL         "<decfloattlit>"
-%token <literal_f64>  TOKEN_HEXFLOAT_LITERAL         "<hexfloattlit>"
-%token <literal_i64>  TOKEN_BININT_LITERAL           "<binintlit>"
-%token <literal_i64>  TOKEN_OCTINT_LITERAL           "<octintlit>"
-%token <literal_i64>  TOKEN_DECINT_LITERAL           "<decintlit>"
-%token <literal_i64>  TOKEN_HEXINT_LITERAL           "<hexintlit>"
-%token <literal_str>  TOKEN_STR_LITERAL              "<strlit>"
-%token <literal_str>  TOKEN_INTERP_STR_LITERAL       "<interpstrlit>"
+%token <literal_bool> TOKEN_BOOL_LITERAL        "<boollit>"
+%token <literal_char> TOKEN_CHAR_LITERAL        "<charlit>"
+%token <literal_f64>  TOKEN_BINFLOAT_LITERAL    "<binfloattlit>"
+%token <literal_f64>  TOKEN_OCTFLOAT_LITERAL    "<octfloattlit>"
+%token <literal_f64>  TOKEN_DECFLOAT_LITERAL    "<decfloattlit>"
+%token <literal_f64>  TOKEN_HEXFLOAT_LITERAL    "<hexfloattlit>"
+%token <literal_i64>  TOKEN_BININT_LITERAL      "<binintlit>"
+%token <literal_i64>  TOKEN_OCTINT_LITERAL      "<octintlit>"
+%token <literal_i64>  TOKEN_DECINT_LITERAL      "<decintlit>"
+%token <literal_i64>  TOKEN_HEXINT_LITERAL      "<hexintlit>"
+%token <literal_str>  TOKEN_STR_LITERAL         "<strlit>"
+%token <literal_str>  TOKEN_INTERP_STR_LITERAL  "<interpstrlit>"
 
 /* identifier */
-%token <identifier_name> TOKEN_IDENTIFIER            "<identifier>"
+%token <identifier_name> TOKEN_IDENTIFIER       "<identifier>"
 
 %precedence TOKEN_PERCENT
 %precedence TOKEN_ASTERIX
@@ -340,9 +343,12 @@ statement:
 /* A single assignment ----------------------------------------------------------------------------
    non-recursive grammar */
 assignment:
-    "var" identifier "=" expression      /* shadow or create new var */
-    | "const" identifier "=" expression  /* create new constant */
-    | expression                         /* assignment to void */
+    "var" identifier "=" expression                      /* shadow or create new var */
+    | "var" identifier "=" "const" expression            /* create new constant */
+    | "var" identifier "=" "weak" expression             /* create weak ref */
+    | "var" identifier "=" "const" "weak" expression     /* create const weak ref */
+    | "var" identifier "=" "weak" "const" expression     /* create const weak ref */
+    | expression                                         /* assignment to void */
     ;
 
 
@@ -427,6 +433,10 @@ expression:
 assignment_expression:
     conditional_expression
     | postfix_expression "=" assignment_expression
+    | postfix_expression "=" "const" assignment_expression
+    | postfix_expression "=" "weak" assignment_expression
+    | postfix_expression "=" "const" "weak" assignment_expression
+    | postfix_expression "=" "weak" "const" assignment_expression
     | postfix_expression "||=" assignment_expression
     | postfix_expression "&&=" assignment_expression
     | postfix_expression "|=" assignment_expression

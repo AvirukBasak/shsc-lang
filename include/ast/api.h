@@ -46,6 +46,8 @@ struct ast_Statement_t {
 struct ast_Assignment_t {
     const ast_Identifier_t *lhs;
     const ast_Expression_t *rhs;
+    const bool is_const;
+    const bool is_weak;
     const enum ast_AssignmentType_t type;
 };
 

@@ -76,23 +76,15 @@ ast_Statement_t *ast_Statement_CompoundSt(ast_CompoundSt_t *compound, int line_n
     return stmt;
 }
 
-ast_Assignment_t *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expression_t *expression)
+ast_Assignment_t *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expression_t *expression, bool is_const, bool is_weak)
 {
     ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
     if (!assign) io_errndie("ast_Assignment_create:" ERR_MSG_MALLOCFAIL);
     assign->lhs = identifier;
     assign->rhs = expression;
     assign->type = ASSIGNMENT_TYPE_CREATE;
-    return assign;
-}
-
-ast_Assignment_t *ast_Assignment_mkconst(ast_Identifier_t *identifier, ast_Expression_t *expression)
-{
-    ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
-    if (!assign) io_errndie("ast_Assignment_mkconst:" ERR_MSG_MALLOCFAIL);
-    assign->lhs = identifier;
-    assign->rhs = expression;
-    assign->type = ASSIGNMENT_TYPE_MKCONST;
+    assign->is_const = is_const;
+    assign->is_weak = is_weak;
     return assign;
 }
 

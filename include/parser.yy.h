@@ -124,44 +124,47 @@ extern int yydebug;
     TOKOP_INDEXING = 325,          /* TOKOP_INDEXING  */
     TOKOP_TERNARY_COND = 326,      /* TOKOP_TERNARY_COND  */
     TOKOP_FNARGS_INDEXING = 327,   /* TOKOP_FNARGS_INDEXING  */
-    TOKEN_NEWLINE = 328,           /* "\n"  */
-    TOKEN_KWD_MODULE = 329,        /* "module"  */
-    TOKEN_KWD_PROC = 330,          /* "proc"  */
-    TOKEN_KWD_START = 331,         /* "start"  */
-    TOKEN_KWD_END = 332,           /* "end"  */
-    TOKEN_KWD_BLOCK = 333,         /* "block"  */
-    TOKEN_KWD_IF = 334,            /* "if"  */
-    TOKEN_KWD_THEN = 335,          /* "then"  */
-    TOKEN_KWD_ELIF = 336,          /* "elif"  */
-    TOKEN_KWD_ELSE = 337,          /* "else"  */
-    TOKEN_KWD_WHILE = 338,         /* "while"  */
-    TOKEN_KWD_BREAK = 339,         /* "break"  */
-    TOKEN_KWD_CONTINUE = 340,      /* "continue"  */
-    TOKEN_KWD_FOR = 341,           /* "for"  */
-    TOKEN_KWD_FROM = 342,          /* "from"  */
-    TOKEN_KWD_TO = 343,            /* "to"  */
-    TOKEN_KWD_BY = 344,            /* "by"  */
-    TOKEN_KWD_IN = 345,            /* "in"  */
-    TOKEN_KWD_DO = 346,            /* "do"  */
-    TOKEN_KWD_VAR = 347,           /* "var"  */
-    TOKEN_KWD_CONST = 348,         /* "const"  */
-    TOKEN_KWD_PASS = 349,          /* "pass"  */
-    TOKEN_KWD_RETURN = 350,        /* "return"  */
-    TOKEN_KWD_WEAK = 351,          /* "weak"  */
-    TOKEN_INVALID = 352,           /* "<invalid>"  */
-    TOKEN_BOOL_LITERAL = 353,      /* "<boollit>"  */
-    TOKEN_CHAR_LITERAL = 354,      /* "<charlit>"  */
-    TOKEN_BINFLOAT_LITERAL = 355,  /* "<binfloattlit>"  */
-    TOKEN_OCTFLOAT_LITERAL = 356,  /* "<octfloattlit>"  */
-    TOKEN_DECFLOAT_LITERAL = 357,  /* "<decfloattlit>"  */
-    TOKEN_HEXFLOAT_LITERAL = 358,  /* "<hexfloattlit>"  */
-    TOKEN_BININT_LITERAL = 359,    /* "<binintlit>"  */
-    TOKEN_OCTINT_LITERAL = 360,    /* "<octintlit>"  */
-    TOKEN_DECINT_LITERAL = 361,    /* "<decintlit>"  */
-    TOKEN_HEXINT_LITERAL = 362,    /* "<hexintlit>"  */
-    TOKEN_STR_LITERAL = 363,       /* "<strlit>"  */
-    TOKEN_INTERP_STR_LITERAL = 364, /* "<interpstrlit>"  */
-    TOKEN_IDENTIFIER = 365         /* "<identifier>"  */
+    TOKOP_ASSIGN_CONST = 328,      /* TOKOP_ASSIGN_CONST  */
+    TOKOP_ASSIGN_WEAK = 329,       /* TOKOP_ASSIGN_WEAK  */
+    TOKOP_ASSIGN_CONST_WEAK = 330, /* TOKOP_ASSIGN_CONST_WEAK  */
+    TOKEN_NEWLINE = 331,           /* "\n"  */
+    TOKEN_KWD_MODULE = 332,        /* "module"  */
+    TOKEN_KWD_PROC = 333,          /* "proc"  */
+    TOKEN_KWD_START = 334,         /* "start"  */
+    TOKEN_KWD_END = 335,           /* "end"  */
+    TOKEN_KWD_BLOCK = 336,         /* "block"  */
+    TOKEN_KWD_IF = 337,            /* "if"  */
+    TOKEN_KWD_THEN = 338,          /* "then"  */
+    TOKEN_KWD_ELIF = 339,          /* "elif"  */
+    TOKEN_KWD_ELSE = 340,          /* "else"  */
+    TOKEN_KWD_WHILE = 341,         /* "while"  */
+    TOKEN_KWD_BREAK = 342,         /* "break"  */
+    TOKEN_KWD_CONTINUE = 343,      /* "continue"  */
+    TOKEN_KWD_FOR = 344,           /* "for"  */
+    TOKEN_KWD_FROM = 345,          /* "from"  */
+    TOKEN_KWD_TO = 346,            /* "to"  */
+    TOKEN_KWD_BY = 347,            /* "by"  */
+    TOKEN_KWD_IN = 348,            /* "in"  */
+    TOKEN_KWD_DO = 349,            /* "do"  */
+    TOKEN_KWD_VAR = 350,           /* "var"  */
+    TOKEN_KWD_CONST = 351,         /* "const"  */
+    TOKEN_KWD_PASS = 352,          /* "pass"  */
+    TOKEN_KWD_RETURN = 353,        /* "return"  */
+    TOKEN_KWD_WEAK = 354,          /* "weak"  */
+    TOKEN_INVALID = 355,           /* "<invalid>"  */
+    TOKEN_BOOL_LITERAL = 356,      /* "<boollit>"  */
+    TOKEN_CHAR_LITERAL = 357,      /* "<charlit>"  */
+    TOKEN_BINFLOAT_LITERAL = 358,  /* "<binfloattlit>"  */
+    TOKEN_OCTFLOAT_LITERAL = 359,  /* "<octfloattlit>"  */
+    TOKEN_DECFLOAT_LITERAL = 360,  /* "<decfloattlit>"  */
+    TOKEN_HEXFLOAT_LITERAL = 361,  /* "<hexfloattlit>"  */
+    TOKEN_BININT_LITERAL = 362,    /* "<binintlit>"  */
+    TOKEN_OCTINT_LITERAL = 363,    /* "<octintlit>"  */
+    TOKEN_DECINT_LITERAL = 364,    /* "<decintlit>"  */
+    TOKEN_HEXINT_LITERAL = 365,    /* "<hexintlit>"  */
+    TOKEN_STR_LITERAL = 366,       /* "<strlit>"  */
+    TOKEN_INTERP_STR_LITERAL = 367, /* "<interpstrlit>"  */
+    TOKEN_IDENTIFIER = 368         /* "<identifier>"  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -190,22 +193,22 @@ union YYSTYPE
     char    *identifier_name;
 
     /* ast nodes */
-    ast_Statements_t       *astnode_statements;           /* statements */
-    ast_Statement_t        *astnode_statement;            /* statement */
-    ast_Assignment_t       *astnode_assignment;           /* assignment */
-    ast_CompoundSt_t       *astnode_compound_statement;   /* compound_statement */
-    ast_IfBlock_t          *astnode_if_block;             /* if_block */
-    ast_ElseBlock_t        *astnode_else_block;           /* else_block */
-    ast_WhileBlock_t       *astnode_while_block;          /* while_block */
-    ast_ForBlock_t         *astnode_for_block;            /* for_block */
-    ast_Block_t            *astnode_block;                /* block */
-    ast_Expression_t       *astnode_expression;           /* expression */
-    ast_CommaSepList_t     *astnode_comma_list;           /* comma_list */
-    ast_AssociativeList_t  *astnode_assoc_list;           /* assoc_list */
-    ast_Literal_t          *astnode_literal;              /* literal */
-    ast_Identifier_t       *astnode_identifier;           /* identifier */
+    ast_Statements_t      *astnode_statements;         /* statements */
+    ast_Statement_t       *astnode_statement;          /* statement */
+    ast_Assignment_t      *astnode_assignment;         /* assignment */
+    ast_CompoundSt_t      *astnode_compound_statement; /* compound_statement */
+    ast_IfBlock_t         *astnode_if_block;           /* if_block */
+    ast_ElseBlock_t       *astnode_else_block;         /* else_block */
+    ast_WhileBlock_t      *astnode_while_block;        /* while_block */
+    ast_ForBlock_t        *astnode_for_block;          /* for_block */
+    ast_Block_t           *astnode_block;              /* block */
+    ast_Expression_t      *astnode_expression;         /* expression */
+    ast_CommaSepList_t    *astnode_comma_list;         /* comma_list */
+    ast_AssociativeList_t *astnode_assoc_list;         /* assoc_list */
+    ast_Literal_t         *astnode_literal;            /* literal */
+    ast_Identifier_t      *astnode_identifier;         /* identifier */
 
-#line 209 "include/parser.yy.h"
+#line 212 "include/parser.yy.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

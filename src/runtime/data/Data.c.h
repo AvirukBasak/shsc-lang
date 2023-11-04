@@ -128,7 +128,7 @@ rt_Data_t rt_Data_any(void *ptr)
 
 rt_Data_t rt_Data_null(void)
 {
-    return rt_VarTable_rsv_null;
+    return rt_Data_any(NULL);
 }
 
 void rt_Data_copy(rt_Data_t *var)
@@ -156,6 +156,8 @@ void rt_Data_copy(rt_Data_t *var)
 
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
 {
+    /* if ref is weak, don't free it */
+    if (var->is_weak) return;
     switch (var->type) {
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:

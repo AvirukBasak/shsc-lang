@@ -81,6 +81,9 @@ const char *lex_Token_getcode(lex_Token_t code)
         case TOKOP_INDEXING:              return "TOKOP_INDEXING";
         case TOKOP_TERNARY_COND:          return "TOKOP_TERNARY_COND";
         case TOKOP_FNARGS_INDEXING:       return "TOKOP_FNARGS_INDEXING";
+        case TOKOP_ASSIGN_CONST:          return "TOKOP_ASSIGN_CONST";
+        case TOKOP_ASSIGN_WEAK:           return "TOKOP_ASSIGN_WEAK";
+        case TOKOP_ASSIGN_CONST_WEAK:     return "TOKOP_ASSIGN_CONST_WEAK";
         /* keywords */
         case TOKEN_KWD_MODULE:            return "TOKEN_KWD_MODULE";
         case TOKEN_KWD_PROC:              return "TOKEN_KWD_PROC";
@@ -207,6 +210,9 @@ const char *lex_Token_getsymbol(lex_Token_t code)
         case TOKOP_INDEXING:              return "[]";
         case TOKOP_TERNARY_COND:          return "?:";
         case TOKOP_FNARGS_INDEXING:       return "$[]";
+        case TOKOP_ASSIGN_CONST:          return "= const";
+        case TOKOP_ASSIGN_WEAK:           return "= weak";
+        case TOKOP_ASSIGN_CONST_WEAK:     return "= const weak";
         /* keywords */
         case TOKEN_KWD_MODULE:            return "module";
         case TOKEN_KWD_PROC:              return "proc";

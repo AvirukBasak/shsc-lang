@@ -94,7 +94,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         /* remaining operators */
         case TOKEN_AMPERSAND:                         rt_op_ampersand(lhs, rhs); break;
         case TOKEN_ARITH_RSHIFT:                   rt_op_arith_rshift(lhs, rhs); break;
-        case TOKEN_ASSIGN:                               rt_op_assign(lhs, rhs); break;
+        case TOKEN_ASSIGN:                               rt_op_assign(lhs, rhs, false, false); break;
         case TOKEN_ASTERIX:                             rt_op_asterix(lhs, rhs); break;
         case TOKEN_BANG:                                   rt_op_bang(lhs, rhs); break;
         case TOKEN_BITWISE_LSHIFT:               rt_op_bitwise_lshift(lhs, rhs); break;
@@ -124,6 +124,9 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKOP_FNCALL:                               rt_op_fncall(lhs, rhs); break;
         case TOKOP_INDEXING:                           rt_op_indexing(lhs, rhs); break;
         case TOKOP_NOP:                                     rt_op_nop(lhs); break;
+        case TOKOP_ASSIGN_CONST:                         rt_op_assign(lhs, rhs, true, false); break;
+        case TOKOP_ASSIGN_WEAK:                          rt_op_assign(lhs, rhs, false, true); break;
+        case TOKOP_ASSIGN_CONST_WEAK:                    rt_op_assign(lhs, rhs, true, true); break;
         case TOKOP_TERNARY_COND:                   rt_op_ternary_cond(lhs, rhs, condition); break;
         /* using default here coz there's a lot of cases
            the following are not operators */

@@ -63,7 +63,9 @@ void rt_DataMap_destroy_circular(rt_DataMap_t **ptr, bool flag)
             flag
         );
         /* free the key */
-        free(kh_value(mp->data_map, entry_it).key);
+        if (kh_value(mp->data_map, entry_it).key)
+            free(kh_value(mp->data_map, entry_it).key);
+        kh_value(mp->data_map, entry_it).key = NULL;
     }
     kh_destroy(rt_DataMap_t, mp->data_map);
     mp->data_map = NULL;
@@ -92,7 +94,12 @@ void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
         kh_value(mp->data_map, entry_it).key = key_internal;
         ++mp->length;
     }
-    kh_value(mp->data_map, entry_it).value = value;
+    kh_value(mp->data_map, entry_it).value = (rt_Data_t) {
+        .type = value.type,
+        .data = value.data,
+        .is_const = false,
+        .is_weak = false,
+    };
 }
 
 const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key)
