@@ -68,7 +68,7 @@ rt_Data_t rt_VarTable_rsv_lf,
 void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const, bool is_weak);
 
 /** modify data directly by address instead of querying via identifier */
-rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src);
+rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool is_weak);
 
 rt_Data_t *rt_VarTable_getref_errnull(const char *varname);
 

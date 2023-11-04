@@ -75,7 +75,7 @@ void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const, boo
 }
 
 
-rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)
+rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool is_weak)
 {
     if (!dest) return NULL;
     /* if data is one of the global built-in vars, throw appropriate error */
@@ -96,12 +96,12 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)
     if (!src.is_weak) rt_Data_copy(&src);
     /* if dest data is not weak, decrease its reference count */
     if (!dest->is_weak) rt_Data_destroy(dest);
-    /* copy src data but keep dest weak and const attributes */
+    /* copy src data but set dest weak and const attributes to modifiers */
     *dest = (rt_Data_t) {
         .data = src.data,
         .type = src.type,
-        .is_const = dest->is_const,
-        .is_weak = dest->is_weak
+        .is_const = is_const,
+        .is_weak = is_weak
     };
     return dest;
 }

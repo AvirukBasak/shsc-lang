@@ -78,7 +78,7 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
 
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
 {
-    rt_Data_copy(&value);
+    if (!value.is_weak) rt_Data_copy(&value);
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
     if (entry_it != kh_end(mp->data_map)) {
         /* key exists, reduce original value ref count */
