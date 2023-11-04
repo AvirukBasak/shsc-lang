@@ -1,0 +1,19 @@
+proc test start
+    var x = const {}
+    x.cycle = {}
+    x.cycle.a = 11
+    x.cycle.b = weak x
+    x.cycle.c = 8
+    x.cycle.d = 99
+    io:print(
+        dbg:id(x),
+        dbg:id(x.cycle),
+        dbg:refcnt(x),
+        dbg:refcnt(x.cycle),
+        lf
+    )
+end
+
+proc main start
+    test()
+end
