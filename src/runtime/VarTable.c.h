@@ -98,10 +98,14 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool 
     }
     /* if data is const, throw appropriate error */
     if (dest->is_const) rt_throw("cannot modify const variable");
-    /* if src data is not weak, increase its reference count */
-    if (!src.is_weak) rt_Data_copy(&src);
-    /* if dest data is not weak, decrease its reference count */
+
+    /* if dest was not weak and dest doesn't become weak,
+       increase src reference count, i.e. dest takes ownership */
+    if (!dest->is_weak && !is_weak) rt_Data_copy(&src);
+
+    /* if dest data was not weak, decrease its reference count */
     if (!dest->is_weak) rt_Data_destroy(dest);
+
     /* copy src data but set dest weak and const attributes to modifiers */
     *dest = (rt_Data_t) {
         .data = src.data,
