@@ -10,9 +10,9 @@
 typedef struct {
     char *key;
     rt_Data_t value;
-} rt_DataMapEntry_t;
+} rt_DataMap_Entry_t;
 
-KHASH_MAP_INIT_STR(rt_DataMap_t, rt_DataMapEntry_t)
+KHASH_MAP_INIT_STR(rt_DataMap_t, rt_DataMap_Entry_t)
 
 struct rt_DataMap_t {
     khash_t(rt_DataMap_t) *data_map;
@@ -42,6 +42,6 @@ char *rt_DataMap_tostr(const rt_DataMap_t *mp);
 rt_DataMap_iter_t rt_DataMap_begin(rt_DataMap_t *mp);
 rt_DataMap_iter_t rt_DataMap_end(rt_DataMap_t *mp);
 bool rt_DataMap_exists(rt_DataMap_t *mp, rt_DataMap_iter_t it);
-const rt_DataMapEntry_t *rt_DataMap_get(rt_DataMap_t *mp, rt_DataMap_iter_t it);
+const rt_DataMap_Entry_t *rt_DataMap_get(rt_DataMap_t *mp, rt_DataMap_iter_t it);
 
 #endif

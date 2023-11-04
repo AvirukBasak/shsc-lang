@@ -46,6 +46,8 @@ struct rt_Data_t {
         rt_DataProc_t proc;
         void *any;
     } data;
+    bool is_const;
+    bool is_weak;
     enum rt_DataType_t type;
 };
 

@@ -11,12 +11,6 @@ void rt_op_assign(rt_Data_t *lhs, const rt_Data_t *rhs)
         rt_VarTable_modf(lhs, *rhs));
 }
 
-void rt_op_weak_assign(rt_Data_t *lhs, const rt_Data_t *rhs)
-{
-    rt_VarTable_acc_setadr(
-        rt_VarTable_weak_modf(lhs, *rhs));
-}
-
 #else
     #warning re-inclusion of module 'runtime/operators/assign.c.h'
 #endif

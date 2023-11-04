@@ -122,47 +122,46 @@ extern int yydebug;
     TOKOP_NOP = 323,               /* TOKOP_NOP  */
     TOKOP_FNCALL = 324,            /* TOKOP_FNCALL  */
     TOKOP_INDEXING = 325,          /* TOKOP_INDEXING  */
-    TOKOP_WEAK_ASSIGN = 326,       /* TOKOP_WEAK_ASSIGN  */
-    TOKOP_TERNARY_COND = 327,      /* TOKOP_TERNARY_COND  */
-    TOKOP_FNARGS_INDEXING = 328,   /* TOKOP_FNARGS_INDEXING  */
-    TOKEN_NEWLINE = 329,           /* "\n"  */
-    TOKEN_KWD_MODULE = 330,        /* "module"  */
-    TOKEN_KWD_PROC = 331,          /* "proc"  */
-    TOKEN_KWD_START = 332,         /* "start"  */
-    TOKEN_KWD_END = 333,           /* "end"  */
-    TOKEN_KWD_BLOCK = 334,         /* "block"  */
-    TOKEN_KWD_IF = 335,            /* "if"  */
-    TOKEN_KWD_THEN = 336,          /* "then"  */
-    TOKEN_KWD_ELIF = 337,          /* "elif"  */
-    TOKEN_KWD_ELSE = 338,          /* "else"  */
-    TOKEN_KWD_WHILE = 339,         /* "while"  */
-    TOKEN_KWD_BREAK = 340,         /* "break"  */
-    TOKEN_KWD_CONTINUE = 341,      /* "continue"  */
-    TOKEN_KWD_FOR = 342,           /* "for"  */
-    TOKEN_KWD_FROM = 343,          /* "from"  */
-    TOKEN_KWD_TO = 344,            /* "to"  */
-    TOKEN_KWD_BY = 345,            /* "by"  */
-    TOKEN_KWD_IN = 346,            /* "in"  */
-    TOKEN_KWD_DO = 347,            /* "do"  */
-    TOKEN_KWD_VAR = 348,           /* "var"  */
-    TOKEN_KWD_CONST = 349,         /* "const"  */
-    TOKEN_KWD_PASS = 350,          /* "pass"  */
-    TOKEN_KWD_RETURN = 351,        /* "return"  */
-    TOKEN_KWD_WEAK = 352,          /* "weak"  */
-    TOKEN_INVALID = 353,           /* "<invalid>"  */
-    TOKEN_BOOL_LITERAL = 354,      /* "<boollit>"  */
-    TOKEN_CHAR_LITERAL = 355,      /* "<charlit>"  */
-    TOKEN_BINFLOAT_LITERAL = 356,  /* "<binfloattlit>"  */
-    TOKEN_OCTFLOAT_LITERAL = 357,  /* "<octfloattlit>"  */
-    TOKEN_DECFLOAT_LITERAL = 358,  /* "<decfloattlit>"  */
-    TOKEN_HEXFLOAT_LITERAL = 359,  /* "<hexfloattlit>"  */
-    TOKEN_BININT_LITERAL = 360,    /* "<binintlit>"  */
-    TOKEN_OCTINT_LITERAL = 361,    /* "<octintlit>"  */
-    TOKEN_DECINT_LITERAL = 362,    /* "<decintlit>"  */
-    TOKEN_HEXINT_LITERAL = 363,    /* "<hexintlit>"  */
-    TOKEN_STR_LITERAL = 364,       /* "<strlit>"  */
-    TOKEN_INTERP_STR_LITERAL = 365, /* "<interpstrlit>"  */
-    TOKEN_IDENTIFIER = 366         /* "<identifier>"  */
+    TOKOP_TERNARY_COND = 326,      /* TOKOP_TERNARY_COND  */
+    TOKOP_FNARGS_INDEXING = 327,   /* TOKOP_FNARGS_INDEXING  */
+    TOKEN_NEWLINE = 328,           /* "\n"  */
+    TOKEN_KWD_MODULE = 329,        /* "module"  */
+    TOKEN_KWD_PROC = 330,          /* "proc"  */
+    TOKEN_KWD_START = 331,         /* "start"  */
+    TOKEN_KWD_END = 332,           /* "end"  */
+    TOKEN_KWD_BLOCK = 333,         /* "block"  */
+    TOKEN_KWD_IF = 334,            /* "if"  */
+    TOKEN_KWD_THEN = 335,          /* "then"  */
+    TOKEN_KWD_ELIF = 336,          /* "elif"  */
+    TOKEN_KWD_ELSE = 337,          /* "else"  */
+    TOKEN_KWD_WHILE = 338,         /* "while"  */
+    TOKEN_KWD_BREAK = 339,         /* "break"  */
+    TOKEN_KWD_CONTINUE = 340,      /* "continue"  */
+    TOKEN_KWD_FOR = 341,           /* "for"  */
+    TOKEN_KWD_FROM = 342,          /* "from"  */
+    TOKEN_KWD_TO = 343,            /* "to"  */
+    TOKEN_KWD_BY = 344,            /* "by"  */
+    TOKEN_KWD_IN = 345,            /* "in"  */
+    TOKEN_KWD_DO = 346,            /* "do"  */
+    TOKEN_KWD_VAR = 347,           /* "var"  */
+    TOKEN_KWD_CONST = 348,         /* "const"  */
+    TOKEN_KWD_PASS = 349,          /* "pass"  */
+    TOKEN_KWD_RETURN = 350,        /* "return"  */
+    TOKEN_KWD_WEAK = 351,          /* "weak"  */
+    TOKEN_INVALID = 352,           /* "<invalid>"  */
+    TOKEN_BOOL_LITERAL = 353,      /* "<boollit>"  */
+    TOKEN_CHAR_LITERAL = 354,      /* "<charlit>"  */
+    TOKEN_BINFLOAT_LITERAL = 355,  /* "<binfloattlit>"  */
+    TOKEN_OCTFLOAT_LITERAL = 356,  /* "<octfloattlit>"  */
+    TOKEN_DECFLOAT_LITERAL = 357,  /* "<decfloattlit>"  */
+    TOKEN_HEXFLOAT_LITERAL = 358,  /* "<hexfloattlit>"  */
+    TOKEN_BININT_LITERAL = 359,    /* "<binintlit>"  */
+    TOKEN_OCTINT_LITERAL = 360,    /* "<octintlit>"  */
+    TOKEN_DECINT_LITERAL = 361,    /* "<decintlit>"  */
+    TOKEN_HEXINT_LITERAL = 362,    /* "<hexintlit>"  */
+    TOKEN_STR_LITERAL = 363,       /* "<strlit>"  */
+    TOKEN_INTERP_STR_LITERAL = 364, /* "<interpstrlit>"  */
+    TOKEN_IDENTIFIER = 365         /* "<identifier>"  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -206,7 +205,7 @@ union YYSTYPE
     ast_Literal_t          *astnode_literal;              /* literal */
     ast_Identifier_t       *astnode_identifier;           /* identifier */
 
-#line 210 "include/parser.yy.h"
+#line 209 "include/parser.yy.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
