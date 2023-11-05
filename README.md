@@ -2,11 +2,12 @@
 A scripting language inspired by C, Python and Javascript.
 
 ### Build
-For Unix and Unix-like OS users:
-- Build with `make`
-- Copy the executable from `taget/`.
-- Alternatively just run `make install`.
-- You might need root privileges to install.
+- Dependencies:
+    - `make` To build
+    - `bison` To generate parser
+    - `gcc` (or `clang`) As compiler
+- Build with `install.sh` or `install.bat`
+- Executable path is `target/shsc-rel`
 
 For Windows users, you'll probably need to use `cygwin` or `git bash` to get `make` working.
 Idk if you can compile it on MSVC so give it a shot and maybe contribute an `md` on it.
