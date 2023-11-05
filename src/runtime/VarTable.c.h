@@ -99,9 +99,9 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool 
     /* if data is const, throw appropriate error */
     if (dest->is_const) rt_throw("cannot modify const variable");
 
-    /* if dest was not weak and dest doesn't become weak,
-       increase src reference count, i.e. dest takes ownership */
-    if (!dest->is_weak && !is_weak) rt_Data_increfc(&src);
+    /* if dest doesn't become weak, increase src reference count,
+       i.e. dest takes ownership */
+    if (!is_weak) rt_Data_increfc(&src);
 
     /* if dest data was not weak, decrease its reference count */
     if (!dest->is_weak) rt_Data_destroy(dest);
