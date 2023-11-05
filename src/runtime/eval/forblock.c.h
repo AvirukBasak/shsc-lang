@@ -74,7 +74,7 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
             rt_Data_t iterable = *RT_VTABLE_ACC;
 
             /* increase iterable object rc */
-            rt_Data_copy(&iterable);
+            rt_Data_increfc(&iterable);
 
             int64_t length = 0;
             rt_eval_ForBlock_get_iterable_len(for_block, iterable, &length);

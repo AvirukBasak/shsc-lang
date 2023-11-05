@@ -101,7 +101,7 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool 
 
     /* if dest was not weak and dest doesn't become weak,
        increase src reference count, i.e. dest takes ownership */
-    if (!dest->is_weak && !is_weak) rt_Data_copy(&src);
+    if (!dest->is_weak && !is_weak) rt_Data_increfc(&src);
 
     /* if dest data was not weak, decrease its reference count */
     if (!dest->is_weak) rt_Data_destroy(dest);
@@ -151,7 +151,7 @@ rt_VarTable_Acc_t *rt_VarTable_acc_get(void)
 
 void rt_VarTable_acc_setval(rt_Data_t val)
 {
-    rt_Data_copy(&val);
+    rt_Data_increfc(&val);
     if (!rt_vtable_accumulator.adr) rt_Data_destroy(&rt_vtable_accumulator.val);
     else rt_Data_destroy(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = (rt_Data_t) {
@@ -166,7 +166,7 @@ void rt_VarTable_acc_setval(rt_Data_t val)
 void rt_VarTable_acc_setadr(rt_Data_t *adr)
 {
     if (!adr) io_errndie("rt_VarTable_acc_setadr:" ERR_MSG_NULLPTR);
-    rt_Data_copy(adr);
+    rt_Data_increfc(adr);
     if (!rt_vtable_accumulator.adr) rt_Data_destroy(&rt_vtable_accumulator.val);
     else rt_Data_destroy(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = rt_Data_null();

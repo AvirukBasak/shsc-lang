@@ -131,18 +131,41 @@ rt_Data_t rt_Data_null(void)
     return rt_Data_any(NULL);
 }
 
-void rt_Data_copy(rt_Data_t *var)
+void rt_Data_increfc(rt_Data_t *var)
 {
     switch (var->type) {
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:
-            rt_DataStr_copy(var->data.str);
+            rt_DataStr_increfc(var->data.str);
             break;
         case rt_DATA_TYPE_LST:
-            rt_DataList_copy(var->data.lst);
+            rt_DataList_increfc(var->data.lst);
             break;
         case rt_DATA_TYPE_MAP:
-            rt_DataMap_copy(var->data.mp);
+            rt_DataMap_increfc(var->data.mp);
+            break;
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_PROC:
+            break;
+    }
+}
+
+void rt_Data_decrefc(rt_Data_t *var)
+{
+    switch (var->type) {
+        case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR:
+            rt_DataStr_decrefc(var->data.str);
+            break;
+        case rt_DATA_TYPE_LST:
+            rt_DataList_decrefc(var->data.lst);
+            break;
+        case rt_DATA_TYPE_MAP:
+            rt_DataMap_decrefc(var->data.mp);
             break;
         case rt_DATA_TYPE_BUL:
         case rt_DATA_TYPE_CHR:

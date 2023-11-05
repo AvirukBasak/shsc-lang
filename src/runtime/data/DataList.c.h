@@ -34,9 +34,15 @@ int64_t rt_DataList_length(const rt_DataList_t *lst)
     return lst->length;
 }
 
-void rt_DataList_copy(rt_DataList_t *lst)
+void rt_DataList_increfc(rt_DataList_t *lst)
 {
     ++lst->rc;
+}
+
+void rt_DataList_decrefc(rt_DataList_t *lst)
+{
+    --lst->rc;
+    if (lst->rc < 0) lst->rc = 0;
 }
 
 void rt_DataList_destroy_circular(rt_DataList_t **ptr, bool flag)
@@ -71,7 +77,7 @@ void rt_DataList_destroy(rt_DataList_t **ptr)
 
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var)
 {
-    rt_Data_copy(&var);
+    rt_Data_increfc(&var);
     if (lst->length >= lst->capacity) {
         lst->capacity = lst->capacity * 2 +1;
         lst->var = (rt_Data_t*) realloc(lst->var, lst->capacity * sizeof(rt_Data_t));
