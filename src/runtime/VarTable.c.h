@@ -153,7 +153,7 @@ void rt_VarTable_acc_setval(rt_Data_t val)
 {
     rt_Data_increfc(&val);
     if (!rt_vtable_accumulator.adr) rt_Data_destroy(&rt_vtable_accumulator.val);
-    else rt_Data_destroy(rt_vtable_accumulator.adr);
+    else rt_Data_decrefc(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = (rt_Data_t) {
         .type = val.type,
         .data = val.data,
@@ -168,7 +168,7 @@ void rt_VarTable_acc_setadr(rt_Data_t *adr)
     if (!adr) io_errndie("rt_VarTable_acc_setadr:" ERR_MSG_NULLPTR);
     rt_Data_increfc(adr);
     if (!rt_vtable_accumulator.adr) rt_Data_destroy(&rt_vtable_accumulator.val);
-    else rt_Data_destroy(rt_vtable_accumulator.adr);
+    else rt_Data_decrefc(rt_vtable_accumulator.adr);
     rt_vtable_accumulator.val = rt_Data_null();
     rt_vtable_accumulator.adr = adr;
 }
