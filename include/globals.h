@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define VERSION "0.8 Alpha"
+#define VERSION "0.9 Alpha"
 #define AUTHORS "Aviruk Basak"
 #define GLOBAL_BYTES_BUFFER_LEN (128)
 
