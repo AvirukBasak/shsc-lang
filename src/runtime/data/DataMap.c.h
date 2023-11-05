@@ -38,7 +38,7 @@ void rt_DataMap_increfc(rt_DataMap_t *mp)
     ++mp->rc;
 }
 
-void rt_DataMap_decrefc(rt_DataList_t mp)
+void rt_DataMap_decrefc(rt_DataMap_t *mp)
 {
     --mp->rc;
     if (mp->rc < 0) mp->rc = 0;

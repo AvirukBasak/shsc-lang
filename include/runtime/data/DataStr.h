@@ -14,7 +14,7 @@ struct rt_DataStr_t {
 rt_DataStr_t *rt_DataStr_init(const char *s);
 int64_t rt_DataStr_length(const rt_DataStr_t *str);
 void rt_DataStr_increfc(rt_DataStr_t *str);
-void rt_DataStr_decrefc(rt_DataList_t *lst);
+void rt_DataStr_decrefc(rt_DataStr_t *str);
 void rt_DataStr_destroy_circular(rt_DataStr_t **ptr, bool flag);
 void rt_DataStr_destroy(rt_DataStr_t **ptr);
 void rt_DataStr_append(rt_DataStr_t *str, char ch);
