@@ -154,6 +154,9 @@ void rt_VarTable_acc_setval(rt_Data_t val)
     rt_Data_increfc(&val);
     if (!rt_vtable_accumulator.adr) rt_Data_destroy(&rt_vtable_accumulator.val);
     else rt_Data_decrefc(rt_vtable_accumulator.adr);
+    /* copy src data and reset modifiers coz accumulator holding a value
+       means the value is without a variable, and thus is does not have
+       have any modifiers */
     rt_vtable_accumulator.val = (rt_Data_t) {
         .type = val.type,
         .data = val.data,
