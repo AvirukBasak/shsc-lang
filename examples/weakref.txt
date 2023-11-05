@@ -12,8 +12,18 @@ proc test start
         dbg:refcnt(x.cycle),
         lf
     )
+    var m = const ["test", "list"]
 end
 
 proc main start
-    test()
+    var y = const test()
+    io:print(y, lf)
+    var x = {}
+    var l = [1,2,3]
+    x.a = weak l
+    io:print(dbg:id(l), lf)
+    var m = {}
+    x.a = m
+    io:print(dbg:id(m), lf)
+    return 256
 end

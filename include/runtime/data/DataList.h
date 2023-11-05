@@ -15,7 +15,8 @@ struct rt_DataList_t {
 
 rt_DataList_t *rt_DataList_init();
 int64_t rt_DataList_length(const rt_DataList_t *lst);
-void rt_DataList_copy(rt_DataList_t *lst);
+void rt_DataList_increfc(rt_DataList_t *lst);
+void rt_DataList_decrefc(rt_DataList_t *lst);
 void rt_DataList_destroy_circular(rt_DataList_t **ptr, bool flag);
 void rt_DataList_destroy(rt_DataList_t **ptr);
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var);

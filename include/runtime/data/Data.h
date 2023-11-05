@@ -65,7 +65,8 @@ rt_Data_t rt_Data_proc(
 );
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
-void rt_Data_copy(rt_Data_t *var);
+void rt_Data_increfc(rt_Data_t *var);
+void rt_Data_decrefc(rt_Data_t *var);
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag);
 void rt_Data_destroy(rt_Data_t *var);
 

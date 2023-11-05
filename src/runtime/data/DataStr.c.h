@@ -31,9 +31,14 @@ int64_t rt_DataStr_length(const rt_DataStr_t *str)
     return rt_DataList_length(str->var);
 }
 
-void rt_DataStr_copy(rt_DataStr_t *str)
+void rt_DataStr_increfc(rt_DataStr_t *str)
 {
-    rt_DataList_copy(str->var);
+    rt_DataList_increfc(str->var);
+}
+
+void rt_DataStr_decrefc(rt_DataStr_t *str)
+{
+    rt_DataList_decrefc(str->var);
 }
 
 void rt_DataStr_destroy_circular(rt_DataStr_t **ptr, bool flag)
