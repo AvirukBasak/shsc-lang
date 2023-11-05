@@ -26,7 +26,7 @@ rt_VarTable_t *rt_vtable = NULL;
 
 /** the accumulator */
 rt_VarTable_Acc_t rt_vtable_accumulator = {
-    .val = { .data.any = NULL, rt_DATA_TYPE_ANY },
+    .val = { .data.any = NULL, .type = rt_DATA_TYPE_ANY, .is_const = false, .is_weak = false },
     .adr = NULL
 };
 
