@@ -11,15 +11,17 @@ A scripting language inspired by C, Python and Javascript.
 - Executable path is `target/shsc-rel`
 
 #### Windows
-- Download [`Git & Bash`](
+- Download [`Git & Bash`]()
 - Download [`make`]()
 - Download [`Bison`]()
 - Download [`MinGW`]()
 - Extract the files and place them in some folder
 - Add the necessary paths to the user PATH
 - The user PATH is accessible via `Add or modify user environment variables` or something.
+- Open Git Bash in project root
+- Run `install.sh`
 
-For Windows users, you'll probably need to use `cygwin` or `git bash` to get `make` working.
+For Windows users, you'll need to use `cygwin` or `git bash` to get `make` working.
 Idk if you can compile it on MSVC so give it a shot and maybe contribute an `md` on it.
 
 ### Usage
