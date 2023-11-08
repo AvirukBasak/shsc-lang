@@ -636,6 +636,7 @@ The language supports the following built-in functions (within built-in modules)
 - `dbg:typename` returns identifier name of one of the [global variables for types](#global-variables-for-types)
 - `dbg:refcnt` returns total number of references to an object
 - `dbg:id` returns hex string of the memory address of an object
+- `dbg:callproc` calls a procedure from a module
 
 #### Module `io`
 - `io:print` prints string form of data (calls `tostr`)

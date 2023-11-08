@@ -27,13 +27,10 @@ int rt_fn_io_input_str(char **val);
 
 rt_Data_t rt_fn_io_print()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_io_print: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
+    const rt_DataList_t *args = rt_fn_get_valid_args(0);
     int bytes = 0;
-    for (int i = 0; i < rt_DataList_length(args.data.lst); ++i) {
-        const rt_Data_t data = *rt_DataList_getref(args.data.lst, i);
+    for (int i = 0; i < rt_DataList_length(args); ++i) {
+        const rt_Data_t data = *rt_DataList_getref(args, i);
         /* if (rt_Data_isnull(data)) continue; */
         /* print a space before data conditions:
            - no space before 1st element
@@ -43,19 +40,32 @@ rt_Data_t rt_fn_io_print()
             /* i is not 1st element BUT if data is character it should not be lf */
             (i > 0 && data.type == rt_DATA_TYPE_CHR && data.data.chr != '\n'))
                 printf(" ");
-        bytes += rt_Data_print(data);
+
+        /* call tostr to convert data to string */
+        rt_Data_t str = rt_fn_call_handler(
+            rt_Data_null(),
+            "", "tostr",
+            rt_DataList_from(data)
+        );
+
+        /* print the string form of data */
+        char *data_str = rt_Data_tostr(str);
+        bytes += printf("%s", data_str);
+
+        /* free the string form of data
+           note that the returned data is not freed coz
+           the accumulator owns it an it'll be freed anyway
+           whe the accumulator lets go of it */
+        free(data_str);
     }
     return rt_Data_i64(bytes);
 }
 
 rt_Data_t rt_fn_io_input()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_io_input: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t prompt = *rt_DataList_getref(args.data.lst, 0);
-    const rt_Data_t type_ = *rt_DataList_getref(args.data.lst, 1);
+    const rt_DataList_t *args = rt_fn_get_valid_args(2);
+    const rt_Data_t prompt = *rt_DataList_getref(args, 0);
+    const rt_Data_t type_ = *rt_DataList_getref(args, 1);
     rt_Data_t ret = rt_Data_null();
     if (type_.type != rt_DATA_TYPE_I64) {
         char *s = rt_Data_tostr(type_);
@@ -73,7 +83,14 @@ rt_Data_t rt_fn_io_input()
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d",
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
-    rt_Data_print(prompt);
+
+    /* call io:print and display prompt */
+    rt_fn_call_handler(
+        rt_Data_null(),
+        "io", "print",
+        rt_DataList_from(prompt)
+    );
+
     switch (type) {
         case rt_DATA_TYPE_BUL: {
             bool val = false;

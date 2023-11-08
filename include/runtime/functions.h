@@ -28,6 +28,7 @@ typedef enum {
     rt_fn_DBG_FILENAME,  /* dbg:filename */
     rt_fn_DBG_LINENO,    /* dbg:lineno */
     rt_fn_DBG_ID,        /* dbg:id */
+    rt_fn_DBG_CALLPROC,  /* dbg:callproc */
 
     rt_fn_IO_PRINT,      /* io:print */
     rt_fn_IO_INPUT,      /* io:input */
@@ -76,5 +77,14 @@ typedef enum {
 
 rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const char *fname);
 rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn);
+
+const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc);
+
+rt_Data_t rt_fn_call_handler(
+    const rt_Data_t context,
+    const char *modulename,
+    const char *procname,
+    rt_DataList_t *args
+);
 
 #endif

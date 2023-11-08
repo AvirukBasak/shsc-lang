@@ -71,6 +71,7 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `dbg:rtsize`
     - [x] `dbg:refcnt`
     - [x] `dbg:id`
+    - [x] `dbg:callproc`
     - [ ] `dbg:filename`
     - [ ] `dbg:lineno`
     - [x] `io:print`

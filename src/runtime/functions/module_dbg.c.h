@@ -8,27 +8,23 @@
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataMap.h"
+#include "runtime/functions.h"
+#include "runtime/io.h"
 #include "runtime/functions/module_dbg.h"
 #include "runtime/VarTable.h"
 
 rt_Data_t rt_fn_dbg_typename()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_dbg_typename: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
     const char *tname= rt_Data_typename(data);
     return rt_Data_str(rt_DataStr_init(tname));
 }
 
 rt_Data_t rt_fn_dbg_refcnt()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_dbg_refcnt: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
     switch (data.type) {
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:
@@ -50,11 +46,8 @@ rt_Data_t rt_fn_dbg_refcnt()
 
 rt_Data_t rt_fn_dbg_id()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_dbg_refcnt: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
     void *id_ptr = NULL;
     switch (data.type) {
         case rt_DATA_TYPE_STR:
@@ -80,6 +73,45 @@ rt_Data_t rt_fn_dbg_id()
     char id_str[64];
     sprintf(id_str, "%p", id_ptr);
     return rt_Data_str(rt_DataStr_init(id_str));
+}
+
+rt_Data_t rt_fn_dbg_callproc()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(4);
+
+    const rt_Data_t context = *rt_DataList_getref(args, 0);
+
+    const rt_Data_t module = *rt_DataList_getref(args, 1);
+    /* module should be string */
+    if (module.type != rt_DATA_TYPE_STR) {
+        rt_throw("invalid type for module name: '%s', expected 'str'", rt_Data_typename(module));
+    }
+
+    const rt_Data_t proc = *rt_DataList_getref(args, 2);
+    /* proc should be string */
+    if (proc.type != rt_DATA_TYPE_STR) {
+        rt_throw("invalid type for procedure name: '%s', expected 'str'", rt_Data_typename(proc));
+    }
+
+    const rt_Data_t fnargs = *rt_DataList_getref(args, 3);
+    /* fnargs should be list */
+    if (fnargs.type != rt_DATA_TYPE_LST) {
+        rt_throw("invalid type for procedure arguments: '%s', expected 'lst'", rt_Data_typename(fnargs));
+    }
+
+    /* call procedure */
+    char *module_str = rt_Data_tostr(module);
+    char *proc_str = rt_Data_tostr(proc);
+    rt_Data_t ret = rt_fn_call_handler(
+        context,
+        module_str,
+        proc_str,
+        fnargs.data.lst
+    );
+
+    free(module_str);
+    free(proc_str);
+    return ret;
 }
 
 #else
