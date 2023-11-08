@@ -32,7 +32,6 @@ void rt_op_plus                 (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_rbrace_angular       (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_tilde                (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_fnargs_indexing      (const rt_Data_t *lhs, const rt_Data_t *rhs);
-void rt_op_fncall_handler       (const rt_Data_t context, const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args);
 void rt_op_fncall               (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_indexing             (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_nop                  (const rt_Data_t *lhs);

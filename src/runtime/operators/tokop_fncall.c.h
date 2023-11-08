@@ -28,46 +28,15 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
     rt_Data_t context = lhs->data.proc.context
         ? *lhs->data.proc.context
         : rt_Data_null();
-    rt_op_fncall_handler(context, lhs->data.proc.modulename, lhs->data.proc.procname, *rhs);
+    rt_fn_call_handler(
+        context,
+        lhs->data.proc.modulename->identifier_name,
+        lhs->data.proc.procname->identifier_name,
+        rhs->data.lst
+    );
     /* set no data to accumulator as data is already set by procedure called above
        return early to prevent accumulator being modified by some other code */
     return;
-}
-
-void rt_op_fncall_handler(const rt_Data_t context, const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args)
-{
-    /* get code as AST from user defined function */
-    const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
-    /* get a descriptor to in-built function */
-    const rt_fn_FunctionDescriptor_t fn = rt_fn_FunctionsList_getfn(
-        module->identifier_name, proc->identifier_name);
-
-    const char *currfile = NULL;
-    /* update metadata to new module and function */
-    if (code) {
-        currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
-    } else if (fn != rt_fn_UNDEFINED) {
-        currfile = module->identifier_name;
-    } else {
-        rt_throw("undefined procedure '%s:%s'",
-            module->identifier_name, proc->identifier_name);
-    }
-    rt_VarTable_push_proc(module, proc, currfile);
-    /* store fn args into agrs location */
-    rt_VarTable_create(RT_VTABLE_ARGSVAR, args, true, false);
-    rt_VarTable_create(RT_VTABLE_CONTEXTVAR, context, true, false);
-    if (code) {
-        /* call user defined function */
-        rt_ControlStatus_t ctrl = rt_eval_Statements(code);
-        if (ctrl == rt_CTRL_BREAK)
-            rt_throw("unexpected `break` statement outside loop");
-        if (ctrl == rt_CTRL_CONTINUE)
-            rt_throw("unexpected `continue` statement outside loop");
-    } else {
-        /* call in-built function */
-        rt_VarTable_acc_setval(rt_fn_FunctionsList_call(fn));
-    }
-    rt_VarTable_pop_proc();
 }
 
 #else
