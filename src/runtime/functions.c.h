@@ -56,6 +56,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_DBG_TYPENAME:  return rt_fn_dbg_typename();
         case rt_fn_DBG_REFCNT:    return rt_fn_dbg_refcnt();
         case rt_fn_DBG_ID:        return rt_fn_dbg_id();
+        case rt_fn_DBG_CALLPROC:  return rt_fn_dbg_callproc();
 
         case rt_fn_IO_PRINT:      return rt_fn_io_print();
         case rt_fn_IO_INPUT:      return rt_fn_io_input();

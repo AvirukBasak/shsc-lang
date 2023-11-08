@@ -105,7 +105,7 @@ rt_Data_t rt_fn_dbg_callproc()
     rt_Data_t ret = rt_fn_call_handler(
         context,
         module_str,
-        module_str,
+        proc_str,
         fnargs.data.lst
     );
 
