@@ -11,7 +11,8 @@ A scripting language inspired by C, Python and Javascript.
 - Executable path is `target/shsc-rel`
 
 #### Windows
-- Download [`Git & Bash`](https://git-scm.com/)
+- Download [`Git Bash`](https://git-scm.com/)
+- Install Git Bash. Bow you can run bash on Windows.
 - Download [`make`](https://gnuwin32.sourceforge.net/packages/make.htm)
 - Download [`Bison`](https://gnuwin32.sourceforge.net/packages/bison.htm)
 - Download [`MinGW`](https://github.com/skeeto/w64devkit/releases)
