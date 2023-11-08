@@ -41,10 +41,7 @@ rt_Data_t rt_fn_io_print()
             (i > 0 && data.type == rt_DATA_TYPE_CHR && data.data.chr != '\n'))
                 printf(" ");
 
-        /* call tostr to convert data to string
-           since this goes through the call handler, it also goes
-           through the call stack limit check of the VarTable
-           and thus prevents segfaults on circular refs */
+        /* call tostr to convert data to string */
         rt_Data_t str = rt_fn_call_handler(
             rt_Data_null(),
             "", "tostr",
