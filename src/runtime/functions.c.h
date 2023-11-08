@@ -18,6 +18,7 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "typename")) return rt_fn_DBG_TYPENAME;
         if (!strcmp(fname, "refcnt"))   return rt_fn_DBG_REFCNT;
         if (!strcmp(fname, "id"))       return rt_fn_DBG_ID;
+        if (!strcmp(fname, "callproc")) return rt_fn_DBG_CALLPROC;
     }
     if (!strcmp(module, "io")) {
         if (!strcmp(fname, "print"))    return rt_fn_IO_PRINT;
