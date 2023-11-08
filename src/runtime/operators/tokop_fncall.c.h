@@ -13,8 +13,6 @@
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
-void rt_op_fncall_handler(const rt_Data_t context, const ast_Identifier_t *module, const ast_Identifier_t *proc, rt_Data_t args);
-
 void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
     if (lhs->type != rt_DATA_TYPE_PROC)
         rt_throw("cannot make procedure call to type '%s'", rt_Data_typename(*lhs));
