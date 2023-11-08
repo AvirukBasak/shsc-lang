@@ -83,7 +83,7 @@ void rt_fn_call_handler(
     const rt_Data_t context,
     const char *modulename,
     const char *procname,
-    const rt_DataList_t *args
+    rt_DataList_t *args
 );
 
 #endif

@@ -86,7 +86,7 @@ void rt_fn_call_handler(
     const rt_Data_t context,
     const char *modulename,
     const char *procname,
-    const rt_DataList_t *args
+    rt_DataList_t *args
 ) {
     ast_Identifier_t *module = ast_Identifier(strdup(modulename));
     ast_Identifier_t *proc = ast_Identifier(strdup(procname));
