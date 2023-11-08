@@ -82,7 +82,7 @@ const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc)
     return args.data.lst;
 }
 
-void rt_fn_call_handler(
+rt_Data_t rt_fn_call_handler(
     const rt_Data_t context,
     const char *modulename,
     const char *procname,
@@ -129,5 +129,5 @@ void rt_fn_call_handler(
 
     ast_Identifier_destroy(&module);
     ast_Identifier_destroy(&proc);
-    rt_VarTable_pop_proc();
+    return rt_VarTable_pop_proc();
 }

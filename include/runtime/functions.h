@@ -79,7 +79,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn);
 
 const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc);
 
-void rt_fn_call_handler(
+rt_Data_t rt_fn_call_handler(
     const rt_Data_t context,
     const char *modulename,
     const char *procname,
