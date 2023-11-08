@@ -77,4 +77,6 @@ typedef enum {
 rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const char *fname);
 rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn);
 
+const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc);
+
 #endif

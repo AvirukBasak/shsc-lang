@@ -6,16 +6,14 @@
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataMap.h"
+#include "runtime/functions.h"
 #include "runtime/functions/module_it.h"
 #include "runtime/VarTable.h"
 
 rt_Data_t rt_fn_it_len()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_it_len: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
     switch (data.type) {
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:

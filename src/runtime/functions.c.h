@@ -1,8 +1,10 @@
+#include <inttypes.h>
 #include <string.h>
 
 #include "io.h"
 #include "runtime/data/Data.h"
 #include "runtime/functions.h"
+#include "runtime/io.h"
 
 rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const char *fname)
 {
@@ -61,4 +63,18 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
             break;
     }
     return rt_Data_null();
+}
+
+const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc)
+{
+    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
+    if (args.type != rt_DATA_TYPE_LST)
+        io_errndie("rt_fn_get_valid_args: "
+                   "received arguments list as type '%s'", rt_Data_typename(args));
+    if (rt_DataList_length(args.data.lst) < min_expected_argc)
+        rt_throw(
+            "expected at least %" PRId64 " arguments, received %" PRId64,
+            min_expected_argc, rt_DataList_length(args.data.lst)
+        );
+    return args.data.lst;
 }

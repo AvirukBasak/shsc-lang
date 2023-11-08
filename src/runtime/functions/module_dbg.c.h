@@ -8,27 +8,22 @@
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataMap.h"
+#include "runtime/functions.h"
 #include "runtime/functions/module_dbg.h"
 #include "runtime/VarTable.h"
 
 rt_Data_t rt_fn_dbg_typename()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_dbg_typename: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
     const char *tname= rt_Data_typename(data);
     return rt_Data_str(rt_DataStr_init(tname));
 }
 
 rt_Data_t rt_fn_dbg_refcnt()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_dbg_refcnt: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
     switch (data.type) {
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_INTERP_STR:
@@ -50,11 +45,8 @@ rt_Data_t rt_fn_dbg_refcnt()
 
 rt_Data_t rt_fn_dbg_id()
 {
-    rt_Data_t args = *rt_VarTable_getref(RT_VTABLE_ARGSVAR);
-    if (args.type != rt_DATA_TYPE_LST)
-        io_errndie("rt_fn_dbg_refcnt: "
-                   "received arguments list as type '%s'", rt_Data_typename(args));
-    const rt_Data_t data = *rt_DataList_getref(args.data.lst, 0);
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
     void *id_ptr = NULL;
     switch (data.type) {
         case rt_DATA_TYPE_STR:
