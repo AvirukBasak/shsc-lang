@@ -11,10 +11,10 @@ A scripting language inspired by C, Python and Javascript.
 - Executable path is `target/shsc-rel`
 
 #### Windows
-- Download [`Git & Bash`]()
-- Download [`make`]()
-- Download [`Bison`]()
-- Download [`MinGW`]()
+- Download [`Git & Bash`](https://git-scm.com/)
+- Download [`make`](https://gnuwin32.sourceforge.net/packages/make.htm)
+- Download [`Bison`](https://gnuwin32.sourceforge.net/packages/bison.htm)
+- Download [`MinGW`](https://github.com/skeeto/w64devkit/releases)
 - Extract the files and place them in some folder
 - Add the necessary paths to the user PATH
 - The user PATH is accessible via `Add or modify user environment variables` or something.
