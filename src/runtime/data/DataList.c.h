@@ -29,6 +29,14 @@ rt_DataList_t *rt_DataList_init()
     return lst;
 }
 
+rt_DataList_t *rt_DataList_clone(const rt_DataList_t *lst)
+{
+    rt_DataList_t *lst2 = rt_DataList_init();
+    for (int64_t i = 0; i < lst->length; i++)
+        rt_DataList_append(lst2, lst->var[i]);
+    return lst2;
+}
+
 int64_t rt_DataList_length(const rt_DataList_t *lst)
 {
     return lst->length;
@@ -89,6 +97,114 @@ void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var)
         .is_const = false,
         .is_weak = false,
     };
+}
+
+void rt_DataList_concat(rt_DataList_t *lst, const rt_DataList_t *lst2)
+{
+    for (int64_t i = 0; i < lst2->length; i++)
+        rt_DataList_append(lst, lst2->var[i]);
+}
+
+void rt_DataList_insert(rt_DataList_t *lst, int64_t idx, rt_Data_t var)
+{
+    if (!(idx >= 0 && idx < lst->length))
+        rt_throw("list out of bounds for index '%" PRId64 "'", idx);
+    rt_Data_increfc(&var);
+    if (lst->length >= lst->capacity) {
+        lst->capacity = lst->capacity * 2 +1;
+        lst->var = (rt_Data_t*) realloc(lst->var, lst->capacity * sizeof(rt_Data_t));
+        if (!lst->var) io_errndie("rt_DataList_insert:" ERR_MSG_REALLOCFAIL);
+    }
+    for (int64_t i = lst->length; i > idx; i--)
+        lst->var[i] = lst->var[i-1];
+    lst->var[idx] = (rt_Data_t) {
+        .type = var.type,
+        .data = var.data,
+        .is_const = false,
+        .is_weak = false,
+    };
+    ++lst->length;
+}
+
+void rt_DataList_erase(rt_DataList_t *lst, int64_t idx, int64_t len)
+{
+    if (!(idx >= 0 && idx < lst->length))
+        rt_throw("list out of bounds for index '%" PRId64 "'", idx);
+    if (len < 0) len = 0;
+    if (idx + len > lst->length) len = lst->length - idx;
+    for (int64_t i = idx; i < idx + len; i++)
+        rt_Data_destroy(&lst->var[i]);
+    for (int64_t i = idx + len; i < lst->length; i++)
+        lst->var[i - len] = lst->var[i];
+    lst->length -= len;
+}
+
+void rt_DataList_reverse(rt_DataList_t *lst)
+{
+    for (int64_t i = 0; i < lst->length / 2; i++) {
+        rt_Data_t tmp = lst->var[i];
+        lst->var[i] = lst->var[lst->length - i - 1];
+        lst->var[lst->length - i - 1] = tmp;
+    }
+}
+
+int64_t rt_DataList_find(const rt_DataList_t *lst, rt_Data_t var)
+{
+    for (int64_t i = 0; i < lst->length; i++) {
+        if (rt_Data_isequal(lst->var[i], var))
+            return i;
+    }
+    return -1;
+}
+
+rt_DataList_t *rt_DataList_sublist(const rt_DataList_t *lst, int64_t idx, int64_t len)
+{
+    if (!(idx >= 0 && idx < lst->length))
+        rt_throw("list out of bounds for index '%" PRId64 "'", idx);
+    if (len < 0) len = 0;
+    if (idx + len > lst->length) len = lst->length - idx;
+    rt_DataList_t *sublist = rt_DataList_init();
+    for (int64_t i = idx; i < idx + len; i++)
+        rt_DataList_append(sublist, lst->var[i]);
+    return sublist;
+}
+
+rt_DataStr_t *rt_DataList_join(const rt_DataList_t *lst, const rt_DataStr_t *sep)
+{
+    /* for each element, convert using rt_Data_tostr and create a new string object
+       along with the seperator */
+    rt_DataStr_t *str = rt_DataStr_init("");
+    for (int64_t i = 0; i < lst->length; i++) {
+        char *lst_el = rt_Data_tostr(lst->var[i]);
+        rt_DataStr_concat(str, rt_DataStr_init(lst_el));
+        free(lst_el);
+        lst_el = NULL;
+        if (i < lst->length - 1)
+            rt_DataStr_concat(str, sep);
+    }
+    return str;
+}
+
+rt_DataList_t *rt_DataList_sort(rt_DataList_t *lst)
+{
+    /* implement quick sort algorithm, use rt_Data_compare */
+    if (lst->length <= 1) return lst;
+    rt_Data_t pivot = lst->var[lst->length - 1];
+    rt_DataList_t *left = rt_DataList_init();
+    rt_DataList_t *right = rt_DataList_init();
+    for (int64_t i = 0; i < lst->length - 1; i++) {
+        if (rt_Data_compare(lst->var[i], pivot) <= 0)
+            rt_DataList_append(left, lst->var[i]);
+        else rt_DataList_append(right, lst->var[i]);
+    }
+    rt_DataList_t *sorted_left = rt_DataList_sort(left);
+    rt_DataList_t *sorted_right = rt_DataList_sort(right);
+    rt_DataList_destroy(&left);
+    rt_DataList_destroy(&right);
+    rt_DataList_append(sorted_left, pivot);
+    rt_DataList_concat(sorted_left, sorted_right);
+    rt_DataList_destroy(&sorted_right);
+    return sorted_left;
 }
 
 rt_Data_t *rt_DataList_getref_errnull(const rt_DataList_t *lst, int64_t idx)

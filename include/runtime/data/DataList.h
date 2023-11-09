@@ -29,12 +29,25 @@ struct rt_DataList_t {
 
 
 rt_DataList_t *rt_DataList_init();
+rt_DataList_t *rt_DataList_clone(const rt_DataList_t *lst);
+
 int64_t rt_DataList_length(const rt_DataList_t *lst);
 void rt_DataList_increfc(rt_DataList_t *lst);
 void rt_DataList_decrefc(rt_DataList_t *lst);
+
 void rt_DataList_destroy_circular(rt_DataList_t **ptr, bool flag);
 void rt_DataList_destroy(rt_DataList_t **ptr);
+
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var);
+void rt_DataList_concat(rt_DataList_t *lst, const rt_DataList_t *lst2);
+void rt_DataList_insert(rt_DataList_t *lst, int64_t idx, rt_Data_t var);
+void rt_DataList_erase(rt_DataList_t *lst, int64_t idx, int64_t len);
+void rt_DataList_reverse(rt_DataList_t *lst);
+int64_t rt_DataList_find(const rt_DataList_t *lst, rt_Data_t var);
+rt_DataList_t *rt_DataList_sublist(const rt_DataList_t *lst, int64_t idx, int64_t len);
+rt_DataStr_t *rt_DataList_join(const rt_DataList_t *lst, const rt_DataStr_t *sep);
+rt_DataList_t *rt_DataList_sort(rt_DataList_t *lst);
+
 rt_Data_t *rt_DataList_getref_errnull(const rt_DataList_t *lst, int64_t idx);
 /** data should be updated only by calling
     `void rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)`

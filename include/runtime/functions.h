@@ -55,6 +55,7 @@ typedef enum {
     rt_fn_STR_SPLIT,     /* str:split */
     rt_fn_STR_TOI64,     /* str:toi64 */
     rt_fn_STR_TOF64,     /* str:tof64 */
+    rt_fn_STR_SORT,      /* str:sort */
 
     rt_fn_LST_APPEND,    /* lst:append */
     rt_fn_LST_INSERT,    /* lst:insert */
