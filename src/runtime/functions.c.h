@@ -27,6 +27,19 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     if (!strcmp(module, "it")) {
         if (!strcmp(fname, "len"))      return rt_fn_IT_LEN;
     }
+    if (!strcmp(module, "str")) {
+        if (!strcmp(fname, "append"))   return rt_fn_STR_APPEND;
+        if (!strcmp(fname, "insert"))   return rt_fn_STR_INSERT;
+        if (!strcmp(fname, "erase"))    return rt_fn_STR_ERASE;
+        if (!strcmp(fname, "concat"))   return rt_fn_STR_CONCAT;
+        if (!strcmp(fname, "reverse"))  return rt_fn_STR_REVERSE;
+        if (!strcmp(fname, "substr"))   return rt_fn_STR_SUBSTR;
+        if (!strcmp(fname, "find"))     return rt_fn_STR_FIND;
+        if (!strcmp(fname, "split"))    return rt_fn_STR_SPLIT;
+        if (!strcmp(fname, "toi64"))    return rt_fn_STR_TOI64;
+        if (!strcmp(fname, "tof64"))    return rt_fn_STR_TOF64;
+        if (!strcmp(fname, "sort"))     return rt_fn_STR_SORT;
+    }
 
     if (!strcmp(fname, "isnull"))       return rt_fn_ISNULL;
     if (!strcmp(fname, "tostr"))        return rt_fn_TOSTR;
@@ -62,6 +75,18 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_IO_INPUT:      return rt_fn_io_input();
 
         case rt_fn_IT_LEN:        return rt_fn_it_len();
+
+        case rt_fn_STR_APPEND:    return rt_fn_str_append();
+        case rt_fn_STR_INSERT:    return rt_fn_str_insert();
+        case rt_fn_STR_ERASE:     return rt_fn_str_erase();
+        case rt_fn_STR_CONCAT:    return rt_fn_str_concat();
+        case rt_fn_STR_REVERSE:   return rt_fn_str_reverse();
+        case rt_fn_STR_SUBSTR:    return rt_fn_str_substr();
+        case rt_fn_STR_FIND:      return rt_fn_str_find();
+        case rt_fn_STR_SPLIT:     return rt_fn_str_split();
+        case rt_fn_STR_TOI64:     return rt_fn_str_toi64();
+        case rt_fn_STR_TOF64:     return rt_fn_str_tof64();
+        case rt_fn_STR_SORT:      return rt_fn_str_sort();
 
         case rt_fn_UNDEFINED:
             io_errndie("rt_fn_FunctionsList_call: undefined procedure for desc: '%d'", fn);
