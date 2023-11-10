@@ -15,21 +15,16 @@ rt_Data_t rt_fn_str_append()
     const rt_Data_t data2 = *rt_DataList_getref(args, 1);
     /* if data2 is chr, concat and return */
     if (data2.type == rt_DATA_TYPE_CHR) {
-        rt_DataStr_t *str = rt_DataStr_clone(data1.data.str);
-        rt_DataStr_append(str, data2.data.chr);
-        return rt_Data_str(str);
+        rt_DataStr_append(data1.data.str, data2.data.chr);
+        return data1;
     }
     /* make sure both are valid types and if not throw an error */
     rt_Data_assert_type(data1, rt_DATA_TYPE_STR, "arg 0");
     rt_Data_assert_type(data2, rt_DATA_TYPE_STR, "arg 1");
-    /* get the string objects out of the data */
-    const rt_DataStr_t *str1 = data1.data.str;
-    const rt_DataStr_t *str2 = data2.data.str;
-    /* clone 1st string and append */
-    rt_DataStr_t *str3 = rt_DataStr_clone(str1);
-    rt_DataStr_concat(str3, str2);
+    /* append inplace */
+    rt_DataStr_concat(data1.data.str, data2.data.str);
     /* return the new string */
-    return rt_Data_str(str3);
+    return data1;
 }
 
 rt_Data_t rt_fn_str_insert()
