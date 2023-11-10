@@ -16,15 +16,15 @@ struct rt_DataList_t {
 
 /* macro that takes a variable number of rt_Data_t type arguments
    and calls rt_DataList_append for each item */
-#define rt_DataList_from(...)                               \
-    ({                                                      \
-        rt_Data_t args[] = { __VA_ARGS__ };                 \
-        size_t args_len = sizeof(args) / sizeof(rt_Data_t); \
-        rt_DataList_t *lst = rt_DataList_init();            \
-        for (size_t i = 0; i < args_len; i++) {             \
-            rt_DataList_append(lst, args[i]);               \
-        }                                                   \
-        lst;                                                \
+#define rt_DataList_from(...)                                \
+    ({                                                       \
+        rt_Data_t _args[] = { __VA_ARGS__ };                 \
+        size_t args_len = sizeof(_args) / sizeof(rt_Data_t); \
+        rt_DataList_t *lst = rt_DataList_init();             \
+        for (size_t i = 0; i < args_len; i++) {              \
+            rt_DataList_append(lst, _args[i]);               \
+        }                                                    \
+        lst;                                                 \
     })
 
 
