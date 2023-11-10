@@ -555,6 +555,21 @@ const char *rt_Data_typename(const rt_Data_t var)
     return NULL;
 }
 
+bool rt_Data_assert_type(
+    const rt_Data_t var,
+    enum rt_DataType_t expected_type,
+    const char *for_varname
+) {
+    if (var.type != expected_type) {
+        rt_throw("invalid type for %s: '%s', expected '%s'",
+            for_varname, rt_Data_typename(var), rt_Data_typename((rt_Data_t) {
+                .type = expected_type
+            }));
+        return false;
+    }
+    return true;
+}
+
 int rt_Data_print(rt_Data_t var)
 {
     char *str = rt_Data_tostr(var);
