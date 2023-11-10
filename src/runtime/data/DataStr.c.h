@@ -28,12 +28,8 @@ rt_DataStr_t *rt_DataStr_init(const char *s)
 
 rt_DataStr_t *rt_DataStr_clone(const rt_DataStr_t *str)
 {
-    rt_DataStr_t *str2 = (rt_DataStr_t*) malloc(sizeof(rt_DataStr_t));
-    if (!str2) io_errndie("rt_DataStr_clone:" ERR_MSG_MALLOCFAIL);
-    for (int64_t i = 0; i < rt_DataStr_length(str); i++) {
-        char ch = rt_DataList_getref(str->var, i)->data.chr;
-        rt_DataList_append(str2->var, rt_Data_chr(ch));
-    }
+    rt_DataStr_t *str2 = rt_DataStr_init("");
+    rt_DataStr_concat(str2, str);
     return str2;
 }
 
@@ -76,8 +72,8 @@ void rt_DataStr_concat(rt_DataStr_t *str, const rt_DataStr_t *str2)
 {
     int64_t length = rt_DataStr_length(str2);
     for (int64_t i = 0; i < length; i++) {
-        char ch = rt_DataList_getref(str2->var, i)->data.chr;
-        rt_DataList_append(str->var, rt_Data_chr(ch));
+        rt_DataList_append(str->var,
+            *rt_DataList_getref(str2->var, i));
     }
 }
 
@@ -93,8 +89,10 @@ void rt_DataStr_insert_str(rt_DataStr_t *str, int64_t idx, const rt_DataStr_t *s
     if (idx >= 0 && idx < rt_DataStr_length(str)) {
         int64_t length = rt_DataStr_length(str2);
         for (int64_t i = 0; i < length; i++) {
-            char ch = rt_DataList_getref(str2->var, i)->data.chr;
-            rt_DataList_insert(str->var, idx + i, rt_Data_chr(ch));
+            rt_DataList_insert(
+                str->var, idx + i,
+                *rt_DataList_getref(str2->var, i)
+            );
         }
     }
     else rt_throw("string out of bounds for index '%" PRId64 "'", idx);
@@ -123,9 +121,10 @@ bool rt_DataStr_isequal(const rt_DataStr_t *str, const rt_DataStr_t *str2)
     int64_t length2 = rt_DataStr_length(str2);
     if (length != length2) return false;
     for (int64_t i = 0; i < length; i++) {
-        char ch = rt_DataList_getref(str->var, i)->data.chr;
-        char ch2 = rt_DataList_getref(str2->var, i)->data.chr;
-        if (ch != ch2) return false;
+        if (!rt_Data_isequal(
+            *rt_DataList_getref(str->var, i),
+            *rt_DataList_getref(str2->var, i)
+        )) return false;
     }
     return true;
 }
@@ -136,9 +135,11 @@ int64_t rt_DataStr_compare(const rt_DataStr_t *str, const rt_DataStr_t *str2)
     int64_t length2 = rt_DataStr_length(str2);
     int64_t minlen = length < length2 ? length : length2;
     for (int64_t i = 0; i < minlen; i++) {
-        char ch = rt_DataList_getref(str->var, i)->data.chr;
-        char ch2 = rt_DataList_getref(str2->var, i)->data.chr;
-        if (ch != ch2) return ch - ch2;
+        int64_t cmp = rt_Data_compare(
+            *rt_DataList_getref(str->var, i),
+            *rt_DataList_getref(str2->var, i)
+        );
+        if (cmp) return cmp;
     }
     return length - length2;
 }
@@ -159,9 +160,10 @@ int64_t rt_DataStr_find_str(const rt_DataStr_t *str, const rt_DataStr_t *str2)
                 found = false;
                 break;
             }
-            char ch = rt_DataList_getref(str->var, i + j)->data.chr;
-            char ch2 = rt_DataList_getref(str2->var, j)->data.chr;
-            if (ch != ch2) {
+            if (!rt_Data_isequal(
+                *rt_DataList_getref(str->var, i),
+                *rt_DataList_getref(str2->var, i)
+            )) {
                 found = false;
                 break;
             }
@@ -184,8 +186,10 @@ rt_DataList_t *rt_DataStr_split(const rt_DataStr_t *str, char var)
     int64_t length = rt_DataStr_length(str);
     int64_t start = 0;
     for (int64_t i = 0; i < length; i++) {
-        char ch = rt_DataList_getref(str->var, i)->data.chr;
-        if (ch == var) {
+        if (rt_Data_isequal(
+            *rt_DataList_getref(str->var, i),
+            rt_Data_chr(var)
+        )) {
             rt_DataStr_t *str2 = rt_DataStr_init("");
             str2->var = rt_DataList_sublist(str->var, start, i - start);
             rt_DataList_append(lst, rt_Data_str(str2));
@@ -211,9 +215,10 @@ rt_DataList_t *rt_DataStr_split_str(const rt_DataStr_t *str, const rt_DataStr_t 
                 found = false;
                 break;
             }
-            char ch = rt_DataList_getref(str->var, i + j)->data.chr;
-            char ch2 = rt_DataList_getref(str2->var, j)->data.chr;
-            if (ch != ch2) {
+            if (!rt_Data_isequal(
+                *rt_DataList_getref(str->var, i),
+                *rt_DataList_getref(str2->var, i)
+            )) {
                 found = false;
                 break;
             }
