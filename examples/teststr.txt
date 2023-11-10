@@ -1,5 +1,5 @@
 proc main start
-    var str1 = "hell"
+    var str1 = const "hell"
     var str2 = "there"
     io:print(str:append(str1, '_'), lf)
     io:print(str:append(str1, "power"), lf)
@@ -11,7 +11,7 @@ proc main start
     io:print(str:substr(str1, 3, 2), lf)
     io:print(str:find(str1, "wo"), lf)
     io:print(str:find(str1, "lo"), lf)
-    io:print(str:split(str1, '-'), lf)
+    io:print(str:split(str1, '_'), lf)
     io:print(str:toi64("452"), lf)
     io:print(str:tof64("56.9"), lf)
     io:print(str:sort(str1), lf)

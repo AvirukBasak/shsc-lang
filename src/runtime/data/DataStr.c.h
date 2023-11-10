@@ -161,8 +161,8 @@ int64_t rt_DataStr_find_str(const rt_DataStr_t *str, const rt_DataStr_t *str2)
                 break;
             }
             if (!rt_Data_isequal(
-                *rt_DataList_getref(str->var, i),
-                *rt_DataList_getref(str2->var, i)
+                *rt_DataList_getref(str->var, i + j),
+                *rt_DataList_getref(str2->var, j)
             )) {
                 found = false;
                 break;
