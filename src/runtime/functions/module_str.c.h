@@ -75,11 +75,13 @@ rt_Data_t rt_fn_str_concat()
     /* make sure both are valid types and if not throw an error */
     rt_Data_assert_type(data1, rt_DATA_TYPE_STR, "arg 0");
     rt_Data_assert_type(data2, rt_DATA_TYPE_STR, "arg 1");
+    /* clone the data coz concat doesn't work inplace */
+    rt_Data_t data3 = rt_Data_str(rt_DataStr_clone(data1.data.str));
     /* call append */
     return rt_fn_call_handler(
         rt_Data_null(),
         "str", "append",
-        rt_DataList_from(data1, data2)
+        rt_DataList_from(data3, data2)
     );
 }
 
