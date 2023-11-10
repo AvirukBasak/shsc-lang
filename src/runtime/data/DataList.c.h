@@ -187,24 +187,17 @@ rt_DataStr_t *rt_DataList_join(const rt_DataList_t *lst, const rt_DataStr_t *sep
 
 rt_DataList_t *rt_DataList_sort(rt_DataList_t *lst)
 {
-    /* implement quick sort algorithm, use rt_Data_compare */
-    if (lst->length <= 1) return lst;
-    rt_Data_t pivot = lst->var[lst->length - 1];
-    rt_DataList_t *left = rt_DataList_init();
-    rt_DataList_t *right = rt_DataList_init();
-    for (int64_t i = 0; i < lst->length - 1; i++) {
-        if (rt_Data_compare(lst->var[i], pivot) <= 0)
-            rt_DataList_append(left, lst->var[i]);
-        else rt_DataList_append(right, lst->var[i]);
+    /* implement insertion sort algorithm inplace, use rt_Data_compare */
+    for (int64_t i = 1; i < lst->length; i++) {
+        rt_Data_t key = lst->var[i];
+        int64_t j = i - 1;
+        while (j >= 0 && rt_Data_compare(lst->var[j], key) > 0) {
+            lst->var[j+1] = lst->var[j];
+            j--;
+        }
+        lst->var[j+1] = key;
     }
-    rt_DataList_t *sorted_left = rt_DataList_sort(left);
-    rt_DataList_t *sorted_right = rt_DataList_sort(right);
-    rt_DataList_destroy(&left);
-    rt_DataList_destroy(&right);
-    rt_DataList_append(sorted_left, pivot);
-    rt_DataList_concat(sorted_left, sorted_right);
-    rt_DataList_destroy(&sorted_right);
-    return sorted_left;
+    return lst;
 }
 
 rt_Data_t *rt_DataList_getref_errnull(const rt_DataList_t *lst, int64_t idx)
