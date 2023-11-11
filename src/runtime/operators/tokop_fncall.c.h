@@ -22,8 +22,7 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
         rhs_ = rt_Data_list(rt_DataList_init());
         rhs = &rhs_;
     }
-    if (rhs->type != rt_DATA_TYPE_LST)
-        rt_throw("cannot pass type '%s' as procedure argument", rt_Data_typename(*rhs));
+    rt_Data_assert_type(*rhs, rt_DATA_TYPE_LST, "procedure argument");
     /* get fn code and push code to stack */
     rt_Data_t context = lhs->data.proc.context
         ? *lhs->data.proc.context

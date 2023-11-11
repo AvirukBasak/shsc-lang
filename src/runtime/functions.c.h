@@ -154,7 +154,8 @@ rt_Data_t rt_fn_call_handler(
         rt_VarTable_acc_setval(rt_fn_FunctionsList_call(fn));
     }
 
+    rt_Data_t ret = rt_VarTable_pop_proc();
     ast_Identifier_destroy(&module);
     ast_Identifier_destroy(&proc);
-    return rt_VarTable_pop_proc();
+    return ret;
 }
