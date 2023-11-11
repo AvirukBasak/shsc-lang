@@ -7,11 +7,24 @@ To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDoc
 - Dependencies:
     - `make` To build
     - `bison` To generate parser
-    - `gcc` (or `clang`) As compiler
-- Build with `install.sh` or `install.bat`
+    - A C compiler (eg `gcc`)
+#### Linux
+- Build with `install.sh`
 - Executable path is `target/shsc-rel`
 
-For Windows users, you'll probably need to use `cygwin` or `git bash` to get `make` working.
+#### Windows
+- Download [`Git Bash`](https://git-scm.com/)
+- Install Git Bash. Now you can run bash on Windows.
+- Download [`make`](https://gnuwin32.sourceforge.net/packages/make.htm)
+- Download [`Bison`](https://gnuwin32.sourceforge.net/packages/bison.htm)
+- Download [`MinGW`](https://github.com/skeeto/w64devkit/releases)
+- Extract the files and place them in some folder
+- Add the necessary paths to the user PATH
+- The user PATH is accessible via `Add or modify user environment variables` or something.
+- Open Git Bash in project root
+- Run `install.sh`
+
+For Windows users, you'll need to use `cygwin` or `git bash` to get `make` working.
 Idk if you can compile it on MSVC so give it a shot and maybe contribute an `md` on it.
 
 ### Usage
