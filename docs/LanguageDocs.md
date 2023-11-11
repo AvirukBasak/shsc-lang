@@ -43,11 +43,11 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Specified increment](#specified-increment)
     - [Iterable](#iterable)
 - [Block statement](#block-statement)
-- [Functions](#functions)
+- [Procedures](#procedures)
     - [Example](#example-2)
-    - [Function arguments](#function-arguments)
+    - [Procedure arguments](#procedure-arguments)
     - [Arguments to `main:main`](#arguments-to-mainmain)
-    - [Function context](#function-context)
+    - [Procedure context](#procedure-context)
 - [Expressions](#expressions)
     - [Ternary expression](#ternary-expression)
     - [Assignments](#assignments)
@@ -69,11 +69,13 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
         - [Example](#example-5)
     - [Maps](#maps)
         - [Example](#example-6)
-- [Built-in functions](#built-in-functions)
-    - [Global](#global)
+- [Built-in procedures](#built-in-procedures)
+    - [Globally available](#globally-available)
     - [Module `dbg`](#module-dbg)
     - [Module `io`](#module-io)
     - [Module `it`](#module-it)
+    - [Module `str`](#module-str)
+    - [Module `lst`](#module-lst)
 
 ## File structure
 The interpreter accepts file paths as command-line arguments for the files you want to run.
@@ -152,7 +154,7 @@ Ensure that each file ends with a newline character, or a syntax error will be t
 
 ### The dollar sign
 The dollar sign is used to access arguments to a procedure. In compiler terms `$` acts as a special operator.
-For details, see [Function arguments](#function-arguments).
+For details, see [Procedure arguments](#procedure-arguments).
 
 ## Statements
 All statements end with a newline.
@@ -335,8 +337,8 @@ end
 Creates an unnamed scope.
 It's pretty much useless.
 
-## Functions
-The following is an example of a factorial program that shows how to use functions.
+## Procedures
+The following is an example of a factorial program that shows how to use procedures.
 
 ### Example
 ```ruby
@@ -359,10 +361,10 @@ proc main start
 end
 ```
 
-### Function arguments
+### Procedure arguments
 
 #### Example
-Four ways to access the first (0th) argument to a function.
+Four ways to access the first (0th) argument to a procedure.
 ```ruby
 var x = $0
 var y = $[0]
@@ -370,9 +372,9 @@ var z = $(0)
 var w = args[0]
 ```
 
-Arguments to a function is defined by the actual parameters (i.e. at the caller side).
+Arguments to a procedure is defined by the actual parameters (i.e. at the caller side).
 
-Functions have no prototypes or formal parameters.
+Procedures have no prototypes or formal parameters.
 
 Arguments are stored in the `args` built-in `lst` type variable.
 
@@ -385,7 +387,7 @@ Of course, you may also use the `args` list to access the arguments, as in `args
 ### Arguments to `main:main`
 The arguments to `main:main` are the command-line arguments passed to the interpreter.
 
-### Function context
+### Procedure context
 If the `.` or map membership operator is used to access a reference to a procedure, the procedure context object is set to the parent map.
 
 Note that this works only if a procedure is accessed from a map using the `.` operator.
@@ -539,7 +541,7 @@ Ownership in our case is being able to destroy the data (free memory).
 
 The following takes memory ownership
 - Any variable to whom data is assigned (until reassigned)
-- Accumulator; or else function returns won't work (temporarily)
+- Accumulator; or else procedure returns won't work (temporarily)
 
 #### Accumulator
 The language uses a temporary location called the `accumulator` to store the result of operations and return values.
@@ -625,22 +627,75 @@ Note how order of keys is not maintained.
 
 Also note how data is stringified during conversion to string (printing).
 
-## Built-in functions
-The language supports the following built-in functions (within built-in modules)
-#### Global
-- `isnull` returns true if data is `null`, else false
-- `tostr` stringifies a built-in
-- `type` returns one of the [global variables for types](#global-variables-for-types)
+## Built-in procedures
+The language supports the following built-in procedures (within built-in modules)
+
+#### Globally available
+- `isnull(any)` returns true if data is `null`, else false
+- `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
+- `type(any)` returns one of the [global variables for types](#global-variables-for-types)
 
 #### Module `dbg`
-- `dbg:typename` returns identifier name of one of the [global variables for types](#global-variables-for-types)
-- `dbg:refcnt` returns total number of references to an object
-- `dbg:id` returns hex string of the memory address of an object
-- `dbg:callproc` calls a procedure from a module
+- `dbg:typename(any)` returns type name of data as string
+- `dbg:refcnt(any)` returns total number of references to an object
+- `dbg:id(any)` returns hex string of the memory address of an object
+- `dbg:callproc(any, str, str, lst)` calls a procedure from a module; the first argument is the context object, the second argument is the module name, the third argument is the procedure name, and the fourth argument is the list of arguments to the procedure
 
 #### Module `io`
-- `io:print` prints string form of data (calls `tostr`)
-- `io:input` takes input from stdin
+- `io:print(any, ...)` prints string form of data (calls `tostr`)
+- `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see [Global variables for types](#global-variables-for-types)
 
 #### Module `it`
 - `it:len` returns length of list, string or map, else returns `1`
+
+#### Module `str`
+`str:concat` is the only manupulative procedure that doesn't work in-place.
+This means that it returns a new string instead of modifying the original string.
+
+- `str:equals(str, str)` returns true if strings are equal, else false
+- `str:compare(str, str)` returns positive if first string is greater, negative if first string is smaller, else 0
+- `str:append(str, str)` appends second string to first string
+- `str:append(str, chr)` appends a single character to first string
+- `str:insert(str, i64, str)` inserts a string at index in first string
+- `str:insert(str, i64, chr)` inserts a single character at index in first string
+- `str:erase(str, i64, i64)` erases a substring; the second argument is the start index and the third argument is length of substring; if third argument exceeds length of string, it'll erase till end of string
+- `str:concat(str, str)` concatenates two strings and returns a new string
+- `str:reverse(str)` reverses a string
+- `str:substr(str, i64, i64)` returns a substring; the second argument is the start index and the third argument is the length of substring; if third argument exceeds length of string, it'll return till end of string
+- `str:find(str, str)` returns first index of substring, else -1
+- `str:find(str, chr)` returns first index of character, else -1
+- `str:split(str, str)` the second argument is the delimiter
+- `str:split(str, chr)` the second argument is the delimiter
+- `str:toi64(str)` converts a string to an i64
+- `str:tof64(str)` converts a string to an f64
+- `str:sort(str)` sorts a string in ascending order
+
+#### Module `lst`
+`lst:concat` is the only manupulative procedure that doesn't work in-place.
+This means that it returns a new list instead of modifying the original list.
+
+All list related procedures work using shallow copies, and no procedure is provided to create deep copies.
+
+- `lst:equals(lst, lst)` returns true if lists are equal, else false
+- `lst:compare(lst, lst)` returns positive if first list is greater, negative if first list is smaller, else 0
+- `lst:append(lst, any)` appends an item to a list
+- `lst:insert(lst, i64, any)` inserts an item at index in a list
+- `lst:erase(lst, i64, i64)` erases a sublist; the second argument is the start index and the third argument is length of sublist; if third argument exceeds length of list, it'll erase till end of list
+- `lst:concat(lst, lst)` concatenates two lists and returns a new list
+- `lst:reverse(lst)` reverses a list
+- `lst:sublst(lst, i64, i64)` returns a sublist; the second argument is the start index and the third argument is the length of sublist; if third argument exceeds length of list, it'll return till end of list
+- `lst:find(lst, any)` returns first index of item, else -1
+- `lst:join(lst, str)` joins a list of strings using the delimiter
+- `lst:sort(lst)` sorts a list in ascending order
+
+#### Module `map`
+`map:concat` is the only manupulative procedure that doesn't work in-place.
+This means that it returns a new map instead of modifying the original map.
+
+However, all map related procedures work using shallow copies, and no procedure is provided to create deep copies.
+
+- `map:insert(map, str, any)` inserts an item into a map; the first argument is the map, the second argument is the key, and the third argument is the value
+- `map:erase(map, str)` erases an item from a map; the first argument is the map, and the second argument is the key
+- `map:concat(map, map)` concatenates two maps and returns a new map
+- `map:find(map, str)` returns true if key exists, else false
+- `map:keys(map)` returns a list of keys in a map

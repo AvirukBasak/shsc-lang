@@ -1,6 +1,8 @@
 # Shsc
 A scripting language inspired by C, Python and Javascript.
 
+To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDocs.md).
+
 ### Build
 - Dependencies:
     - `make` To build
@@ -84,25 +86,30 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `i64:minval`
     - [ ] `f64:maxval`
     - [ ] `f64:minval`
-    - [ ] `str:append`
-    - [ ] `str:insert`
-    - [ ] `str:erase`
-    - [ ] `str:concat`
-    - [ ] `str:reverse`
-    - [ ] `str:substr`
-    - [ ] `str:find`
-    - [ ] `str:split`
-    - [ ] `str:toi64`
-    - [ ] `str:tof64`
-    - [ ] `lst:append`
-    - [ ] `lst:insert`
-    - [ ] `lst:erase`
-    - [ ] `lst:concat`
-    - [ ] `lst:reverse`
-    - [ ] `lst:sublst`
-    - [ ] `lst:find`
-    - [ ] `lst:join`
-    - [ ] `lst:sort`
+    - [x] `str:equals`
+    - [x] `str:compare`
+    - [x] `str:append`
+    - [x] `str:insert`
+    - [x] `str:erase`
+    - [x] `str:concat`
+    - [x] `str:reverse`
+    - [x] `str:substr`
+    - [x] `str:find`
+    - [x] `str:split`
+    - [x] `str:toi64`
+    - [x] `str:tof64`
+    - [x] `str:sort`
+    - [x] `lst:equals`
+    - [x] `lst:compare`
+    - [x] `lst:append`
+    - [x] `lst:insert`
+    - [x] `lst:erase`
+    - [x] `lst:concat`
+    - [x] `lst:reverse`
+    - [x] `lst:sublst`
+    - [x] `lst:find`
+    - [x] `lst:join`
+    - [x] `lst:sort`
     - [ ] `map:insert`
     - [ ] `map:erase`
     - [ ] `map:concat`
