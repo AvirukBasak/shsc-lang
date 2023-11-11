@@ -2,7 +2,7 @@ proc main start
     var str1 = const "hell"
     var str2 = "there"
     io:print(str:append(str1, '_'), lf)
-    io:print(str:append(str1, "power"), lf)
+    io:print(str:append(str1, "power_"), lf)
     io:print(str:insert(str1, 4, 'o'), lf)
     io:print(str:insert(str1, 4, "oo"), lf)
     io:print(str:erase(str1, 1, 3), lf)
