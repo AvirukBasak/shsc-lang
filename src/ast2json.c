@@ -614,7 +614,7 @@ void ast2json_Identifier(const ast_Identifier_t *identifier)
     ast2json_open_obj();
     ast2json_printf("\"node\": \"identifier\"");
     ast2json_put_comma();
-    ast2json_printf("\"identifier_name\": \"%s\"", identifier->identifier_name);
+    ast2json_printf("\"identifier_name\": \"%s\"", identifier);
     ast2json_close_obj();
 }
 
@@ -624,17 +624,17 @@ void ast2json_ModuleAndProcTable()
     ast2json_open_obj();
     /* node name */
     ast2json_printf("\"node\": \"root\"");
-    ast_util_ModuleAndProcTable_foreach_module(modulename, procmap, {
+    ast_util_ModuleAndProcTable_foreach_module(module_name, procmap, {
         /* open map of the module name to procedures */
         ast2json_put_comma();
-        ast2json_printf("\"%s\": ", modulename);
+        ast2json_printf("\"%s\": ", module_name);
         ast2json_open_obj();
         /* node name */
         ast2json_printf("\"node\": \"module\"");
-        ast_util_ModuleAndProcTable_foreach_procedure(procmap, procname, filename, code, {
+        ast_util_ModuleAndProcTable_foreach_procedure(procmap, proc_name, filename, code, {
             /* open a procedure node, map it with proc name */
             ast2json_put_comma();
-            ast2json_printf("\"%s\": ", procname);
+            ast2json_printf("\"%s\": ", proc_name);
             ast2json_open_obj();
             ast2json_printf("\"node\": \"procedure\"");
             ast2json_put_comma();

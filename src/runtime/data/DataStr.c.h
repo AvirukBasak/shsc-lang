@@ -26,6 +26,13 @@ rt_DataStr_t *rt_DataStr_init(const char *s)
     return str;
 }
 
+rt_DataStr_t *rt_DataStr_clone(const rt_DataStr_t *str)
+{
+    rt_DataStr_t *str2 = rt_DataStr_init("");
+    rt_DataStr_concat(str2, str);
+    return str2;
+}
+
 int64_t rt_DataStr_length(const rt_DataStr_t *str)
 {
     return rt_DataList_length(str->var);
@@ -59,6 +66,211 @@ void rt_DataStr_destroy(rt_DataStr_t **ptr)
 void rt_DataStr_append(rt_DataStr_t *str, char var)
 {
     rt_DataList_append(str->var, rt_Data_chr(var));
+}
+
+void rt_DataStr_concat(rt_DataStr_t *str, const rt_DataStr_t *str2)
+{
+    int64_t length = rt_DataStr_length(str2);
+    for (int64_t i = 0; i < length; i++) {
+        rt_DataList_append(str->var,
+            *rt_DataList_getref(str2->var, i));
+    }
+}
+
+void rt_DataStr_insert(rt_DataStr_t *str, int64_t idx, char var)
+{
+    if (idx >= 0 && idx < rt_DataStr_length(str))
+        rt_DataList_insert(str->var, idx, rt_Data_chr(var));
+    else rt_throw("string out of bounds for index '%" PRId64 "'", idx);
+}
+
+void rt_DataStr_insert_str(rt_DataStr_t *str, int64_t idx, const rt_DataStr_t *str2)
+{
+    if (idx >= 0 && idx < rt_DataStr_length(str)) {
+        int64_t length = rt_DataStr_length(str2);
+        for (int64_t i = 0; i < length; i++) {
+            rt_DataList_insert(
+                str->var, idx + i,
+                *rt_DataList_getref(str2->var, i)
+            );
+        }
+    }
+    else rt_throw("string out of bounds for index '%" PRId64 "'", idx);
+}
+
+void rt_DataStr_erase(rt_DataStr_t *str, int64_t idx, int64_t len)
+{
+    if (idx >= 0 && idx < rt_DataStr_length(str)) {
+        if (len < 0) rt_throw("negative length '%" PRId64 "'", len);
+        if (idx + len > rt_DataStr_length(str))
+            rt_throw("string out of bounds for index '%" PRId64 "'", idx + len);
+        for (int64_t i = 0; i < len; i++)
+            rt_DataList_del_index(str->var, idx);
+    }
+    else rt_throw("string out of bounds for index '%" PRId64 "'", idx);
+}
+
+void rt_DataStr_reverse(rt_DataStr_t *str)
+{
+    rt_DataList_reverse(str->var);
+}
+
+bool rt_DataStr_isequal(const rt_DataStr_t *str, const rt_DataStr_t *str2)
+{
+    int64_t length = rt_DataStr_length(str);
+    int64_t length2 = rt_DataStr_length(str2);
+    if (length != length2) return false;
+    for (int64_t i = 0; i < length; i++) {
+        if (!rt_Data_isequal(
+            *rt_DataList_getref(str->var, i),
+            *rt_DataList_getref(str2->var, i)
+        )) return false;
+    }
+    return true;
+}
+
+int64_t rt_DataStr_compare(const rt_DataStr_t *str, const rt_DataStr_t *str2)
+{
+    int64_t length = rt_DataStr_length(str);
+    int64_t length2 = rt_DataStr_length(str2);
+    int64_t minlen = length < length2 ? length : length2;
+    for (int64_t i = 0; i < minlen; i++) {
+        int64_t cmp = rt_Data_compare(
+            *rt_DataList_getref(str->var, i),
+            *rt_DataList_getref(str2->var, i)
+        );
+        if (cmp) return cmp;
+    }
+    return length - length2;
+}
+
+int64_t rt_DataStr_find(const rt_DataStr_t *str, char var)
+{
+    return rt_DataList_find(str->var, rt_Data_chr(var));
+}
+
+int64_t rt_DataStr_find_str(const rt_DataStr_t *str, const rt_DataStr_t *str2)
+{
+    int64_t length = rt_DataStr_length(str);
+    int64_t length2 = rt_DataStr_length(str2);
+    for (int64_t i = 0; i < length; i++) {
+        bool found = true;
+        for (int64_t j = 0; j < length2; j++) {
+            if (i + j >= length) {
+                found = false;
+                break;
+            }
+            if (!rt_Data_isequal(
+                *rt_DataList_getref(str->var, i + j),
+                *rt_DataList_getref(str2->var, j)
+            )) {
+                found = false;
+                break;
+            }
+        }
+        if (found) return i;
+    }
+    return -1;
+}
+
+rt_DataStr_t *rt_DataStr_substr(const rt_DataStr_t *str, int64_t idx, int64_t len)
+{
+    rt_DataStr_t *str2 = rt_DataStr_init("");
+    rt_DataList_destroy(&str2->var);
+    str2->var = rt_DataList_sublist(str->var, idx, len);
+    return str2;
+}
+
+rt_DataList_t *rt_DataStr_split(const rt_DataStr_t *str, char var)
+{
+    rt_DataList_t *lst = rt_DataList_init();
+    int64_t length = rt_DataStr_length(str);
+    int64_t start = 0;
+    for (int64_t i = 0; i < length; i++) {
+        if (rt_Data_isequal(
+            *rt_DataList_getref(str->var, i),
+            rt_Data_chr(var)
+        )) {
+            rt_DataStr_t *str2 = rt_DataStr_substr(str, start, i - start);
+            rt_DataList_append(lst, rt_Data_str(str2));
+            start = i + 1;
+        }
+    }
+    rt_DataStr_t *str2 = rt_DataStr_substr(str, start, length - start);
+    rt_DataList_append(lst, rt_Data_str(str2));
+    return lst;
+}
+
+rt_DataList_t *rt_DataStr_split_str(const rt_DataStr_t *str, const rt_DataStr_t *str2)
+{
+    rt_DataList_t *lst = rt_DataList_init();
+    int64_t length = rt_DataStr_length(str);
+    int64_t length2 = rt_DataStr_length(str2);
+    int64_t start = 0;
+    for (int64_t i = 0; i < length; i++) {
+        bool found = true;
+        for (int64_t j = 0; j < length2; j++) {
+            if (i + j >= length) {
+                found = false;
+                break;
+            }
+            if (!rt_Data_isequal(
+                *rt_DataList_getref(str->var, i),
+                *rt_DataList_getref(str2->var, i)
+            )) {
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            rt_DataStr_t *str3 = rt_DataStr_init("");
+            str3->var = rt_DataList_sublist(str->var, start, i - start);
+            rt_DataList_append(lst, rt_Data_str(str3));
+            start = i + length2;
+        }
+    }
+    rt_DataStr_t *str3 = rt_DataStr_init("");
+    str3->var = rt_DataList_sublist(str->var, start, length - start);
+    rt_DataList_append(lst, rt_Data_str(str3));
+    return lst;
+}
+
+rt_DataStr_t *rt_DataStr_sort(rt_DataStr_t *str)
+{
+    rt_DataList_sort(str->var);
+    return str;
+}
+
+rt_Data_t rt_DataStr_toi64(const rt_DataStr_t *str)
+{
+    int64_t length = rt_DataStr_length(str);
+    int64_t val = 0;
+    for (int64_t i = 0; i < length; i++) {
+        char ch = rt_DataList_getref(str->var, i)->data.chr;
+        if (ch < '0' || ch > '9') rt_throw("invalid character '%c'", ch);
+        val = val * 10 + (ch - '0');
+    }
+    return rt_Data_i64(val);
+}
+
+rt_Data_t rt_DataStr_tof64(const rt_DataStr_t *str)
+{
+    int64_t length = rt_DataStr_length(str);
+    double val = 0;
+    double div = 1;
+    bool dot = false;
+    for (int64_t i = 0; i < length; i++) {
+        char ch = rt_DataList_getref(str->var, i)->data.chr;
+        if (ch == '.') {
+            if (dot) rt_throw("invalid character '%c'", ch);
+            dot = true;
+            continue;
+        }
+        if (ch < '0' || ch > '9') rt_throw("invalid character '%c'", ch);
+        if (dot) div *= 10;
+        val = val * 10 + (ch - '0');
+    }
+    return rt_Data_f64(val / div);
 }
 
 char *rt_DataStr_getref_errnull(const rt_DataStr_t *str, int64_t idx)

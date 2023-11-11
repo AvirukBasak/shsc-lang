@@ -108,6 +108,26 @@ void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
     };
 }
 
+void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
+{
+    khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
+    if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
+    rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
+    free(kh_value(mp->data_map, entry_it).key);
+    kh_del(rt_DataMap_t, mp->data_map, entry_it);
+    --mp->length;
+}
+
+void rt_DataMap_concat(const rt_DataMap_t *mp1, const rt_DataMap_t *mp2)
+{
+    for (khiter_t entry_it = kh_begin(mp2->data_map); entry_it != kh_end(mp2->data_map); ++entry_it) {
+        if (!kh_exist(mp2->data_map, entry_it)) continue;
+        const char *key = kh_key(mp2->data_map, entry_it);
+        rt_DataMap_insert((rt_DataMap_t*) mp1, key,
+            kh_value(mp2->data_map, entry_it).value);
+    }
+}
+
 const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key)
 {
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
@@ -136,16 +156,6 @@ rt_Data_t *rt_DataMap_getref(const rt_DataMap_t *mp, const char *key)
         data = rt_DataMap_getref_errnull(mp, key);
     }
     return data;
-}
-
-void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
-{
-    khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
-    if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
-    rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
-    free(kh_value(mp->data_map, entry_it).key);
-    kh_del(rt_DataMap_t, mp->data_map, entry_it);
-    --mp->length;
 }
 
 char *rt_DataMap_tostr(const rt_DataMap_t *mp)

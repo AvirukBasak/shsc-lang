@@ -22,16 +22,15 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
         rhs_ = rt_Data_list(rt_DataList_init());
         rhs = &rhs_;
     }
-    if (rhs->type != rt_DATA_TYPE_LST)
-        rt_throw("cannot pass type '%s' as procedure argument", rt_Data_typename(*rhs));
+    rt_Data_assert_type(*rhs, rt_DATA_TYPE_LST, "procedure argument");
     /* get fn code and push code to stack */
     rt_Data_t context = lhs->data.proc.context
         ? *lhs->data.proc.context
         : rt_Data_null();
     rt_fn_call_handler(
         context,
-        lhs->data.proc.modulename->identifier_name,
-        lhs->data.proc.procname->identifier_name,
+        lhs->data.proc.module_name,
+        lhs->data.proc.proc_name,
         rhs->data.lst
     );
     /* set no data to accumulator as data is already set by procedure called above

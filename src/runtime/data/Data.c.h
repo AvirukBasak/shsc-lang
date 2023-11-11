@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -103,15 +104,15 @@ rt_Data_t rt_Data_map(rt_DataMap_t *mp)
 }
 
 rt_Data_t rt_Data_proc(
-    const ast_Identifier_t *modulename,
-    const ast_Identifier_t *procname
+    const ast_Identifier_t *module_name,
+    const ast_Identifier_t *proc_name
 ) {
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
     var.type = rt_DATA_TYPE_PROC;
-    var.data.proc.modulename = modulename;
-    var.data.proc.procname = procname;
+    var.data.proc.module_name = module_name;
+    var.data.proc.proc_name = proc_name;
     var.data.proc.context = NULL;
     return var;
 }
@@ -220,6 +221,174 @@ bool rt_Data_isnull(const rt_Data_t var)
     return var.type == rt_DATA_TYPE_ANY && !var.data.any;
 }
 
+bool rt_Data_isnumeric(const rt_Data_t var)
+{
+    switch (var.type) {
+        case rt_DATA_TYPE_BUL:
+        case rt_DATA_TYPE_CHR:
+        case rt_DATA_TYPE_I64:
+        case rt_DATA_TYPE_F64:
+            return true;
+        case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR:
+        case rt_DATA_TYPE_LST:
+        case rt_DATA_TYPE_MAP:
+        case rt_DATA_TYPE_ANY:
+        case rt_DATA_TYPE_PROC:
+            return false;
+    }
+    return false;
+}
+
+bool rt_Data_isequal(const rt_Data_t var1, const rt_Data_t var2)
+{
+    if (var1.type != var2.type) return false;
+    switch (var1.type) {
+        case rt_DATA_TYPE_BUL:
+            return var1.data.bul == var2.data.bul;
+        case rt_DATA_TYPE_CHR:
+            return var1.data.chr == var2.data.chr;
+        case rt_DATA_TYPE_I64:
+            return var1.data.i64 == var2.data.i64;
+        case rt_DATA_TYPE_F64:
+            return var1.data.f64 == var2.data.f64;
+        case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR:
+            return rt_DataStr_isequal(var1.data.str, var2.data.str);
+        case rt_DATA_TYPE_LST:
+            return var1.data.lst == var2.data.lst;
+        case rt_DATA_TYPE_MAP:
+            return var1.data.mp == var2.data.mp;
+        case rt_DATA_TYPE_ANY:
+            return var1.data.any == var2.data.any;
+        case rt_DATA_TYPE_PROC:
+            return var1.data.proc.proc_name == var2.data.proc.proc_name
+                && var1.data.proc.module_name == var2.data.proc.module_name;
+    }
+    return false;
+}
+
+int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2)
+{
+    /* if var1.type != var2.type, and either of them is numeric
+       but the other is not, throw an error */
+    if (var1.type != var2.type) {
+        if ( (rt_Data_isnumeric(var1) && !rt_Data_isnumeric(var2))
+          || (rt_Data_isnumeric(var2) && !rt_Data_isnumeric(var1)))
+            rt_throw("cannot compare type '%s' with type '%s'",
+                rt_Data_typename(var2), rt_Data_typename(var1));
+    }
+    switch (var1.type) {
+        case rt_DATA_TYPE_BUL: {
+            switch (var2.type) {
+                case rt_DATA_TYPE_BUL:
+                    return var1.data.bul - var2.data.bul;
+                case rt_DATA_TYPE_CHR:
+                    return var1.data.bul - var2.data.chr;
+                case rt_DATA_TYPE_I64:
+                    return var1.data.bul - var2.data.i64;
+                case rt_DATA_TYPE_F64:
+                    return var1.data.bul - var2.data.f64;
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_ANY:
+                case rt_DATA_TYPE_PROC:
+                    rt_throw("cannot compare type '%s' with type '%s'",
+                        rt_Data_typename(var2), rt_Data_typename(var1));
+            }
+        }
+        case rt_DATA_TYPE_CHR: {
+            switch (var2.type) {
+                case rt_DATA_TYPE_BUL:
+                    return var1.data.chr - var2.data.bul;
+                case rt_DATA_TYPE_CHR:
+                    return var1.data.chr - var2.data.chr;
+                case rt_DATA_TYPE_I64:
+                    return var1.data.chr - var2.data.i64;
+                case rt_DATA_TYPE_F64:
+                    return var1.data.chr - var2.data.f64;
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_ANY:
+                case rt_DATA_TYPE_PROC:
+                    rt_throw("cannot compare type '%s' with type '%s'",
+                        rt_Data_typename(var2), rt_Data_typename(var1));
+            }
+        }
+        case rt_DATA_TYPE_I64: {
+            switch (var2.type) {
+                case rt_DATA_TYPE_BUL:
+                    return var1.data.i64 - var2.data.bul;
+                case rt_DATA_TYPE_CHR:
+                    return var1.data.i64 - var2.data.chr;
+                case rt_DATA_TYPE_I64:
+                    return var1.data.i64 - var2.data.i64;
+                case rt_DATA_TYPE_F64:
+                    return var1.data.i64 - var2.data.f64;
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_ANY:
+                case rt_DATA_TYPE_PROC:
+                    rt_throw("cannot compare type '%s' with type '%s'",
+                        rt_Data_typename(var2), rt_Data_typename(var1));
+            }
+        }
+        case rt_DATA_TYPE_F64: {
+            switch (var2.type) {
+                case rt_DATA_TYPE_BUL:
+                    return var1.data.f64 - var2.data.bul;
+                case rt_DATA_TYPE_CHR:
+                    return var1.data.f64 - var2.data.chr;
+                case rt_DATA_TYPE_I64:
+                    return var1.data.f64 - var2.data.i64;
+                case rt_DATA_TYPE_F64:
+                    return var1.data.f64 - var2.data.f64;
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_ANY:
+                case rt_DATA_TYPE_PROC:
+                    rt_throw("cannot compare type '%s' with type '%s'",
+                        rt_Data_typename(var2), rt_Data_typename(var1));
+            }
+        }
+        case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR: {
+            switch (var2.type) {
+                case rt_DATA_TYPE_BUL:
+                case rt_DATA_TYPE_CHR:
+                case rt_DATA_TYPE_I64:
+                case rt_DATA_TYPE_F64:
+                    rt_throw("cannot compare type '%s' with type '%s'",
+                        rt_Data_typename(var2), rt_Data_typename(var1));
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_INTERP_STR:
+                    return rt_DataStr_compare(var1.data.str, var2.data.str);
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_ANY:
+                case rt_DATA_TYPE_PROC:
+                    rt_throw("cannot compare type '%s' with type '%s'",
+                        rt_Data_typename(var2), rt_Data_typename(var1));
+            }
+        }
+        case rt_DATA_TYPE_ANY:
+            return var1.data.any - var2.data.any;
+        case rt_DATA_TYPE_LST:
+        case rt_DATA_TYPE_MAP:
+        case rt_DATA_TYPE_PROC:
+            rt_throw("cannot compare type '%s'", rt_Data_typename(var1));
+    }
+    return 0;
+}
+
 bool rt_Data_Identifier_isvalid(const char *idf)
 {
     if (!idf) return false;
@@ -295,7 +464,7 @@ bool rt_Data_tobool(const rt_Data_t var)
         case rt_DATA_TYPE_ANY:
             return !!var.data.any;
         case rt_DATA_TYPE_PROC:
-            return !!var.data.proc.procname && !!var.data.proc.modulename;
+            return !!var.data.proc.proc_name && !!var.data.proc.module_name;
     }
     return false;
 }
@@ -354,14 +523,14 @@ char *rt_Data_tostr(const rt_Data_t var)
         }
         case rt_DATA_TYPE_PROC: {
             size_t sz = snprintf(NULL, 0, "%s:%s",
-                var.data.proc.procname->identifier_name,
-                var.data.proc.modulename->identifier_name
+                var.data.proc.proc_name,
+                var.data.proc.module_name
             );
             char *str = (char*) malloc((sz +1) * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%s:%s",
-                var.data.proc.modulename->identifier_name,
-                var.data.proc.procname->identifier_name
+                var.data.proc.module_name,
+                var.data.proc.proc_name
             );
             return str;
         }
@@ -384,6 +553,21 @@ const char *rt_Data_typename(const rt_Data_t var)
         case rt_DATA_TYPE_PROC:       return "proc";
     }
     return NULL;
+}
+
+bool rt_Data_assert_type(
+    const rt_Data_t var,
+    enum rt_DataType_t expected_type,
+    const char *for_varname
+) {
+    if (var.type != expected_type) {
+        rt_throw("invalid type for %s: '%s', expected '%s'",
+            for_varname, rt_Data_typename(var), rt_Data_typename((rt_Data_t) {
+                .type = expected_type
+            }));
+        return false;
+    }
+    return true;
 }
 
 int rt_Data_print(rt_Data_t var)

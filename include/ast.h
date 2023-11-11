@@ -19,6 +19,6 @@ typedef struct ast_CommaSepList_t         ast_CommaSepList_t;
 typedef struct ast_AssociativeList_t      ast_AssociativeList_t;
 
 typedef struct ast_Literal_t              ast_Literal_t;
-typedef struct ast_Identifier_t           ast_Identifier_t;
+typedef char                              ast_Identifier_t;
 
 #endif

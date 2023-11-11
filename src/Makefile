@@ -15,9 +15,21 @@ INCLUDE_DIR    := ../include
 
 EXEC_NAME      := shsc
 
+WRN_ERR_FLAGS  := -Wall -Wno-unused-but-set-variable -Wno-unused-label
+ASAN_FLAGS	   := -fsanitize=address
+ASAN_OPTIONS   := ASAN_OPTIONS=detect_leaks=1:$\
+				  fast_unwind_on_malloc=0:$\
+				  strict_init_order=true:$\
+				  strict_string_checks=true:$\
+				  check_initialization_order=true:$\
+				  abort_on_error=1:$\
+				  symbolize=1:$\
+				  verbosity=0:$\
+				  halt_on_error=0
+
 CC             := gcc
-CFLAGS         := -Wall -Wno-unused-but-set-variable -Wno-unused-label -Ofast
-CDBGFLAGS      := -Wall -Wno-unused-but-set-variable -Wno-unused-label -g -fsanitize=address -D DEBUG
+CFLAGS         := $(WRN_ERR_FLAGS) -Ofast
+CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)

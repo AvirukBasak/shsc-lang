@@ -1,8 +1,13 @@
 #ifndef RT_OP_DCOLON_C_H
 #define RT_OP_DCOLON_C_H
 
+#include "ast.h"
+#include "ast/api.h"
 #include "runtime/data/Data.h"
+#include "runtime/data/DataMap.h"
+#include "runtime/io.h"
 #include "runtime/operators.h"
+#include "runtime/VarTable.h"
 
 void rt_op_dcolon(const ast_Expression_t *expr)
 {

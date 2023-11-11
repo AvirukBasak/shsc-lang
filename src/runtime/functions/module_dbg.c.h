@@ -83,21 +83,15 @@ rt_Data_t rt_fn_dbg_callproc()
 
     const rt_Data_t module = *rt_DataList_getref(args, 1);
     /* module should be string */
-    if (module.type != rt_DATA_TYPE_STR) {
-        rt_throw("invalid type for module name: '%s', expected 'str'", rt_Data_typename(module));
-    }
+    rt_Data_assert_type(module, rt_DATA_TYPE_STR, "module name");
 
     const rt_Data_t proc = *rt_DataList_getref(args, 2);
     /* proc should be string */
-    if (proc.type != rt_DATA_TYPE_STR) {
-        rt_throw("invalid type for procedure name: '%s', expected 'str'", rt_Data_typename(proc));
-    }
+    rt_Data_assert_type(proc, rt_DATA_TYPE_STR, "procedure name");
 
     const rt_Data_t fnargs = *rt_DataList_getref(args, 3);
     /* fnargs should be list */
-    if (fnargs.type != rt_DATA_TYPE_LST) {
-        rt_throw("invalid type for procedure arguments: '%s', expected 'lst'", rt_Data_typename(fnargs));
-    }
+    rt_Data_assert_type(fnargs, rt_DATA_TYPE_LST, "procedure arguments");
 
     /* call procedure */
     char *module_str = rt_Data_tostr(module);

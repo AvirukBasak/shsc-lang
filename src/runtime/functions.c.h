@@ -27,6 +27,34 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     if (!strcmp(module, "it")) {
         if (!strcmp(fname, "len"))      return rt_fn_IT_LEN;
     }
+    if (!strcmp(module, "str")) {
+        if (!strcmp(fname, "equals"))   return rt_fn_STR_EQUALS;
+        if (!strcmp(fname, "compare"))  return rt_fn_STR_COMPARE;
+        if (!strcmp(fname, "append"))   return rt_fn_STR_APPEND;
+        if (!strcmp(fname, "insert"))   return rt_fn_STR_INSERT;
+        if (!strcmp(fname, "erase"))    return rt_fn_STR_ERASE;
+        if (!strcmp(fname, "concat"))   return rt_fn_STR_CONCAT;
+        if (!strcmp(fname, "reverse"))  return rt_fn_STR_REVERSE;
+        if (!strcmp(fname, "substr"))   return rt_fn_STR_SUBSTR;
+        if (!strcmp(fname, "find"))     return rt_fn_STR_FIND;
+        if (!strcmp(fname, "split"))    return rt_fn_STR_SPLIT;
+        if (!strcmp(fname, "toi64"))    return rt_fn_STR_TOI64;
+        if (!strcmp(fname, "tof64"))    return rt_fn_STR_TOF64;
+        if (!strcmp(fname, "sort"))     return rt_fn_STR_SORT;
+    }
+    if (!strcmp(module, "lst")) {
+        if (!strcmp(fname, "equals"))   return rt_fn_LST_EQUALS;
+        if (!strcmp(fname, "compare"))  return rt_fn_LST_COMPARE;
+        if (!strcmp(fname, "append"))   return rt_fn_LST_APPEND;
+        if (!strcmp(fname, "insert"))   return rt_fn_LST_INSERT;
+        if (!strcmp(fname, "erase"))    return rt_fn_LST_ERASE;
+        if (!strcmp(fname, "concat"))   return rt_fn_LST_CONCAT;
+        if (!strcmp(fname, "reverse"))  return rt_fn_LST_REVERSE;
+        if (!strcmp(fname, "find"))     return rt_fn_LST_FIND;
+        if (!strcmp(fname, "sublist"))  return rt_fn_LST_SUBLIST;
+        if (!strcmp(fname, "join"))     return rt_fn_LST_JOIN;
+        if (!strcmp(fname, "sort"))     return rt_fn_LST_SORT;
+    }
 
     if (!strcmp(fname, "isnull"))       return rt_fn_ISNULL;
     if (!strcmp(fname, "tostr"))        return rt_fn_TOSTR;
@@ -63,6 +91,32 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
 
         case rt_fn_IT_LEN:        return rt_fn_it_len();
 
+        case rt_fn_STR_EQUALS:    return rt_fn_str_equals();
+        case rt_fn_STR_COMPARE:   return rt_fn_str_compare();
+        case rt_fn_STR_APPEND:    return rt_fn_str_append();
+        case rt_fn_STR_INSERT:    return rt_fn_str_insert();
+        case rt_fn_STR_ERASE:     return rt_fn_str_erase();
+        case rt_fn_STR_CONCAT:    return rt_fn_str_concat();
+        case rt_fn_STR_REVERSE:   return rt_fn_str_reverse();
+        case rt_fn_STR_SUBSTR:    return rt_fn_str_substr();
+        case rt_fn_STR_FIND:      return rt_fn_str_find();
+        case rt_fn_STR_SPLIT:     return rt_fn_str_split();
+        case rt_fn_STR_TOI64:     return rt_fn_str_toi64();
+        case rt_fn_STR_TOF64:     return rt_fn_str_tof64();
+        case rt_fn_STR_SORT:      return rt_fn_str_sort();
+
+        case rt_fn_LST_EQUALS:    return rt_fn_lst_equals();
+        case rt_fn_LST_COMPARE:   return rt_fn_lst_compare();
+        case rt_fn_LST_APPEND:    return rt_fn_lst_append();
+        case rt_fn_LST_INSERT:    return rt_fn_lst_insert();
+        case rt_fn_LST_ERASE:     return rt_fn_lst_erase();
+        case rt_fn_LST_CONCAT:    return rt_fn_lst_concat();
+        case rt_fn_LST_REVERSE:   return rt_fn_lst_reverse();
+        case rt_fn_LST_SUBLIST:   return rt_fn_lst_sublst();
+        case rt_fn_LST_FIND:      return rt_fn_lst_find();
+        case rt_fn_LST_JOIN:      return rt_fn_lst_join();
+        case rt_fn_LST_SORT:      return rt_fn_lst_sort();
+
         case rt_fn_UNDEFINED:
             io_errndie("rt_fn_FunctionsList_call: undefined procedure for desc: '%d'", fn);
             break;
@@ -86,19 +140,19 @@ const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc)
 
 rt_Data_t rt_fn_call_handler(
     const rt_Data_t context,
-    const char *modulename,
-    const char *procname,
+    const char *module_name,
+    const char *proc_name,
     rt_DataList_t *args
 ) {
-    ast_Identifier_t *module = ast_Identifier(strdup(modulename));
-    ast_Identifier_t *proc = ast_Identifier(strdup(procname));
+    const ast_Identifier_t *module = (const ast_Identifier_t*) module_name;
+    const ast_Identifier_t *proc = (const ast_Identifier_t*) proc_name;
 
     /* get code as AST from user defined function */
     const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
 
     /* get a descriptor to in-built function */
     const rt_fn_FunctionDescriptor_t fn = rt_fn_FunctionsList_getfn(
-        modulename, procname);
+        module_name, proc_name);
 
     const char *currfile = NULL;
 
@@ -106,9 +160,9 @@ rt_Data_t rt_fn_call_handler(
     if (code) {
         currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
     } else if (fn != rt_fn_UNDEFINED) {
-        currfile = modulename;
+        currfile = module_name;
     } else {
-        rt_throw("undefined procedure '%s:%s'", modulename, procname);
+        rt_throw("undefined procedure '%s:%s'", module_name, proc_name);
     }
 
     rt_VarTable_push_proc(module, proc, currfile);
@@ -129,7 +183,6 @@ rt_Data_t rt_fn_call_handler(
         rt_VarTable_acc_setval(rt_fn_FunctionsList_call(fn));
     }
 
-    ast_Identifier_destroy(&module);
-    ast_Identifier_destroy(&proc);
-    return rt_VarTable_pop_proc();
+    rt_Data_t ret = rt_VarTable_pop_proc();
+    return ret;
 }

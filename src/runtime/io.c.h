@@ -18,8 +18,8 @@
 void rt_throw(const char *fmt, ...)
 {
     fprintf(stderr, "shsc: " RT_IO_THROW_DONT_PRINT_FN "%s:%d: ",
-        /* rt_VarTable_top_proc()->modulename->identifier_name, */
-        /* rt_VarTable_top_proc()->procname->identifier_name, */
+        /* rt_VarTable_top_proc()->module_name, */
+        /* rt_VarTable_top_proc()->proc_name, */
         rt_VarTable_top_proc()->filepath,
         rt_VarTable_top_proc()->current_line);
     fflush(stderr);
@@ -34,8 +34,8 @@ void rt_throw(const char *fmt, ...)
     int trace_lim_i = 0;
     while (rt_VarTable_top_proc() && trace_lim_i++ < RT_IO_TRACE_LIMIT) {
         fprintf(stderr, "    at " RT_IO_THROW_PRINT_FN " (%s:%d)\n",
-            rt_VarTable_top_proc()->modulename->identifier_name,
-            rt_VarTable_top_proc()->procname->identifier_name,
+            rt_VarTable_top_proc()->module_name,
+            rt_VarTable_top_proc()->proc_name,
             rt_VarTable_top_proc()->filepath,
             rt_VarTable_top_proc()->current_line
         );

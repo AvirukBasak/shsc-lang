@@ -2,7 +2,10 @@
 #define RT_OP_DOT_C_H
 
 #include "runtime/data/Data.h"
+#include "runtime/data/DataMap.h"
+#include "runtime/io.h"
 #include "runtime/operators.h"
+#include "runtime/VarTable.h"
 
 void rt_op_dot(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {

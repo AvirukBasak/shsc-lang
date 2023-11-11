@@ -251,9 +251,6 @@ void ast_Identifier_destroy(ast_Identifier_t **ptr)
     if (!ptr) return;
     ast_Identifier_t *identifier = *ptr;
     if (!identifier) return;
-    if (!identifier->identifier_name) return;
-    free(identifier->identifier_name);
-    identifier->identifier_name = NULL;
     free(identifier);
     *ptr = NULL;
 }
