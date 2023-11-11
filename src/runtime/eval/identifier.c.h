@@ -5,6 +5,7 @@
 #include "ast/api.h"
 #include "runtime/eval.h"
 #include "runtime/functions.h"
+#include "runtime/io.h"
 #include "runtime/VarTable.h"
 
 void rt_eval_Identifier(const ast_Identifier_t *identifier)
