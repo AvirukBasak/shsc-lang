@@ -14,7 +14,7 @@ void rt_eval_Assignment(const ast_Assignment_t *assignment)
             rt_eval_Expression(assignment->rhs);
             break;
         case ASSIGNMENT_TYPE_CREATE: {
-            const char *idf = assignment->lhs->identifier_name;
+            const char *idf = assignment->lhs;
             rt_eval_Expression(assignment->rhs);
             rt_VarTable_create(idf, *RT_VTABLE_ACC, assignment->is_const, assignment->is_weak);
             break;

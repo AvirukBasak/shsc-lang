@@ -29,8 +29,8 @@ enum rt_DataType_t {
 };
 
 struct rt_DataProc_t {
-    const ast_Identifier_t *modulename;
-    const ast_Identifier_t *procname;
+    const ast_Identifier_t *module_name;
+    const ast_Identifier_t *proc_name;
     const rt_Data_t *context;
 };
 
@@ -60,21 +60,31 @@ rt_Data_t rt_Data_interp_str(const char *str);
 rt_Data_t rt_Data_list(rt_DataList_t *lst);
 rt_Data_t rt_Data_map(rt_DataMap_t *mp);
 rt_Data_t rt_Data_proc(
-    const ast_Identifier_t *modulename,
-    const ast_Identifier_t *procname
+    const ast_Identifier_t *module_name,
+    const ast_Identifier_t *proc_name
 );
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
+
 void rt_Data_increfc(rt_Data_t *var);
 void rt_Data_decrefc(rt_Data_t *var);
+
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag);
 void rt_Data_destroy(rt_Data_t *var);
 
 bool rt_Data_isnull(const rt_Data_t var);
+bool rt_Data_isnumeric(const rt_Data_t var);
+bool rt_Data_isequal(const rt_Data_t var1, const rt_Data_t var2);
+int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2);
 char *rt_Data_interp_str_parse(const char *str);
 bool rt_Data_tobool(const rt_Data_t var);
 char *rt_Data_tostr(const rt_Data_t var);
 const char *rt_Data_typename(const rt_Data_t var);
+bool rt_Data_assert_type(
+    const rt_Data_t var,
+    enum rt_DataType_t expected_type,
+    const char *for_varname
+);
 int rt_Data_print(const rt_Data_t var);
 
 #endif

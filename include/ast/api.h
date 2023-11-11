@@ -146,8 +146,4 @@ struct ast_Literal_t {
     const enum ast_DataType_t type;
 };
 
-struct ast_Identifier_t {
-    const char *identifier_name;
-};
-
 #endif

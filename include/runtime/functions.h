@@ -28,6 +28,7 @@ typedef enum {
     rt_fn_DBG_FILENAME,  /* dbg:filename */
     rt_fn_DBG_LINENO,    /* dbg:lineno */
     rt_fn_DBG_ID,        /* dbg:id */
+    rt_fn_DBG_CALLPROC,  /* dbg:callproc */
 
     rt_fn_IO_PRINT,      /* io:print */
     rt_fn_IO_INPUT,      /* io:input */
@@ -44,6 +45,8 @@ typedef enum {
     rt_fn_F64_MAXVAL,    /* f64:maxval */
     rt_fn_F64_MINVAL,    /* f64:minval */
 
+    rt_fn_STR_EQUALS,    /* str:equals */
+    rt_fn_STR_COMPARE,   /* str:compare */
     rt_fn_STR_APPEND,    /* str:append */
     rt_fn_STR_INSERT,    /* str:insert */
     rt_fn_STR_ERASE,     /* str:erase */
@@ -54,13 +57,16 @@ typedef enum {
     rt_fn_STR_SPLIT,     /* str:split */
     rt_fn_STR_TOI64,     /* str:toi64 */
     rt_fn_STR_TOF64,     /* str:tof64 */
+    rt_fn_STR_SORT,      /* str:sort */
 
+    rt_fn_LST_EQUALS,    /* lst:equals */
+    rt_fn_LST_COMPARE,   /* lst:compare */
     rt_fn_LST_APPEND,    /* lst:append */
     rt_fn_LST_INSERT,    /* lst:insert */
     rt_fn_LST_ERASE,     /* lst:erase */
     rt_fn_LST_CONCAT,    /* lst:concat */
     rt_fn_LST_REVERSE,   /* lst:reverse */
-    rt_fn_LST_SUBLST,    /* lst:sublst */
+    rt_fn_LST_SUBLIST,   /* lst:sublst */
     rt_fn_LST_FIND,      /* lst:find */
     rt_fn_LST_JOIN,      /* lst:join */
     rt_fn_LST_SORT,      /* lst:sort */
@@ -76,5 +82,14 @@ typedef enum {
 
 rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const char *fname);
 rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn);
+
+const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc);
+
+rt_Data_t rt_fn_call_handler(
+    const rt_Data_t context,
+    const char *module_name,
+    const char *proc_name,
+    rt_DataList_t *args
+);
 
 #endif

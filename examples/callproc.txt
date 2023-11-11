@@ -1,0 +1,7 @@
+proc main start
+    var x = dbg:callproc(null, "io", "input", ["enter a number: ", i64]);
+    dbg:callproc(null, "io", "print", ["you entered:", x, lf]);
+    # without using dbg:callproc
+    var y = io:input("enter a number: ", i64);
+    io:print("you entered:", y, lf);
+end

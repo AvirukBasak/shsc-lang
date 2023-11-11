@@ -62,35 +62,35 @@ void ast_util_ModuleAndProcTable_add(const ast_Identifier_t *module_name, const 
     khash_t(ast_procedure_t) *procmap = NULL;
 
     /* Check if the module already exists in the top-level map */
-    khint_t mk = kh_get(ast_module_t, ast_util_mptable, module_name->identifier_name);
+    khint_t mk = kh_get(ast_module_t, ast_util_mptable, module_name);
     if (mk != kh_end(ast_util_mptable)) {
         module = &kh_value(ast_util_mptable, mk);
         procmap = module->procmap;
     } else {
         /* else create a module object */
-        char *key = strdup(module_name->identifier_name);
+        char *key = strdup(module_name);
         mk = kh_put(ast_module_t, ast_util_mptable, key, &ret);
         module = &kh_value(ast_util_mptable, mk);
         module->procmap = procmap = kh_init(ast_procedure_t);
-        module->modulename = key;
+        module->module_name = key;
     }
 
     /* If procedure exists, throw an error and exit */
-    khint_t pk = kh_get(ast_procedure_t, procmap, proc_name->identifier_name);
+    khint_t pk = kh_get(ast_procedure_t, procmap, proc_name);
     if (pk != kh_end(procmap)) {
-        size_t sz = snprintf(NULL, 0, "duplicate method '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
+        size_t sz = snprintf(NULL, 0, "duplicate method '%s:%s'", module_name, proc_name);
         char *errmsg = (char*) malloc((sz +1) * sizeof(char));
         if (!errmsg) io_errndie("ast_util_ModuleAndProcTable_add:" ERR_MSG_MALLOCFAIL);
-        sprintf(errmsg, "duplicate method '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
+        sprintf(errmsg, "duplicate method '%s:%s'", module_name, proc_name);
         parse_throw(errmsg, false);
         free(errmsg);
     }
 
     /* Insert the proc_name and code into the sub map */
-    char *key = strdup(proc_name->identifier_name);
+    char *key = strdup(proc_name);
     khint_t k = kh_put(ast_procedure_t, procmap, key, &ret);
     kh_value(procmap, k).src_filename = strdup(global_currfile);
-    kh_value(procmap, k).procname = key;
+    kh_value(procmap, k).proc_name = key;
     kh_value(procmap, k).code = code;
 }
 
@@ -98,20 +98,20 @@ void ast_util_ModuleAndProcTable_add(const ast_Identifier_t *module_name, const 
 const ast_util_ModuleAndProcTable_procedure_t ast_util_ModuleAndProcTable_get(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
     if (!ast_util_mptable)
-        io_errndie("undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
+        io_errndie("undefined procedure '%s:%s'", module_name, proc_name);
     else if (!module_name)
         io_errndie("ast_util_ModuleAndProcTable_get:" ERR_MSG_NULLPTR " for `module_name`");
     else if (!proc_name)
         io_errndie("ast_util_ModuleAndProcTable_get:" ERR_MSG_NULLPTR " for `proc_name`");
     khash_t(ast_procedure_t) *procmap;
     /* Check if the module exists in the top-level map */
-    khint_t k = kh_get(ast_module_t, ast_util_mptable, module_name->identifier_name);
+    khint_t k = kh_get(ast_module_t, ast_util_mptable, module_name);
     if (k == kh_end(ast_util_mptable))
         return (ast_util_ModuleAndProcTable_procedure_t) { NULL, NULL, NULL };
     /* Get the sub map */
     procmap = kh_value(ast_util_mptable, k).procmap;
     /* Check if the procedure exists in the sub map */
-    k = kh_get(ast_procedure_t, procmap, proc_name->identifier_name);
+    k = kh_get(ast_procedure_t, procmap, proc_name);
     if (k == kh_end(procmap))
         return (ast_util_ModuleAndProcTable_procedure_t) { NULL, NULL, NULL };
     /* Return the code associated with the procedure */
@@ -123,7 +123,7 @@ const ast_Statements_t *ast_util_ModuleAndProcTable_get_code(const ast_Identifie
 {
     const ast_util_ModuleAndProcTable_procedure_t proc = ast_util_ModuleAndProcTable_get(module_name, proc_name);
     /* if (!proc.proc_name)
-        rt_throw("undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name); */
+        rt_throw("undefined procedure '%s:%s'", module_name, proc_name); */
     return proc.code;
 }
 
@@ -131,10 +131,10 @@ const ast_Statements_t *ast_util_ModuleAndProcTable_get_code(const ast_Identifie
 const char *ast_util_ModuleAndProcTable_get_filename(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
     const ast_util_ModuleAndProcTable_procedure_t proc = ast_util_ModuleAndProcTable_get(module_name, proc_name);
-    if (!proc.procname)
+    if (!proc.proc_name)
         /* not printing current fn name as this error is most likely to occur when
            main:main is not defined */
-        io_errndie("undefined procedure '%s:%s'", module_name->identifier_name, proc_name->identifier_name);
+        io_errndie("undefined procedure '%s:%s'", module_name, proc_name);
     return proc.src_filename;
 }
 
@@ -146,15 +146,15 @@ void ast_util_ModuleAndProcTable_clear(void)
     ast_util_ModuleAndProcTable_module_t module;
     /* Iterate over the top-level map */
     kh_foreach(ast_util_mptable, key, module, {
-        free(module.modulename);
-        module.modulename = NULL;
+        free(module.module_name);
+        module.module_name = NULL;
         khash_t(ast_procedure_t) *procmap = module.procmap;
         /* Iterate over the sub map */
         ast_util_ModuleAndProcTable_procedure_t proc;
         kh_foreach(procmap, key, proc, {
             /* Free procedure name and statements */
-            free(proc.procname);
-            proc.procname = NULL;
+            free(proc.proc_name);
+            proc.proc_name = NULL;
             free(proc.src_filename);
             proc.src_filename = NULL;
             ast_Statements_destroy(&proc.code);

@@ -383,10 +383,7 @@ ast_Literal_t *ast_Literal_map(ast_AssociativeList_t *literal)
 
 ast_Identifier_t *ast_Identifier(char *identifier_name)
 {
-    ast_Identifier_t *identifier = (ast_Identifier_t*) malloc(sizeof(ast_Identifier_t));
-    if (!identifier) io_errndie("ast_Identifier:" ERR_MSG_MALLOCFAIL);
-    identifier->identifier_name = identifier_name;
-    return identifier;
+    return (ast_Identifier_t*) identifier_name;
 }
 
 #else

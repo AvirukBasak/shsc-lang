@@ -35,8 +35,8 @@ struct rt_VarTable_proc_t {
     int64_t curr_scope_ptr;
     size_t capacity;
     /* info for stack trace */
-    const ast_Identifier_t *modulename;
-    const ast_Identifier_t *procname;
+    const ast_Identifier_t *module_name;
+    const ast_Identifier_t *proc_name;
     const char *filepath;
     int current_line;
 };
@@ -88,7 +88,7 @@ void rt_VarTable_acc_setval(rt_Data_t val);
 void rt_VarTable_acc_setadr(rt_Data_t *adr);
 
 /** push a new function scope into the stack and store the procedure name and return address */
-void rt_VarTable_push_proc(const ast_Identifier_t *modulename, const ast_Identifier_t *procname, const char *filepath);
+void rt_VarTable_push_proc(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name, const char *filepath);
 
 /** get the procedure from the top of the stack */
 rt_VarTable_proc_t *rt_VarTable_top_proc(void);

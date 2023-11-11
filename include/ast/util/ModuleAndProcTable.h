@@ -12,7 +12,7 @@
 typedef struct
 {
     char *src_filename;
-    char *procname;
+    ast_Identifier_t *proc_name;
     ast_Statements_t *code;
 } ast_util_ModuleAndProcTable_procedure_t;
 
@@ -22,7 +22,7 @@ KHASH_MAP_INIT_STR(ast_procedure_t, ast_util_ModuleAndProcTable_procedure_t)
     Serves the purpose of storing the (ast_Identifier_t *)
     so that it may be later freed without causing a leak */
 typedef struct {
-    char *modulename;
+    ast_Identifier_t *module_name;
     khash_t(ast_procedure_t) *procmap;
 } ast_util_ModuleAndProcTable_module_t;
 
@@ -35,15 +35,15 @@ typedef khash_t(ast_module_t) *ast_util_ModuleAndProcTable_t;
 extern ast_util_ModuleAndProcTable_t ast_util_mptable;
 
 /** Loop over each module */
-#define ast_util_ModuleAndProcTable_foreach_module(modulename, procmap, _code) do { \
+#define ast_util_ModuleAndProcTable_foreach_module(module_name, procmap, _code) do { \
     if (!ast_util_mptable) break;                                        \
-    const char *modulename = NULL;                                       \
+    const ast_Identifier_t *module_name = NULL;                          \
     const khash_t(ast_procedure_t) *procmap = NULL;                      \
     const char *key = NULL;                                              \
     ast_util_ModuleAndProcTable_module_t module;                         \
     kh_foreach(ast_util_mptable, key, module, {                          \
         /* Store the module name and procmap */                          \
-        modulename = module.modulename;                                  \
+        module_name = module.module_name;                                \
         procmap = module.procmap;                                        \
         /* Run user given code */                                        \
         { _code; }                                                       \
@@ -51,15 +51,15 @@ extern ast_util_ModuleAndProcTable_t ast_util_mptable;
 } while (0);
 
 /** Loop over each procedure in a module */
-#define ast_util_ModuleAndProcTable_foreach_procedure(procmap, procname, filename, code, _code) do { \
+#define ast_util_ModuleAndProcTable_foreach_procedure(procmap, proc_name, filename, code, _code) do { \
     if (!ast_util_mptable) break;                                        \
-    const char *procname = NULL;                                         \
+    const ast_Identifier_t *proc_name = NULL;                            \
     const char *filename = NULL;                                         \
     const ast_Statements_t *code = NULL;                                 \
     const char *key = NULL;                                              \
     ast_util_ModuleAndProcTable_procedure_t proc;                        \
     kh_foreach(procmap, key, proc, {                                     \
-        procname = proc.procname;                                        \
+        proc_name = proc.proc_name;                                      \
         filename = proc.src_filename;                                    \
         code = proc.code;                                                \
         { _code; }                                                       \
