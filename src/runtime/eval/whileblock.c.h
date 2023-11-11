@@ -11,7 +11,7 @@
 
 rt_ControlStatus_t rt_eval_WhileBlock(const ast_WhileBlock_t *while_block)
 {
-    if (!while_block) return rt_CTRL_PASS;    
+    if (!while_block) return rt_CTRL_PASS;
     rt_ControlStatus_t ctrl = rt_CTRL_PASS;
 
     rt_VarTable_push_scope();
