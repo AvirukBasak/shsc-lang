@@ -178,8 +178,8 @@ void rt_VarTable_acc_setadr(rt_Data_t *adr)
 
 
 void rt_VarTable_push_proc(
-    const ast_Identifier_t *modulename,
-    const ast_Identifier_t *procname,
+    const ast_Identifier_t *module_name,
+    const ast_Identifier_t *proc_name,
     const char *filepath
 ) {
     /* check if the stack is already initialized */
@@ -204,8 +204,8 @@ void rt_VarTable_push_proc(
     rt_vtable->procs[rt_vtable->curr_proc_ptr].scopes = NULL;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].curr_scope_ptr = -1;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].capacity = 0;
-    rt_vtable->procs[rt_vtable->curr_proc_ptr].modulename = modulename;
-    rt_vtable->procs[rt_vtable->curr_proc_ptr].procname = procname;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].module_name = module_name;
+    rt_vtable->procs[rt_vtable->curr_proc_ptr].proc_name = proc_name;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].filepath = filepath;
     rt_vtable->procs[rt_vtable->curr_proc_ptr].current_line = -1;
     /* push a new local scope */

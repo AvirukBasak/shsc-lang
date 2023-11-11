@@ -104,15 +104,15 @@ rt_Data_t rt_Data_map(rt_DataMap_t *mp)
 }
 
 rt_Data_t rt_Data_proc(
-    const ast_Identifier_t *modulename,
-    const ast_Identifier_t *procname
+    const ast_Identifier_t *module_name,
+    const ast_Identifier_t *proc_name
 ) {
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
     var.type = rt_DATA_TYPE_PROC;
-    var.data.proc.modulename = modulename;
-    var.data.proc.procname = procname;
+    var.data.proc.module_name = module_name;
+    var.data.proc.proc_name = proc_name;
     var.data.proc.context = NULL;
     return var;
 }
@@ -262,8 +262,8 @@ bool rt_Data_isequal(const rt_Data_t var1, const rt_Data_t var2)
         case rt_DATA_TYPE_ANY:
             return var1.data.any == var2.data.any;
         case rt_DATA_TYPE_PROC:
-            return var1.data.proc.procname == var2.data.proc.procname
-                && var1.data.proc.modulename == var2.data.proc.modulename;
+            return var1.data.proc.proc_name == var2.data.proc.proc_name
+                && var1.data.proc.module_name == var2.data.proc.module_name;
     }
     return false;
 }
@@ -464,7 +464,7 @@ bool rt_Data_tobool(const rt_Data_t var)
         case rt_DATA_TYPE_ANY:
             return !!var.data.any;
         case rt_DATA_TYPE_PROC:
-            return !!var.data.proc.procname && !!var.data.proc.modulename;
+            return !!var.data.proc.proc_name && !!var.data.proc.module_name;
     }
     return false;
 }
@@ -523,14 +523,14 @@ char *rt_Data_tostr(const rt_Data_t var)
         }
         case rt_DATA_TYPE_PROC: {
             size_t sz = snprintf(NULL, 0, "%s:%s",
-                var.data.proc.procname->identifier_name,
-                var.data.proc.modulename->identifier_name
+                var.data.proc.proc_name,
+                var.data.proc.module_name
             );
             char *str = (char*) malloc((sz +1) * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%s:%s",
-                var.data.proc.modulename->identifier_name,
-                var.data.proc.procname->identifier_name
+                var.data.proc.module_name,
+                var.data.proc.proc_name
             );
             return str;
         }

@@ -111,19 +111,19 @@ const rt_DataList_t *rt_fn_get_valid_args(int64_t min_expected_argc)
 
 rt_Data_t rt_fn_call_handler(
     const rt_Data_t context,
-    const char *modulename,
-    const char *procname,
+    const char *module_name,
+    const char *proc_name,
     rt_DataList_t *args
 ) {
-    ast_Identifier_t *module = ast_Identifier(strdup(modulename));
-    ast_Identifier_t *proc = ast_Identifier(strdup(procname));
+    const ast_Identifier_t *module = (const ast_Identifier_t*) module_name;
+    const ast_Identifier_t *proc = (const ast_Identifier_t*) proc_name;
 
     /* get code as AST from user defined function */
     const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
 
     /* get a descriptor to in-built function */
     const rt_fn_FunctionDescriptor_t fn = rt_fn_FunctionsList_getfn(
-        modulename, procname);
+        module_name, proc_name);
 
     const char *currfile = NULL;
 
@@ -131,9 +131,9 @@ rt_Data_t rt_fn_call_handler(
     if (code) {
         currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
     } else if (fn != rt_fn_UNDEFINED) {
-        currfile = modulename;
+        currfile = module_name;
     } else {
-        rt_throw("undefined procedure '%s:%s'", modulename, procname);
+        rt_throw("undefined procedure '%s:%s'", module_name, proc_name);
     }
 
     rt_VarTable_push_proc(module, proc, currfile);
@@ -155,7 +155,5 @@ rt_Data_t rt_fn_call_handler(
     }
 
     rt_Data_t ret = rt_VarTable_pop_proc();
-    ast_Identifier_destroy(&module);
-    ast_Identifier_destroy(&proc);
     return ret;
 }

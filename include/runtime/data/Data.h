@@ -29,8 +29,8 @@ enum rt_DataType_t {
 };
 
 struct rt_DataProc_t {
-    const ast_Identifier_t *modulename;
-    const ast_Identifier_t *procname;
+    const ast_Identifier_t *module_name;
+    const ast_Identifier_t *proc_name;
     const rt_Data_t *context;
 };
 

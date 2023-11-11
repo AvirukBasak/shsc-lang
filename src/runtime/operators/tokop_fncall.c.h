@@ -29,8 +29,8 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
         : rt_Data_null();
     rt_fn_call_handler(
         context,
-        lhs->data.proc.modulename->identifier_name,
-        lhs->data.proc.procname->identifier_name,
+        lhs->data.proc.module_name,
+        lhs->data.proc.proc_name,
         rhs->data.lst
     );
     /* set no data to accumulator as data is already set by procedure called above

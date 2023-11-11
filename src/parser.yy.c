@@ -2325,7 +2325,7 @@ yyreduce:
   case 122: /* postfix_expression: postfix_expression "." identifier  */
 #line 461 "src/parser.y"
                                                                                                    { (yyval.astnode_expression) = ast_Expression((yyvsp[-1].tok), (yyvsp[-2].astnode_expression), ast_Expression_Literal(
-                                                                                                           ast_Literal_str(strdup((yyvsp[0].astnode_identifier)->identifier_name))), NULL);
+                                                                                                           ast_Literal_str(strdup((yyvsp[0].astnode_identifier)))), NULL);
                                                                                                        ast_Identifier_destroy(&(yyvsp[0].astnode_identifier));
                                                                                                    }
 #line 2332 "src/parser.yy.c"
@@ -2404,7 +2404,7 @@ yyreduce:
   case 134: /* assoc_list: identifier ":" expression nws  */
 #line 489 "src/parser.y"
                                                                                                    { (yyval.astnode_assoc_list) = ast_AssociativeList(NULL,
-                                                                                                           ast_Literal_str(strdup((yyvsp[-3].astnode_identifier)->identifier_name)), (yyvsp[-1].astnode_expression));
+                                                                                                           ast_Literal_str(strdup((yyvsp[-3].astnode_identifier))), (yyvsp[-1].astnode_expression));
                                                                                                        ast_Identifier_destroy(&(yyvsp[-3].astnode_identifier));
                                                                                                    }
 #line 2411 "src/parser.yy.c"
@@ -2413,7 +2413,7 @@ yyreduce:
   case 135: /* assoc_list: identifier ":" expression "," nws  */
 #line 493 "src/parser.y"
                                                                                                    { (yyval.astnode_assoc_list) = ast_AssociativeList(NULL,
-                                                                                                           ast_Literal_str(strdup((yyvsp[-4].astnode_identifier)->identifier_name)), (yyvsp[-2].astnode_expression));
+                                                                                                           ast_Literal_str(strdup((yyvsp[-4].astnode_identifier))), (yyvsp[-2].astnode_expression));
                                                                                                        ast_Identifier_destroy(&(yyvsp[-4].astnode_identifier));
                                                                                                    }
 #line 2420 "src/parser.yy.c"
@@ -2422,7 +2422,7 @@ yyreduce:
   case 136: /* assoc_list: identifier ":" expression "," nws assoc_list  */
 #line 497 "src/parser.y"
                                                                                                    { (yyval.astnode_assoc_list) = ast_AssociativeList((yyvsp[0].astnode_assoc_list),
-                                                                                                           ast_Literal_str(strdup((yyvsp[-5].astnode_identifier)->identifier_name)), (yyvsp[-3].astnode_expression));
+                                                                                                           ast_Literal_str(strdup((yyvsp[-5].astnode_identifier))), (yyvsp[-3].astnode_expression));
                                                                                                        ast_Identifier_destroy(&(yyvsp[-5].astnode_identifier));
                                                                                                    }
 #line 2429 "src/parser.yy.c"
