@@ -176,6 +176,7 @@ int64_t rt_DataStr_find_str(const rt_DataStr_t *str, const rt_DataStr_t *str2)
 rt_DataStr_t *rt_DataStr_substr(const rt_DataStr_t *str, int64_t idx, int64_t len)
 {
     rt_DataStr_t *str2 = rt_DataStr_init("");
+    rt_DataList_destroy(&str2->var);
     str2->var = rt_DataList_sublist(str->var, idx, len);
     return str2;
 }
@@ -191,12 +192,14 @@ rt_DataList_t *rt_DataStr_split(const rt_DataStr_t *str, char var)
             rt_Data_chr(var)
         )) {
             rt_DataStr_t *str2 = rt_DataStr_init("");
+            rt_DataList_destroy(&str2->var);
             str2->var = rt_DataList_sublist(str->var, start, i - start);
             rt_DataList_append(lst, rt_Data_str(str2));
             start = i + 1;
         }
     }
     rt_DataStr_t *str2 = rt_DataStr_init("");
+    rt_DataList_destroy(&str2->var);
     str2->var = rt_DataList_sublist(str->var, start, length - start);
     rt_DataList_append(lst, rt_Data_str(str2));
     return lst;
