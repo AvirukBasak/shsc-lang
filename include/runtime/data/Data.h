@@ -60,8 +60,8 @@ rt_Data_t rt_Data_interp_str(const char *str);
 rt_Data_t rt_Data_list(rt_DataList_t *lst);
 rt_Data_t rt_Data_map(rt_DataMap_t *mp);
 rt_Data_t rt_Data_proc(
-    const ast_Identifier_t *modulename,
-    const ast_Identifier_t *procname
+    const ast_Identifier_t *module_name,
+    const ast_Identifier_t *proc_name
 );
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
