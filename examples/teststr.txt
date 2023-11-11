@@ -1,6 +1,8 @@
 proc main start
     var str1 = const "hell"
     var str2 = "there"
+    io:print(str:equals(str1, str2), lf)
+    io:print(str:compare(str1, str2), lf)
     io:print(str:append(str1, '_'), lf)
     io:print(str:append(str1, "power_"), lf)
     io:print(str:insert(str1, 4, 'o'), lf)

@@ -106,7 +106,7 @@ make run ARGS="examples/helloworld.txt"
     - [x] `lst:erase`
     - [x] `lst:concat`
     - [x] `lst:reverse`
-    - [x] `lst:sublst`
+    - [x] `lst:sublist`
     - [x] `lst:find`
     - [x] `lst:join`
     - [x] `lst:sort`

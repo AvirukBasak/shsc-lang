@@ -1,0 +1,18 @@
+proc main start
+    var lst1 = const [1, 2, 3]
+    var lst2 = ["b", "c", "a"]
+    io:print(lst:equals(lst1, lst2), lf)
+    # io:print(lst:compare(lst1, lst2), lf)
+    io:print(lst:append(lst1, '_'), lf)
+    io:print(lst:append(lst1, "power_"), lf)
+    io:print(lst:insert(lst1, 4, 'o'), lf)
+    io:print(lst:insert(lst1, 4, "oo"), lf)
+    io:print(lst:erase(lst1, 1, 3), lf)
+    io:print(lst:concat(lst1, lst2), lf)
+    io:print(lst:reverse(lst1), lf)
+    io:print(lst:sublist(lst1, 2, 4), lf)
+    io:print(lst:find(lst1, "2"), lf)
+    io:print(lst:find(lst2, "c"), lf)
+    io:print(lst:join(lst1, "/"), lf)
+    io:print(lst:sort(lst2), lf)
+end

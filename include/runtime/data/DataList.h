@@ -38,6 +38,8 @@ void rt_DataList_decrefc(rt_DataList_t *lst);
 void rt_DataList_destroy_circular(rt_DataList_t **ptr, bool flag);
 void rt_DataList_destroy(rt_DataList_t **ptr);
 
+bool rt_DataList_isequal(const rt_DataList_t *lst1, const rt_DataList_t *lst2);
+int64_t rt_DataList_compare(const rt_DataList_t *lst1, const rt_DataList_t *lst2);
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var);
 void rt_DataList_concat(rt_DataList_t *lst, const rt_DataList_t *lst2);
 void rt_DataList_insert(rt_DataList_t *lst, int64_t idx, rt_Data_t var);

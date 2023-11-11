@@ -83,6 +83,27 @@ void rt_DataList_destroy(rt_DataList_t **ptr)
     rt_DataList_destroy_circular(ptr, false);
 }
 
+bool rt_DataList_isequal(const rt_DataList_t *lst1, const rt_DataList_t *lst2)
+{
+    if (lst1->length != lst2->length) return false;
+    for (int64_t i = 0; i < lst1->length; i++) {
+        if (!rt_Data_isequal(lst1->var[i], lst2->var[i]))
+            return false;
+    }
+    return true;
+}
+
+int64_t rt_DataList_compare(const rt_DataList_t *lst1, const rt_DataList_t *lst2)
+{
+    if (lst1->length != lst2->length)
+        return lst1->length - lst2->length;
+    for (int64_t i = 0; i < lst1->length; i++) {
+        int64_t cmp = rt_Data_compare(lst1->var[i], lst2->var[i]);
+        if (cmp != 0) return cmp;
+    }
+    return 0;
+}
+
 void rt_DataList_append(rt_DataList_t *lst, rt_Data_t var)
 {
     rt_Data_increfc(&var);
@@ -176,7 +197,9 @@ rt_DataStr_t *rt_DataList_join(const rt_DataList_t *lst, const rt_DataStr_t *sep
     rt_DataStr_t *str = rt_DataStr_init("");
     for (int64_t i = 0; i < lst->length; i++) {
         char *lst_el = rt_Data_tostr(lst->var[i]);
-        rt_DataStr_concat(str, rt_DataStr_init(lst_el));
+        rt_DataStr_t *str2 = rt_DataStr_init(lst_el);
+        rt_DataStr_concat(str, str2);
+        rt_DataStr_destroy(&str2);
         free(lst_el);
         lst_el = NULL;
         if (i < lst->length - 1)

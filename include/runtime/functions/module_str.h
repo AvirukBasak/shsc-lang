@@ -3,6 +3,8 @@
 
 #include "runtime/data/Data.h"
 
+rt_Data_t rt_fn_str_equals();
+rt_Data_t rt_fn_str_compare();
 rt_Data_t rt_fn_str_append();
 rt_Data_t rt_fn_str_insert();
 rt_Data_t rt_fn_str_erase();

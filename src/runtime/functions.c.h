@@ -28,6 +28,8 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "len"))      return rt_fn_IT_LEN;
     }
     if (!strcmp(module, "str")) {
+        if (!strcmp(fname, "equals"))   return rt_fn_STR_EQUALS;
+        if (!strcmp(fname, "compare"))  return rt_fn_STR_COMPARE;
         if (!strcmp(fname, "append"))   return rt_fn_STR_APPEND;
         if (!strcmp(fname, "insert"))   return rt_fn_STR_INSERT;
         if (!strcmp(fname, "erase"))    return rt_fn_STR_ERASE;
@@ -39,6 +41,19 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "toi64"))    return rt_fn_STR_TOI64;
         if (!strcmp(fname, "tof64"))    return rt_fn_STR_TOF64;
         if (!strcmp(fname, "sort"))     return rt_fn_STR_SORT;
+    }
+    if (!strcmp(module, "lst")) {
+        if (!strcmp(fname, "equals"))   return rt_fn_LST_EQUALS;
+        if (!strcmp(fname, "compare"))  return rt_fn_LST_COMPARE;
+        if (!strcmp(fname, "append"))   return rt_fn_LST_APPEND;
+        if (!strcmp(fname, "insert"))   return rt_fn_LST_INSERT;
+        if (!strcmp(fname, "erase"))    return rt_fn_LST_ERASE;
+        if (!strcmp(fname, "concat"))   return rt_fn_LST_CONCAT;
+        if (!strcmp(fname, "reverse"))  return rt_fn_LST_REVERSE;
+        if (!strcmp(fname, "find"))     return rt_fn_LST_FIND;
+        if (!strcmp(fname, "sublist"))  return rt_fn_LST_SUBLIST;
+        if (!strcmp(fname, "join"))     return rt_fn_LST_JOIN;
+        if (!strcmp(fname, "sort"))     return rt_fn_LST_SORT;
     }
 
     if (!strcmp(fname, "isnull"))       return rt_fn_ISNULL;
@@ -76,6 +91,8 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
 
         case rt_fn_IT_LEN:        return rt_fn_it_len();
 
+        case rt_fn_STR_EQUALS:    return rt_fn_str_equals();
+        case rt_fn_STR_COMPARE:   return rt_fn_str_compare();
         case rt_fn_STR_APPEND:    return rt_fn_str_append();
         case rt_fn_STR_INSERT:    return rt_fn_str_insert();
         case rt_fn_STR_ERASE:     return rt_fn_str_erase();
@@ -87,6 +104,18 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_STR_TOI64:     return rt_fn_str_toi64();
         case rt_fn_STR_TOF64:     return rt_fn_str_tof64();
         case rt_fn_STR_SORT:      return rt_fn_str_sort();
+
+        case rt_fn_LST_EQUALS:    return rt_fn_lst_equals();
+        case rt_fn_LST_COMPARE:   return rt_fn_lst_compare();
+        case rt_fn_LST_APPEND:    return rt_fn_lst_append();
+        case rt_fn_LST_INSERT:    return rt_fn_lst_insert();
+        case rt_fn_LST_ERASE:     return rt_fn_lst_erase();
+        case rt_fn_LST_CONCAT:    return rt_fn_lst_concat();
+        case rt_fn_LST_REVERSE:   return rt_fn_lst_reverse();
+        case rt_fn_LST_SUBLIST:   return rt_fn_lst_sublst();
+        case rt_fn_LST_FIND:      return rt_fn_lst_find();
+        case rt_fn_LST_JOIN:      return rt_fn_lst_join();
+        case rt_fn_LST_SORT:      return rt_fn_lst_sort();
 
         case rt_fn_UNDEFINED:
             io_errndie("rt_fn_FunctionsList_call: undefined procedure for desc: '%d'", fn);

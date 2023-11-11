@@ -683,7 +683,7 @@ All list related procedures work using shallow copies, and no procedure is provi
 - `lst:erase(lst, i64, i64)` erases a sublist; the second argument is the start index and the third argument is length of sublist; if third argument exceeds length of list, it'll erase till end of list
 - `lst:concat(lst, lst)` concatenates two lists and returns a new list
 - `lst:reverse(lst)` reverses a list
-- `lst:sublst(lst, i64, i64)` returns a sublist; the second argument is the start index and the third argument is the length of sublist; if third argument exceeds length of list, it'll return till end of list
+- `lst:sublist(lst, i64, i64)` returns a sublist; the second argument is the start index and the third argument is the length of sublist; if third argument exceeds length of list, it'll return till end of list
 - `lst:find(lst, any)` returns first index of item, else -1
 - `lst:join(lst, str)` joins a list of strings using the delimiter
 - `lst:sort(lst)` sorts a list in ascending order
