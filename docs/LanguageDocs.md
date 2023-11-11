@@ -1,4 +1,4 @@
-**Last updated on Oct 30, 2023**
+**Last updated on Nov 11, 2023**
 
 The following is a documentation of the syntax and behaviour of the language.
 
