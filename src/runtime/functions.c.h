@@ -198,6 +198,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_MAP_FIND:      return rt_fn_map_find();
         case rt_fn_MAP_KEYS:      return rt_fn_map_keys();
 
+        case rt_fn_DBG_RTSIZE:
         case rt_fn_UNDEFINED:
             break;
     }
