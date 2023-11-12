@@ -25,28 +25,38 @@ typedef enum {
     rt_fn_DBG_TYPENAME,  /* dbg:typename */
     rt_fn_DBG_RTSIZE,    /* dbg:rtsize */
     rt_fn_DBG_REFCNT,    /* dbg:refcnt */
-    rt_fn_DBG_FILENAME,  /* dbg:filename */
-    rt_fn_DBG_LINENO,    /* dbg:lineno */
     rt_fn_DBG_ID,        /* dbg:id */
     rt_fn_DBG_CALLPROC,  /* dbg:callproc */
+    rt_fn_DBG_FILENAME,  /* dbg:filename */
+    rt_fn_DBG_LINENO,    /* dbg:lineno */
 
     rt_fn_IO_PRINT,      /* io:print */
     rt_fn_IO_INPUT,      /* io:input */
+    rt_fn_IO_FREAD,      /* io:fread */
+    rt_fn_IO_FWRITE,     /* io:fwrite */
+    rt_fn_IO_FAPPEND,    /* io:fappend */
 
     rt_fn_IT_LEN,        /* it:len */
 
     rt_fn_CHR_ISDIGIT,   /* chr:isdigit */
     rt_fn_CHR_ISALPHA,   /* chr:isalpha */
     rt_fn_CHR_ISALNUM,   /* chr:isalnum */
+    rt_fn_CHR_ISLOWER,   /* chr:islower */
+    rt_fn_CHR_ISUPPER,   /* chr:isupper */
+    rt_fn_CHR_ISSPACE,   /* chr:isspace */
+    rt_fn_CHR_MAX,       /* chr:max */
+    rt_fn_CHR_MIN,       /* chr:min */
 
-    rt_fn_I64_MAXVAL,    /* i64:maxval */
-    rt_fn_I64_MINVAL,    /* i64:minval */
+    rt_fn_I64_MAX,       /* i64:max */
+    rt_fn_I64_MIN,       /* i64:min */
 
-    rt_fn_F64_MAXVAL,    /* f64:maxval */
-    rt_fn_F64_MINVAL,    /* f64:minval */
+    rt_fn_F64_MAX,       /* f64:max */
+    rt_fn_F64_MIN,       /* f64:min */
 
     rt_fn_STR_EQUALS,    /* str:equals */
     rt_fn_STR_COMPARE,   /* str:compare */
+    rt_fn_STR_TOLOWER,   /* str:tolower */
+    rt_fn_STR_TOUPPER,   /* str:toupper */
     rt_fn_STR_APPEND,    /* str:append */
     rt_fn_STR_INSERT,    /* str:insert */
     rt_fn_STR_ERASE,     /* str:erase */
@@ -71,7 +81,8 @@ typedef enum {
     rt_fn_LST_JOIN,      /* lst:join */
     rt_fn_LST_SORT,      /* lst:sort */
 
-    rt_fn_MAP_INSERT,    /* map:insert */
+    rt_fn_MAP_SET,       /* map:set */
+    rt_fn_MAP_GET,       /* map:get */
     rt_fn_MAP_ERASE,     /* map:erase */
     rt_fn_MAP_CONCAT,    /* map:concat */
     rt_fn_MAP_FIND,      /* map:find */

@@ -74,8 +74,12 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Module `dbg`](#module-dbg)
     - [Module `io`](#module-io)
     - [Module `it`](#module-it)
+    - [Module `chr`](#module-chr)
+    - [Module `i64`](#module-i64)
+    - [Module `f64`](#module-f64)
     - [Module `str`](#module-str)
     - [Module `lst`](#module-lst)
+    - [Module `map`](#module-map)
 
 ## File structure
 The interpreter accepts file paths as command-line arguments for the files you want to run.
@@ -637,16 +641,43 @@ The language supports the following built-in procedures (within built-in modules
 
 #### Module `dbg`
 - `dbg:typename(any)` returns type name of data as string
+- `dbg:rtsize(any)` returns size of data in bytes
 - `dbg:refcnt(any)` returns total number of references to an object
 - `dbg:id(any)` returns hex string of the memory address of an object
 - `dbg:callproc(any, str, str, lst)` calls a procedure from a module; the first argument is the context object, the second argument is the module name, the third argument is the procedure name, and the fourth argument is the list of arguments to the procedure
+- `dbg:filename()` returns filename of the source file where called
+- `dbg:lineno()` returns line number of the source file where called
 
 #### Module `io`
 - `io:print(any, ...)` prints string form of data (calls `tostr`)
 - `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see [Global variables for types](#global-variables-for-types)
 
 #### Module `it`
-- `it:len` returns length of list, string or map, else returns `1`
+- `it:len(any)` returns length of list, string or map, else returns `1`
+
+#### Module `chr`
+- `chr:isdigit(chr)` returns true if character is a digit, else false
+- `chr:isalpha(chr)` returns true if character is a letter, else false
+- `chr:isalnum(chr)` returns true if character is a letter or digit, else false
+- `chr:islower(chr)` returns true if character is a lowercase letter, else false
+- `chr:isupper(chr)` returns true if character is an uppercase letter, else false
+- `chr:isspace(chr)` returns true if character is a whitespace, else false
+- `chr:max()` returns the greatest possible character
+- `chr:max(chr, i64, f64, ...)` returns the greater of the numbers
+- `chr:min()` returns the smallest possible character
+- `chr:min(chr, i64, f64, ...)` returns the smaller of the numbers
+
+#### Module `i64`
+- `i64:max()` returns the greatest possible i64
+- `i64:max(chr, i64, f64, ...)` returns the greater of the numbers
+- `i64:min()` returns the smallest possible i64
+- `i64:min(chr, i64, f64, ...)` returns the smaller of the numbers
+
+#### Module `f64`
+- `f64:max()` returns the greatest possible f64
+- `f64:max(chr, i64, f64, ...)` returns the greater of the numbers
+- `f64:min()` returns the smallest possible f64
+- `f64:min(chr, i64, f64, ...)` returns the smaller of the numbers
 
 #### Module `str`
 `str:concat` is the only manupulative procedure that doesn't work in-place.
@@ -654,6 +685,8 @@ This means that it returns a new string instead of modifying the original string
 
 - `str:equals(str, str)` returns true if strings are equal, else false
 - `str:compare(str, str)` returns positive if first string is greater, negative if first string is smaller, else 0
+- `str:tolower(str)` converts a string to lowercase
+- `str:toupper(str)` converts a string to uppercase
 - `str:append(str, str)` appends second string to first string
 - `str:append(str, chr)` appends a single character to first string
 - `str:insert(str, i64, str)` inserts a string at index in first string

@@ -91,16 +91,27 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `dbg:lineno`
     - [x] `io:print`
     - [x] `io:input`
+    - [ ] `io:fread`
+    - [ ] `io:fwrite`
+    - [ ] `io:fappend`
     - [x] `it:len`
     - [ ] `chr:isdigit`
     - [ ] `chr:isalpha`
     - [ ] `chr:isalnum`
-    - [ ] `i64:maxval`
-    - [ ] `i64:minval`
-    - [ ] `f64:maxval`
-    - [ ] `f64:minval`
+    - [ ] `chr:islower`
+    - [ ] `chr:isupper`
+    - [ ] `chr:isspace`
+    - [ ] `chr:tolower`
+    - [ ] `chr:max`
+    - [ ] `chr:min`
+    - [ ] `i64:max`
+    - [ ] `i64:min`
+    - [ ] `f64:max`
+    - [ ] `f64:min`
     - [x] `str:equals`
     - [x] `str:compare`
+    - [ ] `str:tolower`
+    - [ ] `str:toupper`
     - [x] `str:append`
     - [x] `str:insert`
     - [x] `str:erase`
@@ -123,7 +134,8 @@ make run ARGS="examples/helloworld.txt"
     - [x] `lst:find`
     - [x] `lst:join`
     - [x] `lst:sort`
-    - [ ] `map:insert`
+    - [ ] `map:set`
+    - [ ] `map:get`
     - [ ] `map:erase`
     - [ ] `map:concat`
     - [ ] `map:find`

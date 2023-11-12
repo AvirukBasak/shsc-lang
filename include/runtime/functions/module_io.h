@@ -5,5 +5,8 @@
 
 rt_Data_t rt_fn_io_print();
 rt_Data_t rt_fn_io_input();
+rt_Data_t rt_fn_io_fread();
+rt_Data_t rt_fn_io_fwrite();
+rt_Data_t rt_fn_io_fappend();
 
 #endif
