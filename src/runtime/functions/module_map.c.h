@@ -35,7 +35,7 @@ rt_Data_t rt_fn_map_set()
     rt_Data_assert_type(key, rt_DATA_TYPE_STR, "arg 1");
 
     char *key_str = rt_Data_tostr(key);
-    *rt_DataMap_getref(data.data.mp, key_str) = val;
+    rt_DataMap_insert(data.data.mp, key_str, val);
     free(key_str);
 
     return data;
