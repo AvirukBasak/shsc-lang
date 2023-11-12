@@ -82,6 +82,7 @@ make run ARGS="examples/helloworld.txt"
     - [x] `isnull`
     - [x] `tostr`
     - [x] `type`
+    - [x] `cast`
     - [x] `dbg:typename`
     - [ ] `dbg:rtsize`
     - [x] `dbg:refcnt`
@@ -102,7 +103,6 @@ make run ARGS="examples/helloworld.txt"
     - [x] `chr:islower`
     - [x] `chr:isupper`
     - [x] `chr:isspace`
-    - [x] `chr:tolower`
     - [x] `chr:max`
     - [x] `chr:min`
     - [x] `i64:max`

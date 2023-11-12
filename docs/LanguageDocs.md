@@ -639,6 +639,7 @@ The language supports the following built-in procedures (within built-in modules
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
 - `type(any)` returns one of the [global variables for types](#global-variables-for-types)
+- `cast(any, i64)` casts data to a type; the second argument is one of the [global variables for types](#global-variables-for-types)
 
 #### Module `dbg`
 - `dbg:typename(any)` returns type name of data as string
@@ -651,7 +652,7 @@ The language supports the following built-in procedures (within built-in modules
 
 #### Module `io`
 - `io:print(any, ...)` prints string form of data (calls `tostr`)
-- `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see [Global variables for types](#global-variables-for-types)
+- `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see [global variables for types](#global-variables-for-types)
 
 #### Module `it`
 - `it:len(any)` returns length of list, string or map, else returns `1`
