@@ -87,8 +87,8 @@ make run ARGS="examples/helloworld.txt"
     - [x] `dbg:refcnt`
     - [x] `dbg:id`
     - [x] `dbg:callproc`
-    - [ ] `dbg:filename`
-    - [ ] `dbg:lineno`
+    - [x] `dbg:filename`
+    - [x] `dbg:lineno`
     - [x] `io:print`
     - [x] `io:input`
     - [x] `io:fread`

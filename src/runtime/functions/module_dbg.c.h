@@ -108,6 +108,20 @@ rt_Data_t rt_fn_dbg_callproc()
     return ret;
 }
 
+rt_Data_t rt_fn_dbg_filename()
+{
+    /* get filename from top-1 posn as top refers to this fn in stack */
+    const char *filename = (rt_VarTable_top_proc()-1)->filepath;
+    return rt_Data_str(rt_DataStr_init(filename));
+}
+
+rt_Data_t rt_fn_dbg_lineno()
+{
+    /* get line no from top-1 posn as top refers to this fn in stack */
+    const int64_t lineno = (rt_VarTable_top_proc()-1)->current_line;
+    return rt_Data_i64(lineno);
+}
+
 #else
     #warning re-inclusion of module 'functions/module_dbg.c.h'
 #endif

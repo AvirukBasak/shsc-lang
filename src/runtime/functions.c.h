@@ -124,10 +124,9 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_DBG_REFCNT:    return rt_fn_dbg_refcnt();
         case rt_fn_DBG_ID:        return rt_fn_dbg_id();
         case rt_fn_DBG_CALLPROC:  return rt_fn_dbg_callproc();
-#if 0
         case rt_fn_DBG_FILENAME:  return rt_fn_dbg_filename();
         case rt_fn_DBG_LINENO:    return rt_fn_dbg_lineno();
-#endif
+
         case rt_fn_IO_PRINT:      return rt_fn_io_print();
         case rt_fn_IO_INPUT:      return rt_fn_io_input();
         case rt_fn_IO_FREAD:      return rt_fn_io_fread();

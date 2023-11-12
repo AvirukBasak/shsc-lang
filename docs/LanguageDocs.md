@@ -642,7 +642,7 @@ The language supports the following built-in procedures (within built-in modules
 
 #### Module `dbg`
 - `dbg:typename(any)` returns type name of data as string
-- `dbg:rtsize(any)` returns size of data in bytes
+- `dbg:rtsize(any)` returns size of data in bytes; may be never implemented considering the computation will require recursive dfs traversal of composite data structures
 - `dbg:refcnt(any)` returns total number of references to an object
 - `dbg:id(any)` returns hex string of the memory address of an object
 - `dbg:callproc(any, str, str, lst)` calls a procedure from a module; the first argument is the context object, the second argument is the module name, the third argument is the procedure name, and the fourth argument is the list of arguments to the procedure
