@@ -152,11 +152,13 @@ rt_Data_t rt_fn_io_fread()
     );
 
     rt_DataStr_t *strbuf = rt_DataStr_init("");
-    char buffer[4096] = "";
+    char buffer[1024] = "";
     size_t buff_used = 0;
 
     /* read file in chunks of 4096 bytes and append to strbuf */
-    while ((buff_used = fread(buffer, sizeof(char), 4096, fp)) > 0) {
+    while ((buff_used = fread(buffer, sizeof(char), 1023, fp)) > 0) {
+        /* terminate the string */
+        buffer[buff_used] = '\0';
         /* check for errors */
         int error_num = errno;
         if (ferror(fp)) {
