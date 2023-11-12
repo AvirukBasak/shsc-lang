@@ -4,14 +4,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "io.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
 #include "runtime/functions.h"
 #include "runtime/functions/nomodule.h"
 #include "runtime/VarTable.h"
-#include "runtime/io.h"
 
 rt_Data_t rt_fn_isnull()
 {
