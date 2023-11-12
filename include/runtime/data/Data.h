@@ -69,6 +69,8 @@ rt_Data_t rt_Data_null(void);
 void rt_Data_increfc(rt_Data_t *var);
 void rt_Data_decrefc(rt_Data_t *var);
 
+rt_Data_t rt_Data_clone(const rt_Data_t var);
+
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag);
 void rt_Data_destroy(rt_Data_t *var);
 

@@ -178,6 +178,35 @@ void rt_Data_decrefc(rt_Data_t *var)
     }
 }
 
+rt_Data_t rt_Data_clone(const rt_Data_t var)
+{
+    switch (var.type) {
+        case rt_DATA_TYPE_BUL:
+            return rt_Data_bul(var.data.bul);
+        case rt_DATA_TYPE_CHR:
+            return rt_Data_chr(var.data.chr);
+        case rt_DATA_TYPE_I64:
+            return rt_Data_i64(var.data.i64);
+        case rt_DATA_TYPE_F64:
+            return rt_Data_f64(var.data.f64);
+        case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR:
+            return rt_Data_str(rt_DataStr_clone(var.data.str));
+        case rt_DATA_TYPE_LST:
+            return rt_Data_list(rt_DataList_clone(var.data.lst));
+        case rt_DATA_TYPE_MAP:
+            return rt_Data_map(rt_DataMap_clone(var.data.mp));
+        case rt_DATA_TYPE_ANY:
+            return rt_Data_any(var.data.any);
+        case rt_DATA_TYPE_PROC:
+            return rt_Data_proc(
+                var.data.proc.module_name,
+                var.data.proc.proc_name
+            );
+    }
+    return rt_Data_null();
+}
+
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
 {
     /* if ref is weak, don't free it */

@@ -28,6 +28,22 @@ rt_DataMap_t *rt_DataMap_init()
     return mp;
 }
 
+rt_DataMap_t *rt_DataMap_clone(const rt_DataMap_t *mp)
+{
+    rt_DataMap_t *mp_copy = rt_DataMap_init();
+    for (
+        rt_DataMap_iter_t entry_it = rt_DataMap_begin((rt_DataMap_t*) mp);
+        entry_it != rt_DataMap_end((rt_DataMap_t*) mp);
+        ++entry_it
+    ) {
+        if (!rt_DataMap_exists((rt_DataMap_t*) mp, entry_it)) continue;
+        const char *key = rt_DataMap_get((rt_DataMap_t*) mp, entry_it)->key;
+        rt_Data_t value = rt_DataMap_get((rt_DataMap_t*) mp, entry_it)->value;
+        rt_DataMap_insert(mp_copy, key, value);
+    }
+    return mp_copy;
+}
+
 int64_t rt_DataMap_length(const rt_DataMap_t *mp)
 {
     return mp->length;

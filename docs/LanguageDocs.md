@@ -638,6 +638,7 @@ The language supports the following built-in procedures (within built-in modules
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
 - `type(any)` returns one of the [global variables for types](#global-variables-for-types)
+- `clone(any)` returns a shallow copy of the data
 
 #### Module `dbg`
 - `dbg:typename(any)` returns type name of data as string

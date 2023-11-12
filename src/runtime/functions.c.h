@@ -94,6 +94,7 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     if (!strcmp(fname, "isnull"))       return rt_fn_ISNULL;
     if (!strcmp(fname, "tostr"))        return rt_fn_TOSTR;
     if (!strcmp(fname, "type"))         return rt_fn_TYPE;
+    if (!strcmp(fname, "clone"))        return rt_fn_CLONE;
 
     return rt_fn_UNDEFINED;
 }
@@ -115,6 +116,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_ISNULL:        return rt_fn_isnull();
         case rt_fn_TOSTR:         return rt_fn_tostr();
         case rt_fn_TYPE:          return rt_fn_type();
+        case rt_fn_CLONE:         return rt_fn_clone();
 
         case rt_fn_DBG_TYPENAME:  return rt_fn_dbg_typename();
 #if 0

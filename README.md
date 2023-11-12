@@ -82,6 +82,7 @@ make run ARGS="examples/helloworld.txt"
     - [x] `isnull`
     - [x] `tostr`
     - [x] `type`
+    - [x] `clone`
     - [x] `dbg:typename`
     - [ ] `dbg:rtsize`
     - [x] `dbg:refcnt`
