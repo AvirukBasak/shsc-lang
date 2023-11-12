@@ -729,7 +729,8 @@ This means that it returns a new map instead of modifying the original map.
 
 However, all map related procedures work using shallow copies, and no procedure is provided to create deep copies.
 
-- `map:insert(map, str, any)` inserts an item into a map; the first argument is the map, the second argument is the key, and the third argument is the value
+- `map:set(map, str, any)` sets a key-value pair in a map; the first argument is the map, the second argument is the key, and the third argument is the value
+- `map:get(map, str)` returns the value for a key in a map; the first argument is the map, and the second argument is the key
 - `map:erase(map, str)` erases an item from a map; the first argument is the map, and the second argument is the key
 - `map:concat(map, map)` concatenates two maps and returns a new map
 - `map:find(map, str)` returns true if key exists, else false
