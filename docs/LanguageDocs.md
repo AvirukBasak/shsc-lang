@@ -516,6 +516,7 @@ These variables must not be assigned to or else the user may face issues.
 - `str` i64 value indicating the str type
 - `lst` i64 value indicating the lst type
 - `map` i64 value indicating the map type
+- `proc` i64 value indicating the proc type
 
 The term `built-in` is more accurate for these and we will not call these *primitive*s.
 The language has built-in support for complex composite data structures which can be used using the literals syntax.

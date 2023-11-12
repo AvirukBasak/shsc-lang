@@ -32,17 +32,18 @@ rt_VarTable_Acc_t rt_vtable_accumulator = {
 
 
 /* few globally defined variables */
-rt_Data_t rt_VarTable_rsv_lf     = { .data.chr = '\n',            .type = rt_DATA_TYPE_CHR, .is_const = true, .is_weak = false },
+rt_Data_t rt_VarTable_rsv_lf      = { .data.chr = '\n',             .type = rt_DATA_TYPE_CHR, .is_const = true, .is_weak = false },
 /* list of globally defined typename variables */
-          rt_VarTable_typeid_bul = { .data.i64 = rt_DATA_TYPE_BUL,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_typeid_chr = { .data.i64 = rt_DATA_TYPE_CHR,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_typeid_i64 = { .data.i64 = rt_DATA_TYPE_I64,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_typeid_f64 = { .data.i64 = rt_DATA_TYPE_F64,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_typeid_str = { .data.i64 = rt_DATA_TYPE_STR,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_typeid_lst = { .data.i64 = rt_DATA_TYPE_LST,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_typeid_any = { .data.i64 = rt_DATA_TYPE_ANY,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_typeid_map = { .data.i64 = rt_DATA_TYPE_MAP,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
-          rt_VarTable_rsv_null   = { .data.any = NULL,            .type = rt_DATA_TYPE_ANY, .is_const = true, .is_weak = false };
+          rt_VarTable_typeid_bul  = { .data.i64 = rt_DATA_TYPE_BUL, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_chr  = { .data.i64 = rt_DATA_TYPE_CHR, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_i64  = { .data.i64 = rt_DATA_TYPE_I64, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_f64  = { .data.i64 = rt_DATA_TYPE_F64, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_str  = { .data.i64 = rt_DATA_TYPE_STR, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_lst  = { .data.i64 = rt_DATA_TYPE_LST, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_any  = { .data.i64 = rt_DATA_TYPE_ANY, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_map  = { .data.i64 = rt_DATA_TYPE_MAP, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_typeid_proc = { .data.i64 = rt_DATA_TYPE_PROC,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false },
+          rt_VarTable_rsv_null    = { .data.any = NULL,             .type = rt_DATA_TYPE_ANY, .is_const = true, .is_weak = false };
 
 
 rt_Data_t *rt_VarTable_get_globvar(const char *varname)
@@ -55,6 +56,7 @@ rt_Data_t *rt_VarTable_get_globvar(const char *varname)
     if (!strcmp("str", varname))  return &rt_VarTable_typeid_str;
     if (!strcmp("lst", varname))  return &rt_VarTable_typeid_lst;
     if (!strcmp("map", varname))  return &rt_VarTable_typeid_map;
+    if (!strcmp("proc", varname)) return &rt_VarTable_typeid_proc;
     if (!strcmp("null", varname)) return &rt_VarTable_rsv_null;
     return NULL;
 }
