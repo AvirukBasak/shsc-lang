@@ -21,6 +21,7 @@ typedef enum {
     rt_fn_ISNULL,        /* isnull */
     rt_fn_TOSTR,         /* tostr */
     rt_fn_TYPE,          /* type */
+    rt_fn_CAST,          /* cast */
 
     rt_fn_DBG_TYPENAME,  /* dbg:typename */
     rt_fn_DBG_RTSIZE,    /* dbg:rtsize */

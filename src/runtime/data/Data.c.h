@@ -576,6 +576,95 @@ char *rt_Data_tostr(const rt_Data_t var)
     return NULL;
 }
 
+rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
+{
+    if (data.type == type)
+        return rt_Data_clone(data);
+    switch (type) {
+        case rt_DATA_TYPE_BUL:
+            return rt_Data_bul(rt_Data_tobool(data));
+        case rt_DATA_TYPE_CHR: {
+            switch (data.type) {
+                case rt_DATA_TYPE_BUL:
+                    return rt_Data_chr((char) data.data.bul);
+                case rt_DATA_TYPE_CHR:
+                    return rt_Data_chr((char) data.data.chr);
+                case rt_DATA_TYPE_I64:
+                    return rt_Data_chr((char) data.data.i64);
+                case rt_DATA_TYPE_F64:
+                    return rt_Data_chr((char) data.data.f64);
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_ANY:
+                    rt_throw("cannot cast %s to 'chr'", rt_Data_typename(data));
+            }
+        }
+        case rt_DATA_TYPE_I64: {
+            switch (data.type) {
+                case rt_DATA_TYPE_BUL:
+                    return rt_Data_i64((int64_t) data.data.bul);
+                case rt_DATA_TYPE_CHR:
+                    return rt_Data_i64((int64_t) data.data.chr);
+                case rt_DATA_TYPE_I64:
+                    return rt_Data_i64((int64_t) data.data.i64);
+                case rt_DATA_TYPE_F64:
+                    return rt_Data_i64((int64_t) data.data.f64);
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_ANY:
+                    rt_throw("cannot cast %s to 'i64'", rt_Data_typename(data));
+            }
+        }
+        case rt_DATA_TYPE_F64: {
+            switch (data.type) {
+                case rt_DATA_TYPE_BUL:
+                    return rt_Data_f64((double) data.data.bul);
+                case rt_DATA_TYPE_CHR:
+                    return rt_Data_f64((double) data.data.chr);
+                case rt_DATA_TYPE_I64:
+                    return rt_Data_f64((double) data.data.i64);
+                case rt_DATA_TYPE_F64:
+                    return rt_Data_f64((double) data.data.f64);
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_ANY:
+                    rt_throw("cannot cast %s to 'f64'", rt_Data_typename(data));
+            }
+        }
+        case rt_DATA_TYPE_STR: {
+            char *strdata = rt_Data_tostr(data);
+            rt_Data_t retstr = rt_Data_str(rt_DataStr_init(strdata));
+            free(strdata);
+            return retstr;
+        }
+        case rt_DATA_TYPE_LST:
+            rt_throw("cannot cast %s to 'lst'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_MAP:
+            rt_throw("cannot cast %s to 'map'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_INTERP_STR:
+            rt_throw("cannot cast %s to 'interp_str'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_PROC:
+            rt_throw("cannot cast %s to 'proc'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_ANY:
+            rt_throw("cannot cast %s to 'any'", rt_Data_typename(data));
+            break;
+    }
+    return rt_Data_null();
+}
+
 const char *rt_Data_typename(const rt_Data_t var)
 {
     switch (var.type) {
