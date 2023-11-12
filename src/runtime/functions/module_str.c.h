@@ -38,6 +38,32 @@ rt_Data_t rt_fn_str_compare()
     return rt_Data_i64(rt_DataStr_compare(data1.data.str, data2.data.str));
 }
 
+rt_Data_t rt_fn_str_toupper()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
+
+    /* make sure both are valid types and if not throw an error */
+    rt_Data_assert_type(data, rt_DATA_TYPE_STR, "arg 0");
+
+    /* convert and return */
+    rt_DataStr_toupper(data.data.str);
+    return data;
+}
+
+rt_Data_t rt_fn_str_tolower()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
+
+    /* make sure both are valid types and if not throw an error */
+    rt_Data_assert_type(data, rt_DATA_TYPE_STR, "arg 0");
+
+    /* convert and return */
+    rt_DataStr_tolower(data.data.str);
+    return data;
+}
+
 rt_Data_t rt_fn_str_append()
 {
     const rt_DataList_t *args = rt_fn_get_valid_args(2);

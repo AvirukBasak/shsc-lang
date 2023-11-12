@@ -154,10 +154,8 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
 
         case rt_fn_STR_EQUALS:    return rt_fn_str_equals();
         case rt_fn_STR_COMPARE:   return rt_fn_str_compare();
-#if 0
         case rt_fn_STR_TOLOWER:   return rt_fn_str_tolower();
         case rt_fn_STR_TOUPPER:   return rt_fn_str_toupper();
-#endif
         case rt_fn_STR_APPEND:    return rt_fn_str_append();
         case rt_fn_STR_INSERT:    return rt_fn_str_insert();
         case rt_fn_STR_ERASE:     return rt_fn_str_erase();
