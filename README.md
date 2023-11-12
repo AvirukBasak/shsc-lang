@@ -16,7 +16,7 @@ To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDoc
 - Download [`Git Bash`](https://git-scm.com/)
 - Install Git Bash. Now you can run bash on Windows.
 - Download [`Make`](https://gnuwin32.sourceforge.net/packages/make.htm)
-- Download [`Bison`](https://gnuwin32.sourceforge.net/packages/bison.htm)
+- Download [`Bison`](https://github.com/lexxmark/winflexbison/releases)
 - Download [`MinGW`](https://github.com/skeeto/w64devkit/releases)
 - Extract the files and place them in some folder
 - Add the necessary paths to the user PATH
