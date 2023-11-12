@@ -14,6 +14,11 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     /* if module matched but procedure didn't match, it should cascade down.
        this is done so that if all matches fail, you can still match the procedures
        that don't have a module name */
+    if (!strcmp(module, "assert")) {
+        if (!strcmp(fname, "type"))     return rt_fn_ASSERT_TYPE;
+        if (!strcmp(fname, "equals"))   return rt_fn_ASSERT_EQUALS;
+        if (!strcmp(fname, "notnull"))  return rt_fn_ASSERT_NOTNULL;
+    }
     if (!strcmp(module, "dbg")) {
         if (!strcmp(fname, "typename")) return rt_fn_DBG_TYPENAME;
         if (!strcmp(fname, "rtsize"))   return rt_fn_DBG_RTSIZE;
@@ -100,6 +105,7 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     return rt_fn_UNDEFINED;
 }
 
+#include "runtime/functions/module_assert.c.h"
 #include "runtime/functions/module_chr.c.h"
 #include "runtime/functions/module_dbg.c.h"
 #include "runtime/functions/module_f64.c.h"
@@ -118,6 +124,10 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_TOSTR:         return rt_fn_tostr();
         case rt_fn_TYPE:          return rt_fn_type();
         case rt_fn_CAST:          return rt_fn_cast();
+
+        case rt_fn_ASSERT_TYPE:   return rt_fn_assert_type();
+        case rt_fn_ASSERT_EQUALS: return rt_fn_assert_equals();
+        case rt_fn_ASSERT_NOTNULL:return rt_fn_assert_notnull();
 
         case rt_fn_DBG_TYPENAME:  return rt_fn_dbg_typename();
 #if 0

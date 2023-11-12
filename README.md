@@ -83,6 +83,9 @@ make run ARGS="examples/helloworld.txt"
     - [x] `tostr`
     - [x] `type`
     - [x] `cast`
+    - [x] `assert:type`
+    - [x] `assert:equals`
+    - [x] `assert:notnull`
     - [x] `dbg:typename`
     - [ ] `dbg:rtsize`
     - [x] `dbg:refcnt`

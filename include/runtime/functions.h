@@ -2,6 +2,7 @@
 #define RT_FUNCTIONS_H
 
 #include "runtime/data/Data.h"
+#include "runtime/functions/module_assert.h"
 #include "runtime/functions/module_chr.h"
 #include "runtime/functions/module_dbg.h"
 #include "runtime/functions/module_f64.h"
@@ -22,6 +23,10 @@ typedef enum {
     rt_fn_TOSTR,         /* tostr */
     rt_fn_TYPE,          /* type */
     rt_fn_CAST,          /* cast */
+
+    rt_fn_ASSERT_TYPE,   /* assert:type */
+    rt_fn_ASSERT_EQUALS, /* assert:equals */
+    rt_fn_ASSERT_NOTNULL,/* assert:notnull */
 
     rt_fn_DBG_TYPENAME,  /* dbg:typename */
     rt_fn_DBG_RTSIZE,    /* dbg:rtsize */

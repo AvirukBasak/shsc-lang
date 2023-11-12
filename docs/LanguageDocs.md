@@ -71,6 +71,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
         - [Example](#example-6)
 - [Built-in procedures](#built-in-procedures)
     - [Globally available](#globally-available)
+    - [Module `assert`](#module-assert)
     - [Module `dbg`](#module-dbg)
     - [Module `io`](#module-io)
     - [Module `it`](#module-it)
@@ -640,6 +641,11 @@ The language supports the following built-in procedures (within built-in modules
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
 - `type(any)` returns one of the [global variables for types](#global-variables-for-types)
 - `cast(any, i64)` casts data to a type; the second argument is one of the [global variables for types](#global-variables-for-types)
+
+#### Module `assert`
+- `assert:type(any, i64)` returns true if data is of the specified type, else throws an error
+- `assert:equals(any, any)` returns true if data is equal, else throws an error
+- `assert:notnull(any)` returns true if data is not `null`, else throws an error
 
 #### Module `dbg`
 - `dbg:typename(any)` returns type name of data as string
