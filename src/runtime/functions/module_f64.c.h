@@ -6,6 +6,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/data/DataList.h"
 #include "runtime/functions.h"
+#include "runtime/functions/module_f64.h"
 
 rt_Data_t rt_fn_f64_max()
 {

@@ -6,6 +6,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/data/DataList.h"
 #include "runtime/functions.h"
+#include "runtime/functions/module_i64.h"
 
 rt_Data_t rt_fn_i64_max()
 {
@@ -29,7 +30,7 @@ rt_Data_t rt_fn_i64_max()
                 val = data.data.i64;
                 break;
             case rt_DATA_TYPE_F64:
-                val = data.data.f64;
+                val = (int64_t) data.data.f64;
                 break;
             default:
                 continue;
@@ -61,7 +62,7 @@ rt_Data_t rt_fn_i64_min()
                 val = data.data.i64;
                 break;
             case rt_DATA_TYPE_F64:
-                val = data.data.f64;
+                val = (int64_t) data.data.f64;
                 break;
             default:
                 continue;
