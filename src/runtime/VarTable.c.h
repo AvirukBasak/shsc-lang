@@ -89,15 +89,16 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool 
     if (!dest) return NULL;
     /* if data is one of the global built-in vars, throw appropriate error */
     {
-        if (dest == &rt_VarTable_rsv_lf)     rt_throw("cannot modify reserved variable 'lf'");
-        if (dest == &rt_VarTable_typeid_bul) rt_throw("cannot modify reserved variable 'bul'");
-        if (dest == &rt_VarTable_typeid_chr) rt_throw("cannot modify reserved variable 'chr'");
-        if (dest == &rt_VarTable_typeid_i64) rt_throw("cannot modify reserved variable 'i64'");
-        if (dest == &rt_VarTable_typeid_f64) rt_throw("cannot modify reserved variable 'f64'");
-        if (dest == &rt_VarTable_typeid_str) rt_throw("cannot modify reserved variable 'str'");
-        if (dest == &rt_VarTable_typeid_lst) rt_throw("cannot modify reserved variable 'lst'");
-        if (dest == &rt_VarTable_typeid_map) rt_throw("cannot modify reserved variable 'map'");
-        if (dest == &rt_VarTable_rsv_null)   rt_throw("cannot modify reserved variable 'null'");
+        if (dest == &rt_VarTable_rsv_lf)      rt_throw("cannot modify reserved variable 'lf'");
+        if (dest == &rt_VarTable_typeid_bul)  rt_throw("cannot modify reserved variable 'bul'");
+        if (dest == &rt_VarTable_typeid_chr)  rt_throw("cannot modify reserved variable 'chr'");
+        if (dest == &rt_VarTable_typeid_i64)  rt_throw("cannot modify reserved variable 'i64'");
+        if (dest == &rt_VarTable_typeid_f64)  rt_throw("cannot modify reserved variable 'f64'");
+        if (dest == &rt_VarTable_typeid_str)  rt_throw("cannot modify reserved variable 'str'");
+        if (dest == &rt_VarTable_typeid_lst)  rt_throw("cannot modify reserved variable 'lst'");
+        if (dest == &rt_VarTable_typeid_map)  rt_throw("cannot modify reserved variable 'map'");
+        if (dest == &rt_VarTable_typeid_proc) rt_throw("cannot modify reserved variable 'proc'");
+        if (dest == &rt_VarTable_rsv_null)    rt_throw("cannot modify reserved variable 'null'");
     }
 
     /* if dest is not lvalue, throw error */
