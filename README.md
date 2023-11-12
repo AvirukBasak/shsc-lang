@@ -78,72 +78,24 @@ make run ARGS="examples/helloworld.txt"
 - [x] Break and continue
 - [x] If-else
 - [ ] Operators
-- [ ] Built-in functions
-    - [x] `isnull`
-    - [x] `tostr`
-    - [x] `type`
-    - [x] `cast`
-    - [x] `assert:type`
-    - [x] `assert:equals`
-    - [x] `assert:notnull`
-    - [x] `dbg:typename`
-    - [ ] `dbg:rtsize`
-    - [x] `dbg:refcnt`
-    - [x] `dbg:id`
-    - [x] `dbg:callproc`
-    - [x] `dbg:filename`
-    - [x] `dbg:lineno`
-    - [x] `io:print`
-    - [x] `io:input`
-    - [x] `io:fread`
-    - [x] `io:fwrite`
-    - [x] `io:fappend`
-    - [x] `it:len`
-    - [x] `it:clone`
-    - [x] `chr:isdigit`
-    - [x] `chr:isalpha`
-    - [x] `chr:isalnum`
-    - [x] `chr:islower`
-    - [x] `chr:isupper`
-    - [x] `chr:isspace`
-    - [x] `chr:max`
-    - [x] `chr:min`
-    - [x] `i64:max`
-    - [x] `i64:min`
-    - [x] `f64:max`
-    - [x] `f64:min`
-    - [x] `str:equals`
-    - [x] `str:compare`
-    - [x] `str:tolower`
-    - [x] `str:toupper`
-    - [x] `str:append`
-    - [x] `str:insert`
-    - [x] `str:erase`
-    - [x] `str:concat`
-    - [x] `str:reverse`
-    - [x] `str:substr`
-    - [x] `str:find`
-    - [x] `str:split`
-    - [x] `str:toi64`
-    - [x] `str:tof64`
-    - [x] `str:sort`
-    - [x] `lst:equals`
-    - [x] `lst:compare`
-    - [x] `lst:append`
-    - [x] `lst:insert`
-    - [x] `lst:erase`
-    - [x] `lst:concat`
-    - [x] `lst:reverse`
-    - [x] `lst:sublist`
-    - [x] `lst:find`
-    - [x] `lst:join`
-    - [x] `lst:sort`
-    - [x] `map:set`
-    - [x] `map:get`
-    - [x] `map:erase`
-    - [x] `map:concat`
-    - [x] `map:find`
-    - [x] `map:keys`
+- [x] Built-in functions
+    | -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
+    |--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
+    | isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -      |
+    | tostr  | equals  | refcnt   | input   | clone | min     | min | min | compare | compare | -      |
+    | type   | notnull | id       | fread   | -     | isdigit | -   | -   | tolower | -       | -      |
+    | cast   | -       | callproc | fwrite  | -     | isalpha | -   | -   | toupper | -       | -      |
+    | -      | -       | filename | fappend | -     | isalnum | -   | -   | append  | append  | set    |
+    | -      | -       | lineno   | -       | -     | islower | -   | -   | insert  | insert  | get    |
+    | -      | -       | -        | -       | -     | isupper | -   | -   | erase   | erase   | erase  |
+    | -      | -       | -        | -       | -     | isspace | -   | -   | concat  | concat  | concat |
+    | -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -      |
+    | -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys   |
+    | -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find   |
+    | -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | -      |
+    | -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
+    | -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
+    | -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -      |
 
 ### List File
  - Each line of the list file has a single file path
@@ -186,3 +138,21 @@ shsc -tf ast.json examples/factorial.txt
 
 ### Todo
 - Implement various operators and type coercion systems.
+
+| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
+|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
+| isnull | type    | typename | print   | len   | isdigit | max | max | equals  | equals  | set    |
+| tostr  | equals  | refcnt   | input   | clone | isalpha | min | min | compare | compare | get    |
+| type   | notnull | id       | fread   | -     | isalnum | -   | -   | tolower | append  | erase  |
+| cast   | -       | callproc | fwrite  | -     | islower | -   | -   | toupper | insert  | concat |
+| -      | -       | filename | fappend | -     | isupper | -   | -   | append  | erase   | find   |
+| -      | -       | lineno   | -       | -     | isspace | -   | -   | insert  | concat  | keys   |
+| -      | -       | -        | -       | -     | max     | -   | -   | erase   | reverse | -      |
+| -      | -       | -        | -       | -     | min     | -   | -   | concat  | sublist | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | reverse | find    | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | substr  | join    | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | find    | sort    | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | split   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | sort    | -       | -      |
