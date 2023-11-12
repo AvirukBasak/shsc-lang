@@ -1,0 +1,9 @@
+proc main start
+    var s = [1,2,3,4,5,6,7,8]
+    var s2 = it:clone(s)
+    io:print(s, lf)
+    io:print(s2, lf)
+    s[4] = 0
+    io:print(s, lf)
+    io:print(s2, lf)
+end

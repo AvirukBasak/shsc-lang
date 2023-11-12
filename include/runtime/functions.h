@@ -21,7 +21,6 @@ typedef enum {
     rt_fn_ISNULL,        /* isnull */
     rt_fn_TOSTR,         /* tostr */
     rt_fn_TYPE,          /* type */
-    rt_fn_CLONE,         /* clone */
 
     rt_fn_DBG_TYPENAME,  /* dbg:typename */
     rt_fn_DBG_RTSIZE,    /* dbg:rtsize */
@@ -38,6 +37,7 @@ typedef enum {
     rt_fn_IO_FAPPEND,    /* io:fappend */
 
     rt_fn_IT_LEN,        /* it:len */
+    rt_fn_IT_CLONE,      /* it:clone */
 
     rt_fn_CHR_ISDIGIT,   /* chr:isdigit */
     rt_fn_CHR_ISALPHA,   /* chr:isalpha */

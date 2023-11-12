@@ -4,5 +4,6 @@
 #include "runtime/data/Data.h"
 
 rt_Data_t rt_fn_it_len();
+rt_Data_t rt_fn_it_clone();
 
 #endif

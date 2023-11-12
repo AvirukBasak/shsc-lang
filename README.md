@@ -82,7 +82,6 @@ make run ARGS="examples/helloworld.txt"
     - [x] `isnull`
     - [x] `tostr`
     - [x] `type`
-    - [x] `clone`
     - [x] `dbg:typename`
     - [ ] `dbg:rtsize`
     - [x] `dbg:refcnt`
@@ -96,23 +95,24 @@ make run ARGS="examples/helloworld.txt"
     - [x] `io:fwrite`
     - [x] `io:fappend`
     - [x] `it:len`
-    - [ ] `chr:isdigit`
-    - [ ] `chr:isalpha`
-    - [ ] `chr:isalnum`
-    - [ ] `chr:islower`
-    - [ ] `chr:isupper`
-    - [ ] `chr:isspace`
-    - [ ] `chr:tolower`
-    - [ ] `chr:max`
-    - [ ] `chr:min`
+    - [x] `it:clone`
+    - [x] `chr:isdigit`
+    - [x] `chr:isalpha`
+    - [x] `chr:isalnum`
+    - [x] `chr:islower`
+    - [x] `chr:isupper`
+    - [x] `chr:isspace`
+    - [x] `chr:tolower`
+    - [x] `chr:max`
+    - [x] `chr:min`
     - [x] `i64:max`
     - [x] `i64:min`
     - [x] `f64:max`
     - [x] `f64:min`
     - [x] `str:equals`
     - [x] `str:compare`
-    - [ ] `str:tolower`
-    - [ ] `str:toupper`
+    - [x] `str:tolower`
+    - [x] `str:toupper`
     - [x] `str:append`
     - [x] `str:insert`
     - [x] `str:erase`
@@ -135,12 +135,12 @@ make run ARGS="examples/helloworld.txt"
     - [x] `lst:find`
     - [x] `lst:join`
     - [x] `lst:sort`
-    - [ ] `map:set`
-    - [ ] `map:get`
-    - [ ] `map:erase`
-    - [ ] `map:concat`
-    - [ ] `map:find`
-    - [ ] `map:keys`
+    - [x] `map:set`
+    - [x] `map:get`
+    - [x] `map:erase`
+    - [x] `map:concat`
+    - [x] `map:find`
+    - [x] `map:keys`
 
 ### List File
  - Each line of the list file has a single file path
