@@ -1,4 +1,4 @@
-**Last updated on Nov 11, 2023**
+**Last updated on Nov 12, 2023**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -640,10 +640,10 @@ The language supports the following built-in procedures (within built-in modules
 |--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
 | isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -      |
 | tostr  | equals  | refcnt   | input   | clone | min     | min | min | compare | compare | -      |
-| type   | notnull | id       | fread   | -     | isdigit | -   | -   | tolower | -       | -      |
-| cast   | -       | callproc | fwrite  | -     | isalpha | -   | -   | toupper | -       | -      |
-| -      | -       | filename | fappend | -     | isalnum | -   | -   | append  | append  | set    |
-| -      | -       | lineno   | -       | -     | islower | -   | -   | insert  | insert  | get    |
+| type   | notnull | id       | fexists | -     | isdigit | -   | -   | tolower | -       | -      |
+| cast   | -       | callproc | fread   | -     | isalpha | -   | -   | toupper | -       | -      |
+| -      | -       | filename | fwrite  | -     | isalnum | -   | -   | append  | append  | set    |
+| -      | -       | lineno   | fappend | -     | islower | -   | -   | insert  | insert  | get    |
 | -      | -       | -        | -       | -     | isupper | -   | -   | erase   | erase   | erase  |
 | -      | -       | -        | -       | -     | isspace | -   | -   | concat  | concat  | concat |
 | -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -      |
@@ -675,8 +675,14 @@ The language supports the following built-in procedures (within built-in modules
 - `dbg:lineno()` returns line number of the source file where called
 
 #### Module `io`
+File I/O functions will not create a file if it doesn't exist.
+
 - `io:print(any, ...)` prints string form of data (calls `tostr`)
 - `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see [global variables for types](#global-variables-for-types)
+- `io:fexists(str)` returns true if file exists, else false
+- `io:fread(str)` reads a file and returns a string; the first argument is the file path
+- `io:fwrite(str, str)` writes a string to a file; the first argument is the file path
+- `io:fappend(str, str)` appends a string to a file; the first argument is the file path
 
 #### Module `it`
 - `it:len(any)` returns length of list, string or map, else returns `1`

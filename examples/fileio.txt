@@ -1,0 +1,5 @@
+proc main start
+    io:print(io:fexists("./compile_flags.txt"), lf)
+    io:print(io:fexists("./src/compile_flags.txt"), lf)
+    io:print(io:fread("compile_flags.txt"), lf)
+end

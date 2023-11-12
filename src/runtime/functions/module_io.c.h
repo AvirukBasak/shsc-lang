@@ -139,6 +139,24 @@ rt_Data_t rt_fn_io_input()
     return ret;
 }
 
+rt_Data_t rt_fn_io_fexists()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+
+    const rt_Data_t filename = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(filename, rt_DATA_TYPE_STR, "arg 0");
+
+    char *filename_str = rt_Data_tostr(filename);
+    FILE *fp = fopen(filename_str, "r");
+    if (fp) {
+        fclose(fp);
+        free(filename_str);
+        return rt_Data_bul(true);
+    }
+    free(filename_str);
+    return rt_Data_bul(false);
+}
+
 rt_Data_t rt_fn_io_fread()
 {
     const rt_DataList_t *args = rt_fn_get_valid_args(1);

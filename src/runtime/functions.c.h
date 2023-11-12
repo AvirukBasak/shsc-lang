@@ -31,6 +31,7 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     if (!strcmp(module, "io")) {
         if (!strcmp(fname, "print"))    return rt_fn_IO_PRINT;
         if (!strcmp(fname, "input"))    return rt_fn_IO_INPUT;
+        if (!strcmp(fname, "fexists"))  return rt_fn_IO_FEXISTS;
         if (!strcmp(fname, "fread"))    return rt_fn_IO_FREAD;
         if (!strcmp(fname, "fwrite"))   return rt_fn_IO_FWRITE;
         if (!strcmp(fname, "fappend"))  return rt_fn_IO_FAPPEND;
@@ -141,6 +142,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
 
         case rt_fn_IO_PRINT:      return rt_fn_io_print();
         case rt_fn_IO_INPUT:      return rt_fn_io_input();
+        case rt_fn_IO_FEXISTS:    return rt_fn_io_fexists();
         case rt_fn_IO_FREAD:      return rt_fn_io_fread();
         case rt_fn_IO_FWRITE:     return rt_fn_io_fwrite();
         case rt_fn_IO_FAPPEND:    return rt_fn_io_fappend();

@@ -38,6 +38,7 @@ typedef enum {
 
     rt_fn_IO_PRINT,      /* io:print */
     rt_fn_IO_INPUT,      /* io:input */
+    rt_fn_IO_FEXISTS,    /* io:exists */
     rt_fn_IO_FREAD,      /* io:fread */
     rt_fn_IO_FWRITE,     /* io:fwrite */
     rt_fn_IO_FAPPEND,    /* io:fappend */
