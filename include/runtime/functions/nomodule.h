@@ -6,5 +6,6 @@
 rt_Data_t rt_fn_isnull();
 rt_Data_t rt_fn_tostr();
 rt_Data_t rt_fn_type();
+rt_Data_t rt_fn_cast();
 
 #endif

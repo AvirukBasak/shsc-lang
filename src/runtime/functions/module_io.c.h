@@ -33,13 +33,16 @@ rt_Data_t rt_fn_io_print()
         const rt_Data_t data = *rt_DataList_getref(args, i);
         /* if (rt_Data_isnull(data)) continue; */
         /* print a space before data conditions:
-           - no space before 1st element
-           - no space before `lf` */
-        /* i is not 1st element AND data is not a character */
-        if ((i > 0 && data.type != rt_DATA_TYPE_CHR) ||
-            /* i is not 1st element BUT if data is character it should not be lf */
-            (i > 0 && data.type == rt_DATA_TYPE_CHR && data.data.chr != '\n'))
-                printf(" ");
+            - data is not the first argument
+            - data should not be a new line
+            - data at i-1 should not be a new line */
+        if (i > 0) {
+            rt_Data_t before = *rt_DataList_getref(args, i-1);
+            if (!(before.type == rt_DATA_TYPE_CHR && before.data.chr == '\n') &&
+                !(data.type   == rt_DATA_TYPE_CHR && data.data.chr == '\n')) {
+                bytes += printf(" ");
+            }
+        }
 
         /* call tostr to convert data to string */
         rt_Data_t str = rt_fn_call_handler(
@@ -70,7 +73,7 @@ rt_Data_t rt_fn_io_input()
     if (type_.type != rt_DATA_TYPE_I64) {
         char *s = rt_Data_tostr(type_);
         rt_throw(
-            "input: invalid type parameter: '%s'\n"
+            "invalid type parameter: '%s'\n"
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d", s,
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
@@ -79,7 +82,7 @@ rt_Data_t rt_fn_io_input()
     enum rt_DataType_t type = type_.data.i64;
     if (!rt_fn_io_input_type_isvalid(type_.data.i64))
         rt_throw(
-            "input: invalid type parameter\n"
+            "invalid type parameter\n"
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d",
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
@@ -128,12 +131,138 @@ rt_Data_t rt_fn_io_input()
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_PROC: rt_throw(
-            "input: invalid type parameter\n"
+            "invalid type parameter\n"
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d",
             rt_DATA_TYPE_BUL, rt_DATA_TYPE_CHR, rt_DATA_TYPE_I64, rt_DATA_TYPE_F64, rt_DATA_TYPE_STR);
         }
     return ret;
+}
+
+rt_Data_t rt_fn_io_fexists()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+
+    const rt_Data_t filename = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(filename, rt_DATA_TYPE_STR, "arg 0");
+
+    char *filename_str = rt_Data_tostr(filename);
+    FILE *fp = fopen(filename_str, "r");
+    if (fp) {
+        fclose(fp);
+        free(filename_str);
+        return rt_Data_bul(true);
+    }
+    free(filename_str);
+    return rt_Data_bul(false);
+}
+
+rt_Data_t rt_fn_io_fread()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+
+    const rt_Data_t filename = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(filename, rt_DATA_TYPE_STR, "arg 0");
+
+    char *filename_str = rt_Data_tostr(filename);
+    FILE *fp = fopen(filename_str, "rb");
+    if (!fp) rt_throw(
+        "failed to open file '%s': %s",
+        filename_str,
+        strerror(errno)
+    );
+
+    rt_DataStr_t *strbuf = rt_DataStr_init("");
+    char buffer[1024] = "";
+    size_t buff_used = 0;
+
+    /* read file in chunks of 4096 bytes and append to strbuf */
+    while ((buff_used = fread(buffer, sizeof(char), 1023, fp)) > 0) {
+        /* terminate the string */
+        buffer[buff_used] = '\0';
+        /* check for errors */
+        int error_num = errno;
+        if (ferror(fp)) {
+            fclose(fp);
+            rt_throw("failed to read from file '%s': %s",
+                filename_str, strerror(error_num));
+        }
+        rt_DataStr_t *chunk = rt_DataStr_init(buffer);
+        rt_DataStr_concat(strbuf, chunk);
+        rt_DataStr_destroy(&chunk);
+    }
+
+    fclose(fp);
+    free(filename_str);
+    return rt_Data_str(strbuf);
+}
+
+rt_Data_t rt_fn_io_fwrite()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(2);
+
+    const rt_Data_t filename = *rt_DataList_getref(args, 0);
+    const rt_Data_t data = *rt_DataList_getref(args, 1);
+    rt_Data_assert_type(filename, rt_DATA_TYPE_STR, "arg 0");
+
+    char *data_str = rt_Data_tostr(data);
+    size_t bytes = strlen(data_str);
+
+    char *filename_str = rt_Data_tostr(filename);
+    FILE *fp = fopen(filename_str, "wb");
+    if (!fp) rt_throw(
+        "failed to open file '%s': %s",
+        filename_str,
+        strerror(errno)
+    );
+
+    bytes = fwrite(data_str, sizeof(char), bytes, fp);
+    /* check for errors */
+    int error_num = errno;
+    if (ferror(fp)) {
+        fclose(fp);
+        rt_throw("failed to write to file '%s': %s",
+            filename_str, strerror(error_num));
+    }
+
+    fclose(fp);
+    free(filename_str);
+    free(data_str);
+    return rt_Data_i64(bytes);
+}
+
+rt_Data_t rt_fn_io_fappend()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(2);
+
+    const rt_Data_t filename = *rt_DataList_getref(args, 0);
+    const rt_Data_t data = *rt_DataList_getref(args, 1);
+    rt_Data_assert_type(filename, rt_DATA_TYPE_STR, "arg 0");
+
+    char *data_str = rt_Data_tostr(data);
+    size_t bytes = strlen(data_str);
+
+    char *filename_str = rt_Data_tostr(filename);
+    FILE *fp = fopen(filename_str, "ab");
+    if (!fp) rt_throw(
+        "failed to open file '%s': %s",
+        filename_str,
+        strerror(errno)
+    );
+
+    bytes = fwrite(data_str, sizeof(char), bytes, fp);
+    /* check for errors */
+    int error_num = errno;
+    if (ferror(fp)) {
+        fclose(fp);
+        rt_throw("failed to write to file '%s': %s",
+            filename_str, strerror(error_num));
+    }
+
+    fclose(fp);
+    free(filename_str);
+    free(data_str);
+    return rt_Data_i64(bytes);
 }
 
 bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
@@ -164,7 +293,7 @@ void rt_fn_io_input_bul(bool *val)
     else if (!strncmp("0", str, len)) *val = false;
     else if (!strncmp("true", str, len)) *val = true;
     else if (!strncmp("false", str, len)) *val = false;
-    else rt_throw("input: invalid input for type bul: '%s'", str);
+    else rt_throw("invalid input for type bul: '%s'", str);
     free(str);
 }
 
@@ -175,7 +304,7 @@ void rt_fn_io_input_chr(char *val)
     int len = rt_fn_io_input_str(&str);
     if (len == 1) *val = str[0];
     else if (len == 0) *val = 0;
-    else rt_throw("input: invalid input for type chr: '%s'", str);
+    else rt_throw("invalid input for type chr: '%s'", str);
     free(str);
 }
 
@@ -188,7 +317,7 @@ void rt_fn_io_input_i64(int64_t *val)
     errno = 0;
     *val = (int64_t) strtoll(str, &endptr, 10);
     if (errno || *endptr != '\0')
-        rt_throw("input: invalid input for type i64: '%s'", str);
+        rt_throw("invalid input for type i64: '%s'", str);
     free(str);
 }
 
@@ -201,7 +330,7 @@ void rt_fn_io_input_f64(double *val)
     errno = 0;
     *val = (double) strtod(str, &endptr);
     if (errno || *endptr != '\0')
-        rt_throw("input: invalid input for type f64: '%s'", str);
+        rt_throw("invalid input for type f64: '%s'", str);
     free(str);
 }
 
@@ -214,7 +343,7 @@ int rt_fn_io_input_str(char **val)
     /* remove the newline from result */
     if (len < 0) {
         fprintf(stderr, "%c", '\n');
-        rt_throw("input: unknown error occurred");
+        rt_throw("unknown error occurred");
     }
     (*val)[len-1] = 0; len--;
     return len;

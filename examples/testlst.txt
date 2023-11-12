@@ -5,7 +5,7 @@ proc main start
     # io:print(lst:compare(lst1, lst2), lf)
     io:print(lst:append(lst1, '_'), lf)
     io:print(lst:append(lst1, "power_"), lf)
-    io:print(lst:insert(lst1, 4, 'o'), lf)
+    io:print(lst:insert(lst1, 4, {}), lf)
     io:print(lst:insert(lst1, 4, "oo"), lf)
     io:print(lst:erase(lst1, 1, 3), lf)
     io:print(lst:concat(lst1, lst2), lf)

@@ -1,0 +1,14 @@
+proc main start
+    var x = {}
+    map:set(x, "a", 1)
+    map:set(x, "b", 2)
+    map:set(x, "c", [1,2,3])
+    map:set(x, "d", 4)
+    map:set(x, "e", 5)
+    io:print(x, lf)
+    io:print(map:get(x, "a"), lf)
+    map:erase(x, "c")
+    io:print(x, lf)
+    io:print(map:find(x, "c"), lf)
+    io:print(map:keys(x), lf)
+end

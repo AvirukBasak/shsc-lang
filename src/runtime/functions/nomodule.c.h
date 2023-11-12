@@ -1,9 +1,9 @@
 #ifndef FN_NOMODULE_C_H
 #define FN_NOMODULE_C_H
 
+#include <stdint.h>
 #include <stdlib.h>
 
-#include "io.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
@@ -55,6 +55,17 @@ rt_Data_t rt_fn_type()
                 rt_VarTable_rsv_null : rt_VarTable_typeid_any;
     }
     return rt_VarTable_typeid_any;
+}
+
+rt_Data_t rt_fn_cast()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(2);
+
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
+    const rt_Data_t typeid = *rt_DataList_getref(args, 1);
+    rt_Data_assert_type(typeid, rt_DATA_TYPE_I64, "arg 1");
+
+    return rt_Data_cast(data, typeid.data.i64);
 }
 
 #else

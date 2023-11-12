@@ -48,6 +48,7 @@ struct rt_Data_t {
     } data;
     bool is_const;
     bool is_weak;
+    bool lvalue;
     enum rt_DataType_t type;
 };
 
@@ -69,6 +70,8 @@ rt_Data_t rt_Data_null(void);
 void rt_Data_increfc(rt_Data_t *var);
 void rt_Data_decrefc(rt_Data_t *var);
 
+rt_Data_t rt_Data_clone(const rt_Data_t var);
+
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag);
 void rt_Data_destroy(rt_Data_t *var);
 
@@ -79,6 +82,7 @@ int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2);
 char *rt_Data_interp_str_parse(const char *str);
 bool rt_Data_tobool(const rt_Data_t var);
 char *rt_Data_tostr(const rt_Data_t var);
+rt_Data_t rt_Data_cast(const rt_Data_t var, enum rt_DataType_t type);
 const char *rt_Data_typename(const rt_Data_t var);
 bool rt_Data_assert_type(
     const rt_Data_t var,

@@ -21,6 +21,8 @@ void rt_DataStr_decrefc(rt_DataStr_t *str);
 void rt_DataStr_destroy_circular(rt_DataStr_t **ptr, bool flag);
 void rt_DataStr_destroy(rt_DataStr_t **ptr);
 
+void rt_DataStr_toupper              (rt_DataStr_t *str);
+void rt_DataStr_tolower              (rt_DataStr_t *str);
 void rt_DataStr_append               (rt_DataStr_t *str, char ch);
 void rt_DataStr_concat               (rt_DataStr_t *str, const rt_DataStr_t *str2);
 void rt_DataStr_insert               (rt_DataStr_t *str, int64_t idx, char ch);

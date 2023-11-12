@@ -62,6 +62,7 @@ rt_Data_t rt_VarTable_rsv_lf,
           rt_VarTable_typeid_lst,
           rt_VarTable_typeid_any,
           rt_VarTable_typeid_map,
+          rt_VarTable_typeid_proc,
           rt_VarTable_rsv_null;
 
 /** create a new variable in the current scope */

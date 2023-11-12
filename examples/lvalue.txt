@@ -1,0 +1,4 @@
+proc main start
+    var s = "hi there"
+    io:print(s, lf) = 5
+end

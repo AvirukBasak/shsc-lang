@@ -1,8 +1,10 @@
+#include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 #include "errcodes.h"
 #include "globals.h"
@@ -11,22 +13,14 @@
 #ifndef IO_GETLINE
 #define IO_GETLINE
 
-/* The original code is public domain -- Will Hartung 4/9/09 */
-/* Modifications, public domain as well, by Antti Haapala, 11/10/17
-   - Switched to getc on 5/23/19 */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <stdint.h>
-
-// if typedef doesn't exist (msvc, blah)
-typedef intptr_t ssize_t;
-
 /** read string contains trailing new line.
     size_t n is the number of bytes allocated.
     return value is the length of string read. */
-ssize_t io_getline(char **lineptr, size_t *n, FILE *stream) {
+ssize_t io_getline(char **lineptr, size_t *n, FILE *stream)
+{
+    /* The original code is public domain -- Will Hartung 4/9/09 */
+    /* Modifications, public domain as well, by Antti Haapala, 11/10/17
+       - Switched to getc on 5/23/19 */
     size_t pos;
     int c;
 

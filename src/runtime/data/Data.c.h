@@ -24,6 +24,7 @@ rt_Data_t rt_Data_bul(bool val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_BUL;
     var.data.bul = !!val;
     return var;
@@ -34,6 +35,7 @@ rt_Data_t rt_Data_chr(char val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_CHR;
     var.data.chr = val;
     return var;
@@ -44,6 +46,7 @@ rt_Data_t rt_Data_i64(int64_t val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_I64;
     var.data.i64 = val;
     return var;
@@ -54,6 +57,7 @@ rt_Data_t rt_Data_f64(double val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_F64;
     var.data.f64 = val;
     return var;
@@ -69,6 +73,7 @@ rt_Data_t rt_Data_str(rt_DataStr_t *str)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_STR;
     var.data.str = str;
     return var;
@@ -88,6 +93,7 @@ rt_Data_t rt_Data_list(rt_DataList_t *lst)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_LST;
     var.data.lst = lst;
     return var;
@@ -98,6 +104,7 @@ rt_Data_t rt_Data_map(rt_DataMap_t *mp)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_MAP;
     var.data.mp = mp;
     return var;
@@ -110,6 +117,7 @@ rt_Data_t rt_Data_proc(
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_PROC;
     var.data.proc.module_name = module_name;
     var.data.proc.proc_name = proc_name;
@@ -122,6 +130,7 @@ rt_Data_t rt_Data_any(void *ptr)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_ANY;
     var.data.any = ptr;
     return var;
@@ -176,6 +185,35 @@ void rt_Data_decrefc(rt_Data_t *var)
         case rt_DATA_TYPE_PROC:
             break;
     }
+}
+
+rt_Data_t rt_Data_clone(const rt_Data_t var)
+{
+    switch (var.type) {
+        case rt_DATA_TYPE_BUL:
+            return rt_Data_bul(var.data.bul);
+        case rt_DATA_TYPE_CHR:
+            return rt_Data_chr(var.data.chr);
+        case rt_DATA_TYPE_I64:
+            return rt_Data_i64(var.data.i64);
+        case rt_DATA_TYPE_F64:
+            return rt_Data_f64(var.data.f64);
+        case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR:
+            return rt_Data_str(rt_DataStr_clone(var.data.str));
+        case rt_DATA_TYPE_LST:
+            return rt_Data_list(rt_DataList_clone(var.data.lst));
+        case rt_DATA_TYPE_MAP:
+            return rt_Data_map(rt_DataMap_clone(var.data.mp));
+        case rt_DATA_TYPE_ANY:
+            return rt_Data_any(var.data.any);
+        case rt_DATA_TYPE_PROC:
+            return rt_Data_proc(
+                var.data.proc.module_name,
+                var.data.proc.proc_name
+            );
+    }
+    return rt_Data_null();
 }
 
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
@@ -536,6 +574,95 @@ char *rt_Data_tostr(const rt_Data_t var)
         }
     }
     return NULL;
+}
+
+rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
+{
+    if (data.type == type)
+        return rt_Data_clone(data);
+    switch (type) {
+        case rt_DATA_TYPE_BUL:
+            return rt_Data_bul(rt_Data_tobool(data));
+        case rt_DATA_TYPE_CHR: {
+            switch (data.type) {
+                case rt_DATA_TYPE_BUL:
+                    return rt_Data_chr((char) data.data.bul);
+                case rt_DATA_TYPE_CHR:
+                    return rt_Data_chr((char) data.data.chr);
+                case rt_DATA_TYPE_I64:
+                    return rt_Data_chr((char) data.data.i64);
+                case rt_DATA_TYPE_F64:
+                    return rt_Data_chr((char) data.data.f64);
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_ANY:
+                    rt_throw("cannot cast %s to 'chr'", rt_Data_typename(data));
+            }
+        }
+        case rt_DATA_TYPE_I64: {
+            switch (data.type) {
+                case rt_DATA_TYPE_BUL:
+                    return rt_Data_i64((int64_t) data.data.bul);
+                case rt_DATA_TYPE_CHR:
+                    return rt_Data_i64((int64_t) data.data.chr);
+                case rt_DATA_TYPE_I64:
+                    return rt_Data_i64((int64_t) data.data.i64);
+                case rt_DATA_TYPE_F64:
+                    return rt_Data_i64((int64_t) data.data.f64);
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_ANY:
+                    rt_throw("cannot cast %s to 'i64'", rt_Data_typename(data));
+            }
+        }
+        case rt_DATA_TYPE_F64: {
+            switch (data.type) {
+                case rt_DATA_TYPE_BUL:
+                    return rt_Data_f64((double) data.data.bul);
+                case rt_DATA_TYPE_CHR:
+                    return rt_Data_f64((double) data.data.chr);
+                case rt_DATA_TYPE_I64:
+                    return rt_Data_f64((double) data.data.i64);
+                case rt_DATA_TYPE_F64:
+                    return rt_Data_f64((double) data.data.f64);
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_ANY:
+                    rt_throw("cannot cast %s to 'f64'", rt_Data_typename(data));
+            }
+        }
+        case rt_DATA_TYPE_STR: {
+            char *strdata = rt_Data_tostr(data);
+            rt_Data_t retstr = rt_Data_str(rt_DataStr_init(strdata));
+            free(strdata);
+            return retstr;
+        }
+        case rt_DATA_TYPE_LST:
+            rt_throw("cannot cast %s to 'lst'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_MAP:
+            rt_throw("cannot cast %s to 'map'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_INTERP_STR:
+            rt_throw("cannot cast %s to 'interp_str'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_PROC:
+            rt_throw("cannot cast %s to 'proc'", rt_Data_typename(data));
+            break;
+        case rt_DATA_TYPE_ANY:
+            rt_throw("cannot cast %s to 'any'", rt_Data_typename(data));
+            break;
+    }
+    return rt_Data_null();
 }
 
 const char *rt_Data_typename(const rt_Data_t var)

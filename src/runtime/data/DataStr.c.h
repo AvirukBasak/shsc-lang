@@ -63,6 +63,28 @@ void rt_DataStr_destroy(rt_DataStr_t **ptr)
     rt_DataStr_destroy_circular(ptr, false);
 }
 
+void rt_DataStr_toupper(rt_DataStr_t *str)
+{
+    int64_t length = rt_DataStr_length(str);
+    for (int64_t i = 0; i < length; i++) {
+        char c = rt_DataList_getref(str->var, i)->data.chr;
+        if (c >= 'a' && c <= 'z') {
+            rt_DataList_getref(str->var, i)->data.chr = c - 32;
+        }
+    }
+}
+
+void rt_DataStr_tolower(rt_DataStr_t *str)
+{
+    int64_t length = rt_DataStr_length(str);
+    for (int64_t i = 0; i < length; i++) {
+        char c = rt_DataList_getref(str->var, i)->data.chr;
+        if (c >= 'A' && c <= 'Z') {
+            rt_DataList_getref(str->var, i)->data.chr = c + 32;
+        }
+    }
+}
+
 void rt_DataStr_append(rt_DataStr_t *str, char var)
 {
     rt_DataList_append(str->var, rt_Data_chr(var));

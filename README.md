@@ -15,7 +15,7 @@ To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDoc
 #### Windows
 - Download [`Git Bash`](https://git-scm.com/)
 - Install Git Bash. Now you can run bash on Windows.
-- Download [`make`](https://gnuwin32.sourceforge.net/packages/make.htm)
+- Download [`Make`](https://gnuwin32.sourceforge.net/packages/make.htm)
 - Download [`Bison`](https://gnuwin32.sourceforge.net/packages/bison.htm)
 - Download [`MinGW`](https://github.com/skeeto/w64devkit/releases)
 - Extract the files and place them in some folder
@@ -78,56 +78,7 @@ make run ARGS="examples/helloworld.txt"
 - [x] Break and continue
 - [x] If-else
 - [ ] Operators
-- [ ] Built-in functions
-    - [x] `isnull`
-    - [x] `tostr`
-    - [x] `type`
-    - [x] `dbg:typename`
-    - [ ] `dbg:rtsize`
-    - [x] `dbg:refcnt`
-    - [x] `dbg:id`
-    - [x] `dbg:callproc`
-    - [ ] `dbg:filename`
-    - [ ] `dbg:lineno`
-    - [x] `io:print`
-    - [x] `io:input`
-    - [x] `it:len`
-    - [ ] `chr:isdigit`
-    - [ ] `chr:isalpha`
-    - [ ] `chr:isalnum`
-    - [ ] `i64:maxval`
-    - [ ] `i64:minval`
-    - [ ] `f64:maxval`
-    - [ ] `f64:minval`
-    - [x] `str:equals`
-    - [x] `str:compare`
-    - [x] `str:append`
-    - [x] `str:insert`
-    - [x] `str:erase`
-    - [x] `str:concat`
-    - [x] `str:reverse`
-    - [x] `str:substr`
-    - [x] `str:find`
-    - [x] `str:split`
-    - [x] `str:toi64`
-    - [x] `str:tof64`
-    - [x] `str:sort`
-    - [x] `lst:equals`
-    - [x] `lst:compare`
-    - [x] `lst:append`
-    - [x] `lst:insert`
-    - [x] `lst:erase`
-    - [x] `lst:concat`
-    - [x] `lst:reverse`
-    - [x] `lst:sublist`
-    - [x] `lst:find`
-    - [x] `lst:join`
-    - [x] `lst:sort`
-    - [ ] `map:insert`
-    - [ ] `map:erase`
-    - [ ] `map:concat`
-    - [ ] `map:find`
-    - [ ] `map:keys`
+- [x] Built-in functions
 
 ### List File
  - Each line of the list file has a single file path
@@ -170,3 +121,21 @@ shsc -tf ast.json examples/factorial.txt
 
 ### Todo
 - Implement various operators and type coercion systems.
+
+| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
+|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
+| isnull | type    | typename | print   | len   | isdigit | max | max | equals  | equals  | set    |
+| tostr  | equals  | refcnt   | input   | clone | isalpha | min | min | compare | compare | get    |
+| type   | notnull | id       | fread   | -     | isalnum | -   | -   | tolower | append  | erase  |
+| cast   | -       | callproc | fwrite  | -     | islower | -   | -   | toupper | insert  | concat |
+| -      | -       | filename | fappend | -     | isupper | -   | -   | append  | erase   | find   |
+| -      | -       | lineno   | -       | -     | isspace | -   | -   | insert  | concat  | keys   |
+| -      | -       | -        | -       | -     | max     | -   | -   | erase   | reverse | -      |
+| -      | -       | -        | -       | -     | min     | -   | -   | concat  | sublist | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | reverse | find    | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | substr  | join    | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | find    | sort    | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | split   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | sort    | -       | -      |

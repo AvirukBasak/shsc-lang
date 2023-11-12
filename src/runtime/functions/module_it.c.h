@@ -33,6 +33,13 @@ rt_Data_t rt_fn_it_len()
     return rt_Data_i64(0);
 }
 
+rt_Data_t rt_fn_it_clone()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
+    return rt_Data_clone(data);
+}
+
 #else
     #warning re-inclusion of module 'functions/module_it.c.h'
 #endif
