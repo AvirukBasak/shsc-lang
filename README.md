@@ -121,21 +121,3 @@ shsc -tf ast.json examples/factorial.txt
 
 ### Todo
 - Implement various operators and type coercion systems.
-
-| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
-|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
-| isnull | type    | typename | print   | len   | isdigit | max | max | equals  | equals  | set    |
-| tostr  | equals  | refcnt   | input   | clone | isalpha | min | min | compare | compare | get    |
-| type   | notnull | id       | fread   | -     | isalnum | -   | -   | tolower | append  | erase  |
-| cast   | -       | callproc | fwrite  | -     | islower | -   | -   | toupper | insert  | concat |
-| -      | -       | filename | fappend | -     | isupper | -   | -   | append  | erase   | find   |
-| -      | -       | lineno   | -       | -     | isspace | -   | -   | insert  | concat  | keys   |
-| -      | -       | -        | -       | -     | max     | -   | -   | erase   | reverse | -      |
-| -      | -       | -        | -       | -     | min     | -   | -   | concat  | sublist | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | reverse | find    | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | substr  | join    | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | find    | sort    | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | split   | -       | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | sort    | -       | -      |
