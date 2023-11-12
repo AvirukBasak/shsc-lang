@@ -79,23 +79,6 @@ make run ARGS="examples/helloworld.txt"
 - [x] If-else
 - [ ] Operators
 - [x] Built-in functions
-    | -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
-    |--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
-    | isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -      |
-    | tostr  | equals  | refcnt   | input   | clone | min     | min | min | compare | compare | -      |
-    | type   | notnull | id       | fread   | -     | isdigit | -   | -   | tolower | -       | -      |
-    | cast   | -       | callproc | fwrite  | -     | isalpha | -   | -   | toupper | -       | -      |
-    | -      | -       | filename | fappend | -     | isalnum | -   | -   | append  | append  | set    |
-    | -      | -       | lineno   | -       | -     | islower | -   | -   | insert  | insert  | get    |
-    | -      | -       | -        | -       | -     | isupper | -   | -   | erase   | erase   | erase  |
-    | -      | -       | -        | -       | -     | isspace | -   | -   | concat  | concat  | concat |
-    | -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -      |
-    | -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys   |
-    | -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find   |
-    | -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | -      |
-    | -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
-    | -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
-    | -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -      |
 
 ### List File
  - Each line of the list file has a single file path

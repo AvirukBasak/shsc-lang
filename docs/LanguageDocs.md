@@ -636,6 +636,24 @@ Also note how data is stringified during conversion to string (printing).
 ## Built-in procedures
 The language supports the following built-in procedures (within built-in modules)
 
+| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
+|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
+| isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -      |
+| tostr  | equals  | refcnt   | input   | clone | min     | min | min | compare | compare | -      |
+| type   | notnull | id       | fread   | -     | isdigit | -   | -   | tolower | -       | -      |
+| cast   | -       | callproc | fwrite  | -     | isalpha | -   | -   | toupper | -       | -      |
+| -      | -       | filename | fappend | -     | isalnum | -   | -   | append  | append  | set    |
+| -      | -       | lineno   | -       | -     | islower | -   | -   | insert  | insert  | get    |
+| -      | -       | -        | -       | -     | isupper | -   | -   | erase   | erase   | erase  |
+| -      | -       | -        | -       | -     | isspace | -   | -   | concat  | concat  | concat |
+| -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys   |
+| -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find   |
+| -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
+| -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -      |
+
 #### Globally available
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
