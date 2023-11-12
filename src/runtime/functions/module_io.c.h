@@ -33,13 +33,16 @@ rt_Data_t rt_fn_io_print()
         const rt_Data_t data = *rt_DataList_getref(args, i);
         /* if (rt_Data_isnull(data)) continue; */
         /* print a space before data conditions:
-           - no space before 1st element
-           - no space before `lf` */
-        /* i is not 1st element AND data is not a character */
-        if ((i > 0 && data.type != rt_DATA_TYPE_CHR) ||
-            /* i is not 1st element BUT if data is character it should not be lf */
-            (i > 0 && data.type == rt_DATA_TYPE_CHR && data.data.chr != '\n'))
-                printf(" ");
+            - data is not the first argument
+            - data should not be a new line
+            - data at i-1 should not be a new line */
+        if (i > 0) {
+            rt_Data_t before = *rt_DataList_getref(args, i-1);
+            if (!(before.type == rt_DATA_TYPE_CHR && before.data.chr == '\n') &&
+                !(data.type   == rt_DATA_TYPE_CHR && data.data.chr == '\n')) {
+                bytes += printf(" ");
+            }
+        }
 
         /* call tostr to convert data to string */
         rt_Data_t str = rt_fn_call_handler(
