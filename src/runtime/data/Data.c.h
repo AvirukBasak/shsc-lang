@@ -24,6 +24,7 @@ rt_Data_t rt_Data_bul(bool val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_BUL;
     var.data.bul = !!val;
     return var;
@@ -34,6 +35,7 @@ rt_Data_t rt_Data_chr(char val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_CHR;
     var.data.chr = val;
     return var;
@@ -44,6 +46,7 @@ rt_Data_t rt_Data_i64(int64_t val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_I64;
     var.data.i64 = val;
     return var;
@@ -54,6 +57,7 @@ rt_Data_t rt_Data_f64(double val)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_F64;
     var.data.f64 = val;
     return var;
@@ -69,6 +73,7 @@ rt_Data_t rt_Data_str(rt_DataStr_t *str)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_STR;
     var.data.str = str;
     return var;
@@ -88,6 +93,7 @@ rt_Data_t rt_Data_list(rt_DataList_t *lst)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_LST;
     var.data.lst = lst;
     return var;
@@ -98,6 +104,7 @@ rt_Data_t rt_Data_map(rt_DataMap_t *mp)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_MAP;
     var.data.mp = mp;
     return var;
@@ -110,6 +117,7 @@ rt_Data_t rt_Data_proc(
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_PROC;
     var.data.proc.module_name = module_name;
     var.data.proc.proc_name = proc_name;
@@ -122,6 +130,7 @@ rt_Data_t rt_Data_any(void *ptr)
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
+    var.lvalue = false;
     var.type = rt_DATA_TYPE_ANY;
     var.data.any = ptr;
     return var;

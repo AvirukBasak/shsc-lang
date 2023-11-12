@@ -48,6 +48,7 @@ struct rt_Data_t {
     } data;
     bool is_const;
     bool is_weak;
+    bool lvalue;
     enum rt_DataType_t type;
 };
 
