@@ -117,13 +117,16 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_TYPE:          return rt_fn_type();
 
         case rt_fn_DBG_TYPENAME:  return rt_fn_dbg_typename();
+#if 0
         case rt_fn_DBG_RTSIZE:    return rt_fn_dbg_rtsize();
+#endif
         case rt_fn_DBG_REFCNT:    return rt_fn_dbg_refcnt();
         case rt_fn_DBG_ID:        return rt_fn_dbg_id();
         case rt_fn_DBG_CALLPROC:  return rt_fn_dbg_callproc();
+#if 0
         case rt_fn_DBG_FILENAME:  return rt_fn_dbg_filename();
         case rt_fn_DBG_LINENO:    return rt_fn_dbg_lineno();
-
+#endif
         case rt_fn_IO_PRINT:      return rt_fn_io_print();
         case rt_fn_IO_INPUT:      return rt_fn_io_input();
         case rt_fn_IO_FREAD:      return rt_fn_io_fread();
@@ -131,7 +134,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_IO_FAPPEND:    return rt_fn_io_fappend();
 
         case rt_fn_IT_LEN:        return rt_fn_it_len();
-
+#if 0
         case rt_fn_CHR_ISDIGIT:   return rt_fn_chr_isdigit();
         case rt_fn_CHR_ISALPHA:   return rt_fn_chr_isalpha();
         case rt_fn_CHR_ISALNUM:   return rt_fn_chr_isalnum();
@@ -140,7 +143,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_CHR_ISSPACE:   return rt_fn_chr_isspace();
         case rt_fn_CHR_MAX:       return rt_fn_chr_max();
         case rt_fn_CHR_MIN:       return rt_fn_chr_min();
-
+#endif
         case rt_fn_I64_MAX:       return rt_fn_i64_max();
         case rt_fn_I64_MIN:       return rt_fn_i64_min();
 
@@ -149,8 +152,10 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
 
         case rt_fn_STR_EQUALS:    return rt_fn_str_equals();
         case rt_fn_STR_COMPARE:   return rt_fn_str_compare();
+#if 0
         case rt_fn_STR_TOLOWER:   return rt_fn_str_tolower();
         case rt_fn_STR_TOUPPER:   return rt_fn_str_toupper();
+#endif
         case rt_fn_STR_APPEND:    return rt_fn_str_append();
         case rt_fn_STR_INSERT:    return rt_fn_str_insert();
         case rt_fn_STR_ERASE:     return rt_fn_str_erase();
@@ -174,14 +179,14 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_LST_FIND:      return rt_fn_lst_find();
         case rt_fn_LST_JOIN:      return rt_fn_lst_join();
         case rt_fn_LST_SORT:      return rt_fn_lst_sort();
-
+#if 0
         case rt_fn_MAP_SET:       return rt_fn_map_set();
         case rt_fn_MAP_GET:       return rt_fn_map_get();
         case rt_fn_MAP_ERASE:     return rt_fn_map_erase();
         case rt_fn_MAP_CONCAT:    return rt_fn_map_concat();
         case rt_fn_MAP_FIND:      return rt_fn_map_find();
         case rt_fn_MAP_KEYS:      return rt_fn_map_keys();
-
+#endif
         case rt_fn_UNDEFINED:
             break;
     }
