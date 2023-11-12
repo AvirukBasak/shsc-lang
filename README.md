@@ -92,9 +92,9 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `dbg:lineno`
     - [x] `io:print`
     - [x] `io:input`
-    - [ ] `io:fread`
-    - [ ] `io:fwrite`
-    - [ ] `io:fappend`
+    - [x] `io:fread`
+    - [x] `io:fwrite`
+    - [x] `io:fappend`
     - [x] `it:len`
     - [ ] `chr:isdigit`
     - [ ] `chr:isalpha`
@@ -105,10 +105,10 @@ make run ARGS="examples/helloworld.txt"
     - [ ] `chr:tolower`
     - [ ] `chr:max`
     - [ ] `chr:min`
-    - [ ] `i64:max`
-    - [ ] `i64:min`
-    - [ ] `f64:max`
-    - [ ] `f64:min`
+    - [x] `i64:max`
+    - [x] `i64:min`
+    - [x] `f64:max`
+    - [x] `f64:min`
     - [x] `str:equals`
     - [x] `str:compare`
     - [ ] `str:tolower`
