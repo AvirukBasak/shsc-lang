@@ -1170,7 +1170,19 @@
     "test": {
       "node": "procedure",
       "file": "examples/helloworld.txt",
-      "fnargs_list": null,
+      "fnargs_list": {
+        "node": "fnargs_list",
+        "fnargs_list": [
+          {
+            "node": "identifier",
+            "identifier_name": "string"
+          },
+          {
+            "node": "identifier",
+            "identifier_name": "list"
+          }
+        ]
+      },
       "statements": {
         "node": "statements",
         "statements": [
@@ -1186,15 +1198,14 @@
               },
               "rhs": {
                 "node": "expression",
-                "op": "$[]",
-                "lhs_type": "EXPR_TYPE_NULL",
-                "lhs": null,
-                "rhs_type": "EXPR_TYPE_LITERAL",
-                "rhs": {
-                  "node": "literal",
-                  "type": "DATA_TYPE_I64",
-                  "data": 1
+                "op": "NOP",
+                "lhs_type": "EXPR_TYPE_IDENTIFIER",
+                "lhs": {
+                  "node": "identifier",
+                  "identifier_name": "list"
                 },
+                "rhs_type": "EXPR_TYPE_NULL",
+                "rhs": null,
                 "condition_type": "EXPR_TYPE_NULL",
                 "condition": null
               }

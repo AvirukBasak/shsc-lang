@@ -1,4 +1,4 @@
-proc main start
+proc main()
     assert:type({}, map)
     assert:type([], lst)
     assert:equals(1.0, 1)

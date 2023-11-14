@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var a = 5
     io:print(dbg:filename(), dbg:lineno(), lf)
 end

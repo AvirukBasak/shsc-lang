@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var str1 = const "hell"
     var str2 = "THERE"
     io:print(str:equals(str1, str2), lf)

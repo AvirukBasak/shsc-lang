@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var s = "hello world"
     var l = [1, 2, 3, 4, 5]
     var m = {"a": 1, "b": 2}

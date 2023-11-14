@@ -1,4 +1,4 @@
-proc test start
+proc test()
     var x = const {}
     x.cycle = {}
     x.cycle.a = 11
@@ -15,7 +15,7 @@ proc test start
     var m = const ["test", "list"]
 end
 
-proc main start
+proc main()
     var y = const test()
     io:print(y, lf)
     var x = {}

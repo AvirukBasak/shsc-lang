@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var x = {}
     map:set(x, "a", 1)
     map:set(x, "b", 2)

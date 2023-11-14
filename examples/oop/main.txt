@@ -1,6 +1,6 @@
 module main
 
-proc main start
+proc main()
     var x = ComplexNo:init(1, 2)
     var y = ComplexNo:init(4, 8)
     # x set as context object of the ComplexNo:add procedure
