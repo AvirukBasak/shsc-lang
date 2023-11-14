@@ -1,4 +1,4 @@
-**Last updated on Nov 12, 2023**
+**Last updated on Nov 14, 2023**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -46,6 +46,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
 - [Procedures](#procedures)
     - [Example](#example-2)
     - [Procedure arguments](#procedure-arguments)
+    - [Named arguments](#named-arguments)
     - [Arguments to `main:main`](#arguments-to-mainmain)
     - [Procedure context](#procedure-context)
 - [Expressions](#expressions)
@@ -388,6 +389,41 @@ However, you may access arguments using the syntax `$i` where `i` is and identif
 You may also use `$(expr)` or `$[expr]` where `expr` is an expression that evaluates to a valid `i64` index.
 
 Of course, you may also use the `args` list to access the arguments, as in `args[expr]`.
+
+### Named arguments
+
+#### Example
+```ruby
+proc foo(a, b, c)
+    io:print(a, b, c, lf)
+end
+
+proc main()
+    foo(1, 2, 3)
+end
+```
+
+#### Output
+```
+1 2 3
+```
+
+Named arguments are set to `null` if no argument is passed by the caller.
+#### Example
+```ruby
+proc foo(a, b, c)
+    io:print(a, b, c, lf)
+end
+
+proc main()
+    foo(1, 2)
+end
+```
+
+#### Output
+```
+1 2 null
+```
 
 ### Arguments to `main:main`
 The arguments to `main:main` are the command-line arguments passed to the interpreter.
