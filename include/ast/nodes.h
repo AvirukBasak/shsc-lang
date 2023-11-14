@@ -111,6 +111,11 @@ struct ast_Expression_t {
     enum ast_ExpressionType_t condition_type;
 };
 
+struct ast_FnArgsList_t {
+    ast_FnArgsList_t *args_list;
+    ast_Identifier_t *identifier;
+};
+
 struct ast_CommaSepList_t {
     ast_CommaSepList_t *comma_list;
     ast_Expression_t *expression;

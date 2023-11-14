@@ -47,6 +47,7 @@ FILE *yyin = NULL;
     ast_ForBlock_t        *astnode_for_block;          /* for_block */
     ast_Block_t           *astnode_block;              /* block */
     ast_Expression_t      *astnode_expression;         /* expression */
+    ast_FnArgsList_t      *astnode_fnargs_list;        /* fnargs_list */
     ast_CommaSepList_t    *astnode_comma_list;         /* comma_list */
     ast_AssociativeList_t *astnode_assoc_list;         /* assoc_list */
     ast_Literal_t         *astnode_literal;            /* literal */
@@ -219,6 +220,7 @@ FILE *yyin = NULL;
 %type <astnode_expression>         postfix_expression
 %type <astnode_expression>         primary_expression
 
+%type <astnode_fnargs_list>        fnargs_list
 %type <astnode_comma_list>         comma_list
 %type <astnode_assoc_list>         assoc_list
 %type <astnode_literal>            literal
@@ -312,7 +314,22 @@ program_p:
 /* Map each module name to a map of procedures ----------------------------------------------------
    non-recursive grammer */
 procedure:
-    "proc" identifier "start" nwp statements "end" trm
+    "proc" identifier "start" nwp statements "end" trm                                             { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, NULL, $5);
+                                                                                                       ast_Identifier_destroy(&$2);
+                                                                                                   }
+    "proc" identifier "(" fnargs_list ")" nwp statements "end" trm                                 { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, $4, $7);
+                                                                                                       ast_Identifier_destroy(&$2);
+                                                                                                   }
+    ;
+
+
+
+/* A list of function arguments -------------------------------------------------------------------
+   right recursive grammar */
+fnargs_list:
+    identifier nws
+    | identifier "," nws
+    | identifier "," nws fnargs_list
     ;
 
 

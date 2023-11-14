@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#include "ast.h"
 #include "ast/nodes.h"
 #include "ast/nodes/enums.h"
 #include "errcodes.h"
@@ -288,6 +289,15 @@ ast_Expression_t *ast_Expression_CommaSepList(ast_CommaSepList_t *comma_list)
     expression->condition_type = EXPR_TYPE_NULL;
     expression->condition.expr = NULL;
     return expression;
+}
+
+ast_FnArgsList_t *ast_FnArgsList(ast_FnArgsList_t *args_list, ast_Identifier_t *identifier)
+{
+    ast_FnArgsList_t *fn_args_list = (ast_FnArgsList_t*) malloc(sizeof(ast_FnArgsList_t));
+    if (!fn_args_list) io_errndie("ast_FnArgsList:" ERR_MSG_MALLOCFAIL);
+    fn_args_list->args_list = args_list;
+    fn_args_list->identifier = identifier;
+    return fn_args_list;
 }
 
 ast_CommaSepList_t *ast_CommaSepList(ast_CommaSepList_t *comma_list, ast_Expression_t *expression)

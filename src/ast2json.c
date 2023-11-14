@@ -446,6 +446,33 @@ void ast2json_Expression(const ast_Expression_t *expression)
     ast2json_close_obj();
 }
 
+void ast2json_FnArgsList(const ast_FnArgsList_t *fnargs_list)
+{
+    if (!fnargs_list) {
+        ast2json_printf("null");
+        return;
+    }
+
+    ast2json_open_obj();
+    ast2json_printf("\"node\": \"fnargs_list\"");
+
+    const ast_FnArgsList_t *lst = fnargs_list;
+    ast2json_put_comma();
+    ast2json_printf("\"fnargs_list\": ");
+    ast2json_open_list();
+    ast2json_Identifier(lst->identifier);
+    lst = lst->args_list;
+
+    while (lst) {
+        ast2json_put_comma();
+        ast2json_Identifier(lst->identifier);
+        lst = lst->args_list;
+    }
+
+    ast2json_close_list();
+    ast2json_close_obj();
+}
+
 /* function to convert ast_CommaSepList_t to JSON */
 void ast2json_CommaSepList(const ast_CommaSepList_t *comma_list)
 {
@@ -631,7 +658,7 @@ void ast2json_ModuleAndProcTable()
         ast2json_open_obj();
         /* node name */
         ast2json_printf("\"node\": \"module\"");
-        ast_util_ModuleAndProcTable_foreach_procedure(procmap, proc_name, filename, code, {
+        ast_util_ModuleAndProcTable_foreach_procedure(procmap, proc_name, filename, fnargs_list, code, {
             /* open a procedure node, map it with proc name */
             ast2json_put_comma();
             ast2json_printf("\"%s\": ", proc_name);
@@ -639,6 +666,9 @@ void ast2json_ModuleAndProcTable()
             ast2json_printf("\"node\": \"procedure\"");
             ast2json_put_comma();
             ast2json_printf("\"file\": \"%s\"", filename);
+            ast2json_put_comma();
+            ast2json_printf("\"fnargs_list\": ");
+            ast2json_FnArgsList(fnargs_list);
             ast2json_put_comma();
             ast2json_printf("\"statements\": ");
             ast2json_Statements(code);

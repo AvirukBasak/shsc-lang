@@ -5,6 +5,7 @@
     "main": {
       "node": "procedure",
       "file": "examples/helloworld.txt",
+      "fnargs_list": null,
       "statements": {
         "node": "statements",
         "statements": [
@@ -231,6 +232,7 @@
     "xyz": {
       "node": "procedure",
       "file": "tests/test.txt",
+      "fnargs_list": null,
       "statements": {
         "node": "statements",
         "statements": [
@@ -1168,6 +1170,7 @@
     "test": {
       "node": "procedure",
       "file": "examples/helloworld.txt",
+      "fnargs_list": null,
       "statements": {
         "node": "statements",
         "statements": [

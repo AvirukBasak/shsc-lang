@@ -13,6 +13,7 @@ void ast2json_ElseBlock(const ast_ElseBlock_t* else_block);
 void ast2json_WhileBlock(const ast_WhileBlock_t* while_block);
 void ast2json_ForBlock(const ast_ForBlock_t* for_block);
 void ast2json_Block(const ast_Block_t* block);
+void ast2json_FnArgsList(const ast_FnArgsList_t *fnargs_list);
 void ast2json_Expression(const ast_Expression_t* expression);
 void ast2json_CommaSepList(const ast_CommaSepList_t* comma_list);
 void ast2json_AssociativeList(const ast_AssociativeList_t* assoc_list);

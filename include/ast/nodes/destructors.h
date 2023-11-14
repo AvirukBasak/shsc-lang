@@ -13,6 +13,7 @@ void ast_WhileBlock_destroy(ast_WhileBlock_t **ptr);
 void ast_ForBlock_destroy(ast_ForBlock_t **ptr);
 void ast_Block_destroy(ast_Block_t **ptr);
 void ast_Expression_destroy(ast_Expression_t **ptr);
+void ast_FnArgsList_destroy(ast_FnArgsList_t **ptr);
 void ast_CommaSepList_destroy(ast_CommaSepList_t **ptr);
 void ast_AssociativeList_destroy(ast_AssociativeList_t **ptr);
 void ast_Literal_destroy(ast_Literal_t **ptr);
