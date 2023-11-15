@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var x = dbg:callproc(null, "io", "input", ["enter a number: ", i64]);
     dbg:callproc(null, "io", "print", ["you entered:", x, lf]);
     # without using dbg:callproc

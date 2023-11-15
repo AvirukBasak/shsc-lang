@@ -192,6 +192,19 @@ void ast_Expression_destroy(ast_Expression_t **ptr)
     *ptr = NULL;
 }
 
+void ast_FnArgsList_destroy(ast_FnArgsList_t **ptr)
+{
+    if (!ptr) return;
+    ast_FnArgsList_t *args_list = *ptr;
+    while (args_list) {
+        ast_Identifier_destroy(&args_list->identifier);
+        ast_FnArgsList_t *rm = args_list;
+        args_list = args_list->args_list;
+        free(rm);
+    }
+    *ptr = NULL;
+}
+
 void ast_CommaSepList_destroy(ast_CommaSepList_t **ptr)
 {
     if (!ptr) return;

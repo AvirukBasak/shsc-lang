@@ -1,10 +1,13 @@
 #include <inttypes.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 #include "ast.h"
 #include "ast/api.h"
 #include "io.h"
 #include "runtime/data/Data.h"
+#include "runtime/data/DataList.h"
 #include "runtime/eval.h"
 #include "runtime/functions.h"
 #include "runtime/io.h"
@@ -255,6 +258,35 @@ rt_Data_t rt_fn_call_handler(
     /* store fn args into agrs location */
     rt_VarTable_create(RT_VTABLE_ARGSVAR, rt_Data_list(args), true, false);
     rt_VarTable_create(RT_VTABLE_CONTEXTVAR, context, true, false);
+
+    /* count number of fnargs present in fnargs_list */
+    int64_t fnargs_count = 0;
+    const ast_FnArgsList_t *fnargs_list = ast_util_ModuleAndProcTable_get_args(module, proc);
+    while (fnargs_list) {
+        ++fnargs_count;
+        fnargs_list = fnargs_list->args_list;
+    }
+
+    // /* if no of named args is more that whats passed, throw error */
+    // if (fnargs_count > rt_DataList_length(args))
+    //     rt_throw(
+    //         "expected at least %" PRId64 " arguments, received %" PRId64,
+    //         fnargs_count, rt_DataList_length(args)
+    //     );
+
+    /* create named args list */
+    fnargs_list = ast_util_ModuleAndProcTable_get_args(module, proc);
+    for  (int64_t i = 0; i < rt_DataList_length(args) && fnargs_list; ++i) {
+        rt_VarTable_create(fnargs_list->identifier,
+            *rt_DataList_getref(args, i), false, false);
+        fnargs_list = fnargs_list->args_list;
+    }
+
+    /* make remaining fnargs null */
+    while (fnargs_list) {
+        rt_VarTable_create(fnargs_list->identifier, rt_Data_null(), false, false);
+        fnargs_list = fnargs_list->args_list;
+    }
 
     if (code) {
         /* call user defined function */

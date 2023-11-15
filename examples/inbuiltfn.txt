@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var x = [1,2,3,4,5]
     var a = i64
     var b = f64

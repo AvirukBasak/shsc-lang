@@ -1,6 +1,6 @@
 module main
 
-proc xyz start
+proc xyz()
     io:print("Hello world!", lf)
 
     var x = io:input("", i64)

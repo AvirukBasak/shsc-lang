@@ -1,7 +1,7 @@
 module main
 
-proc test start
-    var times = $1
+proc test(string, list)
+    var times = list
     for x in times do
         var name = io:input(f"Enter name {x}: ", str)
         var bytes = io:print(f"Hello {name}!",
@@ -11,7 +11,7 @@ proc test start
     return 100
 end
 
-proc main start
+proc main()
     var ret = test("Times", [1, 2, 3, 4, 5])
     io:print("Return val:", ret, lf)
 end

@@ -1,23 +1,23 @@
-proc main start
+proc main()
    var x = test()
    io:print(x, lf)
 end
 
-proc test start
+proc test()
     return test1(4) + test2(8)
 end
 
-proc test1 start
-    return $0
+proc test1(val)
+    return val
 end
 
-proc test2 start
+proc test2(val)
     var x = test3
     x()
-    return $0
+    return val
 end
 
-proc test3 start
+proc test3()
     var x = [1,2,3,4,5,6]
     x[0] = io:print
     x[0](dbg:typename(x), lf)

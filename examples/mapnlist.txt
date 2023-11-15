@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var my_map = {
         "key1": true,
         "key2": 78,
@@ -22,7 +22,7 @@ proc main start
     main:test()
 end
 
-proc test start
+proc test()
     var x = {"a":1, "b":2, "c":3, "d":{"e":4, "f":5}, "g":6}
     x.fn = io:print
     var y = tostr(x)

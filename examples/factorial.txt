@@ -1,20 +1,19 @@
 module main
 
-proc input start
-    return io:input($0, $1)
+proc input(prompt, type)
+    return io:input(prompt, type)
 end
 
-proc main start
+proc main()
     var inp = input("Enter a number: ", i64)
     var res = factorial(inp)
     io:print(f"result = {res}\n")
 end
 
-# factorial(num)
-proc factorial start
-    if !$0 then
+proc factorial(num)
+    if !num then
         return 1
     else
-        return $0 * factorial($0 - 1)
+        return num * factorial(num - 1)
     end
 end

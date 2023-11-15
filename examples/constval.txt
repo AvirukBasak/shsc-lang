@@ -1,10 +1,10 @@
-proc main start
+proc main()
     var x = "default value"
     x = const main:get_some_value()
     io:print(x, lf)
     x = "modify value"
 end
 
-proc get_some_value start
+proc get_some_value()
     return "some value"
 end

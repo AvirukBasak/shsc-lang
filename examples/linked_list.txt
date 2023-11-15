@@ -1,4 +1,4 @@
-proc LinkedList start
+proc LinkedList()
     var l = {}
     l.head = null
     l.append = LinkedList_append
@@ -7,18 +7,18 @@ proc LinkedList start
     return l
 end
 
-proc LinkedList_append start
+proc LinkedList_append(val)
     var tmp = this.head
-    this.head = { val: $0, next: tmp }
+    this.head = { val: val, next: tmp }
 end
 
-proc LinkedList_popf start
+proc LinkedList_popf()
     var tmp = this.head
     this.head = this.head.next
     tmp = null
 end
 
-proc LinkedList_show start
+proc LinkedList_show()
     var ptr = this.head
     while ptr do
         io:print(ptr.val, "")
@@ -27,7 +27,7 @@ proc LinkedList_show start
     io:print(lf)
 end
 
-proc main start
+proc main()
     var x = LinkedList()
     x.append(12)
     x.append(44)

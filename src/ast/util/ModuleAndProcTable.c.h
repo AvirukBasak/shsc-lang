@@ -49,8 +49,12 @@ bool ast_util_ModuleAndProcTable_empty(void)
 }
 
 /** Maps ( module_name, proc_name ) -> code */
-void ast_util_ModuleAndProcTable_add(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name, ast_Statements_t *code)
-{
+void ast_util_ModuleAndProcTable_add(
+    const ast_Identifier_t *module_name,
+    const ast_Identifier_t *proc_name,
+    ast_FnArgsList_t *fnargs_list,
+    ast_Statements_t *code
+) {
     if (!module_name)
         io_errndie("ast_util_ModuleAndProcTable_add:" ERR_MSG_NULLPTR " for `module_name`");
     else if (!proc_name)
@@ -91,6 +95,7 @@ void ast_util_ModuleAndProcTable_add(const ast_Identifier_t *module_name, const 
     khint_t k = kh_put(ast_procedure_t, procmap, key, &ret);
     kh_value(procmap, k).src_filename = strdup(global_currfile);
     kh_value(procmap, k).proc_name = key;
+    kh_value(procmap, k).fnargs_list = fnargs_list;
     kh_value(procmap, k).code = code;
 }
 
@@ -127,6 +132,15 @@ const ast_Statements_t *ast_util_ModuleAndProcTable_get_code(const ast_Identifie
     return proc.code;
 }
 
+/** Get args by a module and a procedure name */
+const ast_FnArgsList_t *ast_util_ModuleAndProcTable_get_args(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
+{
+    const ast_util_ModuleAndProcTable_procedure_t proc = ast_util_ModuleAndProcTable_get(module_name, proc_name);
+    /* if (!proc.proc_name)
+        rt_throw("undefined procedure '%s:%s'", module_name, proc_name); */
+    return proc.fnargs_list;
+}
+
 /** Get filename by a module and a procedure name */
 const char *ast_util_ModuleAndProcTable_get_filename(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
@@ -157,6 +171,7 @@ void ast_util_ModuleAndProcTable_clear(void)
             proc.proc_name = NULL;
             free(proc.src_filename);
             proc.src_filename = NULL;
+            ast_FnArgsList_destroy(&proc.fnargs_list);
             ast_Statements_destroy(&proc.code);
         });
         kh_destroy(ast_procedure_t, procmap);

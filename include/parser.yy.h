@@ -203,12 +203,13 @@ union YYSTYPE
     ast_ForBlock_t        *astnode_for_block;          /* for_block */
     ast_Block_t           *astnode_block;              /* block */
     ast_Expression_t      *astnode_expression;         /* expression */
+    ast_FnArgsList_t      *astnode_fnargs_list;        /* fnargs_list */
     ast_CommaSepList_t    *astnode_comma_list;         /* comma_list */
     ast_AssociativeList_t *astnode_assoc_list;         /* assoc_list */
     ast_Literal_t         *astnode_literal;            /* literal */
     ast_Identifier_t      *astnode_identifier;         /* identifier */
 
-#line 212 "include/parser.yy.h"
+#line 213 "include/parser.yy.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

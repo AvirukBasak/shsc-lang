@@ -1,4 +1,4 @@
-proc main start
+proc main()
     var lst1 = const [1, 2, 3]
     var lst2 = ["b", "c", "a"]
     io:print(lst:equals(lst1, lst2), lf)
