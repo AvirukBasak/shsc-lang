@@ -16,10 +16,7 @@
 
 void rt_op_fslash(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
-    /* this takes care of unary ops by considering lhs = 0 */
-    rt_Data_t lhs_ = rt_Data_i64(0);
-    if (!lhs) lhs = &lhs_;
-
+    if (!lhs) io_errndie("rt_op_fslash:" ERR_MSG_NULLPTR " for `lhs`");
     if (!rhs) io_errndie("rt_op_fslash:" ERR_MSG_NULLPTR " for `rhs`");
     rt_Data_t ret = rt_Data_null();
 

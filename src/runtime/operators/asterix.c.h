@@ -16,11 +16,8 @@
 
 void rt_op_asterix(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
-    /* this takes care of unary ops by considering lhs = 0 */
-    rt_Data_t lhs_ = rt_Data_i64(1);
-    if (!lhs) lhs = &lhs_;
-
-    if (!rhs) io_errndie("rt_op_plus:" ERR_MSG_NULLPTR " for `rhs`");
+    if (!lhs) io_errndie("rt_op_asterix:" ERR_MSG_NULLPTR " for `lhs`");
+    if (!rhs) io_errndie("rt_op_asterix:" ERR_MSG_NULLPTR " for `rhs`");
     rt_Data_t ret = rt_Data_null();
 
     /* special cases: if one type is lst or str and other type is i64, concatenate

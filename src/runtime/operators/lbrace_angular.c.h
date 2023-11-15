@@ -7,8 +7,8 @@
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
-void rt_op_lbrace_angular(const rt_Data_t *lhs, const rt_Data_t *rhs) {
-
+void rt_op_lbrace_angular(const rt_Data_t *lhs, const rt_Data_t *rhs)
+{
     if (!lhs) io_errndie("rt_op_lbrace_angular:" ERR_MSG_NULLPTR " for `lhs`");
     if (!rhs) io_errndie("rt_op_lbrace_angular:" ERR_MSG_NULLPTR " for `rhs`");
 
