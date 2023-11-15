@@ -27,7 +27,7 @@ proc LinkedList_show()
     io:print(lf)
 end
 
-proc main
+proc main()
     var x = LinkedList()
     x.append(12)
     x.append(44)

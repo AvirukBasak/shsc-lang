@@ -79,16 +79,20 @@ bool rt_Data_isnull(const rt_Data_t var);
 bool rt_Data_isnumeric(const rt_Data_t var);
 bool rt_Data_isequal(const rt_Data_t var1, const rt_Data_t var2);
 int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2);
+
 char *rt_Data_interp_str_parse(const char *str);
+
 bool rt_Data_tobool(const rt_Data_t var);
 char *rt_Data_tostr(const rt_Data_t var);
 rt_Data_t rt_Data_cast(const rt_Data_t var, enum rt_DataType_t type);
+
 const char *rt_Data_typename(const rt_Data_t var);
 bool rt_Data_assert_type(
     const rt_Data_t var,
     enum rt_DataType_t expected_type,
     const char *for_varname
 );
+
 int rt_Data_print(const rt_Data_t var);
 
 #endif
