@@ -2,6 +2,7 @@
 #define RT_OP_EXPONENT_C_H
 
 #include <math.h>
+#include <stdint.h>
 
 #include "errcodes.h"
 #include "io.h"
@@ -28,13 +29,13 @@ void rt_op_exponent(const rt_Data_t *lhs, const rt_Data_t *rhs)
         rt_Data_t rhs_ = rt_Data_cast(*rhs, greater_type);
         switch (greater_type) {
             case rt_DATA_TYPE_BUL:
-                ret = rt_Data_f64(RT_OP_EXPONENT(lhs_.data.bul, rhs_.data.bul));
+                ret = rt_Data_bul((bool) RT_OP_EXPONENT(lhs_.data.bul, rhs_.data.bul));
                 break;
             case rt_DATA_TYPE_CHR:
-                ret = rt_Data_f64(RT_OP_EXPONENT(lhs_.data.chr, rhs_.data.chr));
+                ret = rt_Data_chr((char) RT_OP_EXPONENT(lhs_.data.chr, rhs_.data.chr));
                 break;
             case rt_DATA_TYPE_I64:
-                ret = rt_Data_f64(RT_OP_EXPONENT(lhs_.data.i64, rhs_.data.i64));
+                ret = rt_Data_i64((int64_t) RT_OP_EXPONENT(lhs_.data.i64, rhs_.data.i64));
                 break;
             case rt_DATA_TYPE_F64:
                 ret = rt_Data_f64(RT_OP_EXPONENT(lhs_.data.f64, rhs_.data.f64));
