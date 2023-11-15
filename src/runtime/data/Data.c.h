@@ -342,6 +342,8 @@ int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2)
                 rt_throw("cannot compare type '%s' with type '%s'",
                     rt_Data_typename(var2), rt_Data_typename(var1));
         }
+        rt_Data_destroy(&var1_);
+        rt_Data_destroy(&var2_);
     }
     else rt_throw("cannot compare type '%s' with type '%s'",
         rt_Data_typename(var2), rt_Data_typename(var1));
