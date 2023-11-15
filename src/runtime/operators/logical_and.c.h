@@ -13,8 +13,11 @@ void rt_op_logical_and(const rt_Data_t *lhs, const rt_Data_t *rhs)
     if (!rhs) io_errndie("rt_op_logical_and:" ERR_MSG_NULLPTR " for `rhs`");
 
     bool cond1 = rt_Data_tobool(*lhs);
-    bool cond2 = rt_Data_tobool(*rhs);
-    rt_VarTable_acc_setval(rt_Data_bul(cond1 && cond2));
+
+    /* short-circuiting */
+    rt_VarTable_acc_setval(
+        cond1 ? *rhs : *lhs
+    );
 }
 
 #else

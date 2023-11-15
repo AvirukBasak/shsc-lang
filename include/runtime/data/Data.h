@@ -80,6 +80,7 @@ bool rt_Data_isnumeric(const rt_Data_t var);
 bool rt_Data_isequal(const rt_Data_t var1, const rt_Data_t var2);
 int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2);
 
+
 char *rt_Data_interp_str_parse(const char *str);
 
 bool rt_Data_tobool(const rt_Data_t var);
@@ -92,6 +93,7 @@ bool rt_Data_assert_type(
     enum rt_DataType_t expected_type,
     const char *for_varname
 );
+enum rt_DataType_t rt_Data_greater_type(const rt_Data_t var1, const rt_Data_t var2);
 
 int rt_Data_print(const rt_Data_t var);
 

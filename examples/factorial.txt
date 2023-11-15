@@ -11,7 +11,7 @@ proc main()
 end
 
 proc factorial(num)
-    if !num then
+    if num <= 1 then
         return 1
     else
         return num * factorial(num - 1)

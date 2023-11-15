@@ -38,7 +38,7 @@ void rt_op_dot(const rt_Data_t *lhs, const rt_Data_t *rhs)
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_LST:
         case rt_DATA_TYPE_PROC:
-            rt_throw("cannot index type '%s'", rt_Data_typename(*lhs));
+            rt_throw("cannot apply membership on type '%s'", rt_Data_typename(*lhs));
     }
 }
 

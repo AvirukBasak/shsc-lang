@@ -16,207 +16,46 @@
 
 void rt_op_fslash(const rt_Data_t *lhs, const rt_Data_t *rhs)
 {
-    /* this takes care of unary ops by considering lhs = 0 */
-    rt_Data_t lhs_ = rt_Data_i64(0);
-    if (!lhs) lhs = &lhs_;
-
+    if (!lhs) io_errndie("rt_op_fslash:" ERR_MSG_NULLPTR " for `lhs`");
     if (!rhs) io_errndie("rt_op_fslash:" ERR_MSG_NULLPTR " for `rhs`");
     rt_Data_t ret = rt_Data_null();
 
-    if (   (lhs->type == rt_DATA_TYPE_INTERP_STR || lhs->type == rt_DATA_TYPE_ANY || lhs->type == rt_DATA_TYPE_PROC)
-        || (rhs->type == rt_DATA_TYPE_INTERP_STR || rhs->type == rt_DATA_TYPE_ANY || rhs->type == rt_DATA_TYPE_PROC) )
-          rt_throw("no operator '" RT_OP_FSLASH_STR "' for types `%s` and `%s`",
-            rt_Data_typename(*lhs), rt_Data_typename(*rhs));
-
-    /* check and throw error if lhs or rhs is of invalid type for division */
-    if (   (lhs->type == rt_DATA_TYPE_STR || lhs->type == rt_DATA_TYPE_LST || lhs->type == rt_DATA_TYPE_MAP)
-        || (rhs->type == rt_DATA_TYPE_STR || rhs->type == rt_DATA_TYPE_LST || rhs->type == rt_DATA_TYPE_MAP) )
-          rt_throw("no operator '" RT_OP_FSLASH_STR "' for types `%s` and `%s`",
-            rt_Data_typename(*lhs), rt_Data_typename(*rhs));
-
-    /* check for division by zero */
-    if (   (rhs->type == rt_DATA_TYPE_BUL && rhs->data.bul == 0)
-        || (rhs->type == rt_DATA_TYPE_CHR && rhs->data.chr == 0)
-        || (rhs->type == rt_DATA_TYPE_I64 && rhs->data.i64 == 0)
-        || (rhs->type == rt_DATA_TYPE_F64 && rhs->data.f64 == 0) )
-          rt_throw("cannot divide by zero");
-
-    switch (lhs->type) {
-        case rt_DATA_TYPE_BUL:
-            switch (rhs->type) {
-                case rt_DATA_TYPE_BUL:
-                    ret = rt_Data_f64((double) lhs->data.bul RT_OP_FSLASH rhs->data.bul);
-                    break;
-                case rt_DATA_TYPE_CHR:
-                    ret = rt_Data_f64((double) lhs->data.bul RT_OP_FSLASH rhs->data.chr);
-                    break;
-                case rt_DATA_TYPE_I64:
-                    ret = rt_Data_f64((double) lhs->data.bul RT_OP_FSLASH rhs->data.i64);
-                    break;
-                case rt_DATA_TYPE_F64:
-                    ret = rt_Data_f64((double) lhs->data.bul RT_OP_FSLASH rhs->data.f64);
-                    break;
-                case rt_DATA_TYPE_STR:
-                    break;
-                case rt_DATA_TYPE_LST:
-                    break;
-                case rt_DATA_TYPE_MAP:
-                    break;
-                case rt_DATA_TYPE_INTERP_STR:
-                case rt_DATA_TYPE_ANY:
-                case rt_DATA_TYPE_PROC:
-                    break;
-            }
-            break;
-        case rt_DATA_TYPE_CHR:
-            switch (rhs->type) {
-                case rt_DATA_TYPE_BUL:
-                    ret = rt_Data_f64((double) lhs->data.chr RT_OP_FSLASH rhs->data.bul);
-                    break;
-                case rt_DATA_TYPE_CHR:
-                    ret = rt_Data_f64((double) lhs->data.chr RT_OP_FSLASH rhs->data.chr);
-                    break;
-                case rt_DATA_TYPE_I64:
-                    ret = rt_Data_f64((double) lhs->data.chr RT_OP_FSLASH rhs->data.i64);
-                    break;
-                case rt_DATA_TYPE_F64:
-                    ret = rt_Data_f64((double) lhs->data.chr RT_OP_FSLASH rhs->data.f64);
-                    break;
-                case rt_DATA_TYPE_STR:
-                    break;
-                case rt_DATA_TYPE_LST:
-                    break;
-                case rt_DATA_TYPE_MAP:
-                    break;
-                case rt_DATA_TYPE_INTERP_STR:
-                case rt_DATA_TYPE_ANY:
-                case rt_DATA_TYPE_PROC:
-                    break;
-            }
-            break;
-        case rt_DATA_TYPE_I64:
-            switch (rhs->type) {
-                case rt_DATA_TYPE_BUL:
-                    ret = rt_Data_f64((double) lhs->data.i64 RT_OP_FSLASH rhs->data.bul);
-                    break;
-                case rt_DATA_TYPE_CHR:
-                    ret = rt_Data_f64((double) lhs->data.i64 RT_OP_FSLASH rhs->data.chr);
-                    break;
-                case rt_DATA_TYPE_I64:
-                    ret = rt_Data_f64((double) lhs->data.i64 RT_OP_FSLASH rhs->data.i64);
-                    break;
-                case rt_DATA_TYPE_F64:
-                    ret = rt_Data_f64((double) lhs->data.i64 RT_OP_FSLASH rhs->data.f64);
-                    break;
-                case rt_DATA_TYPE_STR:
-                    break;
-                case rt_DATA_TYPE_LST:
-                    break;
-                case rt_DATA_TYPE_MAP:
-                    break;
-                case rt_DATA_TYPE_INTERP_STR:
-                case rt_DATA_TYPE_ANY:
-                case rt_DATA_TYPE_PROC:
-                    break;
-            }
-            break;
-        case rt_DATA_TYPE_F64:
-            switch (rhs->type) {
-                case rt_DATA_TYPE_BUL:
-                    ret = rt_Data_f64((double) lhs->data.f64 RT_OP_FSLASH rhs->data.bul);
-                    break;
-                case rt_DATA_TYPE_CHR:
-                    ret = rt_Data_f64((double) lhs->data.f64 RT_OP_FSLASH rhs->data.chr);
-                    break;
-                case rt_DATA_TYPE_I64:
-                    ret = rt_Data_f64((double) lhs->data.f64 RT_OP_FSLASH rhs->data.i64);
-                    break;
-                case rt_DATA_TYPE_F64:
-                    ret = rt_Data_f64((double) lhs->data.f64 RT_OP_FSLASH rhs->data.f64);
-                    break;
-                case rt_DATA_TYPE_STR:
-                    break;
-                case rt_DATA_TYPE_LST:
-                    break;
-                case rt_DATA_TYPE_MAP:
-                    break;
-                case rt_DATA_TYPE_INTERP_STR:
-                case rt_DATA_TYPE_ANY:
-                case rt_DATA_TYPE_PROC:
-                    break;
-            }
-            break;
-        case rt_DATA_TYPE_STR:
-            switch (rhs->type) {
-                case rt_DATA_TYPE_BUL:
-                    break;
-                case rt_DATA_TYPE_CHR:
-                    break;
-                case rt_DATA_TYPE_I64:
-                    break;
-                case rt_DATA_TYPE_F64:
-                    break;
-                case rt_DATA_TYPE_STR:
-                    break;
-                case rt_DATA_TYPE_LST:
-                    break;
-                case rt_DATA_TYPE_MAP:
-                    break;
-                case rt_DATA_TYPE_INTERP_STR:
-                case rt_DATA_TYPE_ANY:
-                case rt_DATA_TYPE_PROC:
-                    break;
-            }
-            break;
-        case rt_DATA_TYPE_LST:
-            switch (rhs->type) {
-                case rt_DATA_TYPE_BUL:
-                    break;
-                case rt_DATA_TYPE_CHR:
-                    break;
-                case rt_DATA_TYPE_I64:
-                    break;
-                case rt_DATA_TYPE_F64:
-                    break;
-                case rt_DATA_TYPE_STR:
-                    break;
-                case rt_DATA_TYPE_LST:
-                    break;
-                case rt_DATA_TYPE_MAP:
-                    break;
-                case rt_DATA_TYPE_INTERP_STR:
-                case rt_DATA_TYPE_ANY:
-                case rt_DATA_TYPE_PROC:
-                    break;
-            }
-            break;
-        case rt_DATA_TYPE_MAP:
-            switch (rhs->type) {
-                case rt_DATA_TYPE_BUL:
-                    break;
-                case rt_DATA_TYPE_CHR:
-                    break;
-                case rt_DATA_TYPE_I64:
-                    break;
-                case rt_DATA_TYPE_F64:
-                    break;
-                case rt_DATA_TYPE_STR:
-                    break;
-                case rt_DATA_TYPE_LST:
-                    break;
-                case rt_DATA_TYPE_MAP:
-                    break;
-                case rt_DATA_TYPE_INTERP_STR:
-                case rt_DATA_TYPE_ANY:
-                case rt_DATA_TYPE_PROC:
-                    break;
-            }
-            break;
-        case rt_DATA_TYPE_INTERP_STR:
-        case rt_DATA_TYPE_ANY:
-        case rt_DATA_TYPE_PROC:
-            break;
+    enum rt_DataType_t greater_type = rt_Data_greater_type(*lhs, *rhs);
+    if (greater_type != rt_DATA_TYPE_ANY) {
+        rt_Data_t lhs_ = rt_Data_cast(*lhs, greater_type);
+        rt_Data_t rhs_ = rt_Data_cast(*rhs, greater_type);
+        switch (greater_type) {
+            case rt_DATA_TYPE_BUL:
+                if (rhs_.data.bul == 0) rt_throw("cannot divide by zero");
+                ret = rt_Data_bul(lhs_.data.bul RT_OP_FSLASH rhs_.data.bul);
+                break;
+            case rt_DATA_TYPE_CHR:
+                if (rhs_.data.bul == 0) rt_throw("cannot divide by zero");
+                ret = rt_Data_chr(lhs_.data.chr RT_OP_FSLASH rhs_.data.chr);
+                break;
+            case rt_DATA_TYPE_I64:
+                if (rhs_.data.bul == 0) rt_throw("cannot divide by zero");
+                ret = rt_Data_i64(lhs_.data.i64 RT_OP_FSLASH rhs_.data.i64);
+                break;
+            case rt_DATA_TYPE_F64:
+                if (rhs_.data.bul == 0) rt_throw("cannot divide by zero");
+                ret = rt_Data_f64(lhs_.data.f64 RT_OP_FSLASH rhs_.data.f64);
+                break;
+            case rt_DATA_TYPE_STR:
+            case rt_DATA_TYPE_INTERP_STR:
+            case rt_DATA_TYPE_LST:
+            case rt_DATA_TYPE_MAP:
+            case rt_DATA_TYPE_PROC:
+            case rt_DATA_TYPE_ANY:
+                rt_throw("no operator '" RT_OP_FSLASH_STR "' for types `%s` and `%s`",
+                    rt_Data_typename(*lhs), rt_Data_typename(*rhs));
+        }
+        rt_Data_destroy(&lhs_);
+        rt_Data_destroy(&rhs_);
     }
+    else rt_throw("no operator '" RT_OP_FSLASH_STR "' for types `%s` and `%s`",
+        rt_Data_typename(*lhs), rt_Data_typename(*rhs));
+
     rt_VarTable_acc_setval(ret);
 
 }

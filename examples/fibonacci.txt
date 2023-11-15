@@ -7,7 +7,7 @@ proc main()
 end
 
 proc fibonacci(num)
-    if num <= 0 then
+    if num <= 1 then
         return num
     else
         return fibonacci(num - 1) + fibonacci(num - 2)
