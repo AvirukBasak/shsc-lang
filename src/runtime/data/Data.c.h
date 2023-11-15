@@ -19,6 +19,8 @@
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 
+bool rt_Data_Identifier_isvalid(const char *idf);
+
 rt_Data_t rt_Data_bul(bool val)
 {
     rt_Data_t var;
@@ -276,25 +278,6 @@ bool rt_Data_isnumeric(const rt_Data_t var)
             return false;
     }
     return false;
-}
-
-enum rt_DataType_t rt_Data_greater_type(const rt_Data_t var1, const rt_Data_t var2)
-{
-    if (var1.type == var2.type)
-        return var1.type;
-    if (rt_Data_isnumeric(var1) && rt_Data_isnumeric(var2)) {
-        if (var1.type == rt_DATA_TYPE_F64 || var2.type == rt_DATA_TYPE_F64)
-            return rt_DATA_TYPE_F64;
-        if (var1.type == rt_DATA_TYPE_I64 || var2.type == rt_DATA_TYPE_I64)
-            return rt_DATA_TYPE_I64;
-        if (var1.type == rt_DATA_TYPE_CHR || var2.type == rt_DATA_TYPE_CHR)
-            return rt_DATA_TYPE_CHR;
-        return rt_DATA_TYPE_BUL;
-    }
-    if (var1.type == rt_DATA_TYPE_STR || var2.type == rt_DATA_TYPE_STR
-     || var1.type == rt_DATA_TYPE_INTERP_STR || var2.type == rt_DATA_TYPE_INTERP_STR)
-        return rt_DATA_TYPE_STR;
-    return rt_DATA_TYPE_ANY;
 }
 
 bool rt_Data_isequal(const rt_Data_t var1, const rt_Data_t var2)
@@ -628,6 +611,25 @@ bool rt_Data_assert_type(
         return false;
     }
     return true;
+}
+
+enum rt_DataType_t rt_Data_greater_type(const rt_Data_t var1, const rt_Data_t var2)
+{
+    if (var1.type == var2.type)
+        return var1.type;
+    if (rt_Data_isnumeric(var1) && rt_Data_isnumeric(var2)) {
+        if (var1.type == rt_DATA_TYPE_F64 || var2.type == rt_DATA_TYPE_F64)
+            return rt_DATA_TYPE_F64;
+        if (var1.type == rt_DATA_TYPE_I64 || var2.type == rt_DATA_TYPE_I64)
+            return rt_DATA_TYPE_I64;
+        if (var1.type == rt_DATA_TYPE_CHR || var2.type == rt_DATA_TYPE_CHR)
+            return rt_DATA_TYPE_CHR;
+        return rt_DATA_TYPE_BUL;
+    }
+    if (var1.type == rt_DATA_TYPE_STR || var2.type == rt_DATA_TYPE_STR
+     || var1.type == rt_DATA_TYPE_INTERP_STR || var2.type == rt_DATA_TYPE_INTERP_STR)
+        return rt_DATA_TYPE_STR;
+    return rt_DATA_TYPE_ANY;
 }
 
 int rt_Data_print(rt_Data_t var)
