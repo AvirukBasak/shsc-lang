@@ -1,0 +1,8 @@
+proc main()
+    var x = 55
+    io:print(f"Value of x = {x}", lf)
+    var y = ++x
+    io:print(f"Value of x = {x}, y = {y}", lf)
+    var y = x++
+    io:print(f"Value of x = {x}, y = {y}", lf)
+end
