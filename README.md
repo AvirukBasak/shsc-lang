@@ -27,6 +27,9 @@ To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDoc
 For Windows users, you'll need to use `cygwin` or `git bash` to get `make` working.
 Idk if you can compile it on MSVC so give it a shot and maybe contribute an `md` on it.
 
+### VSCode Syntax Highlighting
+See [`Shsc Syntax Highlighting`](https://github.com/AvirukBasak/shsc-syntax-highlighting)
+
 ### Usage
 ```
 USAGE:
