@@ -7,5 +7,7 @@ rt_Data_t rt_fn_isnull();
 rt_Data_t rt_fn_tostr();
 rt_Data_t rt_fn_type();
 rt_Data_t rt_fn_cast();
+rt_Data_t rt_fn_max();
+rt_Data_t rt_fn_min();
 
 #endif

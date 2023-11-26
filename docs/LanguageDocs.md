@@ -695,6 +695,10 @@ The language supports the following built-in procedures (within built-in modules
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
 - `type(any)` returns one of the [global variables for types](#global-variables-for-types)
 - `cast(any, i64)` casts data to a type; the second argument is one of the [global variables for types](#global-variables-for-types)
+- `max(any, ...)` returns the greatest of the arguments; returns `null` if no arguments are passed
+- `max(lst)` returns the greatest of the items in the list; returns `null` if list is empty
+- `min(any, ...)` returns the smallest of the arguments; returns `null` if no arguments are passed
+- `min(lst)` returns the smallest of the items in the list; returns `null` if list is empty
 
 #### Module `assert`
 - `assert:type(any, i64)` returns true if data is of the specified type, else throws an error
@@ -732,21 +736,21 @@ File I/O functions will not create a file if it doesn't exist.
 - `chr:isupper(chr)` returns true if character is an uppercase letter, else false
 - `chr:isspace(chr)` returns true if character is a whitespace, else false
 - `chr:max()` returns the greatest possible character
-- `chr:max(chr, i64, f64, ...)` returns the greater of the numbers
+- `chr:max(chr, i64, f64, ...)` returns the greater of the numbers, calls `max` internally
 - `chr:min()` returns the smallest possible character
-- `chr:min(chr, i64, f64, ...)` returns the smaller of the numbers
+- `chr:min(chr, i64, f64, ...)` returns the smaller of the numbers, calls `min` internally
 
 #### Module `i64`
 - `i64:max()` returns the greatest possible i64
-- `i64:max(chr, i64, f64, ...)` returns the greater of the numbers
+- `i64:max(chr, i64, f64, ...)` returns the greater of the numbers, calls `max` internally
 - `i64:min()` returns the smallest possible i64
-- `i64:min(chr, i64, f64, ...)` returns the smaller of the numbers
+- `i64:min(chr, i64, f64, ...)` returns the smaller of the numbers, calls `min` internally
 
 #### Module `f64`
 - `f64:max()` returns the greatest possible f64
-- `f64:max(chr, i64, f64, ...)` returns the greater of the numbers
+- `f64:max(chr, i64, f64, ...)` returns the greater of the numbers, calls `max` internally
 - `f64:min()` returns the smallest possible f64
-- `f64:min(chr, i64, f64, ...)` returns the smaller of the numbers
+- `f64:min(chr, i64, f64, ...)` returns the smaller of the numbers, calls `min` internally
 
 #### Module `str`
 `str:concat` is the only manupulative procedure that doesn't work in-place.
