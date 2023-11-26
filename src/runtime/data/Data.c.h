@@ -509,7 +509,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_MAP:
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
-                    rt_throw("cannot cast %s to '%s'", rt_Data_typename(data),
+                    rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
         }
@@ -531,7 +531,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_MAP:
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
-                    rt_throw("cannot cast %s to '%s'", rt_Data_typename(data),
+                    rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
         }
@@ -553,7 +553,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_MAP:
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
-                    rt_throw("cannot cast %s to '%s'", rt_Data_typename(data),
+                    rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
         }
