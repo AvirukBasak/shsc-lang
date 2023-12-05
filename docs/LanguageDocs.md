@@ -1,4 +1,4 @@
-**Last updated on Nov 14, 2023**
+**Last updated on Dec 5, 2023**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -98,7 +98,7 @@ Only newlines are significant for statement termination.
 
 ### Module declaration
 Each file must start with the following syntax, indicating the module to which the subsequent procedures belong:
-```ruby
+```lua
 module module_name
 ```
 Note that there should be no other tokens before the module declaration, not even newlines.
@@ -111,13 +111,13 @@ Procedure definitions can be placed only after the module declaration.
 If the very first line starts with a procedure declaration (without a module name provided), the runtime assumes the module to be `main` by default.
 
 For example:
-```ruby
+```lua
 proc procname start
     # Procedure code
 end
 ```
 is equivalent to:
-```ruby
+```lua
 module main
 proc procname start
     # Procedure code
@@ -128,7 +128,7 @@ end
 Modules don't need to be explicitly imported; they're only declared in **line 1** of the file.
 
 To access a procedure from a different module, use the following syntax:
-```ruby
+```lua
 modulename:procname
 ```
 Replace `modulename` with the appropriate module name and `procname` with the name of the procedure you want to access.
@@ -137,7 +137,7 @@ Replace `modulename` with the appropriate module name and `procname` with the na
 Procedures can only appear after the module declaration.
 
 The basic syntax for declaring a procedure is as follows:
-```ruby
+```lua
 proc procname start
     # Procedure code
 end
@@ -174,7 +174,7 @@ A good choice is to assign them to `null`.
 
 ### Variable declaration
 You'd use the `var` keyword to create a new variable in current scope.
-```ruby
+```lua
 proc test start
     var x = 5
 end
@@ -183,7 +183,7 @@ end
 ### Variable shadowing
 If you use `var` again, the original variable will be destroyed and replaced by the new one.
 
-```ruby
+```lua
 proc test start
     var x = 5
     io:print(x, lf)
@@ -199,7 +199,7 @@ end
 
 ### Constants
 You'd use the `const` keyword to create a constant in current scope.
-```ruby
+```lua
 proc test start
     var x = const 5
 end
@@ -208,7 +208,7 @@ A constant cannot be shadowed.
 
 #### Lazy const
 Lazy `const` allows you to create a variable and later on make it constant.
-```ruby
+```lua
 proc test start
     var x = "default value"
     x = const mod:get_some_value()
@@ -217,7 +217,7 @@ end
 
 ### Weak refs
 You'd use the `weak` keyword to create a weak reference in current scope.
-```ruby
+```lua
 proc test start
     var x = { a: "some data", b: {} }
     var x.b.circular = weak x
@@ -231,7 +231,7 @@ Note that not using `weak` in a circular reference will cause a memory leak beca
 #### Weak ref behaviour
 - Not using `weak` keyword automatically creates a strong reference.
 - Thus, strong references can be made to objects via a weak reference. For example:
-    ```ruby
+    ```lua
     var x = { a: "some data", b: {} }
     var y = weak x
     var z = y
@@ -252,21 +252,21 @@ If used at the end of a statement, the parser makes no distinction b/w newlines 
 Even a combination of the two can be used wherever one desires.
 
 #### Example
-```ruby
+```lua
 x = 5; y = 7
 io:print(x, y, lf)
 ```
 
 ## If statements
 ### Example 1:
-```ruby
+```lua
 if condition then
     # code
 end
 ```
 
 ### Example 2:
-```ruby
+```lua
 if condition then
     # code
 else if condition then
@@ -279,7 +279,7 @@ You can also use `elif` instead of `else if`.
 
 ## While loops
 ### Example
-```ruby
+```lua
 while condition do
     # code
 end
@@ -290,7 +290,7 @@ There are 3 kinds of `for` loops.
 
 ### Default increment
 Increment (or decrement) by 1 depending on the start and end values.
-```ruby
+```lua
 var start = 10
 for i from start to 0 do
     # this will automatically do decrement by 1
@@ -299,7 +299,7 @@ end
 
 ### Specified increment
 Increment (or decrement) by the value specified.
-```ruby
+```lua
 var end = 10
 for i from 0 to end by 2 do
     # this will do an increment by 2
@@ -307,7 +307,7 @@ end
 ```
 
 Note that the following will cause an error.
-```ruby
+```lua
 var end = 10
 for i from 0 to end by -2 do
     # this will do a decrement by 2
@@ -317,7 +317,7 @@ end
 
 ### Iterable
 This syntax works for maps, lists, and strings.
-```ruby
+```lua
 var list = [ "this", 1, 5, "a", 1, 'i', 's', "t" ]
 for i, e in list do
     # `e` is a copy of the item at index `i`
@@ -325,14 +325,14 @@ end
 ```
 
 For maps, use
-```ruby
+```lua
 for k, v in my_map do
     # `v` is a copy of the value for key `k`
 end
 ```
 
 For a shorter syntax, you may use the following
-```ruby
+```lua
 for v in my_iterable do
     # `v` is a copy of the value
     # the syntax works for maps, lists, and strings
@@ -347,7 +347,7 @@ It's pretty much useless.
 The following is an example of a factorial program that shows how to use procedures.
 
 ### Example
-```ruby
+```lua
 module main
 
 # factorial(num)
@@ -371,7 +371,7 @@ end
 
 #### Example
 Four ways to access the first (0th) argument to a procedure.
-```ruby
+```lua
 var x = $0
 var y = $[0]
 var z = $(0)
@@ -393,7 +393,7 @@ Of course, you may also use the `args` list to access the arguments, as in `args
 ### Named arguments
 
 #### Example
-```ruby
+```lua
 proc foo(a, b, c)
     io:print(a, b, c, lf)
 end
@@ -410,7 +410,7 @@ end
 
 Named arguments are set to `null` if no argument is passed by the caller.
 #### Example
-```ruby
+```lua
 proc foo(a, b, c)
     io:print(a, b, c, lf)
 end
@@ -438,7 +438,7 @@ The context object can be accessed using the `this` keyword inside a procedure. 
 In case there is no context object, `this` will be `null`.
 
 #### OOP Example
-```ruby
+```lua
 module ComplexNo
 
 proc init start
@@ -474,7 +474,7 @@ end
 
 The following should be in a seperate file to respect the module declaration syntax.
 
-```ruby
+```lua
 module main
 
 proc main start
@@ -495,7 +495,7 @@ Some additions include exponentiation operator (`**`) and floor division (`//`).
 ### Ternary expression
 Follows Python syntax.
 
-```ruby
+```lua
 expression if condition else expression
 ```
 
@@ -507,7 +507,7 @@ The language supports `=` and all the shortcut assignments.
 An assignment is a part of an expression, which means you can do the same operations as in C.
 
 #### Example
-```ruby
+```lua
 x = y = x = 5
 var u = (x = 4) if true else "hi"
 ```
@@ -569,7 +569,7 @@ In case the reference count becomes `0`, the data is freed immediately.
 New memory is allocated for every new literal, even if two literals are identical by value.
 
 #### Example
-```ruby
+```lua
 var x = "hello world"
 var y = "hello world"
 ```
@@ -599,7 +599,7 @@ Avoid using same variables for weak and strong references.
 Additionally, using non-weak circular references **WILL** cause memory leak.
 
 ### Format strings
-```ruby
+```lua
 var x = "some data"
 var y = 56
 var z = f"The value of {x} is {y}"
@@ -616,7 +616,7 @@ Although named list, these literals are stored as an **array** of union of multi
 The type is dynamically inferred when an element is accessed.
 
 #### Example
-```ruby
+```lua
 proc test start
     var list = ["xyz", 'a', "\n", "001", 'A', "\x41\x41"]
     var list = [
@@ -628,7 +628,7 @@ proc test start
 end
 ```
 **Output:**
-```ruby
+```lua
 ["xyz", 'a', "\n", "001", 'A', "AA"]
 [[1, 2, 4, 5], [1, 2, 4, 5], [1, 2, 4, 5], [1, 2, 4, 5]]
 ```
@@ -645,7 +645,7 @@ If that fails an error will occur, otherwise the data will be stored.
 When accessing data, key is again converted into string.
 
 #### Example
-```ruby
+```lua
 proc test start
     var my_map = {
         "key1": true,
