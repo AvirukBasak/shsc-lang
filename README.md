@@ -80,7 +80,8 @@ make run ARGS="examples/helloworld.txt"
 - [x] While
 - [x] Break and continue
 - [x] If-else
-- [ ] Operators
+- [ ] Bitwise operators
+- [x] All other operators
 - [x] Built-in functions
 
 ### List File
@@ -123,4 +124,4 @@ shsc -tf ast.json examples/factorial.txt
 - AST output at [`tests/SyntaxTree.json`](tests/SyntaxTree.json).
 
 ### Todo
-- Implement various operators and type coercion systems.
+- Implement bitwise operators.
