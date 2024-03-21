@@ -46,10 +46,17 @@ FLAGS:
 
 Examples at [`examples/`](examples/).
 
-### Run Hello World
+### Run Shsc script
 ```
 make run ARGS="examples/helloworld.txt"
 ```
+
+or, if properly loaded in `PATH` environment variable
+```
+shsc examples/helloworld.txt
+```
+
+**NOTE**: File extension means nothing to the interpreter as long as the code inside is valid. However, the syntax highlighting plugin will work only for `.shsc` files.
 
 ### Features Added
 - [x] Modules
@@ -85,7 +92,9 @@ make run ARGS="examples/helloworld.txt"
 - [x] Built-in functions
 
 ### List File
- - Each line of the list file has a single file path
+ - List file is specified using the `--run` flag
+ - This loads multiple files for execution under a single runtime
+ - Each line of the list file has a single shsc file path
  - Spaces in file path is valid and quotes not required
  - If shsc fails to read one file, it'll skip to next file
  - If shsc fails to parse any file, it'll report error and exit
@@ -94,16 +103,17 @@ make run ARGS="examples/helloworld.txt"
 The file paths should be relative to the directory where `shsc` will be executed.
 ```
 file1.txt
-file2.txt
+file2.shsc
 file3.txt
 file name with spaces.txt
 file4.some_extension
+file that has no extension
 ```
 
 ### Example use
 ```
-# tested using tests/build.txt
-shsc -tf tests/SyntaxTree.json -r tests/build.txt
+# tested using tests/build.txt list file
+shsc -r tests/build.txt
 ```
 
 ```
@@ -124,4 +134,4 @@ shsc -tf ast.json examples/factorial.txt
 - AST output at [`tests/SyntaxTree.json`](tests/SyntaxTree.json).
 
 ### Todo
-- Implement bitwise operators.
+- Implement bitwise operators
