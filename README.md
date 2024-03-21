@@ -89,6 +89,7 @@ shsc examples/helloworld.txt
 - [x] If-else
 - [ ] Bitwise operators
 - [x] All other operators
+- [ ] `&&` and `||` short-circuiting
 - [x] Built-in functions
 
 ### List File
@@ -134,4 +135,4 @@ shsc -tf ast.json examples/factorial.txt
 - AST output at [`tests/SyntaxTree.json`](tests/SyntaxTree.json).
 
 ### Todo
-- Implement bitwise operators
+- Complete the features todo list above
