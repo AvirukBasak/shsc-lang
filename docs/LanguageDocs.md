@@ -1,8 +1,8 @@
-**Last updated on Dec 5, 2023**
+**Last updated on March 21st, 2024**
 
 The following is a documentation of the syntax and behaviour of the language.
 
-Some of this is yet to be implemented.
+Bitwise operators and logical operator short-circuiting is to be implemented, and thus have not been explicitly mentioned in the documentation below.
 
 # Language Docs
 
