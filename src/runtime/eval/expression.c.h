@@ -37,10 +37,12 @@ rt_Data_t *rt_eval_Expression_operand(
             rt_eval_Identifier(oprnd.variable);
             break;
         case EXPR_TYPE_NULL:
-            /* this makes sure that for TOKOP_NOP where rhs and condition are null,
-               a new value is not assigned to the accumulator.
-               otherwise, the accumulator will destroy its previous value, causing a
-               potential heap-use-after-free bug */
+            /* this makes sure that for TOKOP_NOP where rhs and condition
+               are null and lhs is not null, a new value is not assigned to
+               the accumulator.
+               otherwise, the accumulator will destroy its previous value
+               (which would be the LHS of the operation), causing a potential
+               heap-use-after-free bug */
             return NULL;
     }
 
