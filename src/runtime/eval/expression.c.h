@@ -78,10 +78,12 @@ void rt_eval_Expression(const ast_Expression_t *expr)
     rt_Data_t *rhs = rt_eval_Expression_operand(
         expr->op, expr->rhs, expr->rhs_type, &rhs_);
 
-    /* handle rhs and evaluate it */
-    rt_Data_t condition_;
-    rt_Data_t *condition = rt_eval_Expression_operand(
-        expr->op, expr->condition, expr->condition_type, &condition_);
+    /* handle rhs and evaluate it
+       following code is disabled as the same has been moved
+       into rt_op_ternary_cond_shortckted */
+    /* rt_Data_t condition_;
+       rt_Data_t *condition = rt_eval_Expression_operand(
+           expr->op, expr->condition, expr->condition_type, &condition_); */
 
     switch (expr->op) {
         /* shortcut assignment operators */
