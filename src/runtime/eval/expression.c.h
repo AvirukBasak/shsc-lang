@@ -32,6 +32,9 @@ rt_Data_t *rt_eval_Expression_operand(
     if (op == TOKEN_LOGICAL_AND) return NULL;
     if (op == TOKEN_LOGICAL_OR) return NULL;
 
+    /* short-ckting in ternary expression */
+    if (op == TOKOP_TERNARY_COND) return NULL;
+
     switch (oprnd_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_eval_Expression(oprnd.expr);
@@ -135,7 +138,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKOP_ASSIGN_CONST:                         rt_op_assign(lhs, rhs, true, false); break;
         case TOKOP_ASSIGN_WEAK:                          rt_op_assign(lhs, rhs, false, true); break;
         case TOKOP_ASSIGN_CONST_WEAK:                    rt_op_assign(lhs, rhs, true, true); break;
-        case TOKOP_TERNARY_COND:                   rt_op_ternary_cond(lhs, rhs, condition); break;
+        case TOKOP_TERNARY_COND:        rt_op_ternary_cond_shortckted(expr); break;
         /* using default here coz there's a lot of cases
            the following are not operators */
         default:
