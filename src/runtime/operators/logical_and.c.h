@@ -20,6 +20,22 @@ void rt_op_logical_and(const rt_Data_t *lhs, const rt_Data_t *rhs)
     );
 }
 
+void rt_op_logical_and_shortckted(const ast_Expression_t *expr)
+{
+    /* 1st deal with the left operand */
+    RT_OP_SHORTCKTING_EVAL_OPERAND(expr->lhs_type, expr->lhs);
+    bool cond1 = rt_Data_tobool(*RT_VTABLE_ACC);
+    if (!cond1) {
+        rt_VarTable_acc_setval(*RT_VTABLE_ACC);
+        return;
+    }
+
+    /* if 1st operand is false return 1st operand
+       else evaluate second operand and return it */
+    RT_OP_SHORTCKTING_EVAL_OPERAND(expr->rhs_type, expr->rhs);
+    rt_VarTable_acc_setval(*RT_VTABLE_ACC);
+}
+
 #else
     #warning re-inclusion of module 'runtime/operators/logical_and.c.h'
 #endif

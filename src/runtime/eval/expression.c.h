@@ -26,6 +26,12 @@ rt_Data_t *rt_eval_Expression_operand(
        module membership operator */
     if (op == TOKEN_DCOLON) return NULL;
 
+    /* since short-ckting was introduced in && and ||,
+       the operators handle expression evaluation in
+       place of this module */
+    if (op == TOKEN_LOGICAL_AND) return NULL;
+    if (op == TOKEN_LOGICAL_OR) return NULL;
+
     switch (oprnd_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_eval_Expression(oprnd.expr);
@@ -110,11 +116,11 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKEN_FSLASH:                               rt_op_fslash(lhs, rhs); break;
         case TOKEN_INCREMENT:                         rt_op_increment(lhs, rhs); break;
         case TOKEN_LBRACE_ANGULAR:               rt_op_lbrace_angular(lhs, rhs); break;
-        case TOKEN_LOGICAL_AND:                     rt_op_logical_and(lhs, rhs); break;
+        case TOKEN_LOGICAL_AND:          rt_op_logical_and_shortckted(expr); break;
         case TOKEN_LOGICAL_EQUAL:                 rt_op_logical_equal(lhs, rhs); break;
         case TOKEN_LOGICAL_GREATER_EQUAL: rt_op_logical_greater_equal(lhs, rhs); break;
         case TOKEN_LOGICAL_LESSER_EQUAL:   rt_op_logical_lesser_equal(lhs, rhs); break;
-        case TOKEN_LOGICAL_OR:                       rt_op_logical_or(lhs, rhs); break;
+        case TOKEN_LOGICAL_OR:            rt_op_logical_or_shortckted(expr); break;
         case TOKEN_LOGICAL_UNEQUAL:             rt_op_logical_unequal(lhs, rhs); break;
         case TOKEN_MINUS:                                 rt_op_minus(lhs, rhs); break;
         case TOKEN_PERCENT:                             rt_op_percent(lhs, rhs); break;

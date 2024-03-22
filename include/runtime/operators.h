@@ -1,7 +1,35 @@
 #ifndef RT_OPERATORS_H
 #define RT_OPERATORS_H
 
+#include "ast/api.h"
+#include "runtime/eval.h"
 #include "runtime/data/Data.h"
+
+#define RT_OP_SHORTCKTING_EVAL_OPERAND(oprnd_type, oprnd) do {        \
+    /* since we know that this evaluation macro is meant for          \
+       operators that implement short-circuiting, we don't check      \
+       if they should return NULL here.                               \
+       such checks are to be done by the fn that calls this macro. */ \
+    switch (oprnd_type) {                       \
+        case EXPR_TYPE_EXPRESSION:              \
+            rt_eval_Expression(oprnd.expr);     \
+            break;                              \
+        case EXPR_TYPE_LITERAL:                 \
+            rt_eval_Literal(oprnd.literal);     \
+            break;                              \
+        case EXPR_TYPE_IDENTIFIER:              \
+            rt_eval_Identifier(oprnd.variable); \
+            break;                              \
+        case EXPR_TYPE_NULL:                    \
+            /* this makes sure that for TOKOP_NOP where rhs and condition      \
+               are null and lhs is not null, a new value is not assigned to    \
+               the accumulator.                                                \
+               otherwise, the accumulator will destroy its previous value      \
+               (which would be the LHS of the operation), causing a potential  \
+               heap-use-after-free bug */                                      \
+            break;                                                             \
+    }                                                                          \
+} while (0);
 
 void rt_op_ampersand            (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_arith_rshift         (const rt_Data_t *lhs, const rt_Data_t *rhs);
