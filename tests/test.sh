@@ -34,7 +34,7 @@ testpath="$(cd "$(dirname "$0")" && pwd)/../examples"
 testpath="$(realpath "$testpath")"
 
 # run all scripts in ../examples/ using make run-sanitize ARGS="$filename"
-for filename in "$testpath/"*.txt; do
+for filename in "$testpath/"*.shsc; do
     echo -e "\n-----------------------------------------------------\n"
     echo -e ">> Running $filename\n"
     make run-sanitize ARGS="$filename"
@@ -45,7 +45,7 @@ done
 # individual tests
 echo -e "\n-----------------------------------------------------\n"
 echo -e ">> Running $testpath/oop/\n"
-make run-sanitize ARGS="$testpath/oop/*.txt"
+make run-sanitize ARGS="$testpath/oop/*.shsc"
 
 
 
