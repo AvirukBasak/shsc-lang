@@ -89,7 +89,7 @@ shsc examples/helloworld.txt
 - [x] If-else
 - [ ] Bitwise operators
 - [x] All other operators
-- [ ] `&&` and `||` short-circuiting
+- [x] `&&`, `||` and ternary operator short-circuiting
 - [x] Built-in functions
 
 ### List File

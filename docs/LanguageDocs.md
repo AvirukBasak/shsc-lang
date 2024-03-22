@@ -2,7 +2,7 @@
 
 The following is a documentation of the syntax and behaviour of the language.
 
-Bitwise operators and logical operator short-circuiting is to be implemented, and thus have not been explicitly mentioned in the documentation below.
+Bitwise operators are yet to be implemented, and thus have not been explicitly mentioned in the documentation below.
 
 # Language Docs
 
