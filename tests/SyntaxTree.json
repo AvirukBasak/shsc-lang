@@ -4,7 +4,7 @@
     "node": "module",
     "main": {
       "node": "procedure",
-      "file": "examples/helloworld.txt",
+      "file": "examples/helloworld.shsc",
       "fnargs_list": null,
       "statements": {
         "node": "statements",
@@ -1169,7 +1169,7 @@
     },
     "test": {
       "node": "procedure",
-      "file": "examples/helloworld.txt",
+      "file": "examples/helloworld.shsc",
       "fnargs_list": {
         "node": "fnargs_list",
         "fnargs_list": [

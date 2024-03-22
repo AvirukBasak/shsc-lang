@@ -19,7 +19,7 @@ void rt_op_decrement(rt_Data_t *lhs, rt_Data_t *rhs)
         return;
     } else if (!rhs) {
         /* post-decrement mode */
-        rt_Data_t ret;
+        rt_Data_t ret = rt_Data_null();
         /* lvalue is set coz we'll be assigning to it */
         ret.lvalue = true;
         /* the reason for using assign (or modf for that matter) is that the data pointed to

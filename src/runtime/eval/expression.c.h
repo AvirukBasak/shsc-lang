@@ -26,6 +26,15 @@ rt_Data_t *rt_eval_Expression_operand(
        module membership operator */
     if (op == TOKEN_DCOLON) return NULL;
 
+    /* since short-ckting was introduced in && and ||,
+       the operators handle expression evaluation in
+       place of this module */
+    if (op == TOKEN_LOGICAL_AND) return NULL;
+    if (op == TOKEN_LOGICAL_OR) return NULL;
+
+    /* short-ckting in ternary expression */
+    if (op == TOKOP_TERNARY_COND) return NULL;
+
     switch (oprnd_type) {
         case EXPR_TYPE_EXPRESSION:
             rt_eval_Expression(oprnd.expr);
@@ -37,10 +46,12 @@ rt_Data_t *rt_eval_Expression_operand(
             rt_eval_Identifier(oprnd.variable);
             break;
         case EXPR_TYPE_NULL:
-            /* this makes sure that for TOKOP_NOP where rhs and condition are null,
-               a new value is not assigned to the accumulator.
-               otherwise, the accumulator will destroy its previous value, causing a
-               potential heap-use-after-free bug */
+            /* this makes sure that for TOKOP_NOP where rhs and condition
+               are null and lhs is not null, a new value is not assigned to
+               the accumulator.
+               otherwise, the accumulator will destroy its previous value
+               (which would be the LHS of the operation), causing a potential
+               heap-use-after-free bug */
             return NULL;
     }
 
@@ -67,10 +78,12 @@ void rt_eval_Expression(const ast_Expression_t *expr)
     rt_Data_t *rhs = rt_eval_Expression_operand(
         expr->op, expr->rhs, expr->rhs_type, &rhs_);
 
-    /* handle rhs and evaluate it */
-    rt_Data_t condition_;
-    rt_Data_t *condition = rt_eval_Expression_operand(
-        expr->op, expr->condition, expr->condition_type, &condition_);
+    /* handle rhs and evaluate it
+       following code is disabled as the same has been moved
+       into rt_op_ternary_cond_shortckted */
+    /* rt_Data_t condition_;
+       rt_Data_t *condition = rt_eval_Expression_operand(
+           expr->op, expr->condition, expr->condition_type, &condition_); */
 
     switch (expr->op) {
         /* shortcut assignment operators */
@@ -108,11 +121,11 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKEN_FSLASH:                               rt_op_fslash(lhs, rhs); break;
         case TOKEN_INCREMENT:                         rt_op_increment(lhs, rhs); break;
         case TOKEN_LBRACE_ANGULAR:               rt_op_lbrace_angular(lhs, rhs); break;
-        case TOKEN_LOGICAL_AND:                     rt_op_logical_and(lhs, rhs); break;
+        case TOKEN_LOGICAL_AND:          rt_op_logical_and_shortckted(expr); break;
         case TOKEN_LOGICAL_EQUAL:                 rt_op_logical_equal(lhs, rhs); break;
         case TOKEN_LOGICAL_GREATER_EQUAL: rt_op_logical_greater_equal(lhs, rhs); break;
         case TOKEN_LOGICAL_LESSER_EQUAL:   rt_op_logical_lesser_equal(lhs, rhs); break;
-        case TOKEN_LOGICAL_OR:                       rt_op_logical_or(lhs, rhs); break;
+        case TOKEN_LOGICAL_OR:            rt_op_logical_or_shortckted(expr); break;
         case TOKEN_LOGICAL_UNEQUAL:             rt_op_logical_unequal(lhs, rhs); break;
         case TOKEN_MINUS:                                 rt_op_minus(lhs, rhs); break;
         case TOKEN_PERCENT:                             rt_op_percent(lhs, rhs); break;
@@ -127,7 +140,7 @@ void rt_eval_Expression(const ast_Expression_t *expr)
         case TOKOP_ASSIGN_CONST:                         rt_op_assign(lhs, rhs, true, false); break;
         case TOKOP_ASSIGN_WEAK:                          rt_op_assign(lhs, rhs, false, true); break;
         case TOKOP_ASSIGN_CONST_WEAK:                    rt_op_assign(lhs, rhs, true, true); break;
-        case TOKOP_TERNARY_COND:                   rt_op_ternary_cond(lhs, rhs, condition); break;
+        case TOKOP_TERNARY_COND:        rt_op_ternary_cond_shortckted(expr); break;
         /* using default here coz there's a lot of cases
            the following are not operators */
         default:

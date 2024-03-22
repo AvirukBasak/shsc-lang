@@ -1,2 +1,2 @@
 tests/test.txt
-examples/helloworld.txt
+examples/helloworld.shsc

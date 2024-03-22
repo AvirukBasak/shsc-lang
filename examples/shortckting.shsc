@@ -1,0 +1,28 @@
+proc check_and_logic()
+    var i = 2
+    var arr = ['a', 'b', 'c', 'd']
+    if i >= 0 && i < it:len(arr) && arr[i] != 0 then
+        io:print("value is:", arr[i], lf)
+    else
+        io:print("value is invalid", lf)
+    end
+end
+
+proc check_and_ckt()
+    var cond = false
+    cond && io:print("cond is true", lf)
+    !cond && io:print("cond is false", lf)
+end
+
+proc check_or_ckt()
+    var x = null
+    var y = x || "default value"
+    var z = y + " and more" || "z val"
+    io:print(x, lf, y, lf, z, lf)
+end
+
+proc main start
+    check_and_logic()
+    check_and_ckt()
+    check_or_ckt()
+end
