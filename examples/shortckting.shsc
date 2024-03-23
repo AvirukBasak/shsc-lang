@@ -21,8 +21,16 @@ proc check_or_ckt()
     io:print(x, lf, y, lf, z, lf)
 end
 
+proc check_ternary_ckt()
+    var cond1 = true
+    var cond2 = false
+    io:print("cond1 is true", lf) if cond1 else io:print("cond1 is false", lf)
+    io:print("cond2 is true", lf) if cond2 else io:print("cond2 is false", lf)
+end
+
 proc main start
     check_and_logic()
     check_and_ckt()
     check_or_ckt()
+    check_ternary_ckt()
 end
