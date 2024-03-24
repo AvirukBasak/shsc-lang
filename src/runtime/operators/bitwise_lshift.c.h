@@ -5,8 +5,11 @@
 #include "runtime/io.h"
 #include "runtime/operators.h"
 
+#define RT_OP_BIT_LSHIFT <<
+#define RT_OP_BIT_LSHIFT_STR "<<"
+
 void rt_op_bitwise_lshift(const rt_Data_t *lhs, const rt_Data_t *rhs) {
-    rt_throw("unimplemented operator: <<");
+    RT_OP_BITWISE(RT_OP_BIT_LSHIFT, RT_OP_BIT_LSHIFT_STR, lhs, rhs);
 }
 
 #else

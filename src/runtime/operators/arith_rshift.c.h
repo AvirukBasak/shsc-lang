@@ -5,8 +5,11 @@
 #include "runtime/io.h"
 #include "runtime/operators.h"
 
+#define RT_OP_BIT_ARSHIFT >>
+#define RT_OP_BIT_ARSHIFT_STR ">>>"
+
 void rt_op_arith_rshift(const rt_Data_t *lhs, const rt_Data_t *rhs) {
-    rt_throw("unimplemented operator: >>>");
+    RT_OP_BITWISE(RT_OP_BIT_ARSHIFT, RT_OP_BIT_ARSHIFT_STR, lhs, rhs);
 }
 
 #else

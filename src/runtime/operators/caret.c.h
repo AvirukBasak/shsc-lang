@@ -5,8 +5,11 @@
 #include "runtime/io.h"
 #include "runtime/operators.h"
 
+#define RT_OP_BIT_XOR ^
+#define RT_OP_BIT_XOR_STR "^"
+
 void rt_op_caret(const rt_Data_t *lhs, const rt_Data_t *rhs) {
-    rt_throw("unimplemented operator: ^");
+    RT_OP_BITWISE(RT_OP_BIT_XOR, RT_OP_BIT_XOR_STR, lhs, rhs);
 }
 
 #else

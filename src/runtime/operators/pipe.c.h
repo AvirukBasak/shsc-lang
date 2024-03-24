@@ -5,8 +5,11 @@
 #include "runtime/io.h"
 #include "runtime/operators.h"
 
+#define RT_OP_BIT_OR |
+#define RT_OP_BIT_OR_STR "|"
+
 void rt_op_pipe(const rt_Data_t *lhs, const rt_Data_t *rhs) {
-    rt_throw("unimplemented operator: |");
+    RT_OP_BITWISE(RT_OP_BIT_OR, RT_OP_BIT_OR_STR, lhs, rhs);
 }
 
 #else

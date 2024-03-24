@@ -31,6 +31,44 @@
     }                                                                          \
 } while (0);
 
+#define RT_OP_BITWISE(operator_op, op_char, lhs, rhs) do {                                \
+    if (!lhs) io_errndie("RT_OP_BITWISE: " op_char ": " ERR_MSG_NULLPTR " for `lhs`");    \
+    if (!rhs) io_errndie("RT_OP_BITWISE: " op_char ": " ERR_MSG_NULLPTR " for `rhs`");    \
+    rt_Data_t ret = rt_Data_null();                                                       \
+                                                                                          \
+    enum rt_DataType_t greater_type = rt_Data_greater_type(*lhs, *rhs);                   \
+    if (greater_type != rt_DATA_TYPE_ANY) {                                               \
+        rt_Data_t lhs_ = rt_Data_cast(*lhs, rt_DATA_TYPE_ANY);                            \
+        rt_Data_t rhs_ = rt_Data_cast(*rhs, rt_DATA_TYPE_ANY);                            \
+        switch (greater_type) {                                                           \
+            case rt_DATA_TYPE_BUL:                                                        \
+                ret = rt_Data_bul(lhs_.data.i64 operator_op rhs_.data.i64);               \
+                break;                                                                    \
+            case rt_DATA_TYPE_CHR:                                                        \
+                ret = rt_Data_chr(lhs_.data.i64 operator_op rhs_.data.i64);               \
+                break;                                                                    \
+            case rt_DATA_TYPE_I64:                                                        \
+                ret = rt_Data_i64(lhs_.data.i64 operator_op rhs_.data.i64);               \
+                break;                                                                    \
+            case rt_DATA_TYPE_F64:                                                        \
+                ret = rt_Data_f64(lhs_.data.i64 operator_op rhs_.data.i64);               \
+                break;                                                                    \
+            case rt_DATA_TYPE_STR:                                                        \
+            case rt_DATA_TYPE_INTERP_STR:                                                 \
+            case rt_DATA_TYPE_LST:                                                        \
+            case rt_DATA_TYPE_MAP:                                                        \
+            case rt_DATA_TYPE_ANY:                                                        \
+            case rt_DATA_TYPE_PROC:                                                       \
+                rt_throw("no operator '" op_char "' for types `%s` and `%s`",             \
+                    rt_Data_typename(*lhs), rt_Data_typename(*rhs));                      \
+        }                                                                                 \
+    }                                                                                     \
+    else rt_throw("no operator '" op_char "' for types `%s` and `%s`",                    \
+        rt_Data_typename(*lhs), rt_Data_typename(*rhs));                                  \
+                                                                                          \
+    rt_VarTable_acc_setval(ret);                                                          \
+} while (0);
+
 void rt_op_ampersand              (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_arith_rshift           (const rt_Data_t *lhs, const rt_Data_t *rhs);
 void rt_op_assign                 (rt_Data_t *lhs, const rt_Data_t *rhs, bool is_const, bool is_weak);
