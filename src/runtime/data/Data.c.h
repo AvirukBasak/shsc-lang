@@ -573,10 +573,27 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
             if (rt_Data_isnull(data))
                 return rt_Data_map(rt_DataMap_init());
         case rt_DATA_TYPE_PROC:
-        case rt_DATA_TYPE_ANY:
-            rt_throw("cannot cast %s to '%s'", rt_Data_typename(data),
-                rt_Data_typename((rt_Data_t) { .type = type }));
-            break;
+        case rt_DATA_TYPE_ANY: {
+            switch (data.type) {
+                case rt_DATA_TYPE_BUL:
+                    return rt_Data_any((void*) *(long long *) &data.data.bul);
+                case rt_DATA_TYPE_CHR:
+                    return rt_Data_any((void*) *(long long *) &data.data.chr);
+                case rt_DATA_TYPE_I64:
+                    return rt_Data_any((void*) *(long long *) &data.data.i64);
+                case rt_DATA_TYPE_F64:
+                    return rt_Data_any((void*) *(long long *) &data.data.f64);
+                case rt_DATA_TYPE_ANY:
+                    return data;
+                case rt_DATA_TYPE_STR:
+                case rt_DATA_TYPE_LST:
+                case rt_DATA_TYPE_MAP:
+                case rt_DATA_TYPE_INTERP_STR:
+                case rt_DATA_TYPE_PROC:
+                    rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
+                        rt_Data_typename((rt_Data_t) { .type = type }));
+            }
+        }
     }
     return rt_Data_null();
 }

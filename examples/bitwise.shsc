@@ -1,0 +1,11 @@
+proc main start
+    io:print(4 & 6, lf)
+    io:print(4 | 6, lf)
+    io:print(4 ^ 6, lf)
+    io:print(~4, lf)
+    io:print(12 >> 2, lf)
+    io:print((-12) >> 2, lf)
+    io:print(12 >>> 2, lf)
+    io:print((-12) >>> 2, lf)
+    io:print(12.5 >> 2, lf)
+end

@@ -1,8 +1,8 @@
-**Last updated on March 21st, 2024**
+**Last updated on March 24th, 2024**
 
 The following is a documentation of the syntax and behaviour of the language.
 
-Bitwise operators are yet to be implemented, and thus have not been explicitly mentioned in the documentation below.
+Arithmetic right shift and shift operations on `f64` LHS operand are buggy.
 
 # Language Docs
 

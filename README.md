@@ -87,7 +87,8 @@ shsc examples/helloworld.txt
 - [x] While
 - [x] Break and continue
 - [x] If-else
-- [ ] Bitwise operators
+- [ ] Arithmetic right shift
+- [ ] Shift for `f64` LHS
 - [x] All other operators
 - [x] `&&`, `||` and ternary operator short-circuiting
 - [x] Built-in functions
