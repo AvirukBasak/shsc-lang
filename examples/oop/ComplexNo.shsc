@@ -1,4 +1,4 @@
-module ComplexNo
+module math:ComplexNo
 
 proc init(x, y)
     x = cast(x, f64)
