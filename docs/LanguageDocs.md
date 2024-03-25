@@ -16,6 +16,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
 - [Code organization](#code-organization)
     - [Indentation](#indentation)
     - [Module declaration](#module-declaration)
+    - [Pseudo sub-modules](#pseudo-sub-modules)
     - [Default main module](#default-main-module)
     - [Module access](#module-access)
     - [Procedure declaration](#procedure-declaration)
@@ -106,6 +107,24 @@ Note that there should be no other tokens before the module declaration, not eve
 Also, after the module declaration, the same file can't have another module declaration.
 
 Procedure definitions can be placed only after the module declaration.
+
+### Pseudo sub-modules
+Sub-module can be defined as follows
+```lua
+module Module:Submodule1:Submodule2
+```
+
+Procedures defined under sub-modules can be used as follows
+```lua
+Module:Submodule1:Submodule2:procedure()
+```
+
+**NOTE**: In case of sub-modules, `:` is used as a part of the module identifier rather than as an operator.
+Therefore, in the above example the full module identifier is `Module:Submodule1:Submodule2`.
+
+Previously this would be achieved using `Module_Submodule1_Submodule2` but that looks strange.
+
+See [examples/oop](../examples/oop/)
 
 ### Default main module
 If the very first line starts with a procedure declaration (without a module name provided), the runtime assumes the module to be `main` by default.
