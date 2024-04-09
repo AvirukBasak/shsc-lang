@@ -239,7 +239,7 @@ You'd use the `weak` keyword to create a weak reference in current scope.
 ```lua
 proc test start
     var x = { a: "some data", b: {} }
-    var x.b.circular = weak x
+    x.b.circular = weak x
 end
 ```
 
