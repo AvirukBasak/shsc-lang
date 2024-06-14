@@ -24,7 +24,7 @@ void rt_op_asterix(const rt_Data_t *lhs, const rt_Data_t *rhs)
        i64 number of times and return */
     if (lhs->type == rt_DATA_TYPE_I64 && rhs->type == rt_DATA_TYPE_LST) {
         rt_DataList_t *lst = rt_DataList_clone(rhs->data.lst);
-        for (int i = 0; i < lhs->data.i64; ++i) {
+        for (int i = 0; i < lhs->data.i64-1; ++i) {
             rt_DataList_concat(lst, rhs->data.lst);
         }
         ret = rt_Data_list(lst);
@@ -33,7 +33,7 @@ void rt_op_asterix(const rt_Data_t *lhs, const rt_Data_t *rhs)
     }
     else if (lhs->type == rt_DATA_TYPE_LST && rhs->type == rt_DATA_TYPE_I64) {
         rt_DataList_t *lst = rt_DataList_clone(lhs->data.lst);
-        for (int i = 0; i < rhs->data.i64; ++i) {
+        for (int i = 0; i < rhs->data.i64-1; ++i) {
             rt_DataList_concat(lst, lhs->data.lst);
         }
         ret = rt_Data_list(lst);
@@ -42,7 +42,7 @@ void rt_op_asterix(const rt_Data_t *lhs, const rt_Data_t *rhs)
     }
     else if (lhs->type == rt_DATA_TYPE_I64 && rhs->type == rt_DATA_TYPE_STR) {
         rt_DataStr_t *str = rt_DataStr_clone(rhs->data.str);
-        for (int i = 0; i < lhs->data.i64; ++i) {
+        for (int i = 0; i < lhs->data.i64-1; ++i) {
             rt_DataStr_concat(str, rhs->data.str);
         }
         ret = rt_Data_str(str);
@@ -51,7 +51,7 @@ void rt_op_asterix(const rt_Data_t *lhs, const rt_Data_t *rhs)
     }
     else if (lhs->type == rt_DATA_TYPE_STR && rhs->type == rt_DATA_TYPE_I64) {
         rt_DataStr_t *str = rt_DataStr_clone(lhs->data.str);
-        for (int i = 0; i < rhs->data.i64; ++i) {
+        for (int i = 0; i < rhs->data.i64-1; ++i) {
             rt_DataStr_concat(str, lhs->data.str);
         }
         ret = rt_Data_str(str);
