@@ -276,7 +276,6 @@ procedure:
     | "proc" identifier "(" ")" nwp statements "end" trm                                           { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, NULL, $6);
                                                                                                        ast_Identifier_destroy(&$2);
                                                                                                    }
-    ;
     | "proc" identifier "(" fnargs_list ")" nwp statements "end" trm                               { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, $4, $7);
                                                                                                        ast_Identifier_destroy(&$2);
                                                                                                    }
