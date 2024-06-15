@@ -1,0 +1,22 @@
+module inher:Derived
+
+# [enxtends inher:Base]
+proc init(x, y, z)
+    var baseObj = inher:Base::init(x, y)
+    var obj = {
+        z: z,
+        _base_toStr: baseObj.toStr,
+        toStr: null
+    }
+    # plus generates new object so even const properties will be overridden
+    obj = baseObj + obj
+    io:print(obj, lf)
+    obj.toStr = const toStr
+    return obj
+end
+
+proc toStr()
+    var baseStr = this._base_toStr()
+    var z = this.z
+    return f"{baseStr}, {z}"
+end

@@ -1,0 +1,21 @@
+module inher:Base
+
+proc init(x, y)
+    assert:type(x, i64)
+    assert:type(y, i64)
+    # new object
+    var obj = {
+        x: x,
+        y: y,
+    }
+    # bind methods
+    obj.toStr = const toStr
+    # return object
+    return obj
+end
+
+proc toStr()
+    var x = this.x
+    var y = this.y
+    return f"{x}, {y}"
+end
