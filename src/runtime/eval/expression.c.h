@@ -16,6 +16,14 @@
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
 
+/**
+ * @brief Evaluates an operand of an expression.
+ * @param op The operator of the expression.
+ * @param oprnd The operand to evaluate.
+ * @param oprnd_type The type of the operand.
+ * @param oprnd_data Temporary memory to store intermediate result. Should be of type lvalue. Use rt_Data_destroy to free it.
+ * @return The evaluated operand.
+ */
 rt_Data_t *rt_eval_Expression_operand(
     const ast_Operator_t op,
     const union ast_ExpressionUnion_t oprnd,
@@ -57,7 +65,8 @@ rt_Data_t *rt_eval_Expression_operand(
 
     /* copy accumulator value into temporary memory as accumulator gets
        modified when evaluating other operands */
-    *oprnd_data = *RT_VTABLE_ACC;
+    rt_VarTable_modf(
+        oprnd_data, *RT_VTABLE_ACC, RT_VTABLE_ACC->is_const, RT_VTABLE_ACC->is_weak);
     return rt_VarTable_acc_get()->adr ? rt_VarTable_acc_get()->adr : oprnd_data;
 }
 
@@ -69,12 +78,14 @@ void rt_eval_Expression(const ast_Expression_t *expr)
     }
 
     /* handle lhs and evaluate it */
-    rt_Data_t lhs_;
+    rt_Data_t lhs_ = rt_Data_null();
+    lhs_.lvalue = true;
     rt_Data_t *lhs = rt_eval_Expression_operand(
         expr->op, expr->lhs, expr->lhs_type, &lhs_);
 
     /* handle rhs and evaluate it */
-    rt_Data_t rhs_;
+    rt_Data_t rhs_ = rt_Data_null();
+    rhs_.lvalue = true;
     rt_Data_t *rhs = rt_eval_Expression_operand(
         expr->op, expr->rhs, expr->rhs_type, &rhs_);
 
@@ -147,6 +158,9 @@ void rt_eval_Expression(const ast_Expression_t *expr)
             io_errndie("rt_eval_Expression: invalid operation '%s'",
                 lex_Token_getcode(expr->op));
     }
+
+    rt_Data_destroy(&lhs_);
+    rt_Data_destroy(&rhs_);
 }
 
 #else
