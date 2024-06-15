@@ -1,4 +1,4 @@
-**Last updated on March 24th, 2024**
+**Last updated on June 15th, 2024**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -666,22 +666,24 @@ When accessing data, key is again converted into string.
 #### Example
 ```lua
 proc test start
+    var key5 = "key5"
     var my_map = {
-        "key1": true,
-        "key2": 78,
+        key1: true,
+        key2: 78,
         "key3": 1222,
         "key4": {
-            "alpha": "hi",
+            alpha: "hi",
             "beta": 67,
             "gamma": "\x05\x0a"
-        }
+        },
+        [key5]: "value5"
     }
     io:print(my_map, lf)
 end
 ```
 **Output:**
 ```
-{"key1": true, "key2": 78, "key3": 1222, "key4": {"beta": 67, "alpha": "hi", "gamma": "\x05\n"}}
+{"key1": true, "key2": 78, "key3": 1222, "key4": {"beta": 67, "alpha": "hi", "gamma": "\x05\n"}, "key5": "value5"}
 ```
 
 Note how order of keys is not maintained.
