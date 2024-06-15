@@ -276,7 +276,6 @@ procedure:
     | "proc" identifier "(" ")" nwp statements "end" trm                                           { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, NULL, $6);
                                                                                                        ast_Identifier_destroy(&$2);
                                                                                                    }
-    ;
     | "proc" identifier "(" fnargs_list ")" nwp statements "end" trm                               { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, $4, $7);
                                                                                                        ast_Identifier_destroy(&$2);
                                                                                                    }
@@ -512,6 +511,48 @@ assoc_list:
     | identifier ":" expression "," nws assoc_list                                                 { $$ = ast_AssociativeList($6,
                                                                                                            ast_Literal_str(strdup($1)), $3);
                                                                                                        ast_Identifier_destroy(&$1);
+                                                                                                   }
+    | "[" identifier "]" ":" expression nws                                                        {
+                                                                                                       /* allocate memory for the template string
+                                                                                                          ast_Literal_interp_str takes ownership so it
+                                                                                                          needs not be freed */
+                                                                                                       char *key = malloc(strlen($2) + 3);
+                                                                                                       /* create the template string */
+                                                                                                       sprintf(key, "{%s}", $2);
+                                                                                                       /* pretend that the map key is a template
+                                                                                                          string literal */
+                                                                                                       $$ = ast_AssociativeList(NULL,
+                                                                                                           ast_Literal_interp_str(key), $5);
+                                                                                                       /* destroy the identifier */
+                                                                                                       ast_Identifier_destroy(&$2);
+                                                                                                   }
+    | "[" identifier "]" ":" expression "," nws                                                    {
+                                                                                                       /* allocate memory for the template string
+                                                                                                          ast_Literal_interp_str takes ownership so it
+                                                                                                          needs not be freed */
+                                                                                                       char *key = malloc(strlen($2) + 3);
+                                                                                                       /* create the template string */
+                                                                                                       sprintf(key, "{%s}", $2);
+                                                                                                       /* pretend that the map key is a template
+                                                                                                          string literal */
+                                                                                                       $$ = ast_AssociativeList(NULL,
+                                                                                                           ast_Literal_interp_str(key), $5);
+                                                                                                       /* destroy the identifier */
+                                                                                                       ast_Identifier_destroy(&$2);
+                                                                                                   }
+    | "[" identifier "]" ":" expression "," nws assoc_list                                         {
+                                                                                                       /* allocate memory for the template string
+                                                                                                          ast_Literal_interp_str takes ownership so it
+                                                                                                          needs not be freed */
+                                                                                                       char *key = malloc(strlen($2) + 3);
+                                                                                                       /* create the template string */
+                                                                                                       sprintf(key, "{%s}", $2);
+                                                                                                       /* pretend that the map key is a template
+                                                                                                          string literal */
+                                                                                                       $$ = ast_AssociativeList($8,
+                                                                                                           ast_Literal_interp_str(key), $5);
+                                                                                                       /* destroy the identifier */
+                                                                                                       ast_Identifier_destroy(&$2);
                                                                                                    }
     ;
 

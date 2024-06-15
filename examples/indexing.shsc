@@ -1,7 +1,12 @@
 proc main()
-    var s = "hello world"
+    var p = "hello"
+    var q = "world"
+    var s = p + " " + q
     var l = [1, 2, 3, 4, 5]
-    var m = {"a": 1, "b": 2}
+    var m = {"a": 1, "b": 2, [p]: 3, f"{q}": 4}
+
+    io:print(s, lf)
+    io:print(m, lf)
 
     s[3] = "x"
     l[3] = 42

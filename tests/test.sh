@@ -49,6 +49,12 @@ make run-sanitize ARGS="$testpath/oop/*.shsc"
 
 
 
+echo -e "\n-----------------------------------------------------\n"
+echo -e ">> Running $testpath/inheritance/\n"
+make run-sanitize ARGS="$testpath/inheritance/*.shsc"
+
+
+
 # new testpath, resolve and normalize, ../tests/
 testpath="$(cd "$(dirname "$0")" && pwd)/../tests"
 testpath="$(realpath "$testpath")"

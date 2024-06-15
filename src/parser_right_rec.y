@@ -287,8 +287,8 @@ trm_p:
 /* Push module name to a stack --------------------------------------------------------------------
    non-recursive grammar */
 module:
-    "module" identifier trm program
-    | program
+    { ast_ModuleStack_push(ast_Identifier(strdup("main"))); } program { ast_ModuleStack_pop(); }
+    | "module" identifier trm { ast_ModuleStack_push($2); } program { ast_ModuleStack_pop(); }
     ;
 
 
@@ -317,7 +317,10 @@ procedure:
     "proc" identifier "start" nwp statements "end" trm                                             { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, NULL, $5);
                                                                                                        ast_Identifier_destroy(&$2);
                                                                                                    }
-    "proc" identifier "(" fnargs_list ")" nwp statements "end" trm                                 { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, $4, $7);
+    | "proc" identifier "(" ")" nwp statements "end" trm                                           { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, NULL, $6);
+                                                                                                       ast_Identifier_destroy(&$2);
+                                                                                                   }
+    | "proc" identifier "(" fnargs_list ")" nwp statements "end" trm                               { ast_util_ModuleAndProcTable_add(ast_ModuleStack_top(), $2, $4, $7);
                                                                                                        ast_Identifier_destroy(&$2);
                                                                                                    }
     ;
@@ -773,6 +776,9 @@ assoc_list:
     string_literal ":" expression nws
     | string_literal ":" expression "," nws
     | string_literal ":" expression "," nws assoc_list
+    | identifier ":" expression nws
+    | identifier ":" expression "," nws
+    | identifier ":" expression "," nws assoc_list
     ;
 
 
