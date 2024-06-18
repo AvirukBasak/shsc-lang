@@ -15,13 +15,6 @@
 #include "runtime/functions/nomodule.h"
 
 /**
- * Type definition for functions loaded from native
- * shared object files for interoperability with
- * native C runtime.
- */
-typedef rt_Data_t (*rt_fn_NativeFunction_t)(const rt_Data_t context, rt_DataList_t *args);
-
-/**
  rt_fn_<module>_FUNCTION
  for example, if the function descriptor is rt_fn_DBG_REFCNT then
  the actual function will be dbg:refcnt i.e. refcnt of module dbg */

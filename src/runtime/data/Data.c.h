@@ -134,7 +134,11 @@ rt_Data_t rt_Data_lambda(const ast_LambdaLiteral_t *lambda)
     var.is_weak = false;
     var.lvalue = false;
     var.type = rt_DATA_TYPE_LAMBDA;
-    var.data.lambda = lambda;
+    var.data.lambda->type = rt_DATA_LAMBDA_TYPE_NONNATIVE;
+    var.data.lambda->module_name = lambda->module_name;
+    var.data.lambda->file_name = lambda->file_name;
+    var.data.lambda->context = NULL;
+    var.data.lambda->fnptr.nonnative = lambda;
     return var;
 }
 

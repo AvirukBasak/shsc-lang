@@ -5,12 +5,21 @@
 #include <stdint.h>
 
 #include "ast.h"
+#include "ast/nodes/enums.h"
 
 typedef struct rt_Data_t rt_Data_t;
 typedef struct rt_DataStr_t rt_DataStr_t;
 typedef struct rt_DataList_t rt_DataList_t;
 typedef struct rt_DataMap_t rt_DataMap_t;
 typedef struct rt_DataProc_t rt_DataProc_t;
+typedef struct rt_DataLambda_t rt_DataLambda_t;
+
+/**
+ * Type definition for functions loaded from native
+ * shared object files for interoperability with
+ * native C runtime.
+ */
+typedef rt_Data_t (*rt_fn_NativeFunction_t)(const rt_Data_t context, rt_DataList_t *args);
 
 /* based on the mapping of datatype IDs provided
    by the Shsc IR Spec
@@ -35,7 +44,24 @@ struct rt_DataProc_t {
     const rt_Data_t *context;
 };
 
-typedef ast_LambdaLiteral_t rt_DataLambda_t;
+enum er_DataLambdaType_t {
+    rt_DATA_LAMBDA_TYPE_NONNATIVE = 0,
+    rt_DATA_LAMBDA_TYPE_NATIVE = 1,
+};
+
+struct rt_DataLambda_t {
+    const ast_Identifier_t *module_name;
+    const char *file_name;
+
+    const rt_Data_t *context;
+
+    union {
+        const ast_LambdaLiteral_t *nonnative;
+        const rt_fn_NativeFunction_t native;
+    } fnptr;
+
+    enum er_DataLambdaType_t type;
+};
 
 struct rt_Data_t {
     union {
@@ -47,7 +73,7 @@ struct rt_Data_t {
         rt_DataList_t *lst;
         rt_DataMap_t *mp;
         rt_DataProc_t proc;
-        const rt_DataLambda_t *lambda;
+        rt_DataLambda_t *lambda;
         void *any;
     } data;
     bool is_const;
