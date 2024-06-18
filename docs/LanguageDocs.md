@@ -1,4 +1,4 @@
-**Last updated on June 15th, 2024**
+**Last updated on June 18th, 2024**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -50,6 +50,8 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Named arguments](#named-arguments)
     - [Arguments to `main:main`](#arguments-to-mainmain)
     - [Procedure context](#procedure-context)
+- [Lambdas](#lambdas)
+    - [Example](#example-3)
 - [Expressions](#expressions)
     - [Ternary expression](#ternary-expression)
     - [Assignments](#assignments)
@@ -504,6 +506,25 @@ proc main start
     # similarly, c set as context object of the ComplexNo:show procedure
     c.show()
 end
+```
+
+## Lambdas
+Lambdas are anonymous procedures that can be assigned to variables.
+
+Shsc lambdas do not support capturing variables from the outer scope.
+All variables must be passed as arguments.
+
+Lambdas also support context objects.
+
+### Example
+```lua
+var add = (a, b) -> a + b
+var long_proc = (a, b) -> {
+    var x = a + b
+    return x
+}
+io:print(add(5, 6), lf)
+io:print(long_proc(5, 6), lf)
 ```
 
 ## Expressions
