@@ -57,7 +57,7 @@ struct rt_DataLambda_t {
 
     union {
         const ast_LambdaLiteral_t *nonnative;
-        const rt_fn_NativeFunction_t native;
+        rt_fn_NativeFunction_t native;
     } fnptr;
 
     enum er_DataLambdaType_t type;
@@ -73,7 +73,7 @@ struct rt_Data_t {
         rt_DataList_t *lst;
         rt_DataMap_t *mp;
         rt_DataProc_t proc;
-        rt_DataLambda_t *lambda;
+        rt_DataLambda_t lambda;
         void *any;
     } data;
     bool is_const;
@@ -94,6 +94,8 @@ rt_Data_t rt_Data_proc(
     const ast_Identifier_t *module_name,
     const ast_Identifier_t *proc_name
 );
+rt_Data_t rt_Data_lambda_nonnative(const ast_LambdaLiteral_t *lambda);
+rt_Data_t rt_Data_lambda_native(const rt_fn_NativeFunction_t fnptr);
 rt_Data_t rt_Data_lambda(const ast_LambdaLiteral_t *lambda);
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
