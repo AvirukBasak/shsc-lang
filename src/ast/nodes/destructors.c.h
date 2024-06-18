@@ -248,6 +248,18 @@ void ast_Literal_destroy(ast_Literal_t **ptr)
         case DATA_TYPE_MAP:
             ast_AssociativeList_destroy(&literal->data.mp);
             break;
+        case DATA_TYPE_LAMBDA:
+            if (literal->data.lambda->type == LAMBDA_TYPE_NONNATIVE) {
+                ast_FnArgsList_destroy(&literal->data.lambda->fnptr.nonnative->args_list);
+                if (literal->data.lambda->fnptr.nonnative->is_expr) {
+                    ast_Expression_destroy(&literal->data.lambda->fnptr.nonnative->body.expression);
+                } else {
+                    ast_Statements_destroy(&literal->data.lambda->fnptr.nonnative->body.statements);
+                }
+                free(literal->data.lambda->fnptr.nonnative);
+            }
+            free(literal->data.lambda);
+            break;
         case DATA_TYPE_BUL:
         case DATA_TYPE_CHR:
         case DATA_TYPE_I64:
