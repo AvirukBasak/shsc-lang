@@ -127,6 +127,27 @@ struct ast_AssociativeList_t {
     ast_Expression_t *value;
 };
 
+struct ast_LambdaLiteral_nonnative_t {
+    ast_FnArgsList_t *args_list;
+    union {
+        ast_Statements_t *statements;
+        ast_Expression_t *expression;
+    } body;
+    /**
+     * if true, the lambda is an expression
+     * if false, the lambda is a block of statements
+     */
+    bool is_expr;
+};
+
+struct ast_LambdaLiteral_t {
+    union {
+        ast_LambdaLiteral_nonnative_t *nonnative;
+        void *native;
+    } fnptr;
+    enum ast_LambdaLiteralType_t type;
+};
+
 struct ast_Literal_t {
     union {
         bool bul;
@@ -136,6 +157,7 @@ struct ast_Literal_t {
         char *str;
         ast_CommaSepList_t *lst;
         ast_AssociativeList_t *mp;
+        ast_LambdaLiteral_t *lambda;
         void *any;
     }  data;
     enum ast_DataType_t type;
