@@ -48,7 +48,7 @@ void rt_eval_Literal(const ast_Literal_t *literal)
             rt_eval_AssociativeList(literal->data.mp);
             break;
         case DATA_TYPE_LAMBDA:
-            rt_Data_lambda(literal->data.lambda);
+            rt_Data_lambda_nonnative(literal->data.lambda);
             break;
         case DATA_TYPE_ANY:
             /* void* must be explicitly casted */
