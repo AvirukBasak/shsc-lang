@@ -2,6 +2,8 @@ module main
 
 # insertion sort
 proc sort(list, comparator)
+    assert:type(list, lst)
+    assert:type(comparator, lambda)
     var i = 0
     var n = it:len(list)
     while i < n do
