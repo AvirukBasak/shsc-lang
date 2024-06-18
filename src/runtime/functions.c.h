@@ -314,7 +314,7 @@ rt_Data_t rt_fn_lambda_call_handler(
     rt_DataList_t *args
 ) {
     const ast_Identifier_t *module = (const ast_Identifier_t*) lambda.module_name;
-    const ast_Identifier_t *proc = (const ast_Identifier_t*) "anonymous";
+    const ast_Identifier_t *proc = (const ast_Identifier_t*) rt_DATA_LAMBDA_DEFAULT_NAME;
     const char *currfile = lambda.file_name;
 
     /* push lambda to stack */

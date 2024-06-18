@@ -7,6 +7,8 @@
 #include "ast.h"
 #include "ast/nodes/enums.h"
 
+#define rt_DATA_LAMBDA_DEFAULT_NAME "(anonymous)"
+
 typedef struct rt_Data_t rt_Data_t;
 typedef struct rt_DataStr_t rt_DataStr_t;
 typedef struct rt_DataList_t rt_DataList_t;

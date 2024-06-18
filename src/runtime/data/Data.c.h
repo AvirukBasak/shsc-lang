@@ -530,14 +530,14 @@ char *rt_Data_tostr(const rt_Data_t var)
         }
         case rt_DATA_TYPE_LAMBDA: {
             size_t sz = snprintf(NULL, 0, "%s:%s",
-                "anonymous",
+                rt_DATA_LAMBDA_DEFAULT_NAME,
                 var.data.lambda.module_name
             );
             char *str = (char*) malloc((sz +1) * sizeof(char));
             if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
             sprintf(str, "%s:%s",
                 var.data.lambda.module_name,
-                "anonymous"
+                rt_DATA_LAMBDA_DEFAULT_NAME
             );
             return str;
         }
