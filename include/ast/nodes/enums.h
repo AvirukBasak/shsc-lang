@@ -36,6 +36,11 @@ enum ast_ExpressionType_t {
     EXPR_TYPE_NULL,
 };
 
+enum ast_LambdaLiteralType_t {
+    LAMBDA_TYPE_NATIVE,         /* obtained from a native shared library */
+    LAMBDA_TYPE_NONNATIVE,      /* lambda defined in the source code */
+};
+
 /* based on the mapping of datatype IDs provided
    by the Shsc IR Spec
    https://github.com/AvirukBasak/shsc-runtime/docs/ShscIrSpec.md */
@@ -49,6 +54,7 @@ enum ast_DataType_t {
     DATA_TYPE_LST = 6,        /* linked list    : variable  */
     DATA_TYPE_ANY = 7,        /* void*          : undefined */
     DATA_TYPE_MAP = 8,        /* hash map       : variable */
+    DATA_TYPE_LAMBDA = 9,     /* lambda         : variable */
 };
 
 #endif
