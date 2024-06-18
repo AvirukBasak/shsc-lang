@@ -1,9 +1,11 @@
 #ifndef RT_OP_AMPERSAND_C_H
 #define RT_OP_AMPERSAND_C_H
 
+#include "io.h"
 #include "runtime/data/Data.h"
 #include "runtime/io.h"
 #include "runtime/operators.h"
+#include "runtime/VarTable.h"
 
 #define RT_OP_BIT_AND &
 #define RT_OP_BIT_AND_STR "&"
