@@ -391,6 +391,38 @@ ast_Literal_t *ast_Literal_map(ast_AssociativeList_t *literal)
     return ast_literal;
 }
 
+ast_Literal_t *ast_Literal_lambda_block(ast_FnArgsList_t *args, ast_Statements_t *code)
+{
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
+    if (!ast_literal) io_errndie("ast_Literal_lambda_block:" ERR_MSG_MALLOCFAIL);
+    ast_literal->type = DATA_TYPE_LAMBDA;
+    ast_literal->data.lambda = (ast_LambdaLiteral_t*) malloc(sizeof(ast_LambdaLiteral_t));
+    if (!ast_literal->data.lambda) io_errndie("ast_Literal_lambda_block:" ERR_MSG_MALLOCFAIL);
+    ast_literal->data.lambda->type = LAMBDA_TYPE_NONNATIVE;
+    ast_literal->data.lambda->fnptr.nonnative = (ast_LambdaLiteral_nonnative_t*) malloc(sizeof(ast_LambdaLiteral_nonnative_t));
+    if (!ast_literal->data.lambda->fnptr.nonnative) io_errndie("ast_Literal_lambda_block:" ERR_MSG_MALLOCFAIL);
+    ast_literal->data.lambda->fnptr.nonnative->args_list = args;
+    ast_literal->data.lambda->fnptr.nonnative->body.statements = code;
+    ast_literal->data.lambda->fnptr.nonnative->is_expr = false;
+    return ast_literal;
+}
+
+ast_Literal_t *ast_Literal_lambda_expr(ast_FnArgsList_t *args, ast_Expression_t *expr)
+{
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
+    if (!ast_literal) io_errndie("ast_Literal_lambda_expr:" ERR_MSG_MALLOCFAIL);
+    ast_literal->type = DATA_TYPE_LAMBDA;
+    ast_literal->data.lambda = (ast_LambdaLiteral_t*) malloc(sizeof(ast_LambdaLiteral_t));
+    if (!ast_literal->data.lambda) io_errndie("ast_Literal_lambda_expr:" ERR_MSG_MALLOCFAIL);
+    ast_literal->data.lambda->type = LAMBDA_TYPE_NONNATIVE;
+    ast_literal->data.lambda->fnptr.nonnative = (ast_LambdaLiteral_nonnative_t*) malloc(sizeof(ast_LambdaLiteral_nonnative_t));
+    if (!ast_literal->data.lambda->fnptr.nonnative) io_errndie("ast_Literal_lambda_expr:" ERR_MSG_MALLOCFAIL);
+    ast_literal->data.lambda->fnptr.nonnative->args_list = args;
+    ast_literal->data.lambda->fnptr.nonnative->body.expression = expr;
+    ast_literal->data.lambda->fnptr.nonnative->is_expr = true;
+    return ast_literal;
+}
+
 ast_Identifier_t *ast_Identifier(char *identifier_name)
 {
     return (ast_Identifier_t*) identifier_name;
