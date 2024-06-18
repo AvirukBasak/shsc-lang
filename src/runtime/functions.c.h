@@ -327,7 +327,7 @@ rt_Data_t rt_fn_lambda_call_handler(
 
     /* count number of fnargs present in fnargs_list */
     int64_t fnargs_count = 0;
-    const ast_FnArgsList_t *fnargs_list = ast_util_ModuleAndProcTable_get_args(module, proc);
+    const ast_FnArgsList_t *fnargs_list = lambda.fnptr.nonnative->args_list;
     while (fnargs_list) {
         ++fnargs_count;
         fnargs_list = fnargs_list->args_list;
@@ -341,7 +341,7 @@ rt_Data_t rt_fn_lambda_call_handler(
     //     );
 
     /* create named args list */
-    fnargs_list = ast_util_ModuleAndProcTable_get_args(module, proc);
+    fnargs_list = lambda.fnptr.nonnative->args_list;
     for  (int64_t i = 0; i < rt_DataList_length(args) && fnargs_list; ++i) {
         rt_VarTable_create(fnargs_list->identifier,
             *rt_DataList_getref(args, i), false, false);
