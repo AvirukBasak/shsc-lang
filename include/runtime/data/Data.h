@@ -68,6 +68,7 @@ rt_Data_t rt_Data_proc(
     const ast_Identifier_t *module_name,
     const ast_Identifier_t *proc_name
 );
+rt_Data_t rt_Data_lambda(const ast_LambdaLiteral_t *lambda);
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
 
