@@ -47,7 +47,7 @@ struct rt_Data_t {
         rt_DataList_t *lst;
         rt_DataMap_t *mp;
         rt_DataProc_t proc;
-        rt_DataLambda_t *lambda;
+        const rt_DataLambda_t *lambda;
         void *any;
     } data;
     bool is_const;
