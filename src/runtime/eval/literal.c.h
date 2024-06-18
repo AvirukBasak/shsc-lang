@@ -47,6 +47,9 @@ void rt_eval_Literal(const ast_Literal_t *literal)
         case DATA_TYPE_MAP:
             rt_eval_AssociativeList(literal->data.mp);
             break;
+        case DATA_TYPE_LAMBDA:
+            rt_Data_lambda(literal->data.lambda);
+            break;
         case DATA_TYPE_ANY:
             /* void* must be explicitly casted */
             rt_VarTable_acc_setval(
