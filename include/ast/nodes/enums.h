@@ -49,7 +49,7 @@ enum ast_DataType_t {
     DATA_TYPE_LST = 6,        /* linked list    : variable  */
     DATA_TYPE_ANY = 7,        /* void*          : undefined */
     DATA_TYPE_MAP = 8,        /* hash map       : variable */
-    DATA_TYPE_LAMBDA = 9,     /* lambda         : variable */
+    DATA_TYPE_LAMBDA = 10,    /* lambda         : variable */
 };
 
 #endif
