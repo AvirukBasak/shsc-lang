@@ -28,6 +28,7 @@ rt_Data_t rt_fn_it_len()
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             return rt_Data_i64(1);
     }
     return rt_Data_i64(0);

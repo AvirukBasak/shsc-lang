@@ -130,7 +130,8 @@ rt_Data_t rt_fn_io_input()
         case rt_DATA_TYPE_LST:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_MAP:
-        case rt_DATA_TYPE_PROC: rt_throw(
+        case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA: rt_throw(
             "invalid type parameter\n"
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d",
@@ -279,6 +280,7 @@ bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             return false;
     }
     return false;
