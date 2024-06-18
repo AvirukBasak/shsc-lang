@@ -26,6 +26,7 @@ enum rt_DataType_t {
     rt_DATA_TYPE_ANY = 7,        /* void*          : undefined */
     rt_DATA_TYPE_MAP = 8,        /* hash map       : variable  */
     rt_DATA_TYPE_PROC = 9,       /* procedure      : ??  */
+    rt_DATA_TYPE_LAMBDA = 10,    /* lambda         : ??  */
 };
 
 struct rt_DataProc_t {
@@ -33,6 +34,8 @@ struct rt_DataProc_t {
     const ast_Identifier_t *proc_name;
     const rt_Data_t *context;
 };
+
+typedef ast_LambdaLiteral_t rt_DataLambda_t;
 
 struct rt_Data_t {
     union {
@@ -44,6 +47,7 @@ struct rt_Data_t {
         rt_DataList_t *lst;
         rt_DataMap_t *mp;
         rt_DataProc_t proc;
+        rt_DataLambda_t *lambda;
         void *any;
     } data;
     bool is_const;
