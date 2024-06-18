@@ -155,6 +155,8 @@ struct ast_LambdaLiteral_t {
         const ast_LambdaLiteral_nonnative_t *nonnative;
         const void *native;
     } fnptr;
+    const ast_Identifier_t *module_name;
+    const char *file_name;
     const enum ast_LambdaLiteralType_t type;
 };
 

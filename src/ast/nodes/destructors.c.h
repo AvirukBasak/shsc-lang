@@ -257,6 +257,8 @@ void ast_Literal_destroy(ast_Literal_t **ptr)
                     ast_Statements_destroy(&literal->data.lambda->fnptr.nonnative->body.statements);
                 }
                 free(literal->data.lambda->fnptr.nonnative);
+                free(literal->data.lambda->module_name);
+                free(literal->data.lambda->file_name);
             }
             free(literal->data.lambda);
             break;
