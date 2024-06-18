@@ -14,7 +14,7 @@
 #include "runtime/VarTable.h"
 
 void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
-    if (lhs->type != rt_DATA_TYPE_PROC)
+    if (lhs->type != rt_DATA_TYPE_PROC && lhs->type != rt_DATA_TYPE_LAMBDA)
         rt_throw("cannot make procedure call to type '%s'", rt_Data_typename(*lhs));
     /** temporary data variable for rhs */
     rt_Data_t rhs_;
@@ -23,11 +23,25 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
         rhs = &rhs_;
     }
     rt_Data_assert_type(*rhs, rt_DATA_TYPE_LST, "procedure argument");
-    /* get fn code and push code to stack */
-    rt_Data_t context = lhs->data.proc.context
-        ? *lhs->data.proc.context
-        : rt_Data_null();
-    rt_fn_call_handler(
+
+    /* context for lambda or procedure */
+    rt_Data_t context = rt_Data_null();
+
+    if (lhs->type == rt_DATA_TYPE_LAMBDA) {
+        /* TODO: lambda contexts */
+        context = rt_Data_null();
+    } else if (lhs->type == rt_DATA_TYPE_PROC && lhs->data.proc.context) {
+        context = *lhs->data.proc.context;
+    }
+
+    /* call the lambda or */
+    if (lhs->type == rt_DATA_TYPE_LAMBDA) rt_fn_lambda_call_handler(
+        context,
+        lhs->data.lambda,
+        rhs->data.lst
+    );
+    /* call the procedure */
+    else rt_fn_call_handler(
         context,
         lhs->data.proc.module_name,
         lhs->data.proc.proc_name,

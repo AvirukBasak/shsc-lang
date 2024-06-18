@@ -227,6 +227,7 @@ FILE *yyin = NULL;
 %type <astnode_literal>            string_literal
 %type <astnode_literal>            list_literal
 %type <astnode_literal>            map_literal
+%type <astnode_literal>            lambda_literal
 %type <astnode_identifier>         identifier
 
 
@@ -344,6 +345,7 @@ for_block:
 
 block:
     "block" nwp statements "end"                                                                   { $$ = ast_Block($3); }
+    | "{" nwp statements "}"                                                                       { $$ = ast_Block($3); }
     ;
 
 condition:
@@ -570,6 +572,7 @@ literal:
     | string_literal                                                                               { $$ = $1; }
     | list_literal                                                                                 { $$ = $1; }
     | map_literal                                                                                  { $$ = $1; }
+    | lambda_literal                                                                               { $$ = $1; }
     ;
 
 string_literal:
@@ -585,6 +588,13 @@ list_literal:
 map_literal:
     "{" "}"                                                                                        { $$ = ast_Literal_map(NULL); }
     | "{" nws assoc_list "}"                                                                       { $$ = ast_Literal_map($3); }
+    ;
+
+lambda_literal:
+    "(" ")" "->" "{" nwp statements "}"                                                            { $$ = ast_Literal_lambda_block(NULL, $6); }
+    | "(" fnargs_list ")" "->" "{" nwp statements "}"                                              { $$ = ast_Literal_lambda_block($2, $7); }
+    | "(" ")" "->" expression                                                                      { $$ = ast_Literal_lambda_expr(NULL, $4); }
+    | "(" fnargs_list ")" "->" expression                                                          { $$ = ast_Literal_lambda_expr($2, $5); }
     ;
 
 identifier:

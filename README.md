@@ -64,6 +64,7 @@ shsc examples/helloworld.txt
 - [x] Procedure calls
 - [x] Function arguments
 - [x] Call stack
+- [x] Lambda functions
 - [x] Variables
 - [x] Variable Shadowing
 - [x] Constants

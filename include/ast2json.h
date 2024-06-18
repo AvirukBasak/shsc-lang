@@ -19,6 +19,7 @@ void ast2json_CommaSepList(const ast_CommaSepList_t* comma_list);
 void ast2json_AssociativeList(const ast_AssociativeList_t* assoc_list);
 void ast2json_Literal(const ast_Literal_t* literal);
 void ast2json_Identifier(const ast_Identifier_t* identifier);
+void ast2json_Lambda(const ast_LambdaLiteral_t *lambda);
 void ast2json_ModuleAndProcTable();
 void ast2json_convert(const char *filepath, bool format);
 

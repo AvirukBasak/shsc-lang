@@ -50,6 +50,7 @@ rt_Data_t rt_fn_type()
             return rt_VarTable_typeid_map;
         case rt_DATA_TYPE_INTERP_STR:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
         case rt_DATA_TYPE_ANY:
             return rt_Data_isnull(data) ?
                 rt_VarTable_rsv_null : rt_VarTable_typeid_any;

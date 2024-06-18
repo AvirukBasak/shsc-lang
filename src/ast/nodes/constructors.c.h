@@ -2,11 +2,14 @@
 #define AST_NODES_CONSTRUCTORS_C_H
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "ast.h"
 #include "ast/nodes.h"
 #include "ast/nodes/enums.h"
+#include "ast/util/ModuleStack.c.h"
 #include "errcodes.h"
+#include "globals.h"
 #include "io.h"
 
 ast_Statements_t *ast_Statements(ast_Statements_t *statements, ast_Statement_t *statement)
@@ -388,6 +391,36 @@ ast_Literal_t *ast_Literal_map(ast_AssociativeList_t *literal)
     if (!ast_literal) io_errndie("ast_Literal_map:" ERR_MSG_MALLOCFAIL);
     ast_literal->type = DATA_TYPE_MAP;
     ast_literal->data.mp = literal;
+    return ast_literal;
+}
+
+ast_Literal_t *ast_Literal_lambda_block(ast_FnArgsList_t *args, ast_Statements_t *code)
+{
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
+    if (!ast_literal) io_errndie("ast_Literal_lambda_block:" ERR_MSG_MALLOCFAIL);
+    ast_literal->type = DATA_TYPE_LAMBDA;
+    ast_literal->data.lambda = (ast_LambdaLiteral_t*) malloc(sizeof(ast_LambdaLiteral_t));
+    if (!ast_literal->data.lambda) io_errndie("ast_Literal_lambda_block:" ERR_MSG_MALLOCFAIL);
+    ast_literal->data.lambda->module_name = strdup(ast_ModuleStack_top());
+    ast_literal->data.lambda->file_name = strdup(global_currfile);
+    ast_literal->data.lambda->args_list = args;
+    ast_literal->data.lambda->body.statements = code;
+    ast_literal->data.lambda->is_expr = false;
+    return ast_literal;
+}
+
+ast_Literal_t *ast_Literal_lambda_expr(ast_FnArgsList_t *args, ast_Expression_t *expr)
+{
+    ast_Literal_t *ast_literal = (ast_Literal_t*) malloc(sizeof(ast_Literal_t));
+    if (!ast_literal) io_errndie("ast_Literal_lambda_expr:" ERR_MSG_MALLOCFAIL);
+    ast_literal->type = DATA_TYPE_LAMBDA;
+    ast_literal->data.lambda = (ast_LambdaLiteral_t*) malloc(sizeof(ast_LambdaLiteral_t));
+    if (!ast_literal->data.lambda) io_errndie("ast_Literal_lambda_expr:" ERR_MSG_MALLOCFAIL);
+    ast_literal->data.lambda->module_name = strdup(ast_ModuleStack_top());
+    ast_literal->data.lambda->file_name = strdup(global_currfile);
+    ast_literal->data.lambda->args_list = args;
+    ast_literal->data.lambda->body.expression = expr;
+    ast_literal->data.lambda->is_expr = true;
     return ast_literal;
 }
 

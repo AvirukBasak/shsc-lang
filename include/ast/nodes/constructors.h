@@ -51,6 +51,8 @@ ast_Literal_t       *ast_Literal_str(char *literal);
 ast_Literal_t       *ast_Literal_interp_str(char *literal);
 ast_Literal_t       *ast_Literal_lst(ast_CommaSepList_t *literal);
 ast_Literal_t       *ast_Literal_map(ast_AssociativeList_t *literal);
+ast_Literal_t       *ast_Literal_lambda_block(ast_FnArgsList_t *args, ast_Statements_t *code);
+ast_Literal_t       *ast_Literal_lambda_expr(ast_FnArgsList_t *args, ast_Expression_t *expr);
 
 ast_Identifier_t    *ast_Identifier(char *identifier_name);
 

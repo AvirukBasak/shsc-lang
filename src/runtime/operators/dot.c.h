@@ -24,6 +24,13 @@ void rt_op_dot(const rt_Data_t *lhs, const rt_Data_t *rhs)
                    the fn is actually called when the context variable
                    is created in scope */
                 ref->data.proc.context = lhs;
+            } else if (ref && ref->type == rt_DATA_TYPE_LAMBDA) {
+                /* setting context object via reference only coz lhs
+                   is a ref to a map
+                   rc is not increased here as it increases when
+                   the fn is actually called when the context variable
+                   is created in scope */
+                ref->data.lambda.context = lhs;
             }
             rt_VarTable_acc_setadr(ref);
             free(key);
@@ -38,6 +45,7 @@ void rt_op_dot(const rt_Data_t *lhs, const rt_Data_t *rhs)
         case rt_DATA_TYPE_STR:
         case rt_DATA_TYPE_LST:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             rt_throw("cannot apply membership on type '%s'", rt_Data_typename(*lhs));
     }
 }

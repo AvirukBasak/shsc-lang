@@ -1,6 +1,8 @@
 #ifndef RT_OP_TILDE_C_H
 #define RT_OP_TILDE_C_H
 
+#include "errcodes.h"
+#include "io.h"
 #include "runtime/data/Data.h"
 #include "runtime/io.h"
 #include "runtime/operators.h"
@@ -33,6 +35,7 @@ void rt_op_tilde(const rt_Data_t *lhs, const rt_Data_t *rhs) {
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             rt_throw("no operator '" RT_OP_BIT_COMPLEMENT_STR "' for type `%s`", rt_Data_typename(*rhs));
     }
 

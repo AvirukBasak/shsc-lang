@@ -1,6 +1,6 @@
 module inher:Derived
 
-# [enxtends inher:Base]
+# [extends inher:Base]
 proc init(x, y, z)
     var baseObj = inher:Base::init(x, y)
     var obj = {

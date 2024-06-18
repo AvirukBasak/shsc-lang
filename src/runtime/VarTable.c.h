@@ -43,6 +43,7 @@ rt_Data_t rt_VarTable_rsv_lf      = { .data.chr = '\n',             .type = rt_D
           rt_VarTable_typeid_any  = { .data.i64 = rt_DATA_TYPE_ANY, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
           rt_VarTable_typeid_map  = { .data.i64 = rt_DATA_TYPE_MAP, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
           rt_VarTable_typeid_proc = { .data.i64 = rt_DATA_TYPE_PROC,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
+          rt_VarTable_typeid_lambda = { .data.i64 = rt_DATA_TYPE_LAMBDA,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
           rt_VarTable_rsv_null    = { .data.any = NULL,             .type = rt_DATA_TYPE_ANY, .is_const = true, .is_weak = false, .lvalue = false };
 
 
@@ -57,6 +58,7 @@ rt_Data_t *rt_VarTable_get_globvar(const char *varname)
     if (!strcmp("lst", varname))  return &rt_VarTable_typeid_lst;
     if (!strcmp("map", varname))  return &rt_VarTable_typeid_map;
     if (!strcmp("proc", varname)) return &rt_VarTable_typeid_proc;
+    if (!strcmp("lambda", varname)) return &rt_VarTable_typeid_lambda;
     if (!strcmp("null", varname)) return &rt_VarTable_rsv_null;
     return NULL;
 }
@@ -98,6 +100,7 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool 
         if (dest == &rt_VarTable_typeid_lst)  rt_throw("cannot modify reserved variable 'lst'");
         if (dest == &rt_VarTable_typeid_map)  rt_throw("cannot modify reserved variable 'map'");
         if (dest == &rt_VarTable_typeid_proc) rt_throw("cannot modify reserved variable 'proc'");
+        if (dest == &rt_VarTable_typeid_lambda) rt_throw("cannot modify reserved variable 'lambda'");
         if (dest == &rt_VarTable_rsv_null)    rt_throw("cannot modify reserved variable 'null'");
     }
 

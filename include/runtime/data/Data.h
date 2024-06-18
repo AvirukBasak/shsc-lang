@@ -5,12 +5,23 @@
 #include <stdint.h>
 
 #include "ast.h"
+#include "ast/nodes/enums.h"
+
+#define rt_DATA_LAMBDA_DEFAULT_NAME "(anonymous)"
 
 typedef struct rt_Data_t rt_Data_t;
 typedef struct rt_DataStr_t rt_DataStr_t;
 typedef struct rt_DataList_t rt_DataList_t;
 typedef struct rt_DataMap_t rt_DataMap_t;
 typedef struct rt_DataProc_t rt_DataProc_t;
+typedef struct rt_DataLambda_t rt_DataLambda_t;
+
+/**
+ * Type definition for functions loaded from native
+ * shared object files for interoperability with
+ * native C runtime.
+ */
+typedef rt_Data_t (*rt_fn_NativeFunction_t)(const rt_Data_t context, rt_DataList_t *args);
 
 /* based on the mapping of datatype IDs provided
    by the Shsc IR Spec
@@ -26,12 +37,32 @@ enum rt_DataType_t {
     rt_DATA_TYPE_ANY = 7,        /* void*          : undefined */
     rt_DATA_TYPE_MAP = 8,        /* hash map       : variable  */
     rt_DATA_TYPE_PROC = 9,       /* procedure      : ??  */
+    rt_DATA_TYPE_LAMBDA = 10,    /* lambda         : ??  */
 };
 
 struct rt_DataProc_t {
     const ast_Identifier_t *module_name;
     const ast_Identifier_t *proc_name;
     const rt_Data_t *context;
+};
+
+enum er_DataLambdaType_t {
+    rt_DATA_LAMBDA_TYPE_NONNATIVE = 0,
+    rt_DATA_LAMBDA_TYPE_NATIVE = 1,
+};
+
+struct rt_DataLambda_t {
+    const ast_Identifier_t *module_name;
+    const char *file_name;
+
+    const rt_Data_t *context;
+
+    union {
+        const ast_LambdaLiteral_t *nonnative;
+        rt_fn_NativeFunction_t native;
+    } fnptr;
+
+    enum er_DataLambdaType_t type;
 };
 
 struct rt_Data_t {
@@ -44,6 +75,7 @@ struct rt_Data_t {
         rt_DataList_t *lst;
         rt_DataMap_t *mp;
         rt_DataProc_t proc;
+        rt_DataLambda_t lambda;
         void *any;
     } data;
     bool is_const;
@@ -64,6 +96,9 @@ rt_Data_t rt_Data_proc(
     const ast_Identifier_t *module_name,
     const ast_Identifier_t *proc_name
 );
+rt_Data_t rt_Data_lambda_nonnative(const ast_LambdaLiteral_t *lambda);
+rt_Data_t rt_Data_lambda_native(const rt_fn_NativeFunction_t fnptr);
+rt_Data_t rt_Data_lambda(const ast_LambdaLiteral_t *lambda);
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
 

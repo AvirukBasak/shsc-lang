@@ -127,6 +127,41 @@ rt_Data_t rt_Data_proc(
     return var;
 }
 
+rt_Data_t rt_Data_lambda_nonnative(const ast_LambdaLiteral_t *lambda)
+{
+    rt_Data_t var;
+    var.is_const = false;
+    var.is_weak = false;
+    var.lvalue = false;
+    var.type = rt_DATA_TYPE_LAMBDA;
+    var.data.lambda.type = rt_DATA_LAMBDA_TYPE_NONNATIVE;
+    var.data.lambda.module_name = lambda->module_name;
+    var.data.lambda.file_name = lambda->file_name;
+    var.data.lambda.context = NULL;
+    var.data.lambda.fnptr.nonnative = lambda;
+    return var;
+}
+
+rt_Data_t rt_Data_lambda_native(const rt_fn_NativeFunction_t fnptr)
+{
+    rt_Data_t var;
+    var.is_const = false;
+    var.is_weak = false;
+    var.lvalue = false;
+    var.type = rt_DATA_TYPE_LAMBDA;
+    var.data.lambda.type = rt_DATA_LAMBDA_TYPE_NATIVE;
+    var.data.lambda.module_name = NULL;
+    var.data.lambda.file_name = NULL;
+    var.data.lambda.context = NULL;
+    var.data.lambda.fnptr.native = fnptr;
+    return var;
+}
+
+rt_Data_t rt_Data_lambda(const ast_LambdaLiteral_t *lambda)
+{
+    return rt_Data_lambda_nonnative(lambda);
+}
+
 rt_Data_t rt_Data_any(void *ptr)
 {
     rt_Data_t var;
@@ -162,6 +197,7 @@ void rt_Data_increfc(rt_Data_t *var)
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             break;
     }
 }
@@ -185,6 +221,7 @@ void rt_Data_decrefc(rt_Data_t *var)
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             break;
     }
 }
@@ -214,6 +251,12 @@ rt_Data_t rt_Data_clone(const rt_Data_t var)
                 var.data.proc.module_name,
                 var.data.proc.proc_name
             );
+        case rt_DATA_TYPE_LAMBDA:
+            if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NONNATIVE)
+                return rt_Data_lambda(var.data.lambda.fnptr.nonnative);
+            else if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
+                return rt_Data_lambda_native(var.data.lambda.fnptr.native);
+
     }
     return rt_Data_null();
 }
@@ -245,6 +288,7 @@ void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
         case rt_DATA_TYPE_I64:
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             /* assigning non-composite data to rt_VarTable_null on destroy
                corrupts data in case *var points to a rt_ global var */
             break;
@@ -275,6 +319,7 @@ bool rt_Data_isnumeric(const rt_Data_t var)
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
             return false;
     }
     return false;
@@ -322,6 +367,7 @@ int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2)
             case rt_DATA_TYPE_MAP:
             case rt_DATA_TYPE_ANY:
             case rt_DATA_TYPE_PROC:
+            case rt_DATA_TYPE_LAMBDA:
                 rt_throw("cannot compare type '%s' with type '%s'",
                     rt_Data_typename(var2), rt_Data_typename(var1));
         }
@@ -411,6 +457,8 @@ bool rt_Data_tobool(const rt_Data_t var)
             return !!var.data.any;
         case rt_DATA_TYPE_PROC:
             return !!var.data.proc.proc_name && !!var.data.proc.module_name;
+        case rt_DATA_TYPE_LAMBDA:
+            return !!var.data.lambda.fnptr.nonnative || !!var.data.lambda.fnptr.native;
     }
     return false;
 }
@@ -480,6 +528,19 @@ char *rt_Data_tostr(const rt_Data_t var)
             );
             return str;
         }
+        case rt_DATA_TYPE_LAMBDA: {
+            size_t sz = snprintf(NULL, 0, "%s:%s",
+                rt_DATA_LAMBDA_DEFAULT_NAME,
+                var.data.lambda.module_name
+            );
+            char *str = (char*) malloc((sz +1) * sizeof(char));
+            if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
+            sprintf(str, "%s:%s",
+                var.data.lambda.module_name,
+                rt_DATA_LAMBDA_DEFAULT_NAME
+            );
+            return str;
+        }
     }
     return NULL;
 }
@@ -509,6 +570,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_MAP:
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_LAMBDA:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -531,6 +593,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_MAP:
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_LAMBDA:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -553,6 +616,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_MAP:
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_LAMBDA:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -573,6 +637,9 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
             if (rt_Data_isnull(data))
                 return rt_Data_map(rt_DataMap_init());
         case rt_DATA_TYPE_PROC:
+        case rt_DATA_TYPE_LAMBDA:
+            rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
+                rt_Data_typename((rt_Data_t) { .type = type }));
         case rt_DATA_TYPE_ANY: {
             switch (data.type) {
                 case rt_DATA_TYPE_BUL:
@@ -590,6 +657,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_MAP:
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
+                case rt_DATA_TYPE_LAMBDA:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -611,6 +679,7 @@ const char *rt_Data_typename(const rt_Data_t var)
         case rt_DATA_TYPE_MAP:        return "map";
         case rt_DATA_TYPE_ANY:        return var.data.any ? "any" : "null";
         case rt_DATA_TYPE_PROC:       return "proc";
+        case rt_DATA_TYPE_LAMBDA:     return "lambda";
     }
     return NULL;
 }
