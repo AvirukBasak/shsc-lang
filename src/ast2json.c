@@ -648,25 +648,18 @@ void ast2json_Lambda(const ast_LambdaLiteral_t *lambda)
     ast2json_open_obj();
     ast2json_printf("\"node\": \"lambda\"");
     ast2json_put_comma();
-    ast2json_printf(
-        "\"type\": \"%s\"",
-        lambda->type == LAMBDA_TYPE_NONNATIVE
-            ? "LAMBDA_TYPE_PROCEDURE"
-            : "LAMBDA_TYPE_LAMBDA"
-    );
-    ast2json_put_comma();
     ast2json_printf("\"file_name\": \"%s\"", lambda->file_name);
     ast2json_put_comma();
     ast2json_printf("\"module_name\": \"%s\"", lambda->module_name);
     ast2json_put_comma();
     ast2json_printf("\"fnargs_list\": ");
-    ast2json_FnArgsList(lambda->fnptr.nonnative->args_list);
+    ast2json_FnArgsList(lambda->args_list);
     ast2json_put_comma();
     ast2json_printf("\"code\": ");
-    if (lambda->fnptr.nonnative->is_expr) {
-        ast2json_Expression(lambda->fnptr.nonnative->body.expression);
+    if (lambda->is_expr) {
+        ast2json_Expression(lambda->body.expression);
     } else {
-        ast2json_Statements(lambda->fnptr.nonnative->body.statements);
+        ast2json_Statements(lambda->body.statements);
     }
     ast2json_close_obj();
 }
