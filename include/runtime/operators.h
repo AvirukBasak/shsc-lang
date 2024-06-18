@@ -1,9 +1,11 @@
 #ifndef RT_OPERATORS_H
 #define RT_OPERATORS_H
 
+#include "io.h"
 #include "ast/api.h"
 #include "runtime/eval.h"
 #include "runtime/data/Data.h"
+#include "runtime/VarTable.h"
 
 #define RT_OP_SHORTCKTING_EVAL_OPERAND(oprnd_type, oprnd) do {        \
     /* since we know that this evaluation macro is meant for          \
@@ -59,6 +61,7 @@
             case rt_DATA_TYPE_MAP:                                                        \
             case rt_DATA_TYPE_ANY:                                                        \
             case rt_DATA_TYPE_PROC:                                                       \
+            case rt_DATA_TYPE_LAMBDA:                                                     \
                 rt_throw("no operator '" op_char "' for types `%s` and `%s`",             \
                     rt_Data_typename(*lhs), rt_Data_typename(*rhs));                      \
         }                                                                                 \
