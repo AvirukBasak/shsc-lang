@@ -310,12 +310,12 @@ rt_Data_t rt_fn_call_handler(
 
 rt_Data_t rt_fn_lambda_call_handler(
     const rt_Data_t context,
-    const rt_DataLambda_t *lambda,
+    const rt_DataLambda_t lambda,
     rt_DataList_t *args
 ) {
-    const ast_Identifier_t *module = (const ast_Identifier_t*) lambda->module_name;
+    const ast_Identifier_t *module = (const ast_Identifier_t*) lambda.module_name;
     const ast_Identifier_t *proc = (const ast_Identifier_t*) "anonymous";
-    const char *currfile = lambda->file_name;
+    const char *currfile = lambda.file_name;
 
     /* push lambda to stack */
     rt_VarTable_push_proc(module, proc, currfile);
@@ -354,17 +354,17 @@ rt_Data_t rt_fn_lambda_call_handler(
         fnargs_list = fnargs_list->args_list;
     }
 
-    switch (lambda->type) {
-        case LAMBDA_TYPE_NATIVE:
+    switch (lambda.type) {
+        case rt_DATA_LAMBDA_TYPE_NATIVE:
             rt_throw("native lambdas not yet supported");
             break;
-        case LAMBDA_TYPE_NONNATIVE:
-            if (lambda->fnptr.nonnative->is_expr) {
+        case rt_DATA_LAMBDA_TYPE_NONNATIVE:
+            if (lambda.fnptr.nonnative->is_expr) {
                 /* evaluate lambda expression */
-                rt_eval_Expression(lambda->fnptr.nonnative->body.expression);
+                rt_eval_Expression(lambda.fnptr.nonnative->body.expression);
             } else {
                 /* call user defined function */
-                rt_ControlStatus_t ctrl = rt_eval_Statements(lambda->fnptr.nonnative->body.statements);
+                rt_ControlStatus_t ctrl = rt_eval_Statements(lambda.fnptr.nonnative->body.statements);
                 if (ctrl == rt_CTRL_BREAK)
                     rt_throw("unexpected `break` statement outside loop");
                 if (ctrl == rt_CTRL_CONTINUE)

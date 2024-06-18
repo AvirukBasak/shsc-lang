@@ -115,7 +115,7 @@ rt_Data_t rt_fn_call_handler(
 
 rt_Data_t rt_fn_lambda_call_handler(
     const rt_Data_t context,
-    const rt_DataLambda_t *lambda,
+    const rt_DataLambda_t lambda,
     rt_DataList_t *args
 );
 
