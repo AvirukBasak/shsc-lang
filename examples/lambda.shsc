@@ -1,0 +1,15 @@
+proc main()
+    var m = 1
+    var n = 2
+
+    var x = (a, b, c) -> {
+        var x = a + b + c
+        return x
+    }
+
+    var y = (a, b) -> a * b
+
+    var p = x(m, n, 3)
+    var q = y(n, 3)
+    io:print(p, q, lf)
+end
