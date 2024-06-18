@@ -14,7 +14,7 @@
 #include "runtime/VarTable.h"
 
 void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
-    if (lhs->type != rt_DATA_TYPE_PROC)
+    if (lhs->type != rt_DATA_TYPE_PROC && lhs->type != rt_DATA_TYPE_LAMBDA)
         rt_throw("cannot make procedure call to type '%s'", rt_Data_typename(*lhs));
     /** temporary data variable for rhs */
     rt_Data_t rhs_;
@@ -27,7 +27,13 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
     rt_Data_t context = lhs->data.proc.context
         ? *lhs->data.proc.context
         : rt_Data_null();
-    rt_fn_call_handler(
+    
+    if (lhs->type == rt_DATA_TYPE_LAMBDA) rt_fn_lambda_call_handler(
+        context,
+        lhs->data.lambda,
+        rhs->data.lst
+    );
+    else rt_fn_call_handler(
         context,
         lhs->data.proc.module_name,
         lhs->data.proc.proc_name,
