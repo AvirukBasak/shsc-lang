@@ -1,0 +1,28 @@
+module main
+
+# insertion sort
+proc sort(list, comparator)
+    var i = 0
+    var n = it:len(list)
+    while i < n do
+        var j = i
+        while j > 0 && comparator(list[j - 1], list[j]) > 0 do
+            var tmp = list[j]
+            list[j] = list[j - 1]
+            list[j - 1] = tmp
+            j = j - 1
+        end
+        i = i + 1
+    end
+end
+
+proc main()
+    # alternative: var cmp = (a, b) -> a - b
+    var cmp = (a, b) -> {
+        var diff = a - b
+        return diff
+    }
+    var list = [5, 2, 4, 6, 1, 3]
+    sort(list, cmp)
+    io:print(list, lf)
+end
