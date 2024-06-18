@@ -137,7 +137,9 @@ struct ast_AssociativeList_t {
     ast_Expression_t *value;
 };
 
-struct ast_LambdaLiteral_nonnative_t {
+struct ast_LambdaLiteral_t {
+    const ast_Identifier_t *module_name;
+    const char *file_name;
     const ast_FnArgsList_t *args_list;
     const union {
         const ast_Statements_t *statements;
@@ -148,16 +150,6 @@ struct ast_LambdaLiteral_nonnative_t {
      * if false, the lambda is a block of statements
      */
     const bool is_expr;
-};
-
-struct ast_LambdaLiteral_t {
-    const union {
-        const ast_LambdaLiteral_nonnative_t *nonnative;
-        const void *native;
-    } fnptr;
-    const ast_Identifier_t *module_name;
-    const char *file_name;
-    const enum ast_LambdaLiteralType_t type;
 };
 
 struct ast_Literal_t {

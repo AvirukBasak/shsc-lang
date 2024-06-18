@@ -401,14 +401,11 @@ ast_Literal_t *ast_Literal_lambda_block(ast_FnArgsList_t *args, ast_Statements_t
     ast_literal->type = DATA_TYPE_LAMBDA;
     ast_literal->data.lambda = (ast_LambdaLiteral_t*) malloc(sizeof(ast_LambdaLiteral_t));
     if (!ast_literal->data.lambda) io_errndie("ast_Literal_lambda_block:" ERR_MSG_MALLOCFAIL);
-    ast_literal->data.lambda->type = LAMBDA_TYPE_NONNATIVE;
     ast_literal->data.lambda->module_name = strdup(ast_ModuleStack_top());
     ast_literal->data.lambda->file_name = strdup(global_currfile);
-    ast_literal->data.lambda->fnptr.nonnative = (ast_LambdaLiteral_nonnative_t*) malloc(sizeof(ast_LambdaLiteral_nonnative_t));
-    if (!ast_literal->data.lambda->fnptr.nonnative) io_errndie("ast_Literal_lambda_block:" ERR_MSG_MALLOCFAIL);
-    ast_literal->data.lambda->fnptr.nonnative->args_list = args;
-    ast_literal->data.lambda->fnptr.nonnative->body.statements = code;
-    ast_literal->data.lambda->fnptr.nonnative->is_expr = false;
+    ast_literal->data.lambda->args_list = args;
+    ast_literal->data.lambda->body.statements = code;
+    ast_literal->data.lambda->is_expr = false;
     return ast_literal;
 }
 
@@ -419,14 +416,11 @@ ast_Literal_t *ast_Literal_lambda_expr(ast_FnArgsList_t *args, ast_Expression_t 
     ast_literal->type = DATA_TYPE_LAMBDA;
     ast_literal->data.lambda = (ast_LambdaLiteral_t*) malloc(sizeof(ast_LambdaLiteral_t));
     if (!ast_literal->data.lambda) io_errndie("ast_Literal_lambda_expr:" ERR_MSG_MALLOCFAIL);
-    ast_literal->data.lambda->type = LAMBDA_TYPE_NONNATIVE;
     ast_literal->data.lambda->module_name = strdup(ast_ModuleStack_top());
     ast_literal->data.lambda->file_name = strdup(global_currfile);
-    ast_literal->data.lambda->fnptr.nonnative = (ast_LambdaLiteral_nonnative_t*) malloc(sizeof(ast_LambdaLiteral_nonnative_t));
-    if (!ast_literal->data.lambda->fnptr.nonnative) io_errndie("ast_Literal_lambda_expr:" ERR_MSG_MALLOCFAIL);
-    ast_literal->data.lambda->fnptr.nonnative->args_list = args;
-    ast_literal->data.lambda->fnptr.nonnative->body.expression = expr;
-    ast_literal->data.lambda->fnptr.nonnative->is_expr = true;
+    ast_literal->data.lambda->args_list = args;
+    ast_literal->data.lambda->body.expression = expr;
+    ast_literal->data.lambda->is_expr = true;
     return ast_literal;
 }
 

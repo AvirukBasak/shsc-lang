@@ -20,8 +20,6 @@ typedef struct ast_CommaSepList_t         ast_CommaSepList_t;
 typedef struct ast_AssociativeList_t      ast_AssociativeList_t;
 typedef struct ast_LambdaLiteral_t        ast_LambdaLiteral_t;
 
-typedef struct ast_LambdaLiteral_nonnative_t ast_LambdaLiteral_nonnative_t;
-
 typedef struct ast_Literal_t              ast_Literal_t;
 typedef char                              ast_Identifier_t;
 
