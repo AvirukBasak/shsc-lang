@@ -15,6 +15,7 @@ typedef struct rt_DataList_t rt_DataList_t;
 typedef struct rt_DataMap_t rt_DataMap_t;
 typedef struct rt_DataProc_t rt_DataProc_t;
 typedef struct rt_DataLambda_t rt_DataLambda_t;
+typedef struct rt_DataLibHandle_t rt_DataLibHandle_t;
 
 /**
  * Type definition for functions loaded from native
@@ -38,6 +39,7 @@ enum rt_DataType_t {
     rt_DATA_TYPE_MAP = 8,        /* hash map       : variable  */
     rt_DATA_TYPE_PROC = 9,       /* procedure      : ??  */
     rt_DATA_TYPE_LAMBDA = 10,    /* lambda         : ??  */
+    rt_DATA_TYPE_LIBHANDLE = 11, /* lib handle     : ??  */
 };
 
 struct rt_DataProc_t {
@@ -65,6 +67,11 @@ struct rt_DataLambda_t {
     enum er_DataLambdaType_t type;
 };
 
+struct rt_DataLibHandle_t {
+    void *handle;
+    char *file_name;
+};
+
 struct rt_Data_t {
     union {
         bool bul;
@@ -76,6 +83,7 @@ struct rt_Data_t {
         rt_DataMap_t *mp;
         rt_DataProc_t proc;
         rt_DataLambda_t lambda;
+        rt_DataLibHandle_t libhandle;
         void *any;
     } data;
     bool is_const;
@@ -97,8 +105,8 @@ rt_Data_t rt_Data_proc(
     const ast_Identifier_t *proc_name
 );
 rt_Data_t rt_Data_lambda_nonnative(const ast_LambdaLiteral_t *lambda);
-rt_Data_t rt_Data_lambda_native(const void *handle, const rt_fn_NativeFunction_t fnptr);
-rt_Data_t rt_Data_lambda(const ast_LambdaLiteral_t *lambda);
+rt_Data_t rt_Data_lambda_native(const char *module_name, const rt_fn_NativeFunction_t fnptr);
+rt_Data_t rt_Data_libhandle(void *handle, char *file_name);
 rt_Data_t rt_Data_any(void *ptr);
 rt_Data_t rt_Data_null(void);
 
@@ -109,6 +117,8 @@ rt_Data_t rt_Data_clone(const rt_Data_t var);
 
 void rt_Data_destroy_circular(rt_Data_t *var, bool flag);
 void rt_Data_destroy(rt_Data_t *var);
+
+int rt_DataLibHandle_destroy(rt_DataLibHandle_t *libhandle);
 
 bool rt_Data_isnull(const rt_Data_t var);
 bool rt_Data_isnumeric(const rt_Data_t var);

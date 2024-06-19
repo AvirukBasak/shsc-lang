@@ -142,7 +142,7 @@ rt_Data_t rt_Data_lambda_nonnative(const ast_LambdaLiteral_t *lambda)
     return var;
 }
 
-rt_Data_t rt_Data_lambda_native(const void *handle, const rt_fn_NativeFunction_t fnptr)
+rt_Data_t rt_Data_lambda_native(const char *module_name, const rt_fn_NativeFunction_t fnptr)
 {
     rt_Data_t var;
     var.is_const = false;
@@ -150,16 +150,23 @@ rt_Data_t rt_Data_lambda_native(const void *handle, const rt_fn_NativeFunction_t
     var.lvalue = false;
     var.type = rt_DATA_TYPE_LAMBDA;
     var.data.lambda.type = rt_DATA_LAMBDA_TYPE_NATIVE;
-    var.data.lambda.module_name = handle;
-    var.data.lambda.file_name = NULL;
+    var.data.lambda.module_name = module_name;
+    var.data.lambda.file_name = module_name;
     var.data.lambda.context = NULL;
     var.data.lambda.fnptr.native = fnptr;
     return var;
 }
 
-rt_Data_t rt_Data_lambda(const ast_LambdaLiteral_t *lambda)
+rt_Data_t rt_Data_libhandle(void *handle, char *file_name)
 {
-    return rt_Data_lambda_nonnative(lambda);
+    rt_Data_t var;
+    var.is_const = false;
+    var.is_weak = false;
+    var.lvalue = false;
+    var.type = rt_DATA_TYPE_LIBHANDLE;
+    var.data.libhandle.handle = handle;
+    var.data.libhandle.file_name = file_name;
+    return var;
 }
 
 rt_Data_t rt_Data_any(void *ptr)
@@ -198,6 +205,7 @@ void rt_Data_increfc(rt_Data_t *var)
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             break;
     }
 }
@@ -222,6 +230,7 @@ void rt_Data_decrefc(rt_Data_t *var)
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             break;
     }
 }
@@ -253,9 +262,11 @@ rt_Data_t rt_Data_clone(const rt_Data_t var)
             );
         case rt_DATA_TYPE_LAMBDA:
             if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NONNATIVE)
-                return rt_Data_lambda(var.data.lambda.fnptr.nonnative);
+                return rt_Data_lambda_nonnative(var.data.lambda.fnptr.nonnative);
             else if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
                 return rt_Data_lambda_native(var.data.lambda.module_name, var.data.lambda.fnptr.native);
+        case rt_DATA_TYPE_LIBHANDLE:
+            return rt_Data_libhandle(var.data.libhandle.handle, var.data.libhandle.file_name);
 
     }
     return rt_Data_null();
@@ -286,6 +297,7 @@ void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             /* assigning non-composite data to rt_VarTable_null on destroy
                corrupts data in case *var points to a rt_ global var */
             break;
@@ -295,6 +307,30 @@ void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
 void rt_Data_destroy(rt_Data_t *var)
 {
     rt_Data_destroy_circular(var, false);
+}
+
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <dlfcn.h>
+#endif
+
+int rt_DataLibHandle_destroy(rt_DataLibHandle_t *libhandle)
+{
+    free(libhandle->file_name);
+#ifdef _WIN32
+    // On Windows, use FreeLibrary to close the library.
+    int result = FreeLibrary((HMODULE) libhandle->handle);
+    if (result) return 0;    // Return 0 to indicate success.
+    else return 1;           // Return 1 to indicate failure.
+#else
+    // On Unix-like systems, use dlclose to close the library.
+    int result = dlclose(libhandle->handle);
+    if (!result) return 0;   // Return 0 to indicate success.
+    else return result;      // Return the error code to indicate failure.
+#endif
+    libhandle->handle = NULL;
+    libhandle->file_name = NULL;
 }
 
 bool rt_Data_isnull(const rt_Data_t var)
@@ -317,6 +353,7 @@ bool rt_Data_isnumeric(const rt_Data_t var)
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             return false;
     }
     return false;
@@ -365,6 +402,7 @@ int64_t rt_Data_compare(const rt_Data_t var1, const rt_Data_t var2)
             case rt_DATA_TYPE_ANY:
             case rt_DATA_TYPE_PROC:
             case rt_DATA_TYPE_LAMBDA:
+            case rt_DATA_TYPE_LIBHANDLE:
                 rt_throw("cannot compare type '%s' with type '%s'",
                     rt_Data_typename(var2), rt_Data_typename(var1));
         }
@@ -456,6 +494,8 @@ bool rt_Data_tobool(const rt_Data_t var)
             return !!var.data.proc.proc_name && !!var.data.proc.module_name;
         case rt_DATA_TYPE_LAMBDA:
             return !!var.data.lambda.fnptr.nonnative || !!var.data.lambda.fnptr.native;
+        case rt_DATA_TYPE_LIBHANDLE:
+            return !!var.data.libhandle.handle;
     }
     return false;
 }
@@ -549,6 +589,8 @@ char *rt_Data_tostr(const rt_Data_t var)
                 return str;
             }
         }
+        case rt_DATA_TYPE_LIBHANDLE:
+            return strdup(var.data.libhandle.file_name);
     }
     return NULL;
 }
@@ -579,6 +621,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
                 case rt_DATA_TYPE_LAMBDA:
+                case rt_DATA_TYPE_LIBHANDLE:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -602,6 +645,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
                 case rt_DATA_TYPE_LAMBDA:
+                case rt_DATA_TYPE_LIBHANDLE:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -625,6 +669,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
                 case rt_DATA_TYPE_LAMBDA:
+                case rt_DATA_TYPE_LIBHANDLE:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -646,6 +691,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 return rt_Data_map(rt_DataMap_init());
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                 rt_Data_typename((rt_Data_t) { .type = type }));
         case rt_DATA_TYPE_ANY: {
@@ -666,6 +712,7 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
                 case rt_DATA_TYPE_INTERP_STR:
                 case rt_DATA_TYPE_PROC:
                 case rt_DATA_TYPE_LAMBDA:
+                case rt_DATA_TYPE_LIBHANDLE:
                     rt_throw("cannot cast '%s' to '%s'", rt_Data_typename(data),
                         rt_Data_typename((rt_Data_t) { .type = type }));
             }
@@ -688,6 +735,7 @@ const char *rt_Data_typename(const rt_Data_t var)
         case rt_DATA_TYPE_ANY:        return var.data.any ? "any" : "null";
         case rt_DATA_TYPE_PROC:       return "proc";
         case rt_DATA_TYPE_LAMBDA:     return "lambda";
+        case rt_DATA_TYPE_LIBHANDLE:  return "libhandle";
     }
     return NULL;
 }
