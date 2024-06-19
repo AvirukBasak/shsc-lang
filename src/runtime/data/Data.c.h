@@ -280,9 +280,6 @@ void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
             if (!var->data.mp) *var = rt_Data_null();
             break;
         case rt_DATA_TYPE_ANY:
-            if (var->data.any) free(var->data.any);
-            var->data.any = NULL;
-            *var = rt_Data_null();
         case rt_DATA_TYPE_BUL:
         case rt_DATA_TYPE_CHR:
         case rt_DATA_TYPE_I64:
