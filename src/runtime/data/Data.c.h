@@ -532,7 +532,7 @@ char *rt_Data_tostr(const rt_Data_t var)
                 size_t sz = snprintf(NULL, 0, "%p:%p", handle, fnptr);
                 char *str = (char*) malloc((sz +1) * sizeof(char));
                 if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
-                sprintf(str, "native:%p", fnptr);
+                sprintf(str, "%p:%p", handle, fnptr);
                 return str;
             }
             else {
