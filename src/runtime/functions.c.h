@@ -30,6 +30,8 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "callproc")) return rt_fn_DBG_CALLPROC;
         if (!strcmp(fname, "filename")) return rt_fn_DBG_FILENAME;
         if (!strcmp(fname, "lineno"))   return rt_fn_DBG_LINENO;
+        if (!strcmp(fname, "timenow"))  return rt_fn_DBG_TIMENOW;
+        if (!strcmp(fname, "timenow_param")) return rt_fn_DBG_TIMENOW_PARAM;
     }
     if (!strcmp(module, "io")) {
         if (!strcmp(fname, "print"))    return rt_fn_IO_PRINT;
@@ -38,6 +40,8 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "fread"))    return rt_fn_IO_FREAD;
         if (!strcmp(fname, "fwrite"))   return rt_fn_IO_FWRITE;
         if (!strcmp(fname, "fappend"))  return rt_fn_IO_FAPPEND;
+        if (!strcmp(fname, "libopen"))  return rt_fn_IO_LIBOPEN;
+        if (!strcmp(fname, "libsym"))   return rt_fn_IO_LIBSYM;
     }
     if (!strcmp(module, "it")) {
         if (!strcmp(fname, "len"))      return rt_fn_IT_LEN;
@@ -146,6 +150,8 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_DBG_CALLPROC:  return rt_fn_dbg_callproc();
         case rt_fn_DBG_FILENAME:  return rt_fn_dbg_filename();
         case rt_fn_DBG_LINENO:    return rt_fn_dbg_lineno();
+        case rt_fn_DBG_TIMENOW:   return rt_fn_dbg_timenow();
+        case rt_fn_DBG_TIMENOW_PARAM: return rt_fn_dbg_timenow_parameterized();
 
         case rt_fn_IO_PRINT:      return rt_fn_io_print();
         case rt_fn_IO_INPUT:      return rt_fn_io_input();
@@ -153,6 +159,8 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_IO_FREAD:      return rt_fn_io_fread();
         case rt_fn_IO_FWRITE:     return rt_fn_io_fwrite();
         case rt_fn_IO_FAPPEND:    return rt_fn_io_fappend();
+        case rt_fn_IO_LIBOPEN:    return rt_fn_io_libopen();
+        case rt_fn_IO_LIBSYM:     return rt_fn_io_libsym();
 
         case rt_fn_IT_LEN:        return rt_fn_it_len();
         case rt_fn_IT_CLONE:      return rt_fn_it_clone();
@@ -313,52 +321,66 @@ rt_Data_t rt_fn_lambda_call_handler(
     const rt_DataLambda_t lambda,
     rt_DataList_t *args
 ) {
-    const ast_Identifier_t *module = (const ast_Identifier_t*) lambda.module_name;
-    const ast_Identifier_t *proc = (const ast_Identifier_t*) rt_DATA_LAMBDA_DEFAULT_NAME;
-    const char *currfile = lambda.file_name;
+    const ast_Identifier_t *module = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
+        ? (const ast_Identifier_t*) lambda.fnptr.native.handle->file_name
+        : (const ast_Identifier_t*) lambda.fnptr.nonnative->module_name;
+
+    const ast_Identifier_t *proc = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
+        ? (const ast_Identifier_t*) rt_DataStr_tostr(lambda.fnptr.native.fn_name)
+        : (const ast_Identifier_t*) rt_DATA_LAMBDA_DEFAULT_NAME;
+
+    const char *currfile = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
+        ? (const ast_Identifier_t*) lambda.fnptr.native.handle->file_name
+        : (const ast_Identifier_t*) lambda.fnptr.nonnative->file_name;
 
     /* push lambda to stack */
     rt_VarTable_push_proc(module, proc, currfile);
 
     /* store fn args into agrs location */
     rt_VarTable_create(RT_VTABLE_ARGSVAR, rt_Data_list(args), true, false);
+
     /* store context into context location */
     rt_VarTable_create(RT_VTABLE_CONTEXTVAR, context, true, false);
 
-    /* count number of fnargs present in fnargs_list */
-    int64_t fnargs_count = 0;
-    const ast_FnArgsList_t *fnargs_list = lambda.fnptr.nonnative->args_list;
-    while (fnargs_list) {
-        ++fnargs_count;
-        fnargs_list = fnargs_list->args_list;
-    }
-
-    // /* if no of named args is more that whats passed, throw error */
-    // if (fnargs_count > rt_DataList_length(args))
-    //     rt_throw(
-    //         "expected at least %" PRId64 " arguments, received %" PRId64,
-    //         fnargs_count, rt_DataList_length(args)
-    //     );
-
-    /* create named args list */
-    fnargs_list = lambda.fnptr.nonnative->args_list;
-    for  (int64_t i = 0; i < rt_DataList_length(args) && fnargs_list; ++i) {
-        rt_VarTable_create(fnargs_list->identifier,
-            *rt_DataList_getref(args, i), false, false);
-        fnargs_list = fnargs_list->args_list;
-    }
-
-    /* make remaining fnargs null */
-    while (fnargs_list) {
-        rt_VarTable_create(fnargs_list->identifier, rt_Data_null(), false, false);
-        fnargs_list = fnargs_list->args_list;
-    }
-
     switch (lambda.type) {
-        case rt_DATA_LAMBDA_TYPE_NATIVE:
-            rt_throw("native lambdas not yet supported");
+
+        case rt_DATA_LAMBDA_TYPE_NATIVE: {
+            const rt_fn_NativeFunction_t fn = lambda.fnptr.native.fn;
+            rt_VarTable_acc_setval(fn(context, args));
             break;
-        case rt_DATA_LAMBDA_TYPE_NONNATIVE:
+        }
+
+        case rt_DATA_LAMBDA_TYPE_NONNATIVE: {
+
+            /* count number of fnargs present in fnargs_list */
+            int64_t fnargs_count = 0;
+            const ast_FnArgsList_t *fnargs_list = lambda.fnptr.nonnative->args_list;
+            while (fnargs_list) {
+                ++fnargs_count;
+                fnargs_list = fnargs_list->args_list;
+            }
+
+            // /* if no of named args is more that whats passed, throw error */
+            // if (fnargs_count > rt_DataList_length(args))
+            //     rt_throw(
+            //         "expected at least %" PRId64 " arguments, received %" PRId64,
+            //         fnargs_count, rt_DataList_length(args)
+            //     );
+
+            /* create named args list */
+            fnargs_list = lambda.fnptr.nonnative->args_list;
+            for  (int64_t i = 0; i < rt_DataList_length(args) && fnargs_list; ++i) {
+                rt_VarTable_create(fnargs_list->identifier,
+                    *rt_DataList_getref(args, i), false, false);
+                fnargs_list = fnargs_list->args_list;
+            }
+
+            /* make remaining fnargs null */
+            while (fnargs_list) {
+                rt_VarTable_create(fnargs_list->identifier, rt_Data_null(), false, false);
+                fnargs_list = fnargs_list->args_list;
+            }
+
             if (lambda.fnptr.nonnative->is_expr) {
                 /* evaluate lambda expression */
                 rt_eval_Expression(lambda.fnptr.nonnative->body.expression);
@@ -370,10 +392,17 @@ rt_Data_t rt_fn_lambda_call_handler(
                 if (ctrl == rt_CTRL_CONTINUE)
                     rt_throw("unexpected `continue` statement outside loop");
             }
+
             break;
+        }
     }
 
     /* pop lambda from stack */
     rt_Data_t ret = rt_VarTable_pop_proc();
+
+    if (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
+        free((void*) proc);
+    }
+
     return ret;
 }

@@ -33,13 +33,13 @@ ASAN_OPTIONS   := ASAN_OPTIONS=detect_leaks=1:$\
 				  halt_on_error=0
 
 CC             := gcc
-CFLAGS         := $(WRN_ERR_FLAGS) -Ofast
-CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG
+CFLAGS         := $(WRN_ERR_FLAGS) -Ofast -export-dynamic
+CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG -export-dynamic
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
-LIB            := -L$(LIB_DIR) -lm -lavl
-DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg
+LIB            := -L$(LIB_DIR) -lm -lavl -ldl
+DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg -ldl
 
 LIBRARIES      := $(LIB_DIR)/libavl.a
 DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a

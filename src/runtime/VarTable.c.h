@@ -44,6 +44,7 @@ rt_Data_t rt_VarTable_rsv_lf      = { .data.chr = '\n',             .type = rt_D
           rt_VarTable_typeid_map  = { .data.i64 = rt_DATA_TYPE_MAP, .type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
           rt_VarTable_typeid_proc = { .data.i64 = rt_DATA_TYPE_PROC,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
           rt_VarTable_typeid_lambda = { .data.i64 = rt_DATA_TYPE_LAMBDA,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
+          rt_VarTable_typeid_libhandle = { .data.i64 = rt_DATA_TYPE_LIBHANDLE,.type = rt_DATA_TYPE_I64, .is_const = true, .is_weak = false, .lvalue = false },
           rt_VarTable_rsv_null    = { .data.any = NULL,             .type = rt_DATA_TYPE_ANY, .is_const = true, .is_weak = false, .lvalue = false };
 
 

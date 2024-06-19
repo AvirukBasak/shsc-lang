@@ -14,6 +14,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
+#include "runtime/data/DataLibHandle.h"
 #include "runtime/functions.h"
 #include "runtime/functions/module_io.h"
 #include "runtime/VarTable.h"
@@ -131,7 +132,8 @@ rt_Data_t rt_fn_io_input()
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_PROC:
-        case rt_DATA_TYPE_LAMBDA: rt_throw(
+        case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE: rt_throw(
             "invalid type parameter\n"
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d",
@@ -266,6 +268,46 @@ rt_Data_t rt_fn_io_fappend()
     return rt_Data_i64(bytes);
 }
 
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <dlfcn.h>
+#endif
+
+rt_Data_t rt_fn_io_libopen()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t libname_arg = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(libname_arg, rt_DATA_TYPE_STR, "filename");
+    char *filename = rt_Data_tostr(libname_arg);
+    rt_DataLibHandle_t *handle = rt_DataLibHandle_init(filename);
+    return rt_Data_libhandle(handle);
+}
+
+rt_Data_t rt_fn_io_libsym()
+{
+    // Get the valid arguments. We expect two arguments: handle and symbol name.
+    const rt_DataList_t *args = rt_fn_get_valid_args(2);
+    const rt_Data_t handle_arg = *rt_DataList_getref(args, 0);
+    const rt_Data_t symbolname_arg = *rt_DataList_getref(args, 1);
+
+    // Assert that the arguments are of the correct type.
+    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_LIBHANDLE, "handle");
+    rt_Data_assert_type(symbolname_arg, rt_DATA_TYPE_STR, "symbolname");
+
+    // Convert the symbol name to a C string.
+    char *symbolname = rt_Data_tostr(symbolname_arg);
+
+    const rt_Data_t lambda = rt_Data_lambda_native(
+        handle_arg.data.libhandle,
+        symbolname_arg.data.str,
+        rt_DataLibHandle_lookup(handle_arg.data.libhandle, symbolname)
+    );
+
+    free(symbolname);
+    return lambda;
+}
+
 bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
 {
     switch (type) {
@@ -281,6 +323,7 @@ bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             return false;
     }
     return false;

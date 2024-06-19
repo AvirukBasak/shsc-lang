@@ -227,6 +227,7 @@ FILE *yyin = NULL;
 %type <astnode_literal>            string_literal
 %type <astnode_literal>            list_literal
 %type <astnode_literal>            map_literal
+%type <astnode_literal>            lambda_literal
 %type <astnode_identifier>         identifier
 
 
@@ -799,6 +800,7 @@ literal:
     | string_literal
     | list_literal
     | map_literal
+    | lambda_literal
     ;
 
 
@@ -826,6 +828,15 @@ list_literal:
 map_literal:
     "{" "}"
     | "{" nws assoc_list "}"
+    ;
+
+
+
+lambda_literal:
+    "(" ")" "->" "{" nwp statements "}"
+    | "(" fnargs_list ")" "->" "{" nwp statements "}"
+    | "(" ")" "->" expression
+    | "(" fnargs_list ")" "->" expression
     ;
 
 

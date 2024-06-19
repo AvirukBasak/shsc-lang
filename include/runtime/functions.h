@@ -37,6 +37,8 @@ typedef enum {
     rt_fn_DBG_CALLPROC,  /* dbg:callproc */
     rt_fn_DBG_FILENAME,  /* dbg:filename */
     rt_fn_DBG_LINENO,    /* dbg:lineno */
+    rt_fn_DBG_TIMENOW,   /* dbg:timenow */
+    rt_fn_DBG_TIMENOW_PARAM, /* dbg:timenow_param */
 
     rt_fn_IO_PRINT,      /* io:print */
     rt_fn_IO_INPUT,      /* io:input */
@@ -44,6 +46,8 @@ typedef enum {
     rt_fn_IO_FREAD,      /* io:fread */
     rt_fn_IO_FWRITE,     /* io:fwrite */
     rt_fn_IO_FAPPEND,    /* io:fappend */
+    rt_fn_IO_LIBOPEN,    /* io:libopen */
+    rt_fn_IO_LIBSYM,     /* io:libsym */
 
     rt_fn_IT_LEN,        /* it:len */
     rt_fn_IT_CLONE,      /* it:clone */

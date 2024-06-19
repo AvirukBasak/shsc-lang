@@ -52,6 +52,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Procedure context](#procedure-context)
 - [Lambdas](#lambdas)
     - [Example](#example-3)
+- [Interop with C](#interop-with-c)
 - [Expressions](#expressions)
     - [Ternary expression](#ternary-expression)
     - [Assignments](#assignments)
@@ -527,6 +528,9 @@ io:print(add(5, 6), lf)
 io:print(long_proc(5, 6), lf)
 ```
 
+## Interop with C
+Interoperability with C code via dynamic libraries is possible. For a better understanding see the repo [shsc-c-interop](https://github.com/AvirukBasak/shsc-c-interop).
+
 ## Expressions
 Expressions are basically C expressions with some additional operators.
 
@@ -722,8 +726,8 @@ The language supports the following built-in procedures (within built-in modules
 | cast   | -       | callproc | fread   | -     | isalpha | -   | -   | toupper | -       | -      |
 | -      | -       | filename | fwrite  | -     | isalnum | -   | -   | append  | append  | set    |
 | -      | -       | lineno   | fappend | -     | islower | -   | -   | insert  | insert  | get    |
-| -      | -       | -        | -       | -     | isupper | -   | -   | erase   | erase   | erase  |
-| -      | -       | -        | -       | -     | isspace | -   | -   | concat  | concat  | concat |
+| -      | -       | -        | libopen | -     | isupper | -   | -   | erase   | erase   | erase  |
+| -      | -       | -        | libsym  | -     | isspace | -   | -   | concat  | concat  | concat |
 | -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -      |
 | -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys   |
 | -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find   |
@@ -765,6 +769,8 @@ File I/O functions will not create a file if it doesn't exist.
 - `io:fread(str)` reads a file and returns a string; the first argument is the file path
 - `io:fwrite(str, str)` writes a string to a file; the first argument is the file path
 - `io:fappend(str, str)` appends a string to a file; the first argument is the file path
+- `io:libopen(str)` opens a shared library and returns a handle object
+- `io:libsym(libhandle, str)` returns a native lambda given handle and the name of the function
 
 #### Module `it`
 - `it:len(any)` returns length of list, string or map, else returns `1`

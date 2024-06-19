@@ -99,6 +99,7 @@ rt_ControlStatus_t rt_eval_ForBlock(const ast_ForBlock_t *for_block)
                 case rt_DATA_TYPE_ANY:
                 case rt_DATA_TYPE_PROC:
                 case rt_DATA_TYPE_LAMBDA:
+                case rt_DATA_TYPE_LIBHANDLE:
                     rt_throw("not a for loop iterable type: '%s'", rt_Data_typename(iterable));
             }
             rt_VarTable_pop_scope();
@@ -195,6 +196,7 @@ void rt_eval_ForBlock_get_iterable_len(
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             rt_throw("not a for loop iterable type: '%s'", rt_Data_typename(iterable));
     }
 }

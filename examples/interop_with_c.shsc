@@ -1,32 +1,6 @@
 proc main()
-    return 0
-    # get a handle to the shared library
-    var handle = lib:open("libtest.so")
-    # get C function as lambda from shared library,
-    # note that such C functions should follow the
-    # a documented prototype for interoperability
-    var foo = lib:lookup(handle, "foo")
-    # call the function foo
-    foo()
-    # alternatively, convert handle to a map
-    # of lambdas for selected functions
-    var libtest = lib:import(handle, [
-        "foo", "bar",
-        "baz", "qux",
-    ])
-    # call the function foo
-    libtest.foo()
-    # handle is automatically closed when
-    # reference count drops to zero,
-
-    # note that once lib:import is called, it creates
-    # a reference to the handle called __handle__, so
-    # handle is not closed until all references are
-    # released i.e. libtest.__handle__ -> handle
-
-    # shortend version of lib:import
-    var libtest = lib:import("libtest.so", [
-        "foo", "bar",
-        "baz", "qux",
-    ])
+    var mod = io:libopen("add.so")
+    var add = io:libsym(mod, "add")
+    var res = add(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    io:print(res, lf)
 end

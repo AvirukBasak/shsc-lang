@@ -36,6 +36,7 @@ void rt_op_tilde(const rt_Data_t *lhs, const rt_Data_t *rhs) {
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             rt_throw("no operator '" RT_OP_BIT_COMPLEMENT_STR "' for type `%s`", rt_Data_typename(*rhs));
     }
 

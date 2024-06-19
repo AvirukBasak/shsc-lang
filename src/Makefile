@@ -36,8 +36,8 @@ CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
-LIB            := -L$(LIB_DIR) -lm -lavl
-DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg
+LIB            := -L$(LIB_DIR) -lm -lavl -ldl
+DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg -ldl
 
 HEADERS        := $(shell find $(INCLUDE_DIR)/ -name "*."$(HEADEREXT))
 

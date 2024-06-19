@@ -65,6 +65,7 @@ shsc examples/helloworld.txt
 - [x] Function arguments
 - [x] Call stack
 - [x] Lambda functions
+- [x] Interop with C
 - [x] Variables
 - [x] Variable Shadowing
 - [x] Constants

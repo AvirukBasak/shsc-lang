@@ -47,6 +47,7 @@ void rt_op_floor_divide(const rt_Data_t *lhs, const rt_Data_t *rhs)
             case rt_DATA_TYPE_MAP:
             case rt_DATA_TYPE_PROC:
             case rt_DATA_TYPE_LAMBDA:
+            case rt_DATA_TYPE_LIBHANDLE:
             case rt_DATA_TYPE_ANY:
                 rt_throw("no operator '" RT_OP_FLOOR_DIVIDE_STR "' for types `%s` and `%s`",
                     rt_Data_typename(*lhs), rt_Data_typename(*rhs));
