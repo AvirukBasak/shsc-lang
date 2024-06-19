@@ -355,9 +355,11 @@ rt_Data_t rt_fn_lambda_call_handler(
     }
 
     switch (lambda.type) {
-        case rt_DATA_LAMBDA_TYPE_NATIVE:
-            rt_throw("native lambdas not yet supported");
+        case rt_DATA_LAMBDA_TYPE_NATIVE: {
+            const rt_fn_NativeFunction_t fn = lambda.fnptr.native;
+            rt_VarTable_acc_setval(fn(context, args));
             break;
+        }
         case rt_DATA_LAMBDA_TYPE_NONNATIVE:
             if (lambda.fnptr.nonnative->is_expr) {
                 /* evaluate lambda expression */
