@@ -16,6 +16,7 @@
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataMap.h"
+#include "runtime/data/DataLibHandle.h"
 #include "runtime/io.h"
 #include "runtime/VarTable.h"
 
@@ -68,6 +69,7 @@ rt_Data_t rt_Data_f64(double val)
 #include "runtime/data/DataList.c.h"
 #include "runtime/data/DataStr.c.h"
 #include "runtime/data/DataMap.c.h"
+#include "runtime/data/DataLibHandle.c.h"
 #include "runtime/data/GarbageColl.c.h"
 
 rt_Data_t rt_Data_str(rt_DataStr_t *str)
@@ -135,37 +137,37 @@ rt_Data_t rt_Data_lambda_nonnative(const ast_LambdaLiteral_t *lambda)
     var.lvalue = false;
     var.type = rt_DATA_TYPE_LAMBDA;
     var.data.lambda.type = rt_DATA_LAMBDA_TYPE_NONNATIVE;
-    var.data.lambda.module_name = lambda->module_name;
-    var.data.lambda.file_name = lambda->file_name;
     var.data.lambda.context = NULL;
     var.data.lambda.fnptr.nonnative = lambda;
     return var;
 }
 
-rt_Data_t rt_Data_lambda_native(const char *module_name, const rt_fn_NativeFunction_t fnptr)
-{
+rt_Data_t rt_Data_lambda_native(
+    rt_DataLibHandle_t *handle,
+    rt_DataStr_t *fn_name,
+    const rt_fn_NativeFunction_t fnptr
+) {
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
     var.lvalue = false;
     var.type = rt_DATA_TYPE_LAMBDA;
     var.data.lambda.type = rt_DATA_LAMBDA_TYPE_NATIVE;
-    var.data.lambda.module_name = module_name;
-    var.data.lambda.file_name = module_name;
     var.data.lambda.context = NULL;
-    var.data.lambda.fnptr.native = fnptr;
+    var.data.lambda.fnptr.native.handle = handle;
+    var.data.lambda.fnptr.native.fn_name = fn_name;
+    var.data.lambda.fnptr.native.fn = fnptr;
     return var;
 }
 
-rt_Data_t rt_Data_libhandle(void *handle, char *file_name)
+rt_Data_t rt_Data_libhandle(rt_DataLibHandle_t *handle)
 {
     rt_Data_t var;
     var.is_const = false;
     var.is_weak = false;
     var.lvalue = false;
     var.type = rt_DATA_TYPE_LIBHANDLE;
-    var.data.libhandle.handle = handle;
-    var.data.libhandle.file_name = file_name;
+    var.data.libhandle = handle;
     return var;
 }
 
@@ -198,14 +200,21 @@ void rt_Data_increfc(rt_Data_t *var)
         case rt_DATA_TYPE_MAP:
             rt_DataMap_increfc(var->data.mp);
             break;
+        case rt_DATA_TYPE_LIBHANDLE:
+            rt_DataLibHandle_increfc(var->data.libhandle);
+            break;
+        case rt_DATA_TYPE_LAMBDA:
+            if (var->data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
+                rt_DataLibHandle_increfc(var->data.lambda.fnptr.native.handle);
+                rt_DataStr_increfc(var->data.lambda.fnptr.native.fn_name);
+            }
+            break;
         case rt_DATA_TYPE_BUL:
         case rt_DATA_TYPE_CHR:
         case rt_DATA_TYPE_I64:
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
-        case rt_DATA_TYPE_LAMBDA:
-        case rt_DATA_TYPE_LIBHANDLE:
             break;
     }
 }
@@ -223,14 +232,21 @@ void rt_Data_decrefc(rt_Data_t *var)
         case rt_DATA_TYPE_MAP:
             rt_DataMap_decrefc(var->data.mp);
             break;
+        case rt_DATA_TYPE_LIBHANDLE:
+            rt_DataLibHandle_decrefc(var->data.libhandle);
+            break;
+        case rt_DATA_TYPE_LAMBDA:
+            if (var->data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
+                rt_DataLibHandle_decrefc(var->data.lambda.fnptr.native.handle);
+                rt_DataStr_decrefc(var->data.lambda.fnptr.native.fn_name);
+            }
+            break;
         case rt_DATA_TYPE_BUL:
         case rt_DATA_TYPE_CHR:
         case rt_DATA_TYPE_I64:
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
-        case rt_DATA_TYPE_LAMBDA:
-        case rt_DATA_TYPE_LIBHANDLE:
             break;
     }
 }
@@ -260,14 +276,25 @@ rt_Data_t rt_Data_clone(const rt_Data_t var)
                 var.data.proc.module_name,
                 var.data.proc.proc_name
             );
+        case rt_DATA_TYPE_LIBHANDLE:
+            return rt_Data_libhandle(rt_DataLibHandle_clone(var.data.libhandle));
         case rt_DATA_TYPE_LAMBDA:
             if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NONNATIVE)
                 return rt_Data_lambda_nonnative(var.data.lambda.fnptr.nonnative);
-            else if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
-                return rt_Data_lambda_native(var.data.lambda.module_name, var.data.lambda.fnptr.native);
-        case rt_DATA_TYPE_LIBHANDLE:
-            return rt_Data_libhandle(var.data.libhandle.handle, var.data.libhandle.file_name);
 
+            else if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
+                rt_DataLibHandle_t *new_handle = rt_DataLibHandle_clone(var.data.lambda.fnptr.native.handle);
+                rt_DataStr_t *new_fn_name = rt_DataStr_clone(var.data.lambda.fnptr.native.fn_name);
+
+                char *fname = rt_DataStr_tostr(var.data.lambda.fnptr.native.fn_name);
+                const rt_Data_t lambda = rt_Data_lambda_native(
+                    new_handle,
+                    new_fn_name,
+                    rt_DataLibHandle_lookup(new_handle, fname)
+                );
+                free(fname);
+                return lambda;
+            }
     }
     return rt_Data_null();
 }
@@ -290,47 +317,32 @@ void rt_Data_destroy_circular(rt_Data_t *var, bool flag)
             rt_DataMap_destroy_circular(&var->data.mp, flag);
             if (!var->data.mp) *var = rt_Data_null();
             break;
+        case rt_DATA_TYPE_LIBHANDLE:
+            rt_DataLibHandle_destroy(&var->data.libhandle);
+            if (!var->data.libhandle) *var = rt_Data_null();
+            break;
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_BUL:
         case rt_DATA_TYPE_CHR:
         case rt_DATA_TYPE_I64:
         case rt_DATA_TYPE_F64:
         case rt_DATA_TYPE_PROC:
-        case rt_DATA_TYPE_LAMBDA:
-        case rt_DATA_TYPE_LIBHANDLE:
             /* assigning non-composite data to rt_VarTable_null on destroy
                corrupts data in case *var points to a rt_ global var */
             break;
+        case rt_DATA_TYPE_LAMBDA: {
+            rt_DataLambda_t lambda = var->data.lambda;
+            if (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
+                rt_DataLibHandle_destroy(&lambda.fnptr.native.handle);
+                rt_DataStr_destroy(&lambda.fnptr.native.fn_name);
+            }
+        }
     }
 }
 
 void rt_Data_destroy(rt_Data_t *var)
 {
     rt_Data_destroy_circular(var, false);
-}
-
-#ifdef _WIN32
-    #include <windows.h>
-#else
-    #include <dlfcn.h>
-#endif
-
-int rt_DataLibHandle_destroy(rt_DataLibHandle_t *libhandle)
-{
-    free(libhandle->file_name);
-#ifdef _WIN32
-    // On Windows, use FreeLibrary to close the library.
-    int result = FreeLibrary((HMODULE) libhandle->handle);
-    if (result) return 0;    // Return 0 to indicate success.
-    else return 1;           // Return 1 to indicate failure.
-#else
-    // On Unix-like systems, use dlclose to close the library.
-    int result = dlclose(libhandle->handle);
-    if (!result) return 0;   // Return 0 to indicate success.
-    else return result;      // Return the error code to indicate failure.
-#endif
-    libhandle->handle = NULL;
-    libhandle->file_name = NULL;
 }
 
 bool rt_Data_isnull(const rt_Data_t var)
@@ -493,9 +505,9 @@ bool rt_Data_tobool(const rt_Data_t var)
         case rt_DATA_TYPE_PROC:
             return !!var.data.proc.proc_name && !!var.data.proc.module_name;
         case rt_DATA_TYPE_LAMBDA:
-            return !!var.data.lambda.fnptr.nonnative || !!var.data.lambda.fnptr.native;
+            return !!var.data.lambda.fnptr.nonnative || !!var.data.lambda.fnptr.native.fn;
         case rt_DATA_TYPE_LIBHANDLE:
-            return !!var.data.libhandle.handle;
+            return !!var.data.libhandle->handle;
     }
     return false;
 }
@@ -567,30 +579,36 @@ char *rt_Data_tostr(const rt_Data_t var)
         }
         case rt_DATA_TYPE_LAMBDA: {
             if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
-                const void *handle = var.data.lambda.module_name;
-                const void *fnptr = var.data.lambda.fnptr.native;
-                size_t sz = snprintf(NULL, 0, "%p:%p", handle, fnptr);
+                /* weak pointer to file name */
+                const char *module_name = var.data.lambda.fnptr.native.handle->file_name;
+                /* own the fn name */
+                char *fn_name = rt_DataStr_tostr(var.data.lambda.fnptr.native.fn_name);
+
+                size_t sz = snprintf(NULL, 0, "%s:%s", module_name, fn_name);
                 char *str = (char*) malloc((sz +1) * sizeof(char));
                 if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
-                sprintf(str, "%p:%p", handle, fnptr);
+                sprintf(str, "%s:%s", module_name, fn_name);
+
+                /* free owned fn name */
+                free(fn_name);
                 return str;
             }
             else {
                 size_t sz = snprintf(NULL, 0, "%s:%s",
                     rt_DATA_LAMBDA_DEFAULT_NAME,
-                    var.data.lambda.module_name
+                    var.data.lambda.fnptr.nonnative->module_name
                 );
                 char *str = (char*) malloc((sz +1) * sizeof(char));
                 if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
                 sprintf(str, "%s:%s",
-                    var.data.lambda.module_name,
+                    var.data.lambda.fnptr.nonnative->module_name,
                     rt_DATA_LAMBDA_DEFAULT_NAME
                 );
                 return str;
             }
         }
         case rt_DATA_TYPE_LIBHANDLE:
-            return strdup(var.data.libhandle.file_name);
+            return rt_DataLibHandle_tostr(var.data.libhandle);
     }
     return NULL;
 }
