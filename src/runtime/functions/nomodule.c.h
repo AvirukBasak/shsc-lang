@@ -43,15 +43,18 @@ rt_Data_t rt_fn_type()
         case rt_DATA_TYPE_F64:
             return rt_VarTable_typeid_f64;
         case rt_DATA_TYPE_STR:
+        case rt_DATA_TYPE_INTERP_STR:
             return rt_VarTable_typeid_str;
         case rt_DATA_TYPE_LST:
             return rt_VarTable_typeid_lst;
         case rt_DATA_TYPE_MAP:
             return rt_VarTable_typeid_map;
-        case rt_DATA_TYPE_INTERP_STR:
         case rt_DATA_TYPE_PROC:
+            return rt_VarTable_typeid_proc;
         case rt_DATA_TYPE_LAMBDA:
+            return rt_VarTable_typeid_lambda;
         case rt_DATA_TYPE_LIBHANDLE:
+            return rt_VarTable_typeid_libhandle;
         case rt_DATA_TYPE_ANY:
             return rt_Data_isnull(data) ?
                 rt_VarTable_rsv_null : rt_VarTable_typeid_any;

@@ -62,6 +62,8 @@ rt_Data_t rt_fn_dbg_id()
         case rt_DATA_TYPE_MAP:
             id_ptr = (void*) data.data.mp;
             break;
+        case rt_DATA_TYPE_LIBHANDLE:
+            id_ptr = (void*) data.data.libhandle;
         case rt_DATA_TYPE_BUL:
         case rt_DATA_TYPE_CHR:
         case rt_DATA_TYPE_I64:
@@ -69,7 +71,6 @@ rt_Data_t rt_fn_dbg_id()
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
-        case rt_DATA_TYPE_LIBHANDLE:
             id_ptr = (void*) &data;
             break;
     }
