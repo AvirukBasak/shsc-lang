@@ -282,15 +282,17 @@ rt_Data_t rt_fn_io_libopen()
     rt_Data_t data;
 
 #ifdef _WIN32
-    data = rt_Data_any(LoadLibrary(libname));
-    if (rt_Data_isnull(data)) {
+    void *handle = LoadLibrary(libname);
+    if (!handle) {
         rt_throw("unable to open library '%s'", libname);
     }
+    data = rt_Data_any(handle);
 #else
-    data = rt_Data_any(dlopen(libname, RTLD_LAZY));
-    if (rt_Data_isnull(data)) {
+    void *handle = dlopen(libname, RTLD_LAZY);
+    if (!handle) {
         rt_throw("%s", dlerror());
     }
+    data = rt_Data_any(handle);
 #endif
 
     free(libname);
@@ -314,16 +316,18 @@ rt_Data_t rt_fn_io_libsym()
 
 #ifdef _WIN32
     // On Windows, use GetProcAddress to get the symbol from the library handle.
-    data = rt_Data_lambda_native(handle_arg.data.any, GetProcAddress((HMODULE) handle_arg.data.any, symbolname));
-    if (rt_Data_isnull(data)) {
-        rt_throw("unable to get symbol");
+    void *fnptr = GetProcAddress((HMODULE) handle_arg.data.any, symbolname);
+    if (!fnptr) {
+        rt_throw("unable to get symbol '%s'", symbolname);
     }
+    data = rt_Data_lambda_native(handle_arg.data.any, fnptr);
 #else
     // On Unix-like systems, use dlsym to get the symbol from the library handle.
-    data = rt_Data_lambda_native(handle_arg.data.any, dlsym(handle_arg.data.any, symbolname));
-    if (rt_Data_isnull(data)) {
+    void *fnptr = dlsym(handle_arg.data.any, symbolname);
+    if (!fnptr) {
         rt_throw("%s", dlerror());
     }
+    data = rt_Data_lambda_native(handle_arg.data.any, fnptr);
 #endif
 
     // Free the symbol name string.
@@ -344,12 +348,12 @@ rt_Data_t rt_fn_io_libclose()
 
 #ifdef _WIN32
     // On Windows, use FreeLibrary to close the library.
-    BOOL result = FreeLibrary((HMODULE) handle_arg.data.any);
+    int result = FreeLibrary((HMODULE) handle_arg.data.any);
     if (result) {
-        data = rt_Data_null();  // Return null data to indicate success.
+        data = rt_Data_i64(0);  // Return 0 to indicate success.
     } else {
         rt_throw("unable to close library");
-        data = rt_Data_null();  // Return null data to indicate failure.
+        data = rt_Data_i64(1);  // Return the 1 to indicate failure.
     }
 #else
     // On Unix-like systems, use dlclose to close the library.
