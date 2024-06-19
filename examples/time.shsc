@@ -1,0 +1,10 @@
+proc main()
+    var t1 = dbg:timenow()
+    var t2 = dbg:timenow_param(t1)
+    var t3 = dbg:timenow_param()
+    var t4 = dbg:timenow_param(2000)
+    io:print("t1 =", t1, lf)
+    io:print("t2 =", t2, lf)
+    io:print("t3 =", t3, lf)
+    io:print("t4 =", t4, lf)
+end

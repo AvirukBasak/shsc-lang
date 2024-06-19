@@ -3,6 +3,9 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdint.h>
+
+uint64_t io_get_time_in_ms();
 
 /** read string contains trailing new line.
     size_t n is the number of bytes allocated.

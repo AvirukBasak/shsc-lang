@@ -30,6 +30,8 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "callproc")) return rt_fn_DBG_CALLPROC;
         if (!strcmp(fname, "filename")) return rt_fn_DBG_FILENAME;
         if (!strcmp(fname, "lineno"))   return rt_fn_DBG_LINENO;
+        if (!strcmp(fname, "timenow"))  return rt_fn_DBG_TIMENOW;
+        if (!strcmp(fname, "timenow_param")) return rt_fn_DBG_TIMENOW_PARAM;
     }
     if (!strcmp(module, "io")) {
         if (!strcmp(fname, "print"))    return rt_fn_IO_PRINT;
@@ -149,6 +151,8 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_DBG_CALLPROC:  return rt_fn_dbg_callproc();
         case rt_fn_DBG_FILENAME:  return rt_fn_dbg_filename();
         case rt_fn_DBG_LINENO:    return rt_fn_dbg_lineno();
+        case rt_fn_DBG_TIMENOW:   return rt_fn_dbg_timenow();
+        case rt_fn_DBG_TIMENOW_PARAM: return rt_fn_dbg_timenow_parameterized();
 
         case rt_fn_IO_PRINT:      return rt_fn_io_print();
         case rt_fn_IO_INPUT:      return rt_fn_io_input();

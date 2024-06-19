@@ -1,14 +1,37 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "errcodes.h"
 #include "globals.h"
 #include "io.h"
+
+#ifdef _WIN32
+#include <windows.h>
+
+uint64_t io_get_time_in_ms() {
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);
+    uint64_t time = (((uint64_t)ft.dwHighDateTime << 32) | ft.dwLowDateTime) / 10000;
+    return time;
+}
+
+#else
+#include <sys/time.h>
+
+uint64_t io_get_time_in_ms() {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    uint64_t time_in_mill = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+    return time_in_mill;
+}
+
+#endif
 
 #ifndef IO_GETLINE
 #define IO_GETLINE
