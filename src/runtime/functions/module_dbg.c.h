@@ -131,11 +131,22 @@ rt_Data_t rt_fn_dbg_timenow()
 
 rt_Data_t rt_fn_dbg_timenow_parameterized()
 {
-    const rt_DataList_t *args = rt_fn_get_valid_args(1);
-    const rt_Data_t time = *rt_DataList_getref(args, 0);
-    rt_Data_assert_type(time, rt_DATA_TYPE_I64, "time in milliseconds");
+    const rt_DataList_t *args = rt_fn_get_valid_args(0);
+    rt_Data_t time = rt_Data_null();
+
+    if (rt_DataList_length(args) < 1) {
+        time = rt_fn_call_handler(
+            rt_Data_null(),
+            "dbg", "timenow",
+            rt_DataList_init()
+        );
+    } else {
+        time = *rt_DataList_getref(args, 0);
+        rt_Data_assert_type(time, rt_DATA_TYPE_I64, "time in milliseconds");
+    }
 
     // calculate time in YYYY-MM-DD HH:MM:SS format
+    int ms = time.data.i64 % 1000;
     int sec = time.data.i64 / 1000;
     int min = sec / 60;
     sec %= 60;
@@ -155,6 +166,7 @@ rt_Data_t rt_fn_dbg_timenow_parameterized()
     rt_DataMap_insert(time_map, "HOURS"  , rt_Data_i64(hr ));
     rt_DataMap_insert(time_map, "MINUTES", rt_Data_i64(min));
     rt_DataMap_insert(time_map, "SECONDS", rt_Data_i64(sec));
+    rt_DataMap_insert(time_map, "MILLISECONDS" , rt_Data_i64(ms ));
     return rt_Data_map(time_map);
 }
 
