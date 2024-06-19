@@ -14,6 +14,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
+#include "runtime/data/DataLibHandle.h"
 #include "runtime/functions.h"
 #include "runtime/functions/module_io.h"
 #include "runtime/VarTable.h"
@@ -279,19 +280,8 @@ rt_Data_t rt_fn_io_libopen()
     const rt_Data_t libname_arg = *rt_DataList_getref(args, 0);
     rt_Data_assert_type(libname_arg, rt_DATA_TYPE_STR, "filename");
     char *filename = rt_Data_tostr(libname_arg);
-#ifdef _WIN32
-    void *handle = LoadLibrary(filename);
-    if (!handle) {
-        rt_throw("unable to open library '%s'", filename);
-    }
-#else
-    void *handle = dlopen(filename, RTLD_LAZY);
-    if (!handle) {
-        rt_throw("%s", dlerror());
-    }
-#endif
-
-    return rt_Data_libhandle(handle, filename);
+    rt_DataLibHandle_t *handle = rt_DataLibHandle_init(filename);
+    return rt_Data_libhandle(handle);
 }
 
 rt_Data_t rt_fn_io_libsym()
@@ -307,27 +297,15 @@ rt_Data_t rt_fn_io_libsym()
 
     // Convert the symbol name to a C string.
     char *symbolname = rt_Data_tostr(symbolname_arg);
-    rt_Data_t data;
 
-#ifdef _WIN32
-    // On Windows, use GetProcAddress to get the symbol from the library handle.
-    void *fnptr = GetProcAddress((HMODULE) handle_arg.data.libhandle.handle, symbolname);
-    if (!fnptr) {
-        rt_throw("unable to get symbol '%s'", symbolname);
-    }
-    data = rt_Data_lambda_native(handle_arg.data.libhandle.handle, fnptr);
-#else
-    // On Unix-like systems, use dlsym to get the symbol from the library handle.
-    void *fnptr = dlsym(handle_arg.data.libhandle.handle, symbolname);
-    if (!fnptr) {
-        rt_throw("%s", dlerror());
-    }
-    data = rt_Data_lambda_native(handle_arg.data.libhandle.file_name, fnptr);
-#endif
+    const rt_Data_t lambda = rt_Data_lambda_native(
+        handle_arg.data.libhandle,
+        symbolname_arg.data.str,
+        rt_DataLibHandle_lookup(handle_arg.data.libhandle, symbolname)
+    );
 
-    // Free the symbol name string.
     free(symbolname);
-    return data;
+    return lambda;
 }
 
 rt_Data_t rt_fn_io_libclose()
@@ -337,7 +315,8 @@ rt_Data_t rt_fn_io_libclose()
     rt_Data_t handle_arg = *rt_DataList_getref(args, 0);
     // Assert that the argument is of the correct type.
     rt_Data_assert_type(handle_arg, rt_DATA_TYPE_LIBHANDLE, "handle");
-    return rt_Data_i64(rt_DataLibHandle_destroy(&handle_arg.data.libhandle));
+    rt_DataLibHandle_destroy(&handle_arg.data.libhandle);
+    return rt_Data_null();
 }
 
 bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
