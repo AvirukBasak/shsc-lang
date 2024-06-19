@@ -326,7 +326,7 @@ rt_Data_t rt_fn_lambda_call_handler(
         : (const ast_Identifier_t*) lambda.fnptr.nonnative->module_name;
 
     const ast_Identifier_t *proc = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
-        ? (const ast_Identifier_t*) lambda.fnptr.native.fn_name
+        ? (const ast_Identifier_t*) rt_DataStr_tostr(lambda.fnptr.native.fn_name)
         : (const ast_Identifier_t*) rt_DATA_LAMBDA_DEFAULT_NAME;
 
     const char *currfile = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
@@ -399,5 +399,10 @@ rt_Data_t rt_fn_lambda_call_handler(
 
     /* pop lambda from stack */
     rt_Data_t ret = rt_VarTable_pop_proc();
+
+    if (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
+        free((void*) proc);
+    }
+
     return ret;
 }
