@@ -328,45 +328,49 @@ rt_Data_t rt_fn_lambda_call_handler(
 
     /* store fn args into agrs location */
     rt_VarTable_create(RT_VTABLE_ARGSVAR, rt_Data_list(args), true, false);
+
     /* store context into context location */
     rt_VarTable_create(RT_VTABLE_CONTEXTVAR, context, true, false);
 
-    /* count number of fnargs present in fnargs_list */
-    int64_t fnargs_count = 0;
-    const ast_FnArgsList_t *fnargs_list = lambda.fnptr.nonnative->args_list;
-    while (fnargs_list) {
-        ++fnargs_count;
-        fnargs_list = fnargs_list->args_list;
-    }
-
-    // /* if no of named args is more that whats passed, throw error */
-    // if (fnargs_count > rt_DataList_length(args))
-    //     rt_throw(
-    //         "expected at least %" PRId64 " arguments, received %" PRId64,
-    //         fnargs_count, rt_DataList_length(args)
-    //     );
-
-    /* create named args list */
-    fnargs_list = lambda.fnptr.nonnative->args_list;
-    for  (int64_t i = 0; i < rt_DataList_length(args) && fnargs_list; ++i) {
-        rt_VarTable_create(fnargs_list->identifier,
-            *rt_DataList_getref(args, i), false, false);
-        fnargs_list = fnargs_list->args_list;
-    }
-
-    /* make remaining fnargs null */
-    while (fnargs_list) {
-        rt_VarTable_create(fnargs_list->identifier, rt_Data_null(), false, false);
-        fnargs_list = fnargs_list->args_list;
-    }
-
     switch (lambda.type) {
+
         case rt_DATA_LAMBDA_TYPE_NATIVE: {
             const rt_fn_NativeFunction_t fn = lambda.fnptr.native;
             rt_VarTable_acc_setval(fn(context, args));
             break;
         }
-        case rt_DATA_LAMBDA_TYPE_NONNATIVE:
+
+        case rt_DATA_LAMBDA_TYPE_NONNATIVE: {
+
+            /* count number of fnargs present in fnargs_list */
+            int64_t fnargs_count = 0;
+            const ast_FnArgsList_t *fnargs_list = lambda.fnptr.nonnative->args_list;
+            while (fnargs_list) {
+                ++fnargs_count;
+                fnargs_list = fnargs_list->args_list;
+            }
+
+            // /* if no of named args is more that whats passed, throw error */
+            // if (fnargs_count > rt_DataList_length(args))
+            //     rt_throw(
+            //         "expected at least %" PRId64 " arguments, received %" PRId64,
+            //         fnargs_count, rt_DataList_length(args)
+            //     );
+
+            /* create named args list */
+            fnargs_list = lambda.fnptr.nonnative->args_list;
+            for  (int64_t i = 0; i < rt_DataList_length(args) && fnargs_list; ++i) {
+                rt_VarTable_create(fnargs_list->identifier,
+                    *rt_DataList_getref(args, i), false, false);
+                fnargs_list = fnargs_list->args_list;
+            }
+
+            /* make remaining fnargs null */
+            while (fnargs_list) {
+                rt_VarTable_create(fnargs_list->identifier, rt_Data_null(), false, false);
+                fnargs_list = fnargs_list->args_list;
+            }
+
             if (lambda.fnptr.nonnative->is_expr) {
                 /* evaluate lambda expression */
                 rt_eval_Expression(lambda.fnptr.nonnative->body.expression);
@@ -378,7 +382,9 @@ rt_Data_t rt_fn_lambda_call_handler(
                 if (ctrl == rt_CTRL_CONTINUE)
                     rt_throw("unexpected `continue` statement outside loop");
             }
+
             break;
+        }
     }
 
     /* pop lambda from stack */
