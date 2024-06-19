@@ -266,6 +266,105 @@ rt_Data_t rt_fn_io_fappend()
     return rt_Data_i64(bytes);
 }
 
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <dlfcn.h>
+#endif
+
+rt_Data_t rt_fn_io_libopen()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t libname_arg = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(libname_arg, rt_DATA_TYPE_STR, "libname");
+
+    char *libname = rt_Data_tostr(libname_arg);
+    rt_Data_t data;
+
+#ifdef _WIN32
+    data = rt_Data_any(LoadLibrary(libname));
+    if (rt_Data_isnull(data)) {
+        rt_throw("unable to open library '%s'", libname);
+    }
+#else
+    data = rt_Data_any(dlopen(libname, RTLD_LAZY));
+    if (rt_Data_isnull(data)) {
+        rt_throw("%s", dlerror());
+    }
+#endif
+
+    free(libname);
+    return data;
+}
+
+rt_Data_t rt_fn_io_libsym()
+{
+    // Get the valid arguments. We expect two arguments: handle and symbol name.
+    const rt_DataList_t *args = rt_fn_get_valid_args(2);
+    const rt_Data_t handle_arg = *rt_DataList_getref(args, 0);
+    const rt_Data_t symbolname_arg = *rt_DataList_getref(args, 1);
+
+    // Assert that the arguments are of the correct type.
+    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_ANY, "handle");
+    rt_Data_assert_type(symbolname_arg, rt_DATA_TYPE_STR, "symbolname");
+
+    // Convert the symbol name to a C string.
+    char *symbolname = rt_Data_tostr(symbolname_arg);
+    rt_Data_t data;
+
+#ifdef _WIN32
+    // On Windows, use GetProcAddress to get the symbol from the library handle.
+    data = rt_Data_lambda_native(GetProcAddress((HMODULE) handle_arg.data.any, symbolname));
+    if (rt_Data_isnull(data)) {
+        rt_throw("unable to get symbol");
+    }
+#else
+    // On Unix-like systems, use dlsym to get the symbol from the library handle.
+    data = rt_Data_lambda_native(dlsym(handle_arg.data.any, symbolname));
+    if (rt_Data_isnull(data)) {
+        rt_throw("%s", dlerror());
+    }
+#endif
+
+    // Free the symbol name string.
+    free(symbolname);
+    return data;
+}
+
+rt_Data_t rt_fn_io_libclose()
+{
+    // Get the valid arguments. We expect one argument: the library handle.
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t handle_arg = *rt_DataList_getref(args, 0);
+
+    // Assert that the argument is of the correct type.
+    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_ANY, "handle");
+
+    rt_Data_t data;
+
+#ifdef _WIN32
+    // On Windows, use FreeLibrary to close the library.
+    BOOL result = FreeLibrary((HMODULE) handle_arg.data.any);
+    if (result) {
+        data = rt_Data_null();  // Return null data to indicate success.
+    } else {
+        rt_throw("unable to close library");
+        data = rt_Data_null();  // Return null data to indicate failure.
+    }
+#else
+    // On Unix-like systems, use dlclose to close the library.
+    int result = dlclose(handle_arg.data.any);
+    if (result == 0) {
+        data = rt_Data_i64(0);  // Return 0 to indicate success.
+    } else {
+        rt_throw("%s", dlerror());
+        data = rt_Data_i64(result);  // Return the error code to indicate failure.
+    }
+#endif
+
+    return data;
+}
+
 bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
 {
     switch (type) {

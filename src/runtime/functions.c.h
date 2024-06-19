@@ -38,6 +38,9 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "fread"))    return rt_fn_IO_FREAD;
         if (!strcmp(fname, "fwrite"))   return rt_fn_IO_FWRITE;
         if (!strcmp(fname, "fappend"))  return rt_fn_IO_FAPPEND;
+        if (!strcmp(fname, "libopen"))  return rt_fn_IO_LIBOPEN;
+        if (!strcmp(fname, "libsym"))   return rt_fn_IO_LIBSYM;
+        if (!strcmp(fname, "libclose")) return rt_fn_IO_LIBCLOSE;
     }
     if (!strcmp(module, "it")) {
         if (!strcmp(fname, "len"))      return rt_fn_IT_LEN;
@@ -153,6 +156,9 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_IO_FREAD:      return rt_fn_io_fread();
         case rt_fn_IO_FWRITE:     return rt_fn_io_fwrite();
         case rt_fn_IO_FAPPEND:    return rt_fn_io_fappend();
+        case rt_fn_IO_LIBOPEN:    return rt_fn_io_libopen();
+        case rt_fn_IO_LIBSYM:     return rt_fn_io_libsym();
+        case rt_fn_IO_LIBCLOSE:   return rt_fn_io_libclose();
 
         case rt_fn_IT_LEN:        return rt_fn_it_len();
         case rt_fn_IT_CLONE:      return rt_fn_it_clone();

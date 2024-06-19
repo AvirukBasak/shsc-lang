@@ -44,6 +44,9 @@ typedef enum {
     rt_fn_IO_FREAD,      /* io:fread */
     rt_fn_IO_FWRITE,     /* io:fwrite */
     rt_fn_IO_FAPPEND,    /* io:fappend */
+    rt_fn_IO_LIBOPEN,    /* io:libopen */
+    rt_fn_IO_LIBSYM,     /* io:libsym */
+    rt_fn_IO_LIBCLOSE,   /* io:libclose */
 
     rt_fn_IT_LEN,        /* it:len */
     rt_fn_IT_CLONE,      /* it:clone */
