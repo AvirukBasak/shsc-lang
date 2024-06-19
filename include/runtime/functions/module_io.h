@@ -11,6 +11,5 @@ rt_Data_t rt_fn_io_fwrite();
 rt_Data_t rt_fn_io_fappend();
 rt_Data_t rt_fn_io_libopen();
 rt_Data_t rt_fn_io_libsym();
-rt_Data_t rt_fn_io_libclose();
 
 #endif
