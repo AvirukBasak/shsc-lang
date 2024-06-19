@@ -42,7 +42,6 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "fappend"))  return rt_fn_IO_FAPPEND;
         if (!strcmp(fname, "libopen"))  return rt_fn_IO_LIBOPEN;
         if (!strcmp(fname, "libsym"))   return rt_fn_IO_LIBSYM;
-        if (!strcmp(fname, "libclose")) return rt_fn_IO_LIBCLOSE;
     }
     if (!strcmp(module, "it")) {
         if (!strcmp(fname, "len"))      return rt_fn_IT_LEN;
@@ -162,7 +161,6 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_IO_FAPPEND:    return rt_fn_io_fappend();
         case rt_fn_IO_LIBOPEN:    return rt_fn_io_libopen();
         case rt_fn_IO_LIBSYM:     return rt_fn_io_libsym();
-        case rt_fn_IO_LIBCLOSE:   return rt_fn_io_libclose();
 
         case rt_fn_IT_LEN:        return rt_fn_it_len();
         case rt_fn_IT_CLONE:      return rt_fn_it_clone();
@@ -323,9 +321,17 @@ rt_Data_t rt_fn_lambda_call_handler(
     const rt_DataLambda_t lambda,
     rt_DataList_t *args
 ) {
-    const ast_Identifier_t *module = (const ast_Identifier_t*) lambda.module_name;
-    const ast_Identifier_t *proc = (const ast_Identifier_t*) rt_DATA_LAMBDA_DEFAULT_NAME;
-    const char *currfile = lambda.file_name;
+    const ast_Identifier_t *module = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
+        ? (const ast_Identifier_t*) lambda.fnptr.native.handle->file_name
+        : (const ast_Identifier_t*) lambda.fnptr.nonnative->module_name;
+
+    const ast_Identifier_t *proc = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
+        ? (const ast_Identifier_t*) lambda.fnptr.native.fn_name
+        : (const ast_Identifier_t*) rt_DATA_LAMBDA_DEFAULT_NAME;
+
+    const char *currfile = (lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
+        ? (const ast_Identifier_t*) lambda.fnptr.native.handle->file_name
+        : (const ast_Identifier_t*) lambda.fnptr.nonnative->file_name;
 
     /* push lambda to stack */
     rt_VarTable_push_proc(module, proc, currfile);
@@ -339,7 +345,7 @@ rt_Data_t rt_fn_lambda_call_handler(
     switch (lambda.type) {
 
         case rt_DATA_LAMBDA_TYPE_NATIVE: {
-            const rt_fn_NativeFunction_t fn = lambda.fnptr.native;
+            const rt_fn_NativeFunction_t fn = lambda.fnptr.native.fn;
             rt_VarTable_acc_setval(fn(context, args));
             break;
         }

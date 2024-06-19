@@ -308,17 +308,6 @@ rt_Data_t rt_fn_io_libsym()
     return lambda;
 }
 
-rt_Data_t rt_fn_io_libclose()
-{
-    // Get the valid arguments. We expect one argument: the library handle.
-    const rt_DataList_t *args = rt_fn_get_valid_args(1);
-    rt_Data_t handle_arg = *rt_DataList_getref(args, 0);
-    // Assert that the argument is of the correct type.
-    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_LIBHANDLE, "handle");
-    rt_DataLibHandle_destroy(&handle_arg.data.libhandle);
-    return rt_Data_null();
-}
-
 bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
 {
     switch (type) {
