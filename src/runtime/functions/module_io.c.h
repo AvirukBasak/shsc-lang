@@ -314,13 +314,13 @@ rt_Data_t rt_fn_io_libsym()
 
 #ifdef _WIN32
     // On Windows, use GetProcAddress to get the symbol from the library handle.
-    data = rt_Data_lambda_native(GetProcAddress((HMODULE) handle_arg.data.any, symbolname));
+    data = rt_Data_lambda_native(handle_arg.data.any, GetProcAddress((HMODULE) handle_arg.data.any, symbolname));
     if (rt_Data_isnull(data)) {
         rt_throw("unable to get symbol");
     }
 #else
     // On Unix-like systems, use dlsym to get the symbol from the library handle.
-    data = rt_Data_lambda_native(dlsym(handle_arg.data.any, symbolname));
+    data = rt_Data_lambda_native(handle_arg.data.any, dlsym(handle_arg.data.any, symbolname));
     if (rt_Data_isnull(data)) {
         rt_throw("%s", dlerror());
     }

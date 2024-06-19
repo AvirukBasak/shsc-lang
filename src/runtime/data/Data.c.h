@@ -142,7 +142,7 @@ rt_Data_t rt_Data_lambda_nonnative(const ast_LambdaLiteral_t *lambda)
     return var;
 }
 
-rt_Data_t rt_Data_lambda_native(const rt_fn_NativeFunction_t fnptr)
+rt_Data_t rt_Data_lambda_native(const void *handle, const rt_fn_NativeFunction_t fnptr)
 {
     rt_Data_t var;
     var.is_const = false;
@@ -150,7 +150,7 @@ rt_Data_t rt_Data_lambda_native(const rt_fn_NativeFunction_t fnptr)
     var.lvalue = false;
     var.type = rt_DATA_TYPE_LAMBDA;
     var.data.lambda.type = rt_DATA_LAMBDA_TYPE_NATIVE;
-    var.data.lambda.module_name = NULL;
+    var.data.lambda.module_name = handle;
     var.data.lambda.file_name = NULL;
     var.data.lambda.context = NULL;
     var.data.lambda.fnptr.native = fnptr;
@@ -255,7 +255,7 @@ rt_Data_t rt_Data_clone(const rt_Data_t var)
             if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NONNATIVE)
                 return rt_Data_lambda(var.data.lambda.fnptr.nonnative);
             else if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE)
-                return rt_Data_lambda_native(var.data.lambda.fnptr.native);
+                return rt_Data_lambda_native(var.data.lambda.module_name, var.data.lambda.fnptr.native);
 
     }
     return rt_Data_null();
@@ -526,17 +526,28 @@ char *rt_Data_tostr(const rt_Data_t var)
             return str;
         }
         case rt_DATA_TYPE_LAMBDA: {
-            size_t sz = snprintf(NULL, 0, "%s:%s",
-                rt_DATA_LAMBDA_DEFAULT_NAME,
-                var.data.lambda.module_name
-            );
-            char *str = (char*) malloc((sz +1) * sizeof(char));
-            if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
-            sprintf(str, "%s:%s",
-                var.data.lambda.module_name,
-                rt_DATA_LAMBDA_DEFAULT_NAME
-            );
-            return str;
+            if (var.data.lambda.type == rt_DATA_LAMBDA_TYPE_NATIVE) {
+                const void *handle = var.data.lambda.module_name;
+                const void *fnptr = var.data.lambda.fnptr.native;
+                size_t sz = snprintf(NULL, 0, "%p:%p", handle, fnptr);
+                char *str = (char*) malloc((sz +1) * sizeof(char));
+                if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
+                sprintf(str, "native:%p", fnptr);
+                return str;
+            }
+            else {
+                size_t sz = snprintf(NULL, 0, "%s:%s",
+                    rt_DATA_LAMBDA_DEFAULT_NAME,
+                    var.data.lambda.module_name
+                );
+                char *str = (char*) malloc((sz +1) * sizeof(char));
+                if (!str) io_errndie("rt_Data_tostr:" ERR_MSG_MALLOCFAIL);
+                sprintf(str, "%s:%s",
+                    var.data.lambda.module_name,
+                    rt_DATA_LAMBDA_DEFAULT_NAME
+                );
+                return str;
+            }
         }
     }
     return NULL;
