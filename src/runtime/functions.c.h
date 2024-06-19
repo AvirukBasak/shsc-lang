@@ -30,6 +30,8 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
         if (!strcmp(fname, "callproc")) return rt_fn_DBG_CALLPROC;
         if (!strcmp(fname, "filename")) return rt_fn_DBG_FILENAME;
         if (!strcmp(fname, "lineno"))   return rt_fn_DBG_LINENO;
+        if (!strcmp(fname, "timenow"))  return rt_fn_DBG_TIMENOW;
+        if (!strcmp(fname, "timenow_param")) return rt_fn_DBG_TIMENOW_PARAM;
     }
     if (!strcmp(module, "io")) {
         if (!strcmp(fname, "print"))    return rt_fn_IO_PRINT;
