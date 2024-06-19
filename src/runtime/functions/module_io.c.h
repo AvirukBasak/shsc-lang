@@ -131,7 +131,8 @@ rt_Data_t rt_fn_io_input()
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_PROC:
-        case rt_DATA_TYPE_LAMBDA: rt_throw(
+        case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE: rt_throw(
             "invalid type parameter\n"
             "valid parameters are bul, chr, i64, f64 or str\n"
             "respective values are %d, %d, %d, %d or %d",
@@ -276,27 +277,21 @@ rt_Data_t rt_fn_io_libopen()
 {
     const rt_DataList_t *args = rt_fn_get_valid_args(1);
     const rt_Data_t libname_arg = *rt_DataList_getref(args, 0);
-    rt_Data_assert_type(libname_arg, rt_DATA_TYPE_STR, "libname");
-
-    char *libname = rt_Data_tostr(libname_arg);
-    rt_Data_t data;
-
+    rt_Data_assert_type(libname_arg, rt_DATA_TYPE_STR, "filename");
+    char *filename = rt_Data_tostr(libname_arg);
 #ifdef _WIN32
-    void *handle = LoadLibrary(libname);
+    void *handle = LoadLibrary(filename);
     if (!handle) {
-        rt_throw("unable to open library '%s'", libname);
+        rt_throw("unable to open library '%s'", filename);
     }
-    data = rt_Data_any(handle);
 #else
-    void *handle = dlopen(libname, RTLD_LAZY);
+    void *handle = dlopen(filename, RTLD_LAZY);
     if (!handle) {
         rt_throw("%s", dlerror());
     }
-    data = rt_Data_any(handle);
 #endif
 
-    free(libname);
-    return data;
+    return rt_Data_libhandle(handle, filename);
 }
 
 rt_Data_t rt_fn_io_libsym()
@@ -307,7 +302,7 @@ rt_Data_t rt_fn_io_libsym()
     const rt_Data_t symbolname_arg = *rt_DataList_getref(args, 1);
 
     // Assert that the arguments are of the correct type.
-    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_ANY, "handle");
+    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_LIBHANDLE, "handle");
     rt_Data_assert_type(symbolname_arg, rt_DATA_TYPE_STR, "symbolname");
 
     // Convert the symbol name to a C string.
@@ -316,18 +311,18 @@ rt_Data_t rt_fn_io_libsym()
 
 #ifdef _WIN32
     // On Windows, use GetProcAddress to get the symbol from the library handle.
-    void *fnptr = GetProcAddress((HMODULE) handle_arg.data.any, symbolname);
+    void *fnptr = GetProcAddress((HMODULE) handle_arg.data.libhandle.handle, symbolname);
     if (!fnptr) {
         rt_throw("unable to get symbol '%s'", symbolname);
     }
-    data = rt_Data_lambda_native(handle_arg.data.any, fnptr);
+    data = rt_Data_lambda_native(handle_arg.data.libhandle.handle, fnptr);
 #else
     // On Unix-like systems, use dlsym to get the symbol from the library handle.
-    void *fnptr = dlsym(handle_arg.data.any, symbolname);
+    void *fnptr = dlsym(handle_arg.data.libhandle.handle, symbolname);
     if (!fnptr) {
         rt_throw("%s", dlerror());
     }
-    data = rt_Data_lambda_native(handle_arg.data.any, fnptr);
+    data = rt_Data_lambda_native(handle_arg.data.libhandle.file_name, fnptr);
 #endif
 
     // Free the symbol name string.
@@ -339,34 +334,10 @@ rt_Data_t rt_fn_io_libclose()
 {
     // Get the valid arguments. We expect one argument: the library handle.
     const rt_DataList_t *args = rt_fn_get_valid_args(1);
-    const rt_Data_t handle_arg = *rt_DataList_getref(args, 0);
-
+    rt_Data_t handle_arg = *rt_DataList_getref(args, 0);
     // Assert that the argument is of the correct type.
-    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_ANY, "handle");
-
-    rt_Data_t data;
-
-#ifdef _WIN32
-    // On Windows, use FreeLibrary to close the library.
-    int result = FreeLibrary((HMODULE) handle_arg.data.any);
-    if (result) {
-        data = rt_Data_i64(0);  // Return 0 to indicate success.
-    } else {
-        rt_throw("unable to close library");
-        data = rt_Data_i64(1);  // Return the 1 to indicate failure.
-    }
-#else
-    // On Unix-like systems, use dlclose to close the library.
-    int result = dlclose(handle_arg.data.any);
-    if (result == 0) {
-        data = rt_Data_i64(0);  // Return 0 to indicate success.
-    } else {
-        rt_throw("%s", dlerror());
-        data = rt_Data_i64(result);  // Return the error code to indicate failure.
-    }
-#endif
-
-    return data;
+    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_LIBHANDLE, "handle");
+    return rt_Data_i64(rt_DataLibHandle_destroy(&handle_arg.data.libhandle));
 }
 
 bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
@@ -384,6 +355,7 @@ bool rt_fn_io_input_type_isvalid(enum rt_DataType_t type)
         case rt_DATA_TYPE_MAP:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             return false;
     }
     return false;

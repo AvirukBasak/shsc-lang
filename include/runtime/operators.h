@@ -62,6 +62,7 @@
             case rt_DATA_TYPE_ANY:                                                        \
             case rt_DATA_TYPE_PROC:                                                       \
             case rt_DATA_TYPE_LAMBDA:                                                     \
+            case rt_DATA_TYPE_LIBHANDLE:                                                  \
                 rt_throw("no operator '" op_char "' for types `%s` and `%s`",             \
                     rt_Data_typename(*lhs), rt_Data_typename(*rhs));                      \
         }                                                                                 \

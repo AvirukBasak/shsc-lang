@@ -40,6 +40,7 @@ rt_Data_t rt_fn_dbg_refcnt()
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             return rt_Data_i64(1);
     }
     return rt_Data_i64(1);
@@ -68,6 +69,7 @@ rt_Data_t rt_fn_dbg_id()
         case rt_DATA_TYPE_ANY:
         case rt_DATA_TYPE_PROC:
         case rt_DATA_TYPE_LAMBDA:
+        case rt_DATA_TYPE_LIBHANDLE:
             id_ptr = (void*) &data;
             break;
     }
