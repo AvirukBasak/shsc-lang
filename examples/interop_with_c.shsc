@@ -1,7 +1,6 @@
 proc main()
     var mod = io:libopen("add.so")
     var add = io:libsym(mod, "add")
-    var res = add([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-    io:libclose(mod)
+    var res = add(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     io:print(res, lf)
 end
