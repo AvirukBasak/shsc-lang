@@ -1,14 +1,20 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "errcodes.h"
 #include "globals.h"
 #include "io.h"
+
+uint64_t io_get_time_in_ms() {
+    double t = clock();
+    return (uint64_t) (t * 1000 / CLOCKS_PER_SEC);
+}
 
 #ifndef IO_GETLINE
 #define IO_GETLINE

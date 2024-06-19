@@ -10,5 +10,7 @@ rt_Data_t rt_fn_dbg_id();
 rt_Data_t rt_fn_dbg_callproc();
 rt_Data_t rt_fn_dbg_filename();
 rt_Data_t rt_fn_dbg_lineno();
+rt_Data_t rt_fn_dbg_timenow();
+rt_Data_t rt_fn_dbg_timenow_parameterized();
 
 #endif

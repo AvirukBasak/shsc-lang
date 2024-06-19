@@ -124,6 +124,40 @@ rt_Data_t rt_fn_dbg_lineno()
     return rt_Data_i64(lineno);
 }
 
+rt_Data_t rt_fn_dbg_timenow()
+{
+    return rt_Data_i64((int64_t) io_get_time_in_ms());
+}
+
+rt_Data_t rt_fn_dbg_timenow_parameterized()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+    const rt_Data_t time = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(time, rt_DATA_TYPE_I64, "time in milliseconds");
+
+    // calculate time in YYYY-MM-DD HH:MM:SS format
+    int sec = time.data.i64 / 1000;
+    int min = sec / 60;
+    sec %= 60;
+    int hr = min / 60;
+    min %= 60;
+    int day = hr / 24;
+    hr %= 24;
+    int mon = day / 30;
+    day %= 30;
+    int yr = mon / 12;
+    mon %= 12;
+
+    rt_DataMap_t *time_map = rt_DataMap_init();
+    rt_DataMap_insert(time_map, "YEARS"  , rt_Data_i64(yr ));
+    rt_DataMap_insert(time_map, "MONTHS" , rt_Data_i64(mon));
+    rt_DataMap_insert(time_map, "DAYS"   , rt_Data_i64(day));
+    rt_DataMap_insert(time_map, "HOURS"  , rt_Data_i64(hr ));
+    rt_DataMap_insert(time_map, "MINUTES", rt_Data_i64(min));
+    rt_DataMap_insert(time_map, "SECONDS", rt_Data_i64(sec));
+    return rt_Data_map(time_map);
+}
+
 #else
     #warning re-inclusion of module 'functions/module_dbg.c.h'
 #endif
