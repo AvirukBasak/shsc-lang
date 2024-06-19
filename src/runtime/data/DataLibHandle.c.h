@@ -65,8 +65,8 @@ void rt_DataLibHandle_destroy(rt_DataLibHandle_t **ptr)
 
 #ifdef _WIN32
     // On Windows, use FreeLibrary to close the library.
-    int result = FreeLibrary((HMODULE) libhandle->handle);
-    if (!result) rt_throw("failed to close library '%s'", libhandle->file_name);
+    int result = FreeLibrary((HMODULE) handle->handle);
+    if (!result) rt_throw("failed to close library '%s'", handle->file_name);
 #else
     // On Unix-like systems, use dlclose to close the library.
     int result = !dlclose(handle->handle);
