@@ -115,7 +115,7 @@ void rt_util_libloader(void *handle) {
         rt_DataStr_getref_errnull,
         rt_DataStr_getref,
         rt_DataStr_del_index,
-        rt_DataStr_del_char,
+        rt_DataStr_del_val,
         rt_DataStr_tostr
     );
 
