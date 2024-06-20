@@ -28,7 +28,7 @@ rt_DataLibHandle_t *rt_DataLibHandle_init(char *file_name)
         rt_throw("library file name should not end with '%s'", dot);
     }
 
-    file_name = realloc(file_name, strlen(file_name) + 4);
+    file_name = realloc(file_name, strlen(file_name) + 16);
     if (!file_name) io_errndie("rt_DataLibHandle_init:" ERR_MSG_MALLOCFAIL);
 
 #ifdef _WIN32
