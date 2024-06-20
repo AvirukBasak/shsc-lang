@@ -37,7 +37,7 @@ rt_DataLibHandle_t *rt_DataLibHandle_init(char *file_name)
     libhandle->rc = 0;
 
     // call libloader to intilize function pointers
-    rt_util_libloader();
+    rt_util_libloader(libhandle->handle);
 
     return libhandle;
 }
