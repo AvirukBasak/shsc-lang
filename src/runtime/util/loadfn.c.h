@@ -19,7 +19,7 @@ void *rt_util_loadfn(const void *handle, const char *fn_name)
     }
 #else
     // On Unix-like systems, use dlsym to get the symbol from the library handle.
-    void *fnptr = dlsym(handle, fn_name);
+    void *fnptr = dlsym((void *) handle, fn_name);
     if (!fnptr) {
         rt_throw("%s", dlerror());
     }
