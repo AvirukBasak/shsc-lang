@@ -57,3 +57,4 @@ int rt_exec(int argc, char **argv)
 #include "runtime/VarTable.c.h"
 
 #include "runtime/util/libloader.c.h"
+#include "runtime/util/loadfn.c.h"
