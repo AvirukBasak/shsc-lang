@@ -7,6 +7,7 @@
 #include "runtime/data/Data.h"
 #include "runtime/data/DataLibHandle.h"
 #include "runtime/io.h"
+#include "runtime/util/libloader.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -33,6 +34,10 @@ rt_DataLibHandle_t *rt_DataLibHandle_init(char *file_name)
     /* rc is kept at 0 unless the runtime assigns
        a variable to the data */
     libhandle->rc = 0;
+
+    // call libloader to intilize function pointers
+    rt_util_libloader();
+
     return libhandle;
 }
 
