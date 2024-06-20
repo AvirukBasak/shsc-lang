@@ -44,12 +44,24 @@ $(LIB_DIR)/libavl.a:
 $(LIB_DIR)/libavl-dbg.a:
 	@cd libavl && $(MAKE) dbg
 
+## libshsc
+
+$(LIB_DIR)/libshsc.a:
+	@cd libshsc && $(MAKE)
+	@cp libshsc/target/libshsc.a $(LIB_DIR)
+
+$(LIB_DIR)/libshsc-dbg.a:
+	@cd libshsc && $(MAKE) dbg
+	@cp libshsc/target/libshsc-dbg.a $(LIB_DIR)
+
 ## cleanup
 
 clean:
 	@cd libdummy && $(MAKE) clean
 	@cd libavl && $(MAKE) clean
+	@cd libshsc && $(MAKE) clean
 
 cleaner:
 	@cd libdummy && $(MAKE) cleaner
 	@cd libavl && $(MAKE) cleaner
+	@cd libshsc && $(MAKE) cleaner

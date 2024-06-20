@@ -38,11 +38,11 @@ CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG -export-dynamic
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
-LIB            := -L$(LIB_DIR) -lm -lavl
-DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg
+LIB            := -L$(LIB_DIR) -lm -lavl     -lshsc
+DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg -lshsc-dbg
 
-LIBRARIES      := $(LIB_DIR)/libavl.a
-DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a
+LIBRARIES      := $(LIB_DIR)/libavl.a $(LIB_DIR)/libshsc.a
+DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a $(LIB_DIR)/libshsc-dbg.a
 
 ## targets
 # Detect the operating system
