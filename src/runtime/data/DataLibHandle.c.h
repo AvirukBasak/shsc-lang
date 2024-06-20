@@ -8,6 +8,7 @@
 #include "runtime/data/DataLibHandle.h"
 #include "runtime/io.h"
 #include "runtime/util/libloader.h"
+#include "runtime/util/loadfn.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -89,20 +90,7 @@ void rt_DataLibHandle_destroy(rt_DataLibHandle_t **ptr)
 
 rt_fn_NativeFunction_t rt_DataLibHandle_lookup(const rt_DataLibHandle_t *handle, const char *fname)
 {
-#ifdef _WIN32
-    // On Windows, use GetProcAddress to get the symbol from the library handle.
-    void *fnptr = GetProcAddress((HMODULE) handle->handle, fname);
-    if (!fnptr) {
-        rt_throw("failed to get symbol '%s' from '%s'", fname, handle->file_name);
-    }
-#else
-    // On Unix-like systems, use dlsym to get the symbol from the library handle.
-    void *fnptr = dlsym(handle->handle, fname);
-    if (!fnptr) {
-        rt_throw("%s", dlerror());
-    }
-#endif
-
+    void *fnptr = rt_util_loadfn(handle->handle, fname);
     return fnptr;
 }
 

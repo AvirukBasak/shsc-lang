@@ -9,13 +9,21 @@
 #include "runtime/functions.h"
 #include "runtime/operators.h"
 #include "runtime/VarTable.h"
+#include "runtime/util/loadfn.h"
+
 #include "libshsc/include/shscinit.h"
 
-void rt_util_libloader() {
+void rt_util_libloader(void *handle) {
 
-    
+    shsc_init_apifn_data_t     dyn_init_apifn_data     = rt_util_loadfn(handle, "shsc_init_apifn_data");
+    shsc_init_apifn_vartable_t dyn_init_apifn_vartable = rt_util_loadfn(handle, "shsc_init_apifn_vartable");
+    shsc_init_apifn_list_t     dyn_init_apifn_list     = rt_util_loadfn(handle, "shsc_init_apifn_list");
+    shsc_init_apifn_map_t      dyn_init_apifn_map      = rt_util_loadfn(handle, "shsc_init_apifn_map");
+    shsc_init_apifn_str_t      dyn_init_apifn_str      = rt_util_loadfn(handle, "shsc_init_apifn_str");
+    shsc_init_apifn_others_t   dyn_init_apifn_others   = rt_util_loadfn(handle, "shsc_init_apifn_others");
+    shsc_init_apifn_ops_t      dyn_init_apifn_ops      = rt_util_loadfn(handle, "shsc_init_apifn_ops");
 
-    shsc_init_apifn_data(
+    dyn_init_apifn_data(
         rt_Data_bul,
         rt_Data_chr,
         rt_Data_i64,
@@ -40,11 +48,11 @@ void rt_util_libloader() {
         rt_Data_print
     );
 
-    shsc_init_apifn_vartable(
+    dyn_init_apifn_vartable(
         rt_VarTable_modf
     );
 
-    shsc_init_apifn_list(
+    dyn_init_apifn_list(
         rt_DataList_init,
         rt_DataList_clone,
         rt_DataList_length,
@@ -67,7 +75,7 @@ void rt_util_libloader() {
         rt_DataList_tostr
     );
 
-    shsc_init_apifn_map(
+    dyn_init_apifn_map(
         rt_DataMap_init,
         rt_DataMap_clone,
         rt_DataMap_length,
@@ -81,7 +89,7 @@ void rt_util_libloader() {
         rt_DataMap_tostr
     );
 
-    shsc_init_apifn_str(
+    dyn_init_apifn_str(
         rt_DataStr_init,
         rt_DataStr_clone,
         rt_DataStr_length,
@@ -111,14 +119,14 @@ void rt_util_libloader() {
         rt_DataStr_tostr
     );
 
-    shsc_init_apifn_others(
+    dyn_init_apifn_others(
         rt_throw,
         rt_fn_get_valid_args,
         rt_fn_call_handler,
         rt_fn_lambda_call_handler
     );
 
-    shsc_init_apifn_ops(
+    dyn_init_apifn_ops(
         rt_op_ampersand,
         rt_op_arith_rshift,
         rt_op_assign,
@@ -155,5 +163,5 @@ void rt_util_libloader() {
 }
 
 #else
-    #warning "re-inclusion of src/runtime/util/initlibloader.c.h"
+    #warning "re-inclusion of src/runtime/util/libloader.c.h"
 #endif
