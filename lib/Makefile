@@ -4,7 +4,7 @@ HEADEREXT      := h
 
 ## directories
 
-LIB_DIR        := ../lib
+LIB_DIR        := lib
 
 ## compiler options
 
@@ -37,11 +37,11 @@ $(LIB_DIR)/libavl-dbg.a:
 
 $(LIB_DIR)/libshsc.a:
 	@cd libshsc && $(MAKE)
-	@cp libshsc/target/libshsc.a $(LIB_DIR)
+	@cp libshsc/target/libshsc.a ./libshsc.a
 
 $(LIB_DIR)/libshsc-dbg.a:
 	@cd libshsc && $(MAKE) dbg
-	@cp libshsc/target/libshsc-dbg.a $(LIB_DIR)
+	@cp libshsc/target/libshsc-dbg.a ./libshsc-dbg.a
 
 ## cleanup
 
