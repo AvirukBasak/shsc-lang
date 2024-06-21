@@ -21,7 +21,7 @@ WRN_ERR_FLAGS  := -Wall\
 				  -Wno-unused-but-set-variable\
 				  -Wno-unused-label\
 				  -Wno-int-in-bool-context
-ASAN_FLAGS	 := -fsanitize=address
+ASAN_FLAGS	   := -fsanitize=address
 ASAN_OPTIONS   := ASAN_OPTIONS=detect_leaks=1:$\
 				  fast_unwind_on_malloc=0:$\
 				  strict_init_order=true:$\
