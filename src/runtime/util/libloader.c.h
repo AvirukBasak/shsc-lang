@@ -163,5 +163,5 @@ void rt_util_libloader(void *handle) {
 }
 
 #else
-    #warning "re-inclusion of src/runtime/util/libloader.c.h"
+    #warning re-inclusion of 'src/runtime/util/libloader.c.h'
 #endif

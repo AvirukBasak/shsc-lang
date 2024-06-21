@@ -29,5 +29,5 @@ void *rt_util_loadfn(const void *handle, const char *fn_name)
 }
 
 #else
-    #warning "re-inclusion of src/runtime/util/loadfn.c.h"
+    #warning re-inclusion of 'src/runtime/util/loadfn.c.h'
 #endif
