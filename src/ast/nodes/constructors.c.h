@@ -7,7 +7,7 @@
 #include "ast.h"
 #include "ast/nodes.h"
 #include "ast/nodes/enums.h"
-#include "ast/util/ModuleStack.c.h"
+#include "ast/util/ModuleStack.h"
 #include "errcodes.h"
 #include "globals.h"
 #include "io.h"
