@@ -21,7 +21,7 @@ WRN_ERR_FLAGS  := -Wall\
 				  -Wno-unused-but-set-variable\
 				  -Wno-unused-label\
 				  -Wno-int-in-bool-context
-ASAN_FLAGS	 := -fsanitize=address
+ASAN_FLAGS	   := -fsanitize=address
 ASAN_OPTIONS   := ASAN_OPTIONS=detect_leaks=1:$\
 				  fast_unwind_on_malloc=0:$\
 				  strict_init_order=true:$\
@@ -33,16 +33,16 @@ ASAN_OPTIONS   := ASAN_OPTIONS=detect_leaks=1:$\
 				  halt_on_error=0
 
 CC             := gcc
-CFLAGS         := $(WRN_ERR_FLAGS) -Ofast -export-dynamic
-CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG -export-dynamic
+CFLAGS         := $(WRN_ERR_FLAGS) -Ofast
+CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG
 DBG            := gdb -q
 
 INCLUDE        := -I $(INCLUDE_DIR) -I $(LIB_DIR) -I $(SRC_DIR)
-LIB            := -L$(LIB_DIR) -lm -lavl -ldl
-DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg -ldl
+LIB            := -L$(LIB_DIR) -lm -lavl     -lshsc
+DBG_LIB        := -L$(LIB_DIR) -lm -lavl-dbg -lshsc-dbg
 
-LIBRARIES      := $(LIB_DIR)/libavl.a
-DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a
+LIBRARIES      := $(LIB_DIR)/libavl.a $(LIB_DIR)/libshsc.a
+DBG_LIBRARIES  := $(LIB_DIR)/libavl-dbg.a $(LIB_DIR)/libshsc-dbg.a
 
 ## targets
 # Detect the operating system

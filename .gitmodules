@@ -1,0 +1,3 @@
+[submodule "lib/libshsc"]
+	path = lib/libshsc
+	url = https://github.com/AvirukBasak/shsc-c-interop

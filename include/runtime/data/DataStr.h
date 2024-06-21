@@ -45,7 +45,7 @@ char *rt_DataStr_getref_errnull(const rt_DataStr_t *str, int64_t idx);
 /** data can be updated by assigning a char to the returned pointer */
 rt_Data_t *rt_DataStr_getref(const rt_DataStr_t *str, int64_t idx);
 void rt_DataStr_del_index(rt_DataStr_t *str, int64_t idx);
-void rt_DataStr_del_char(rt_DataStr_t *str, char ch);
+void rt_DataStr_del_val(rt_DataStr_t *str, char var);
 char *rt_DataStr_tostr(const rt_DataStr_t *str);
 
 #endif
