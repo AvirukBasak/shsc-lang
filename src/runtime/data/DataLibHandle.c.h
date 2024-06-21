@@ -1,9 +1,12 @@
 #ifndef RT_DATA_LIBHANDLE_C_H
 #define RT_DATA_LIBHANDLE_C_H
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "io.h"
+#include "errcodes.h"
 #include "runtime/data/Data.h"
 #include "runtime/data/DataLibHandle.h"
 #include "runtime/io.h"
@@ -18,12 +21,24 @@
 
 rt_DataLibHandle_t *rt_DataLibHandle_init(char *file_name)
 {
+    const char *dot = strrchr(file_name, '.');
+
+    /* if filename ends with .dll or .so throw error */
+    if (dot && ( !strcmp(dot, ".dll") || !strcmp(dot, ".so") )) {
+        rt_throw("library file name should not end with '%s'", dot);
+    }
+
+    file_name = realloc(file_name, strlen(file_name) + 4);
+    if (!file_name) io_errndie("rt_DataLibHandle_init:" ERR_MSG_MALLOCFAIL);
+
 #ifdef _WIN32
+    strcat(file_name, ".dll");
     void *handle = LoadLibrary(file_name);
     if (!handle) {
         rt_throw("failed to open library '%s'", file_name);
     }
 #else
+    strcat(file_name, ".so");
     void *handle = dlopen(file_name, RTLD_LAZY);
     if (!handle) {
         rt_throw("%s", dlerror());
