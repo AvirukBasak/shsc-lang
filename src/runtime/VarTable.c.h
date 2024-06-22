@@ -73,6 +73,8 @@ rt_Data_t *rt_VarTable_get_globvar(const char *varname)
         rt_Data_increfc(&rt_VarTable_rsv_Types);
         /* lock the type map */
         rt_DataMap_lockonce(typesmap, RT_DATA_MAP_LOCKID_SYSTEM);
+        /* make Types a const */
+        rt_VarTable_rsv_Types.is_const = true;
     }
 
     if (rt_Data_isnull(rt_VarTable_rsv_globals)) {
@@ -82,6 +84,8 @@ rt_Data_t *rt_VarTable_get_globvar(const char *varname)
            a variable and that variable is destroyed, the map should remain.
            thus, we increase the reference count */
         rt_Data_increfc(&rt_VarTable_rsv_globals);
+        /* make globals a const */
+        rt_VarTable_rsv_globals.is_const = true;
     }
 
     if (!strcmp("Types", varname))   return &rt_VarTable_rsv_Types;
