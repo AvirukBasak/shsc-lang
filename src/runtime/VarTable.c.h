@@ -66,7 +66,6 @@ rt_Data_t *rt_VarTable_get_globvar(const char *varname)
         rt_DataMap_insert(typesmap, "PROC", proc);
         rt_DataMap_insert(typesmap, "LAMBDA", lambda);
         rt_DataMap_insert(typesmap, "LIBHANDLE", libhandle);
-        rt_DataMap_insert(typesmap, "NULL", rt_VarTable_rsv_null);
         rt_VarTable_rsv_Types = rt_Data_map(typesmap);
         /* increase reference count of the map. if map is assigned to
            a variable and that variable is destroyed, the map should remain.
