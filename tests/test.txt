@@ -3,7 +3,7 @@ module main
 proc xyz()
     io:print("Hello world!", lf)
 
-    var x = io:input("", i64)
+    var x = io:input("", Types.I64)
 
     if x == 1 then
         io:print("entered 1", lf)
@@ -18,7 +18,7 @@ proc xyz()
         x = x - 1
     end
 
-    x = io:input("prompt: ", str)
+    x = io:input("prompt: ", Types.STR)
     io:print(f"entered {x}", lf)
 
     # test bool

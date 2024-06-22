@@ -1,8 +1,8 @@
 module math:ComplexNo
 
 proc init(x, y)
-    x = cast(x, f64)
-    y = cast(y, f64)
+    x = cast(x, Types.F64)
+    y = cast(y, Types.F64)
     # create new object from the arguments
     var z = { x: x, y: y }
     # bind proccedures to the object as methods

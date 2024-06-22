@@ -9,5 +9,6 @@ rt_Data_t rt_fn_map_erase();
 rt_Data_t rt_fn_map_concat();
 rt_Data_t rt_fn_map_find();
 rt_Data_t rt_fn_map_keys();
+rt_Data_t rt_fn_map_lockonce();
 
 #endif

@@ -4,6 +4,7 @@
 #include "runtime/data/Data.h"
 
 rt_Data_t rt_fn_io_print();
+rt_Data_t rt_fn_io_println();
 rt_Data_t rt_fn_io_input();
 rt_Data_t rt_fn_io_fexists();
 rt_Data_t rt_fn_io_fread();

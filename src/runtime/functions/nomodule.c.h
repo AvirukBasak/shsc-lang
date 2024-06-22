@@ -35,31 +35,32 @@ rt_Data_t rt_fn_type()
     const rt_Data_t data = *rt_DataList_getref(args, 0);
     switch (data.type) {
         case rt_DATA_TYPE_BUL:
-            return rt_VarTable_typeid_bul;
+            return rt_Data_i64(rt_DATA_TYPE_BUL);
         case rt_DATA_TYPE_CHR:
-            return rt_VarTable_typeid_chr;
+            return rt_Data_i64(rt_DATA_TYPE_CHR);
         case rt_DATA_TYPE_I64:
-            return rt_VarTable_typeid_i64;
+            return rt_Data_i64(rt_DATA_TYPE_I64);
         case rt_DATA_TYPE_F64:
-            return rt_VarTable_typeid_f64;
+            return rt_Data_i64(rt_DATA_TYPE_F64);
         case rt_DATA_TYPE_STR:
+            return rt_Data_i64(rt_DATA_TYPE_STR);
         case rt_DATA_TYPE_INTERP_STR:
-            return rt_VarTable_typeid_str;
+            return rt_Data_i64(rt_DATA_TYPE_INTERP_STR);
         case rt_DATA_TYPE_LST:
-            return rt_VarTable_typeid_lst;
+            return rt_Data_i64(rt_DATA_TYPE_LST);
         case rt_DATA_TYPE_MAP:
-            return rt_VarTable_typeid_map;
+            return rt_Data_i64(rt_DATA_TYPE_MAP);
         case rt_DATA_TYPE_PROC:
-            return rt_VarTable_typeid_proc;
+            return rt_Data_i64(rt_DATA_TYPE_PROC);
         case rt_DATA_TYPE_LAMBDA:
-            return rt_VarTable_typeid_lambda;
+            return rt_Data_i64(rt_DATA_TYPE_LAMBDA);
         case rt_DATA_TYPE_LIBHANDLE:
-            return rt_VarTable_typeid_libhandle;
+            return rt_Data_i64(rt_DATA_TYPE_LIBHANDLE);
         case rt_DATA_TYPE_ANY:
             return rt_Data_isnull(data) ?
-                rt_VarTable_rsv_null : rt_VarTable_typeid_any;
+                rt_VarTable_rsv_null : rt_Data_i64(rt_DATA_TYPE_ANY);
     }
-    return rt_VarTable_typeid_any;
+    return rt_Data_i64(rt_DATA_TYPE_ANY);
 }
 
 rt_Data_t rt_fn_cast()

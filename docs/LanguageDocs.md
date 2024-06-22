@@ -1,4 +1,4 @@
-**Last updated on June 18th, 2024**
+**Last updated on June 22nd, 2024**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -12,70 +12,63 @@ However, it introduces its own unique features and has a limited set of datatype
 Shsc is a dynamically and weakly typed language with coercion rules that make sense (unlike JS).
 
 ## Index
-- [File structure](#file-structure)
-- [Code organization](#code-organization)
+- [File Structure](#file-structure)
+- [Code Organization](#code-organization)
     - [Indentation](#indentation)
-    - [Module declaration](#module-declaration)
-    - [Pseudo sub-modules](#pseudo-sub-modules)
-    - [Default main module](#default-main-module)
-    - [Module access](#module-access)
-    - [Procedure declaration](#procedure-declaration)
-    - [Entry point](#entry-point)
-    - [Naming collision](#naming-collision)
-    - [End of file](#end-of-file)
-- [Valid identifiers](#valid-identifiers)
-    - [The dollar sign](#the-dollar-sign)
+    - [Module Declaration](#module-declaration)
+    - [Pseudo Sub Modules](#pseudo-sub-modules)
+    - [Default `main` Module](#default-main-module)
+    - [Module Access](#module-access)
+    - [Procedure Declaration](#procedure-declaration)
+    - [Entry Point](#entry-point)
+    - [Naming Collision](#naming-collision)
+    - [End of File](#end-of-file)
+- [Valid Identifiers](#valid-identifiers)
+    - [The Dollar Operator](#the-dollar-operator)
 - [Statements](#statements)
-    - [Variable declaration](#variable-declaration)
-    - [Variable shadowing](#variable-shadowing)
+    - [Variable Declaration](#variable-declaration)
+    - [Variable Re-declaration](#variable-re-declaration)
     - [Constants](#constants)
-        - [Lazy const](#lazy-const)
-    - [Weak refs](#weak-refs)
-        - [Weak ref behaviour](#weak-ref-behaviour)
+        - [Lazy Const](#lazy-const)
+    - [Weak References](#weak-references)
+        - [Weak ref Behaviour](#weak-ref-behaviour)
     - [Semicolons](#semicolons)
-        - [Example](#example)
-- [If statements](#if-statements)
-    - [Example 1](#example-1)
-    - [Example 2](#example-2)
-- [While loops](#while-loops)
-    - [Example](#example-1)
-- [For loops](#for-loops)
-    - [Default increment](#default-increment)
-    - [Specified increment](#specified-increment)
+- [If Statements](#if-statements)
+- [While Loops](#while-loops)
+- [For Loops](#for-loops)
+    - [Default Increment](#default-increment)
+    - [Specified Increment](#specified-increment)
     - [Iterable](#iterable)
-- [Block statement](#block-statement)
+- [Block Statement](#block-statement)
 - [Procedures](#procedures)
-    - [Example](#example-2)
-    - [Procedure arguments](#procedure-arguments)
-    - [Named arguments](#named-arguments)
+    - [Procedure Arguments](#procedure-arguments)
+    - [Named Arguments](#named-arguments)
     - [Arguments to `main:main`](#arguments-to-mainmain)
-    - [Procedure context](#procedure-context)
+    - [Procedure Context](#procedure-context)
+    - [Rudimentary OOP](#rudimentary-oop)
 - [Lambdas](#lambdas)
-    - [Example](#example-3)
 - [Interop with C](#interop-with-c)
 - [Expressions](#expressions)
-    - [Ternary expression](#ternary-expression)
+    - [Ternary Expression](#ternary-expression)
     - [Assignments](#assignments)
-        - [Example](#example-3)
-- [Data and literals](#data-and-literals)
+- [Data and Literals](#data-and-literals)
     - [Coercion Rules](#coercion-rules)
-    - [Special types](#special-types)
-    - [Hidden types](#hidden-types)
-    - [Special global variables](#special-global-variables)
-    - [Global variables for types](#global-variables-for-types)
-    - [Memory management](#memory-management)
-    - [Memory allocation](#memory-allocation)
-        - [Example](#example-4)
-    - [Memory ownership](#memory-ownership)
-        - [Accumulator](#accumulator)
-        - [Circular references](#circular-references)
-    - [Format strings](#format-strings)
+    - [Special Types](#special-types)
+    - [Hidden Types](#hidden-types)
+    - [Reserved Global Variables](#reserved-global-variables)
+    - [The Global Types Map](#the-global-types-map)
+    - [Memory Management](#memory-management)
+    - [Memory Allocation](#memory-allocation)
+    - [Memory Ownership](#memory-ownership)
+        - [The Accumulator](#the-accumulator)
+        - [Circular References](#circular-references)
+    - [Format Strings](#format-strings)
     - [Lists](#lists)
-        - [Example](#example-5)
     - [Maps](#maps)
-        - [Example](#example-6)
-- [Built-in procedures](#built-in-procedures)
-    - [Globally available](#globally-available)
+        - [Map with `const` Keys](#map-with-const-keys)
+        - [One-time Map Lock](#one-time-map-lock)
+- [Built-in Procedures](#built-in-procedures)
+    - [Globally Available](#globally-available)
     - [Module `assert`](#module-assert)
     - [Module `dbg`](#module-dbg)
     - [Module `io`](#module-io)
@@ -87,11 +80,11 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Module `lst`](#module-lst)
     - [Module `map`](#module-map)
 
-## File structure
+## File Structure
 The interpreter accepts file paths as command-line arguments for the files you want to run.
 It parses each file and constructs a data structure that maps module names to a list of defined procedures.
 
-## Code organization
+## Code Organization
 Since this language doesn't recognize files, module declarations are used to organize code.
 If multiple files have the same module declaration, all the procedures from those files will be stored under the same module name.
 
@@ -100,7 +93,7 @@ The parser ignores indentation and whitespaces completely.
 
 Only newlines are significant for statement termination.
 
-### Module declaration
+### Module Declaration
 Each file must start with the following syntax, indicating the module to which the subsequent procedures belong:
 ```lua
 module module_name
@@ -111,7 +104,7 @@ Also, after the module declaration, the same file can't have another module decl
 
 Procedure definitions can be placed only after the module declaration.
 
-### Pseudo sub-modules
+### Pseudo Sub Modules
 Sub-module can be defined as follows
 ```lua
 module Module:Submodule1:Submodule2
@@ -129,7 +122,7 @@ Previously this would be achieved using `Module_Submodule1_Submodule2` but that 
 
 See [examples/oop](../examples/oop/)
 
-### Default main module
+### Default `main` Module
 If the very first line starts with a procedure declaration (without a module name provided), the runtime assumes the module to be `main` by default.
 
 For example:
@@ -146,7 +139,7 @@ proc procname start
 end
 ```
 
-### Module access
+### Module Access
 Modules don't need to be explicitly imported; they're only declared in **line 1** of the file.
 
 To access a procedure from a different module, use the following syntax:
@@ -155,7 +148,7 @@ modulename:procname
 ```
 Replace `modulename` with the appropriate module name and `procname` with the name of the procedure you want to access.
 
-### Procedure declaration
+### Procedure Declaration
 Procedures can only appear after the module declaration.
 
 The basic syntax for declaring a procedure is as follows:
@@ -166,23 +159,23 @@ end
 ```
 The procedure name (`procname`) should be a valid identifier.
 
-### Entry point
+### Entry Point
 Program execution starts at `main:main`, i.e., the main procedure of the main module.
 
-### Naming collision
+### Naming Collision
 If there is a naming collision between procedures in the same module, the runtime will raise an error and stop execution.
 
-### End of file
+### End of File
 Ensure that each file ends with a newline character, or a syntax error will be thrown.
 
-## Valid identifiers
+## Valid Identifiers
 - Should start with either a letter or an underscore.
 - Can have alphanumeric characters and underscores.
 - Note that `$` is not a valid identifier character.
 
-### The dollar sign
+### The Dollar Operator
 The dollar sign is used to access arguments to a procedure. In compiler terms `$` acts as a special operator.
-For details, see [Procedure arguments](#procedure-arguments).
+For details, see [Procedure Arguments](#procedure-arguments).
 
 ## Statements
 All statements end with a newline.
@@ -194,7 +187,7 @@ Any variable declared must be given some value.
 
 A good choice is to assign them to `null`.
 
-### Variable declaration
+### Variable Declaration
 You'd use the `var` keyword to create a new variable in current scope.
 ```lua
 proc test start
@@ -202,7 +195,7 @@ proc test start
 end
 ```
 
-### Variable shadowing
+### Variable Re-declaration
 If you use `var` again, the original variable will be destroyed and replaced by the new one.
 
 ```lua
@@ -228,7 +221,7 @@ end
 ```
 A constant cannot be shadowed.
 
-#### Lazy const
+#### Lazy Const
 Lazy `const` allows you to create a variable and later on make it constant.
 ```lua
 proc test start
@@ -237,7 +230,7 @@ proc test start
 end
 ```
 
-### Weak refs
+### Weak References
 You'd use the `weak` keyword to create a weak reference in current scope.
 ```lua
 proc test start
@@ -248,9 +241,9 @@ end
 
 Weak references are useful for creating circular references.
 
-Note that not using `weak` in a circular reference will cause a memory leak because the language uses reference counting GC. See [Circular references](#circular-references) for more details.
+Note that not using `weak` in a circular reference will cause a memory leak because the language uses reference counting GC. See [Circular References](#circular-references) for more details.
 
-#### Weak ref behaviour
+#### Weak ref Behaviour
 - Not using `weak` keyword automatically creates a strong reference.
 - Thus, strong references can be made to objects via a weak reference. For example:
     ```lua
@@ -273,21 +266,21 @@ If used at the end of a statement, the parser makes no distinction b/w newlines 
 
 Even a combination of the two can be used wherever one desires.
 
-#### Example
+**Example:**
 ```lua
 x = 5; y = 7
 io:print(x, y, lf)
 ```
 
-## If statements
-### Example 1:
+## If Statements
+**Example 1:**
 ```lua
 if condition then
     # code
 end
 ```
 
-### Example 2:
+**Example 2:**
 ```lua
 if condition then
     # code
@@ -299,8 +292,8 @@ end
 ```
 You can also use `elif` instead of `else if`.
 
-## While loops
-### Example
+## While Loops
+**Example:**
 ```lua
 while condition do
     # code
@@ -310,7 +303,7 @@ end
 ## For Loops
 There are 3 kinds of `for` loops.
 
-### Default increment
+### Default Increment
 Increment (or decrement) by 1 depending on the start and end values.
 ```lua
 var start = 10
@@ -319,7 +312,7 @@ for i from start to 0 do
 end
 ```
 
-### Specified increment
+### Specified Increment
 Increment (or decrement) by the value specified.
 ```lua
 var end = 10
@@ -361,14 +354,29 @@ for v in my_iterable do
 end
 ```
 
-## Block statement
+## Block Statement
 Creates an unnamed scope.
-It's pretty much useless.
+
+**Example:**
+```lua
+{
+    var x = 5
+    io:print(x, lf)
+}
+```
+
+**Alternative:**
+```lua
+block
+    var x = 5
+    io:print(x, lf)
+end
+```
 
 ## Procedures
 The following is an example of a factorial program that shows how to use procedures.
 
-### Example
+**Example:**
 ```lua
 module main
 
@@ -383,38 +391,36 @@ proc factorial start
 end
 
 proc main start
-    var inp = io:input("Enter a number: ", i64)
+    var inp = io:input("Enter a number: ", Types.I64)
     var res = factorial(inp)
     io:print(f"result = {res}\n")
 end
 ```
 
-### Procedure arguments
+### Procedure Arguments
 
-#### Example
-Four ways to access the first (0th) argument to a procedure.
+##### Deprecated
+
+**Example:**
 ```lua
 var x = $0
 var y = $[0]
 var z = $(0)
 var w = args[0]
 ```
-
+Four ways to access the first (0th) argument to a procedure.
 Arguments to a procedure is defined by the actual parameters (i.e. at the caller side).
-
-Procedures have no prototypes or formal parameters.
+Procedures have no prototypes.
 
 Arguments are stored in the `args` built-in `lst` type variable.
-
 However, you may access arguments using the syntax `$i` where `i` is and identifier or literal that evaluates to a valid `i64` index.
 
 You may also use `$(expr)` or `$[expr]` where `expr` is an expression that evaluates to a valid `i64` index.
-
 Of course, you may also use the `args` list to access the arguments, as in `args[expr]`.
 
-### Named arguments
+### Named Arguments
 
-#### Example
+**Example:**
 ```lua
 proc foo(a, b, c)
     io:print(a, b, c, lf)
@@ -425,13 +431,14 @@ proc main()
 end
 ```
 
-#### Output
+**Output:**
 ```
 1 2 3
 ```
 
 Named arguments are set to `null` if no argument is passed by the caller.
-#### Example
+
+**Example:**
 ```lua
 proc foo(a, b, c)
     io:print(a, b, c, lf)
@@ -442,7 +449,7 @@ proc main()
 end
 ```
 
-#### Output
+**Output:**
 ```
 1 2 null
 ```
@@ -450,7 +457,7 @@ end
 ### Arguments to `main:main`
 The arguments to `main:main` are the command-line arguments passed to the interpreter.
 
-### Procedure context
+### Procedure Context
 If the `.` or map membership operator is used to access a reference to a procedure, the procedure context object is set to the parent map.
 
 Note that this works only if a procedure is accessed from a map using the `.` operator.
@@ -459,7 +466,7 @@ The context object can be accessed using the `this` keyword inside a procedure. 
 
 In case there is no context object, `this` will be `null`.
 
-#### OOP Example
+### Rudimentary OOP
 ```lua
 module ComplexNo
 
@@ -517,7 +524,7 @@ All variables must be passed as arguments.
 
 Lambdas also support context objects.
 
-### Example
+**Example:**
 ```lua
 var add = (a, b) -> a + b
 var long_proc = (a, b) -> {
@@ -536,7 +543,7 @@ Expressions are basically C expressions with some additional operators.
 
 Some additions include exponentiation operator (`**`) and floor division (`//`).
 
-### Ternary expression
+### Ternary Expression
 Follows Python syntax.
 
 ```lua
@@ -550,7 +557,7 @@ The language supports `=` and all the shortcut assignments.
 
 An assignment is a part of an expression, which means you can do the same operations as in C.
 
-#### Example
+**Example:**
 ```lua
 x = y = x = 5
 var u = (x = 4) if true else "hi"
@@ -560,12 +567,15 @@ var u = (x = 4) if true else "hi"
 The language supports the following `built-in` literals.
 - `bul` Boolean
 - `chr` String character
-- `i64` 64-bit integer
+- `i64` 64-bit signed integer
 - `f64` 64-bit float
 - `str` ASCII string
 - `lst` Dynamic valued list
 - `map` String to any hash map
 - `null` Null data
+- `proc` Pointer to existing procedure
+- `lambda` Lambda (anonymous) function
+- `libhandle` Shared library handle data
 
 ### Coercion Rules
 - Any built-in can be coerced to a string.
@@ -575,44 +585,49 @@ The language supports the following `built-in` literals.
 - Float, int, and char can be coerced among themselves.
 - Bool can be coerced to any type.
 
-### Special types
+### Special Types
 - `null` Null data
 - Interpolable string aka format strings
 
-### Hidden types
+### Hidden Types
 - `interp_str` Is hardly ever used in the runtime. It may serve as a temporary type for format strings.
 - `any` Is hardly used in the runtime, although `null` is a special kind of `any` object that points to `(void*) 0`.
 
-### Special global variables
+### Reserved Global Variables
 These variables must not be assigned to or else the user may face issues.
 - `lf` chr value equal to `'\n'`
 - `null` null data
+- `globals` map of global variables
+- `Types` map of type names to type values
 
-### Global variables for types
+### The Global Types Map
 These variables must not be assigned to or else the user may face issues.
-- `bul` i64 value indicating the bul type
-- `chr` i64 value indicating the chr type
-- `i64` i64 value indicating the i64 type
-- `f64` i64 value indicating the f64 type
-- `str` i64 value indicating the str type
-- `lst` i64 value indicating the lst type
-- `map` i64 value indicating the map type
-- `proc` i64 value indicating the proc type
+- `Types.BUL` i64 value indicating the bul type
+- `Types.CHR` i64 value indicating the chr type
+- `Types.I64` i64 value indicating the i64 type
+- `Types.F64` i64 value indicating the f64 type
+- `Types.STR` i64 value indicating the str type
+- `Types.LST` i64 value indicating the lst type
+- `Types.MAP` i64 value indicating the map type
+- `Types.NULL` i64 value indicating the null type
+- `Types.PROC` i64 value indicating the proc type
+- `Types.LAMBDA` i64 value indicating the lambda type
+- `Types.LIBHANDLE` i64 value indicating the libhandle type
 
 The term `built-in` is more accurate for these and we will not call these *primitive*s.
 The language has built-in support for complex composite data structures which can be used using the literals syntax.
 
-### Memory management
+### Memory Management
 Memory is managed by allocating data in the heap, and maintaining a reference count.
 
 The reference count is updated when data is assigned among the variables and also the accumulator.
 
 In case the reference count becomes `0`, the data is freed immediately.
 
-### Memory allocation
+### Memory Allocation
 New memory is allocated for every new literal, even if two literals are identical by value.
 
-#### Example
+**Example:**
 ```lua
 var x = "hello world"
 var y = "hello world"
@@ -622,19 +637,21 @@ Results in two seperate copies of the string `"hello world"` being created for t
 
 The same idea is followed for all other literals, including lists and maps.
 
-### Memory ownership
+### Memory Ownership
 Ownership in our case is being able to destroy the data (free memory).
 
 The following takes memory ownership
 - Any variable to whom data is assigned (until reassigned)
 - Accumulator; or else procedure returns won't work (temporarily)
+- Intermediate results are owned by 2 internal temporary variables
+- Global variables owned by the runtime
 
-#### Accumulator
+#### The Accumulator
 The language uses a temporary location called the `accumulator` to store the result of operations and return values.
 
-#### Circular references
+#### Circular References
 This language is unable to detect and manage circular references.
-If a circular reference must be created, it must be a weak reference. See [Weak refs](#weak-refs) for more details.
+If a circular reference must be created, it must be a weak reference. See [Weak References](#weak-references) for more details.
 
 Running `tostr` or `io:print` on an object having a circular reference will most likely result in stack overflow or Segmentation fault.
 
@@ -642,7 +659,7 @@ Avoid using same variables for weak and strong references.
 
 Additionally, using non-weak circular references **WILL** cause memory leak.
 
-### Format strings
+### Format Strings
 ```lua
 var x = "some data"
 var y = 56
@@ -659,7 +676,7 @@ A single list can have multiple datatypes together.
 Although named list, these literals are stored as an **array** of union of multiple types.
 The type is dynamically inferred when an element is accessed.
 
-#### Example
+**Example:**
 ```lua
 proc test start
     var list = ["xyz", 'a', "\n", "001", 'A', "\x41\x41"]
@@ -688,7 +705,7 @@ If that fails an error will occur, otherwise the data will be stored.
 
 When accessing data, key is again converted into string.
 
-#### Example
+**Example:**
 ```lua
 proc test start
     var key5 = "key5"
@@ -715,32 +732,93 @@ Note how order of keys is not maintained.
 
 Also note how data is stringified during conversion to string (printing).
 
-## Built-in procedures
+#### Map with `const` Keys
+A map can have `const` keys which prevent modification of the key.
+
+**Example:**
+```lua
+proc main()
+    var p = {}
+    p.x = const 5
+    p.x = 11
+end
+```
+
+Note that keys can't be const marked using the map literal syntax. Instead it uses the [`Lazy Const`](#lazy-const) syntax.
+
+**Output:**
+```
+shsc: test.shsc:4: cannot modify const variable
+    at main:main (test.shsc:4)
+```
+
+#### One-time Map Lock
+The function `map:lockonce(map, i64)` is used to lock a map. It takes a map and a locking ID as arguments.
+
+Once locked, the map can't be unlocked.
+Keys can't be added or removed from a locked map.
+They can however be modified.
+
+Difference between `map:lockonce` and using `const` is that the former allows modification of the map but disallows addition or removal of keys.
+The latter diasllows modification of existing keys but allows addition or removal of keys.
+
+A combination of both can be used to create a read-only map. An example of such a map is the [`Types`](#the-global-types-map) map provided by the runtime.
+
+**Example:**
+```lua
+proc main()
+    var mp = {
+        key1: true,
+        key2: 78,
+        "key3": 1222,
+        "key4": {
+            alpha: "hi",
+            "beta": 67,
+            "gamma": "\x05\x0a"
+        }
+    }
+
+    map:lockonce(mp, 0xDEAD)
+    mp.key1 = 112
+    mp.key5 = "value5"
+end
+
+```
+
+**Output:**
+```
+shsc: examples/lockonce.shsc:15: map is locked from modification with lock id 0xDEAD
+    at main:main (examples/lockonce.shsc:15)
+```
+
+Note that a lock ID of `0xDEAF` indicates that the map is locked and reserved. It must not be used by the user.
+
+## Built-in Procedures
 The language supports the following built-in procedures (within built-in modules)
 
-| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
-|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
-| isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -      |
-| tostr  | equals  | refcnt   | input   | clone | min     | min | min | compare | compare | -      |
-| type   | notnull | id       | fexists | -     | isdigit | -   | -   | tolower | -       | -      |
-| cast   | -       | callproc | fread   | -     | isalpha | -   | -   | toupper | -       | -      |
-| -      | -       | filename | fwrite  | -     | isalnum | -   | -   | append  | append  | set    |
-| -      | -       | lineno   | fappend | -     | islower | -   | -   | insert  | insert  | get    |
-| -      | -       | -        | libopen | -     | isupper | -   | -   | erase   | erase   | erase  |
-| -      | -       | -        | libsym  | -     | isspace | -   | -   | concat  | concat  | concat |
-| -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys   |
-| -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find   |
-| -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -      |
+| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
+|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|----------|
+| isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -        |
+| tostr  | equals  | refcnt   | println | clone | min     | min | min | compare | compare | -        |
+| type   | notnull | id       | input   | -     | isdigit | -   | -   | tolower | -       | -        |
+| cast   | -       | callproc | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
+| -      | -       | filename | fread   | -     | isalnum | -   | -   | append  | append  | set      |
+| -      | -       | lineno   | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
+| -      | -       | -        | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
+| -      | -       | -        | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
+| -      | -       | -        | libsym  | -     | -       | -   | -   | reverse | reverse | -        |
+| -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys     |
+| -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find     |
+| -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | lockonce |
+| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -        |
+| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -        |
+| -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -        |
 
-#### Globally available
+#### Globally Available
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
-- `type(any)` returns one of the [global variables for types](#global-variables-for-types)
-- `cast(any, i64)` casts data to a type; the second argument is one of the [global variables for types](#global-variables-for-types)
+- `type(any)` returns one of items from [`Types`](#the-global-types-map) map
+- `cast(any, i64)` casts data to a type; the second argument is one of the items from [`Types`](#the-global-types-map)
 - `max(any, ...)` returns the greatest of the arguments; returns `null` if no arguments are passed
 - `max(lst)` returns the greatest of the items in the list; returns `null` if list is empty
 - `min(any, ...)` returns the smallest of the arguments; returns `null` if no arguments are passed
@@ -764,7 +842,8 @@ The language supports the following built-in procedures (within built-in modules
 File I/O functions will not create a file if it doesn't exist.
 
 - `io:print(any, ...)` prints string form of data (calls `tostr`)
-- `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see [global variables for types](#global-variables-for-types)
+- `io:println(any, ...)` prints string form of data (calls `tostr`) and appends a newline
+- `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see the [`Types`](#the-global-types-map) map
 - `io:fexists(str)` returns true if file exists, else false
 - `io:fread(str)` reads a file and returns a string; the first argument is the file path
 - `io:fwrite(str, str)` writes a string to a file; the first argument is the file path
@@ -854,3 +933,4 @@ However, all map related procedures work using shallow copies, and no procedure 
 - `map:concat(map, map)` concatenates two maps and returns a new map
 - `map:find(map, str)` returns true if key exists, else false
 - `map:keys(map)` returns a list of keys in a map
+- `map:lockonce(map, i64)` locks a map; the first argument is the map, and the second argument is the locking ID

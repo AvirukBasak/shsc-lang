@@ -1,8 +1,8 @@
 module inher:Base
 
 proc init(x, y)
-    assert:type(x, i64)
-    assert:type(y, i64)
+    assert:type(x, Types.I64)
+    assert:type(y, Types.I64)
     # new object
     var obj = {
         x: x,

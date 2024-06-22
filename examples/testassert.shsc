@@ -1,6 +1,6 @@
 proc main()
-    assert:type({}, map)
-    assert:type([], lst)
+    assert:type({}, Types.MAP)
+    assert:type([], Types.LST)
     assert:equals(1.0, 1)
     assert:equals(1.0, {})
 end

@@ -52,20 +52,10 @@ struct rt_VarTable_Acc_t{
 
 /* few globally defined variables */
 extern
-rt_Data_t rt_VarTable_rsv_lf,
-/* list of globally defined typename variables */
-          rt_VarTable_typeid_bul,
-          rt_VarTable_typeid_chr,
-          rt_VarTable_typeid_i64,
-          rt_VarTable_typeid_f64,
-          rt_VarTable_typeid_str,
-          rt_VarTable_typeid_lst,
-          rt_VarTable_typeid_any,
-          rt_VarTable_typeid_map,
-          rt_VarTable_typeid_proc,
-          rt_VarTable_typeid_lambda,
-          rt_VarTable_typeid_libhandle,
-          rt_VarTable_rsv_null;
+rt_Data_t rt_VarTable_rsv_Types,
+          rt_VarTable_rsv_lf,
+          rt_VarTable_rsv_null,
+          rt_VarTable_rsv_globals;
 
 /** create a new variable in the current scope */
 void rt_VarTable_create(const char *varname, rt_Data_t value, bool is_const, bool is_weak);
@@ -105,7 +95,7 @@ void rt_VarTable_push_scope();
 /** pop local scope and return result of last expression */
 rt_Data_t rt_VarTable_pop_scope(void);
 
-/** clear memory of the VarTable */
+/** clear memory of the VarTable and destroy an global variables */
 void rt_VarTable_destroy();
 
 #endif

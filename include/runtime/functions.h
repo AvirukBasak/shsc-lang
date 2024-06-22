@@ -41,6 +41,7 @@ typedef enum {
     rt_fn_DBG_TIMENOW_PARAM, /* dbg:timenow_param */
 
     rt_fn_IO_PRINT,      /* io:print */
+    rt_fn_IO_PRINTLN,    /* io:println */
     rt_fn_IO_INPUT,      /* io:input */
     rt_fn_IO_FEXISTS,    /* io:exists */
     rt_fn_IO_FREAD,      /* io:fread */
@@ -101,6 +102,7 @@ typedef enum {
     rt_fn_MAP_CONCAT,    /* map:concat */
     rt_fn_MAP_FIND,      /* map:find */
     rt_fn_MAP_KEYS,      /* map:keys */
+    rt_fn_MAP_LOCKONCE,  /* map:lockonce */
 
     rt_fn_UNDEFINED,
 } rt_fn_FunctionDescriptor_t;

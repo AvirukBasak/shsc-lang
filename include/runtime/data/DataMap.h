@@ -7,6 +7,10 @@
 #include "tlib/khash/khash.h"
 #include "runtime/data/Data.h"
 
+enum rt_DataMap_CommonLockIds {
+    rt_DATA_MAP_LOCKID_RESERVED = 0xDEAF,
+};
+
 typedef struct {
     char *key;
     rt_Data_t value;
@@ -18,6 +22,7 @@ struct rt_DataMap_t {
     khash_t(rt_DataMap_t) *data_map;
     int64_t length;
     int64_t rc;
+    rt_Data_t one_time_lock;
 };
 
 typedef khiter_t rt_DataMap_iter_t;
@@ -36,7 +41,7 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr);
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value);
 void rt_DataMap_del(rt_DataMap_t *mp, const char *key);
 
-void rt_DataMap_concat(const rt_DataMap_t *mp1, const rt_DataMap_t *mp2);
+void rt_DataMap_concat(rt_DataMap_t *mp1, const rt_DataMap_t *mp2);
 
 const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key);
 /** unlike rt_DataMap_getref, returns NULL if key not found */
@@ -47,6 +52,8 @@ rt_Data_t *rt_DataMap_getref_errnull(const rt_DataMap_t *mp, const char *key);
     on the returned data pointer, that'll take care of reference counts */
 rt_Data_t *rt_DataMap_getref(const rt_DataMap_t *mp, const char *key);
 char *rt_DataMap_tostr(const rt_DataMap_t *mp);
+
+void rt_DataMap_lockonce(rt_DataMap_t *mp, int64_t lockid);
 
 rt_DataMap_iter_t rt_DataMap_begin(rt_DataMap_t *mp);
 rt_DataMap_iter_t rt_DataMap_end(rt_DataMap_t *mp);
