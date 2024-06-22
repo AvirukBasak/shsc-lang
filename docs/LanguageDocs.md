@@ -828,7 +828,7 @@ The language supports the following built-in procedures (within built-in modules
 File I/O functions will not create a file if it doesn't exist.
 
 - `io:print(any, ...)` prints string form of data (calls `tostr`)
-- `io:printl(any, ...)` prints string form of data (calls `tostr`) and appends a newline
+- `io:println(any, ...)` prints string form of data (calls `tostr`) and appends a newline
 - `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see the [`Types`](#the-global-types-map) map
 - `io:fexists(str)` returns true if file exists, else false
 - `io:fread(str)` reads a file and returns a string; the first argument is the file path
