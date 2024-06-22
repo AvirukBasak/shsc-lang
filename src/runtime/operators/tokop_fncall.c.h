@@ -28,8 +28,7 @@ void rt_op_fncall(const rt_Data_t *lhs, const rt_Data_t *rhs) {
     rt_Data_t context = rt_Data_null();
 
     if (lhs->type == rt_DATA_TYPE_LAMBDA) {
-        /* TODO: lambda contexts */
-        context = rt_Data_null();
+        context = *lhs->data.lambda.context;
     } else if (lhs->type == rt_DATA_TYPE_PROC && lhs->data.proc.context) {
         context = *lhs->data.proc.context;
     }
