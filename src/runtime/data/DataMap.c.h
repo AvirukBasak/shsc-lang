@@ -154,7 +154,7 @@ void rt_DataMap_concat(rt_DataMap_t *mp1, const rt_DataMap_t *mp2)
     for (khiter_t entry_it = kh_begin(mp2->data_map); entry_it != kh_end(mp2->data_map); ++entry_it) {
         if (!kh_exist(mp2->data_map, entry_it)) continue;
         const char *key = kh_key(mp2->data_map, entry_it);
-        rt_DataMap_insert((rt_DataMap_t*) mp1, key,
+        rt_DataMap_insert(mp1, key,
             kh_value(mp2->data_map, entry_it).value);
     }
 }
