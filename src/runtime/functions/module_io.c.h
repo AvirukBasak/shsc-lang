@@ -278,7 +278,7 @@ rt_Data_t rt_fn_io_libopen()
 {
     const rt_DataList_t *args = rt_fn_get_valid_args(1);
     const rt_Data_t libname_arg = *rt_DataList_getref(args, 0);
-    rt_Data_assert_type(libname_arg, rt_DATA_TYPE_STR, "filename");
+    rt_Data_assert_type(libname_arg, rt_DATA_TYPE_STR, "arg 0");
     char *filename = rt_Data_tostr(libname_arg);
     rt_DataLibHandle_t *handle = rt_DataLibHandle_init(filename);
     return rt_Data_libhandle(handle);
@@ -292,8 +292,8 @@ rt_Data_t rt_fn_io_libsym()
     const rt_Data_t symbolname_arg = *rt_DataList_getref(args, 1);
 
     // Assert that the arguments are of the correct type.
-    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_LIBHANDLE, "handle");
-    rt_Data_assert_type(symbolname_arg, rt_DATA_TYPE_STR, "symbolname");
+    rt_Data_assert_type(handle_arg, rt_DATA_TYPE_LIBHANDLE, "arg 0");
+    rt_Data_assert_type(symbolname_arg, rt_DATA_TYPE_STR, "arg 1");
 
     // Convert the symbol name to a C string.
     char *symbolname = rt_Data_tostr(symbolname_arg);
