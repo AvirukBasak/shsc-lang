@@ -8,7 +8,7 @@
 #include "runtime/data/Data.h"
 
 enum rt_DataMap_CommonLockIds {
-    RT_DATA_MAP_LOCKID_SYSTEM = 0xDEAD,
+    rt_DATA_MAP_LOCKID_RESERVED = 0xDEAF,
 };
 
 typedef struct {

@@ -73,7 +73,7 @@ rt_Data_t *rt_VarTable_get_globvar(const char *varname)
            thus, we increase the reference count */
         rt_Data_increfc(&rt_VarTable_rsv_Types);
         /* lock the type map */
-        rt_DataMap_lockonce(typesmap, RT_DATA_MAP_LOCKID_SYSTEM);
+        rt_DataMap_lockonce(typesmap, rt_DATA_MAP_LOCKID_RESERVED);
         /* make Types a const */
         rt_VarTable_rsv_Types.is_const = true;
     }
