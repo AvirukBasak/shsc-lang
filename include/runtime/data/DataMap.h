@@ -36,7 +36,7 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr);
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value);
 void rt_DataMap_del(rt_DataMap_t *mp, const char *key);
 
-void rt_DataMap_concat(const rt_DataMap_t *mp1, const rt_DataMap_t *mp2);
+void rt_DataMap_concat(rt_DataMap_t *mp1, const rt_DataMap_t *mp2);
 
 const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key);
 /** unlike rt_DataMap_getref, returns NULL if key not found */
