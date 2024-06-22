@@ -358,14 +358,18 @@
                       },
                       {
                         "node": "expression",
-                        "op": "NOP",
+                        "op": ".",
                         "lhs_type": "EXPR_TYPE_IDENTIFIER",
                         "lhs": {
                           "node": "identifier",
-                          "identifier_name": "i64"
+                          "identifier_name": "Types"
                         },
-                        "rhs_type": "EXPR_TYPE_NULL",
-                        "rhs": null,
+                        "rhs_type": "EXPR_TYPE_LITERAL",
+                        "rhs": {
+                          "node": "literal",
+                          "type": "DATA_TYPE_STR",
+                          "data": "I64"
+                        },
                         "condition_type": "EXPR_TYPE_NULL",
                         "condition": null
                       }
@@ -832,14 +836,18 @@
                         },
                         {
                           "node": "expression",
-                          "op": "NOP",
+                          "op": ".",
                           "lhs_type": "EXPR_TYPE_IDENTIFIER",
                           "lhs": {
                             "node": "identifier",
-                            "identifier_name": "str"
+                            "identifier_name": "Types"
                           },
-                          "rhs_type": "EXPR_TYPE_NULL",
-                          "rhs": null,
+                          "rhs_type": "EXPR_TYPE_LITERAL",
+                          "rhs": {
+                            "node": "literal",
+                            "type": "DATA_TYPE_STR",
+                            "data": "STR"
+                          },
                           "condition_type": "EXPR_TYPE_NULL",
                           "condition": null
                         }
@@ -1292,14 +1300,18 @@
                               },
                               {
                                 "node": "expression",
-                                "op": "NOP",
+                                "op": ".",
                                 "lhs_type": "EXPR_TYPE_IDENTIFIER",
                                 "lhs": {
                                   "node": "identifier",
-                                  "identifier_name": "str"
+                                  "identifier_name": "Types"
                                 },
-                                "rhs_type": "EXPR_TYPE_NULL",
-                                "rhs": null,
+                                "rhs_type": "EXPR_TYPE_LITERAL",
+                                "rhs": {
+                                  "node": "literal",
+                                  "type": "DATA_TYPE_STR",
+                                  "data": "STR"
+                                },
                                 "condition_type": "EXPR_TYPE_NULL",
                                 "condition": null
                               }
