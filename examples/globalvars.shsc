@@ -1,0 +1,10 @@
+proc foo()
+    io:print("x1 =", globals.x, lf)
+    globals.x = globals.x + 10
+end
+
+proc main()
+    globals.x = 5
+    foo()
+    io:print("x2 =", globals.x, lf)
+end
