@@ -1,7 +1,7 @@
 proc main()
     var x = [1,2,3,4,5]
-    var a = i64
-    var b = f64
+    var a = Types.I64
+    var b = Types.F64
     var c = 'c'
     var d = null
     var e = "xyz"

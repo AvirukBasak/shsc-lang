@@ -1,7 +1,7 @@
 module main
 
 proc main()
-    var inp = io:input("Enter a number: ", i64)
+    var inp = io:input("Enter a number: ", Types.I64)
     var res = fibonacci(inp)
     io:print(f"result = {res}\n")
 end

@@ -3,7 +3,7 @@ module main
 proc test(string, list)
     var times = list
     for x in times do
-        var name = io:input(f"Enter name {x}: ", str)
+        var name = io:input(f"Enter name {x}: ", Types.STR)
         var bytes = io:print(f"Hello {name}!",
                               "It's a beautiful world!", lf)
         io:print(f"Printed: {bytes} Bytes", lf, lf)

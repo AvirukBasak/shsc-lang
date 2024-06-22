@@ -1,5 +1,5 @@
 proc main()
-    io:print(cast(chr:max(), i64), cast(chr:min(), i64), lf)
+    io:print(cast(chr:max(), Types.I64), cast(chr:min(), Types.I64), lf)
     io:print(+chr:max([1, 'a', 11.5, 69.9]), +chr:min(1, 'a', 11.5, 69.9), lf)
     io:print(chr:isalpha('a'), chr:isalpha('1'), lf)
     io:print(chr:isdigit('a'), chr:isdigit('1'), lf)

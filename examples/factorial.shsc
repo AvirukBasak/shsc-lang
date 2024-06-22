@@ -5,7 +5,7 @@ proc input(prompt, type)
 end
 
 proc main()
-    var inp = input("Enter a number: ", i64)
+    var inp = input("Enter a number: ", Types.I64)
     var res = factorial(inp)
     io:print(f"result = {res}\n")
 end
