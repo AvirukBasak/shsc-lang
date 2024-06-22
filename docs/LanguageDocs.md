@@ -68,7 +68,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
         - [Map with `const` Keys](#map-with-const-keys)
         - [One-time Map Lock](#one-time-map-lock)
 - [Built-in Procedures](#built-in-procedures)
-    - [Globally available](#globally-available)
+    - [Globally Available](#globally-available)
     - [Module `assert`](#module-assert)
     - [Module `dbg`](#module-dbg)
     - [Module `io`](#module-io)
