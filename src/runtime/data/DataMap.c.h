@@ -16,6 +16,12 @@
 #include "runtime/io.h"
 #include "tlib/khash/khash.h"
 
+#define RT_DATAMAP_TESTLOCK(mp)                                              \
+    if (!rt_Data_isnull(mp->one_time_lock)) {                                \
+        rt_throw("map is locked from modification with lock id 0x%" PRIXPTR, \
+            (uintptr_t) mp->one_time_lock.data.i64);                         \
+    }
+
 rt_DataMap_t *rt_DataMap_init()
 {
     rt_DataMap_t *mp = (rt_DataMap_t*) malloc(sizeof(rt_DataMap_t));
@@ -105,9 +111,7 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
 
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
 {
-    if (!rt_Data_isnull(mp->one_time_lock)) {
-        rt_throw("map is locked from modification with lock id %p", (void*) mp->one_time_lock.data.i64);
-    }
+    RT_DATAMAP_TESTLOCK(mp);
 
     rt_Data_increfc(&value);
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
@@ -133,9 +137,7 @@ void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
 
 void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
 {
-    if (!rt_Data_isnull(mp->one_time_lock)) {
-        rt_throw("map is locked from modification with lock id %p", (void*) mp->one_time_lock.data.i64);
-    }
+    RT_DATAMAP_TESTLOCK(mp);
 
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
     if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
@@ -147,9 +149,7 @@ void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
 
 void rt_DataMap_concat(rt_DataMap_t *mp1, const rt_DataMap_t *mp2)
 {
-    if (!rt_Data_isnull(mp1->one_time_lock)) {
-        rt_throw("map is locked from modification with lock id %p", (void*) mp1->one_time_lock.data.i64);
-    }
+    RT_DATAMAP_TESTLOCK(mp1);
 
     for (khiter_t entry_it = kh_begin(mp2->data_map); entry_it != kh_end(mp2->data_map); ++entry_it) {
         if (!kh_exist(mp2->data_map, entry_it)) continue;
