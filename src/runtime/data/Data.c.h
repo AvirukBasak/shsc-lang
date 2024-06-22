@@ -750,7 +750,7 @@ const char *rt_Data_typename(const rt_Data_t var)
         case rt_DATA_TYPE_INTERP_STR: return "Types.INTERP_STR";
         case rt_DATA_TYPE_LST:        return "Types.LST";
         case rt_DATA_TYPE_MAP:        return "Types.MAP";
-        case rt_DATA_TYPE_ANY:        return var.data.any ? "Types.ANY" : "Types.NULL";
+        case rt_DATA_TYPE_ANY:        return var.data.any ? "Types.ANY" : "null";
         case rt_DATA_TYPE_PROC:       return "Types.PROC";
         case rt_DATA_TYPE_LAMBDA:     return "Types.LAMBDA";
         case rt_DATA_TYPE_LIBHANDLE:  return "Types.LIBHANDLE";
