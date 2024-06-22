@@ -1,0 +1,15 @@
+proc main()
+    var mp = {
+        key1: true,
+        key2: 78,
+        "key3": 1222,
+        "key4": {
+            alpha: "hi",
+            "beta": 67,
+            "gamma": "\x05\x0a"
+        }
+    }
+
+    map:lockonce(mp, 1)
+    mp["key5"] = "value5"
+end

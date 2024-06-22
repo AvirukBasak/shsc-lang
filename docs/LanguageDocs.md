@@ -753,8 +753,8 @@ end
 
 **Output:**
 ```
-shsc: test.shsc:14: map is locked from modification with lock id 0x1
-    at main:main (test.shsc:14)
+shsc: examples/lockonce.shsc:14: map is locked from modification with lock id 0x1
+    at main:main (examples/lockonce.shsc:14)
 ```
 
 Note that a lock ID of `0xDEAF` indicates that the map is locked and reserved. It must not be used by the user.
