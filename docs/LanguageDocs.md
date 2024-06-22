@@ -175,7 +175,7 @@ Ensure that each file ends with a newline character, or a syntax error will be t
 
 ### The Dollar Operator
 The dollar sign is used to access arguments to a procedure. In compiler terms `$` acts as a special operator.
-For details, see [Procedure arguments](#procedure-arguments).
+For details, see [Procedure Arguments](#procedure-arguments).
 
 ## Statements
 All statements end with a newline.
@@ -241,7 +241,7 @@ end
 
 Weak references are useful for creating circular references.
 
-Note that not using `weak` in a circular reference will cause a memory leak because the language uses reference counting GC. See [Circular references](#circular-references) for more details.
+Note that not using `weak` in a circular reference will cause a memory leak because the language uses reference counting GC. See [Circular References](#circular-references) for more details.
 
 #### Weak ref Behaviour
 - Not using `weak` keyword automatically creates a strong reference.
@@ -637,7 +637,7 @@ The language uses a temporary location called the `accumulator` to store the res
 
 #### Circular References
 This language is unable to detect and manage circular references.
-If a circular reference must be created, it must be a weak reference. See [Weak refs](#weak-refs) for more details.
+If a circular reference must be created, it must be a weak reference. See [Weak References](#weak-references) for more details.
 
 Running `tostr` or `io:print` on an object having a circular reference will most likely result in stack overflow or Segmentation fault.
 
@@ -730,7 +730,7 @@ proc main()
 end
 ```
 
-Note that keys can't be const marked using the map literal syntax. Instead it uses the [`lazy const`](#lazy-const) syntax.
+Note that keys can't be const marked using the map literal syntax. Instead it uses the [`Lazy Const`](#lazy-const) syntax.
 
 **Output:**
 ```
@@ -803,8 +803,8 @@ The language supports the following built-in procedures (within built-in modules
 #### Globally Gvailable
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
-- `type(any)` returns one of the [global variables for types](#global-variables-for-types)
-- `cast(any, i64)` casts data to a type; the second argument is one of the [global variables for types](#global-variables-for-types)
+- `type(any)` returns one of items from [`Types`](#the-global-types-map) map
+- `cast(any, i64)` casts data to a type; the second argument is one of the items from [`Types`](#the-global-types-map)
 - `max(any, ...)` returns the greatest of the arguments; returns `null` if no arguments are passed
 - `max(lst)` returns the greatest of the items in the list; returns `null` if list is empty
 - `min(any, ...)` returns the smallest of the arguments; returns `null` if no arguments are passed
@@ -828,7 +828,7 @@ The language supports the following built-in procedures (within built-in modules
 File I/O functions will not create a file if it doesn't exist.
 
 - `io:print(any, ...)` prints string form of data (calls `tostr`)
-- `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see [global variables for types](#global-variables-for-types)
+- `io:input(str, i64)` where the first argument is the prompt and the second argument is the type of input, see the [`Types`](#the-global-types-map) map
 - `io:fexists(str)` returns true if file exists, else false
 - `io:fread(str)` reads a file and returns a string; the first argument is the file path
 - `io:fwrite(str, str)` writes a string to a file; the first argument is the file path
