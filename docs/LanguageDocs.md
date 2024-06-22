@@ -356,7 +356,22 @@ end
 
 ## Block Statement
 Creates an unnamed scope.
-It's pretty much useless.
+
+**Example:**
+```lua
+{
+    var x = 5
+    io:print(x, lf)
+}
+```
+
+**Alternative:**
+```lua
+block
+    var x = 5
+    io:print(x, lf)
+end
+```
 
 ## Procedures
 The following is an example of a factorial program that shows how to use procedures.
