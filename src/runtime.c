@@ -36,7 +36,10 @@ int rt_exec(int argc, char **argv)
     if (ctrl == rt_CTRL_CONTINUE)
         rt_throw("unexpected `continue` statement outside loop");
 
-    return rt_VarTable_pop_proc().data.i64;
+    int exitcode = (int) rt_VarTable_pop_proc().data.i64;
+    rt_VarTable_destroy();
+
+    return exitcode;
 }
 
 #include "runtime/data/Data.c.h"
