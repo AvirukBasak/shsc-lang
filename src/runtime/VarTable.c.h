@@ -130,6 +130,10 @@ rt_Data_t *rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src, bool is_const, bool 
         if (dest == &rt_VarTable_rsv_globals) rt_throw("cannot modify reserved variable 'globals'");
     }
 
+    /* if dest type is not same as src type, throw error */
+    /* if (!rt_Data_isnull(*dest) && dest->type != src.type) rt_throw("cannot assign value of type '%s' to variable of type '%s'",
+        rt_Data_typename(src), rt_Data_typename(*dest)); */
+
     /* if dest is not lvalue, throw error */
     if (!dest->lvalue) rt_throw("lhs of assignment is not an lvalue");
 
