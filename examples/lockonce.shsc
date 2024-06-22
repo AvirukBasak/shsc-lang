@@ -11,5 +11,6 @@ proc main()
     }
 
     map:lockonce(mp, 0xDEAD)
-    mp["key5"] = "value5"
+    mp.key1 = 112
+    mp.key5 = "value5"
 end

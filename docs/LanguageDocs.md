@@ -726,11 +726,36 @@ Note how order of keys is not maintained.
 
 Also note how data is stringified during conversion to string (printing).
 
+### Map with `const` Keys
+A map can have `const` keys which prevent modification of the key.
+
+```lua
+proc main()
+    var p = {}
+    p.x = const 5
+    p.x = 11
+end
+```
+
+Note that keys can't be const marked using the map literal syntax. Instead it uses the [`lazy const`](#lazy-const) syntax.
+
+**Output:**
+```
+shsc: test.shsc:4: cannot modify const variable
+    at main:main (test.shsc:4)
+```
+
 ### One-time Map Lock
 The function `map:lockonce(map, i64)` is used to lock a map. It takes a map and a locking ID as arguments.
 
 Once locked, the map can't be unlocked.
 Keys can't be added or removed from a locked map.
+They can however be modified.
+
+Difference between `map:lockonce` and using `const` is that the former allows modification of the map but disallows addition or removal of keys.
+The latter diasllows modification of existing keys but allows addition or removal of keys.
+
+A combination of both can be used to create a read-only map. An example of such a map is the [`Types`](#properties-of-types-map) map provided by the runtime.
 
 #### Example
 ```lua
@@ -746,15 +771,17 @@ proc main()
         }
     }
 
-    map:lockonce(mp, 1)
-    map["key5"] = "value5"
+    map:lockonce(mp, 0xDEAD)
+    mp.key1 = 112
+    mp.key5 = "value5"
 end
+
 ```
 
 **Output:**
 ```
-shsc: examples/lockonce.shsc:14: map is locked from modification with lock id 0x1
-    at main:main (examples/lockonce.shsc:14)
+shsc: examples/lockonce.shsc:15: map is locked from modification with lock id 0xDEAD
+    at main:main (examples/lockonce.shsc:15)
 ```
 
 Note that a lock ID of `0xDEAF` indicates that the map is locked and reserved. It must not be used by the user.
