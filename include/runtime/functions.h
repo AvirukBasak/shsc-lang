@@ -101,6 +101,7 @@ typedef enum {
     rt_fn_MAP_CONCAT,    /* map:concat */
     rt_fn_MAP_FIND,      /* map:find */
     rt_fn_MAP_KEYS,      /* map:keys */
+    rt_fn_MAP_LOCKONCE,  /* map:lockonce */
 
     rt_fn_UNDEFINED,
 } rt_fn_FunctionDescriptor_t;

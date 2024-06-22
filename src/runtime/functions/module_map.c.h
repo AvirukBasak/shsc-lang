@@ -112,6 +112,21 @@ rt_Data_t rt_fn_map_keys()
     return rt_Data_list(keys);
 }
 
+rt_Data_t rt_fn_map_lockonce()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(2);
+
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(data, rt_DATA_TYPE_MAP, "arg 0");
+
+    const rt_Data_t lockid = *rt_DataList_getref(args, 1);
+    rt_Data_assert_type(lockid, rt_DATA_TYPE_I64, "arg 1");
+
+    rt_DataMap_lockonce(data.data.mp, lockid.data.i64);
+
+    return data;
+}
+
 #else
     #warning re-inclusion of module 'functions/module_map.c.h'
 #endif
