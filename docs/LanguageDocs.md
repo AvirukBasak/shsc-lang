@@ -439,6 +439,7 @@ end
 ```
 
 Named arguments are set to `null` if no argument is passed by the caller.
+
 **Example:**
 ```lua
 proc foo(a, b, c)
