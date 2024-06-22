@@ -134,7 +134,7 @@ void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
     --mp->length;
 }
 
-void rt_DataMap_concat(const rt_DataMap_t *mp1, const rt_DataMap_t *mp2)
+void rt_DataMap_concat(rt_DataMap_t *mp1, const rt_DataMap_t *mp2)
 {
     for (khiter_t entry_it = kh_begin(mp2->data_map); entry_it != kh_end(mp2->data_map); ++entry_it) {
         if (!kh_exist(mp2->data_map, entry_it)) continue;
