@@ -815,7 +815,7 @@ The language supports the following built-in procedures (within built-in modules
 | -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -        |
 | -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -        |
 
-#### Globally Gvailable
+#### Globally Available
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
 - `type(any)` returns one of items from [`Types`](#the-global-types-map) map
