@@ -763,7 +763,7 @@ They can however be modified.
 Difference between `map:lockonce` and using `const` is that the former allows modification of the map but disallows addition or removal of keys.
 The latter diasllows modification of existing keys but allows addition or removal of keys.
 
-A combination of both can be used to create a read-only map. An example of such a map is the [`Types`](#properties-of-types-map) map provided by the runtime.
+A combination of both can be used to create a read-only map. An example of such a map is the [`Types`](#the-global-types-map) map provided by the runtime.
 
 **Example:**
 ```lua
