@@ -1,12 +1,15 @@
 #ifndef RT_FN_MODULE_MAP_C_H
 #define RT_FN_MODULE_MAP_C_H
 
+#include <inttypes.h>
+
 #include "runtime/data/Data.h"
 #include "runtime/data/DataStr.h"
 #include "runtime/data/DataList.h"
 #include "runtime/data/DataMap.h"
 #include "runtime/functions.h"
 #include "runtime/functions/module_map.h"
+#include "runtime/io.h"
 
 rt_Data_t rt_fn_map_get()
 {
@@ -121,6 +124,10 @@ rt_Data_t rt_fn_map_lockonce()
 
     const rt_Data_t lockid = *rt_DataList_getref(args, 1);
     rt_Data_assert_type(lockid, rt_DATA_TYPE_I64, "arg 1");
+
+    if (lockid.data.i64 == rt_DATA_MAP_LOCKID_RESERVED) {
+        rt_throw("cannot use reserved lock id 0x%" PRIXPTR, (uintptr_t) rt_DATA_MAP_LOCKID_RESERVED);
+    }
 
     rt_DataMap_lockonce(data.data.mp, lockid.data.i64);
 

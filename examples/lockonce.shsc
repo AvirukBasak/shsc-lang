@@ -10,6 +10,6 @@ proc main()
         }
     }
 
-    map:lockonce(mp, 1)
+    map:lockonce(mp, 0xDEAD)
     mp["key5"] = "value5"
 end
