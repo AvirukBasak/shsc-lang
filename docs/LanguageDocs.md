@@ -1,4 +1,4 @@
-**Last updated on June 18th, 2024**
+**Last updated on June 22nd, 2024**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -62,7 +62,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Special types](#special-types)
     - [Hidden types](#hidden-types)
     - [Special global variables](#special-global-variables)
-    - [Global variables for types](#global-variables-for-types)
+    - [Properties of Types map](#properties-of-types-map)
     - [Memory management](#memory-management)
     - [Memory allocation](#memory-allocation)
         - [Example](#example-4)
@@ -74,6 +74,8 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
         - [Example](#example-5)
     - [Maps](#maps)
         - [Example](#example-6)
+    - [One-time Map Lock](#one-time-map-lock)
+        - [Example](#example-7)
 - [Built-in procedures](#built-in-procedures)
     - [Globally available](#globally-available)
     - [Module `assert`](#module-assert)
@@ -383,7 +385,7 @@ proc factorial start
 end
 
 proc main start
-    var inp = io:input("Enter a number: ", i64)
+    var inp = io:input("Enter a number: ", Types.I64)
     var res = factorial(inp)
     io:print(f"result = {res}\n")
 end
@@ -560,12 +562,15 @@ var u = (x = 4) if true else "hi"
 The language supports the following `built-in` literals.
 - `bul` Boolean
 - `chr` String character
-- `i64` 64-bit integer
+- `i64` 64-bit signed integer
 - `f64` 64-bit float
 - `str` ASCII string
 - `lst` Dynamic valued list
 - `map` String to any hash map
 - `null` Null data
+- `proc` Pointer to existing procedure
+- `lambda` Lambda (anonymous) function
+- `libhandle` Shared library handle data
 
 ### Coercion Rules
 - Any built-in can be coerced to a string.
@@ -587,17 +592,22 @@ The language supports the following `built-in` literals.
 These variables must not be assigned to or else the user may face issues.
 - `lf` chr value equal to `'\n'`
 - `null` null data
+- `globals` map of global variables
+- `Types` map of type names to type values
 
-### Global variables for types
+### Properties of Types map
 These variables must not be assigned to or else the user may face issues.
-- `bul` i64 value indicating the bul type
-- `chr` i64 value indicating the chr type
-- `i64` i64 value indicating the i64 type
-- `f64` i64 value indicating the f64 type
-- `str` i64 value indicating the str type
-- `lst` i64 value indicating the lst type
-- `map` i64 value indicating the map type
-- `proc` i64 value indicating the proc type
+- `Types.BUL` i64 value indicating the bul type
+- `Types.CHR` i64 value indicating the chr type
+- `Types.I64` i64 value indicating the i64 type
+- `Types.F64` i64 value indicating the f64 type
+- `Types.STR` i64 value indicating the str type
+- `Types.LST` i64 value indicating the lst type
+- `Types.MAP` i64 value indicating the map type
+- `Types.NULL` i64 value indicating the null type
+- `Types.PROC` i64 value indicating the proc type
+- `Types.LAMBDA` i64 value indicating the lambda type
+- `Types.LIBHANDLE` i64 value indicating the libhandle type
 
 The term `built-in` is more accurate for these and we will not call these *primitive*s.
 The language has built-in support for complex composite data structures which can be used using the literals syntax.
@@ -628,6 +638,7 @@ Ownership in our case is being able to destroy the data (free memory).
 The following takes memory ownership
 - Any variable to whom data is assigned (until reassigned)
 - Accumulator; or else procedure returns won't work (temporarily)
+- Intermediate results are owned by 2 internal temporary variables
 
 #### Accumulator
 The language uses a temporary location called the `accumulator` to store the result of operations and return values.
@@ -715,26 +726,59 @@ Note how order of keys is not maintained.
 
 Also note how data is stringified during conversion to string (printing).
 
+### One-time Map Lock
+The function `map:lockonce(map, i64)` is used to lock a map. It takes a map and a locking ID as arguments.
+
+Once locked, the map can't be unlocked.
+Keys can't be added or removed from a locked map.
+
+#### Example
+```lua
+proc main()
+    var mp = {
+        key1: true,
+        key2: 78,
+        "key3": 1222,
+        "key4": {
+            alpha: "hi",
+            "beta": 67,
+            "gamma": "\x05\x0a"
+        }
+    }
+
+    map:lockonce(mp, 1)
+    map["key5"] = "value5"
+end
+```
+
+**Output:**
+```
+shsc: test.shsc:14: map is locked from modification with lock id 0x1
+    at main:main (test.shsc:14)
+```
+
+Note that a lock ID of `0xDEAF` indicates that the map is locked and reserved. It must not be used by the user.
+
 ## Built-in procedures
 The language supports the following built-in procedures (within built-in modules)
 
-| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map    |
-|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|--------|
-| isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -      |
-| tostr  | equals  | refcnt   | input   | clone | min     | min | min | compare | compare | -      |
-| type   | notnull | id       | fexists | -     | isdigit | -   | -   | tolower | -       | -      |
-| cast   | -       | callproc | fread   | -     | isalpha | -   | -   | toupper | -       | -      |
-| -      | -       | filename | fwrite  | -     | isalnum | -   | -   | append  | append  | set    |
-| -      | -       | lineno   | fappend | -     | islower | -   | -   | insert  | insert  | get    |
-| -      | -       | -        | libopen | -     | isupper | -   | -   | erase   | erase   | erase  |
-| -      | -       | -        | libsym  | -     | isspace | -   | -   | concat  | concat  | concat |
-| -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys   |
-| -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find   |
-| -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -      |
-| -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -      |
+| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
+|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|----------|
+| isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -        |
+| tostr  | equals  | refcnt   | input   | clone | min     | min | min | compare | compare | -        |
+| type   | notnull | id       | fexists | -     | isdigit | -   | -   | tolower | -       | -        |
+| cast   | -       | callproc | fread   | -     | isalpha | -   | -   | toupper | -       | -        |
+| -      | -       | filename | fwrite  | -     | isalnum | -   | -   | append  | append  | set      |
+| -      | -       | lineno   | fappend | -     | islower | -   | -   | insert  | insert  | get      |
+| -      | -       | -        | libopen | -     | isupper | -   | -   | erase   | erase   | erase    |
+| -      | -       | -        | libsym  | -     | isspace | -   | -   | concat  | concat  | concat   |
+| -      | -       | -        | -       | -     | -       | -   | -   | reverse | reverse | -        |
+| -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys     |
+| -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find     |
+| -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | lockonce |
+| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -        |
+| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -        |
+| -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -        |
 
 #### Globally available
 - `isnull(any)` returns true if data is `null`, else false
@@ -854,3 +898,4 @@ However, all map related procedures work using shallow copies, and no procedure 
 - `map:concat(map, map)` concatenates two maps and returns a new map
 - `map:find(map, str)` returns true if key exists, else false
 - `map:keys(map)` returns a list of keys in a map
+- `map:lockonce(map, i64)` locks a map; the first argument is the map, and the second argument is the locking ID
