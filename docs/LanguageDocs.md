@@ -399,25 +399,23 @@ end
 
 ### Procedure Arguments
 
+##### Deprecated
+
 **Example:**
-Four ways to access the first (0th) argument to a procedure.
 ```lua
 var x = $0
 var y = $[0]
 var z = $(0)
 var w = args[0]
 ```
-
+Four ways to access the first (0th) argument to a procedure.
 Arguments to a procedure is defined by the actual parameters (i.e. at the caller side).
-
-Procedures have no prototypes or formal parameters.
+Procedures have no prototypes.
 
 Arguments are stored in the `args` built-in `lst` type variable.
-
 However, you may access arguments using the syntax `$i` where `i` is and identifier or literal that evaluates to a valid `i64` index.
 
 You may also use `$(expr)` or `$[expr]` where `expr` is an expression that evaluates to a valid `i64` index.
-
 Of course, you may also use the `args` list to access the arguments, as in `args[expr]`.
 
 ### Named Arguments
