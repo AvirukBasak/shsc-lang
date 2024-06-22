@@ -25,6 +25,9 @@ rt_DataMap_t *rt_DataMap_init()
     /* rc is kept at 0 unless the runtime assigns
        a variable to the data */
     mp->rc = 0;
+    /* a one time lock when set prevents operations
+       like insert and delete, on the map */
+    mp->one_time_lock = rt_Data_null();
     return mp;
 }
 
@@ -102,6 +105,10 @@ void rt_DataMap_destroy(rt_DataMap_t **ptr)
 
 void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
 {
+    if (!rt_Data_isnull(mp->one_time_lock)) {
+        rt_throw("map is locked from modification with lock id %p", (void*) mp->one_time_lock.data.i64);
+    }
+
     rt_Data_increfc(&value);
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
     if (entry_it != kh_end(mp->data_map)) {
@@ -126,6 +133,10 @@ void rt_DataMap_insert(rt_DataMap_t *mp, const char *key, rt_Data_t value)
 
 void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
 {
+    if (!rt_Data_isnull(mp->one_time_lock)) {
+        rt_throw("map is locked from modification with lock id %p", (void*) mp->one_time_lock.data.i64);
+    }
+
     khiter_t entry_it = kh_get(rt_DataMap_t, mp->data_map, key);
     if (entry_it == kh_end(mp->data_map)) rt_throw("map has no key '%s'", key);
     rt_Data_destroy(&kh_value(mp->data_map, entry_it).value);
@@ -134,8 +145,12 @@ void rt_DataMap_del(rt_DataMap_t *mp, const char *key)
     --mp->length;
 }
 
-void rt_DataMap_concat(const rt_DataMap_t *mp1, const rt_DataMap_t *mp2)
+void rt_DataMap_concat(rt_DataMap_t *mp1, const rt_DataMap_t *mp2)
 {
+    if (!rt_Data_isnull(mp1->one_time_lock)) {
+        rt_throw("map is locked from modification with lock id %p", (void*) mp1->one_time_lock.data.i64);
+    }
+
     for (khiter_t entry_it = kh_begin(mp2->data_map); entry_it != kh_end(mp2->data_map); ++entry_it) {
         if (!kh_exist(mp2->data_map, entry_it)) continue;
         const char *key = kh_key(mp2->data_map, entry_it);
@@ -217,6 +232,11 @@ char *rt_DataMap_tostr(const rt_DataMap_t *mp)
     }
     sprintf(&str[p++], "}");
     return str;
+}
+
+void rt_DataMap_lockonce(rt_DataMap_t *mp, int64_t lockid)
+{
+    mp->one_time_lock = rt_Data_i64(lockid);
 }
 
 rt_DataMap_iter_t rt_DataMap_begin(rt_DataMap_t *mp)
