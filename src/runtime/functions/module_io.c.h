@@ -65,6 +65,22 @@ rt_Data_t rt_fn_io_print()
     return rt_Data_i64(bytes);
 }
 
+rt_Data_t rt_fn_io_println()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(0);
+
+    rt_Data_t bytes = rt_fn_call_handler(
+        rt_Data_null(),
+        "io", "print",
+        /* since we are not taking ownership of args, we can
+         * explicitly cast it to non-const to avoid compiler warning
+         */
+        (rt_DataList_t *) args
+    );
+
+    return rt_Data_i64(bytes.data.i64 + printf("\n"));
+}
+
 rt_Data_t rt_fn_io_input()
 {
     const rt_DataList_t *args = rt_fn_get_valid_args(2);

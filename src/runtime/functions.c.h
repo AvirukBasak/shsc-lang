@@ -35,6 +35,7 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     }
     if (!strcmp(module, "io")) {
         if (!strcmp(fname, "print"))    return rt_fn_IO_PRINT;
+        if (!strcmp(fname, "println"))  return rt_fn_IO_PRINTLN;
         if (!strcmp(fname, "input"))    return rt_fn_IO_INPUT;
         if (!strcmp(fname, "fexists"))  return rt_fn_IO_FEXISTS;
         if (!strcmp(fname, "fread"))    return rt_fn_IO_FREAD;
@@ -155,6 +156,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_DBG_TIMENOW_PARAM: return rt_fn_dbg_timenow_parameterized();
 
         case rt_fn_IO_PRINT:      return rt_fn_io_print();
+        case rt_fn_IO_PRINTLN:    return rt_fn_io_println();
         case rt_fn_IO_INPUT:      return rt_fn_io_input();
         case rt_fn_IO_FEXISTS:    return rt_fn_io_fexists();
         case rt_fn_IO_FREAD:      return rt_fn_io_fread();
