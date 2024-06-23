@@ -1,7 +1,17 @@
 # Shsc
+
+[![Beta](https://img.shields.io/badge/Version-1.6%20Beta-red.svg)](https://github.com/AvirukBasak/shsc-lang/releases/tag/v1.6)
+
 A scripting language inspired by C, Python and Javascript.
 
 To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDocs.md).
+
+### Discontinued
+
+Red version badge indicates discontinued version.  
+
+Version `1.x` has been discontinued. New features will be added to `2.x`.
+Version `1.x` will be maintained for bug fixes and minor improvements.
 
 ### Build
 - Dependencies:
