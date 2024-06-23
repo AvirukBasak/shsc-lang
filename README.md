@@ -1,6 +1,6 @@
 # Shsc
 
-[![Beta](https://img.shields.io/badge/Version-2.0%20Beta-darkgreen.svg)](https://github.com/AvirukBasak/shsc-lang/releases/tag/v2.0)
+[![Beta](https://img.shields.io/badge/Version-2.0%20Beta-deepgreen.svg)](https://github.com/AvirukBasak/shsc-lang/releases/tag/v2.0)
 
 A scripting language inspired by C, Python and Javascript.
 
