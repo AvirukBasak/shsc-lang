@@ -33,7 +33,10 @@ struct ast_Statement_t {
 };
 
 struct ast_Assignment_t {
-    ast_Identifier_t *lhs;
+    union {
+        ast_FnArgsList_t *args_list;
+        ast_Identifier_t *variable;
+    } lhs;
     ast_Expression_t *rhs;
     bool is_const;
     bool is_weak;
