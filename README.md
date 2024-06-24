@@ -70,7 +70,7 @@ shsc examples/helloworld.txt
 - [x] Lambda functions
 - [x] Interop with C
 - [x] Variables
-- [x] Variable Shadowing
+- [x] Destructuring
 - [x] Constants
 - [x] Weak references
 - [x] Local scopes
