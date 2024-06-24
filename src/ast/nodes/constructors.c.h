@@ -84,9 +84,21 @@ ast_Assignment_t *ast_Assignment_create(ast_Identifier_t *identifier, ast_Expres
 {
     ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
     if (!assign) io_errndie("ast_Assignment_create:" ERR_MSG_MALLOCFAIL);
-    assign->lhs = identifier;
+    assign->lhs.variable = identifier;
     assign->rhs = expression;
     assign->type = ASSIGNMENT_TYPE_CREATE;
+    assign->is_const = is_const;
+    assign->is_weak = is_weak;
+    return assign;
+}
+
+ast_Assignment_t *ast_Assignment_destructure(ast_FnArgsList_t *args_list, ast_Expression_t *expression, bool is_const, bool is_weak)
+{
+    ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
+    if (!assign) io_errndie("ast_Assignment_destructure:" ERR_MSG_MALLOCFAIL);
+    assign->lhs.args_list = args_list;
+    assign->rhs = expression;
+    assign->type = ASSIGNMENT_TYPE_DESTRUCTURE;
     assign->is_const = is_const;
     assign->is_weak = is_weak;
     return assign;
@@ -96,7 +108,7 @@ ast_Assignment_t *ast_Assignment_tovoid(ast_Expression_t *expression)
 {
     ast_Assignment_t *assign = (ast_Assignment_t*) malloc(sizeof(ast_Assignment_t));
     if (!assign) io_errndie("ast_Assignment_tovoid:" ERR_MSG_MALLOCFAIL);
-    assign->lhs = NULL;
+    assign->lhs.variable = NULL;
     assign->rhs = expression;
     assign->type = ASSIGNMENT_TYPE_TOVOID;
     return assign;
