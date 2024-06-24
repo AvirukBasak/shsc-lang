@@ -46,7 +46,7 @@ void rt_DataMap_concat(rt_DataMap_t *mp1, const rt_DataMap_t *mp2);
 const char *rt_DataMap_getkey_copy(const rt_DataMap_t *mp, const char *key);
 /** unlike rt_DataMap_getref, returns NULL if key not found */
 rt_Data_t *rt_DataMap_getref_errnull(const rt_DataMap_t *mp, const char *key);
-/** unlike rt_DataMap_getref_errnull, CRASHES using rt_throw if key not found.
+/** unlike rt_DataMap_getref_errnull, creates a new entry if key not found
     data should be updated only by calling
     `void rt_VarTable_modf(rt_Data_t *dest, rt_Data_t src)`
     on the returned data pointer, that'll take care of reference counts */

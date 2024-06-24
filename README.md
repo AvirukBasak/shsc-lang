@@ -1,6 +1,6 @@
 # Shsc
 
-[![Beta](https://img.shields.io/badge/Version-2.0%20Beta-deepgreen.svg)](https://github.com/AvirukBasak/shsc-lang/releases/tag/v2.0)
+[![Beta](https://img.shields.io/badge/Version-2.1%20Beta-deepgreen.svg)](https://github.com/AvirukBasak/shsc-lang/releases/tag/v2.0)
 
 A scripting language inspired by C, Python and Javascript.
 
@@ -70,7 +70,7 @@ shsc examples/helloworld.txt
 - [x] Lambda functions
 - [x] Interop with C
 - [x] Variables
-- [x] Variable Shadowing
+- [x] Destructuring
 - [x] Constants
 - [x] Weak references
 - [x] Local scopes

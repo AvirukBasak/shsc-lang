@@ -176,7 +176,11 @@ void ast2json_Assignment(const ast_Assignment_t *assignment)
     ast2json_printf("\"node\": \"assignment\"");
     ast2json_put_comma();
     ast2json_printf("\"lhs\": ");
-    ast2json_Identifier(assignment->lhs);
+    if (assignment->type == ASSIGNMENT_TYPE_DESTRUCTURE) {
+        ast2json_FnArgsList(assignment->lhs.args_list);
+    } else {
+        ast2json_Identifier(assignment->lhs.variable);
+    }
     ast2json_put_comma();
     ast2json_printf("\"rhs\": ");
     ast2json_Expression(assignment->rhs);

@@ -44,7 +44,10 @@ struct ast_Statement_t {
 };
 
 struct ast_Assignment_t {
-    const ast_Identifier_t *lhs;
+    union {
+        const ast_FnArgsList_t *args_list;
+        const ast_Identifier_t *variable;
+    } lhs;
     const ast_Expression_t *rhs;
     const bool is_const;
     const bool is_weak;

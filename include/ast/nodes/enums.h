@@ -15,6 +15,8 @@ enum ast_AssignmentType_t {
     ASSIGNMENT_TYPE_TOVOID,
     /** create or shadow existing variable */
     ASSIGNMENT_TYPE_CREATE,
+    /** assign fromlist or map to list of variables */
+    ASSIGNMENT_TYPE_DESTRUCTURE,
 };
 
 enum ast_CompoundStType_t {

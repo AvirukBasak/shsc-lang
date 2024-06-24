@@ -1,0 +1,6 @@
+proc main()
+    var key1, key2 = { key1: "hello", key2: "world", key3: "!" }
+    var a, b, c = [1, 2, 3, 4, 5, 6]
+    io:println(key1, key2)
+    io:println(a, b, c)
+end

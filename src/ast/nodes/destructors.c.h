@@ -48,7 +48,11 @@ void ast_Assignment_destroy(ast_Assignment_t **ptr)
     if (!ptr) return;
     ast_Assignment_t *assignment = *ptr;
     if (!assignment) return;
-    ast_Identifier_destroy(&assignment->lhs);
+    if (assignment->type == ASSIGNMENT_TYPE_DESTRUCTURE) {
+        ast_FnArgsList_destroy(&assignment->lhs.args_list);
+    } else {
+        ast_Identifier_destroy(&assignment->lhs.variable);
+    }
     ast_Expression_destroy(&assignment->rhs);
     free(assignment);
     *ptr = NULL;

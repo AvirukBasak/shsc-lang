@@ -1,4 +1,4 @@
-**Last updated on June 22nd, 2024**
+**Last updated on June 25th, 2024**
 
 The following is a documentation of the syntax and behaviour of the language.
 
@@ -28,6 +28,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
 - [Statements](#statements)
     - [Variable Declaration](#variable-declaration)
     - [Variable Re-declaration](#variable-re-declaration)
+    - [Desctructuring Assignment](#destructuring-assignment)
     - [Constants](#constants)
         - [Lazy Const](#lazy-const)
     - [Weak References](#weak-references)
@@ -211,6 +212,25 @@ end
 5
 11
 ```
+
+### Destructuring Assignment
+Destructuring assignment is supported for lists and maps.
+```lua
+proc main()
+    var key1, key2 = { key1: "hello", key2: "world", key3: "!" }
+    var a, b, c = [1, 2, 3, 4, 5, 6]
+    io:println(key1, key2)
+    io:println(a, b, c)
+end
+```
+
+**Output:**
+```
+hello world
+1 2 3
+```
+
+Note that destructuring assignments also support `const` and `weak` modifiers (see [Constants](#constants) and [Weak References](#weak-references)). In this case, the modifier is applied to all variables being declared on the left-hand side.
 
 ### Constants
 You'd use the `const` keyword to create a constant in current scope.
@@ -731,6 +751,11 @@ end
 Note how order of keys is not maintained.
 
 Also note how data is stringified during conversion to string (printing).
+
+Note that accessing a non-existent key using `[]` or `.` will insert a `null` value into the map and return a reference to it.
+To make sure `null` is not inserted, use the built-in `map:get(map, str)` procedure (see [Module `map`](#module-map)).
+
+One may use the `map:fine(map, str)` procedure to check if a key exists in the map.
 
 #### Map with `const` Keys
 A map can have `const` keys which prevent modification of the key.
