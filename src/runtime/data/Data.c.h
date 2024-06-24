@@ -742,18 +742,18 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
 const char *rt_Data_typename(const rt_Data_t var)
 {
     switch (var.type) {
-        case rt_DATA_TYPE_BUL:        return "Types.BUL";
-        case rt_DATA_TYPE_CHR:        return "Types.CHR";
-        case rt_DATA_TYPE_I64:        return "Types.I64";
-        case rt_DATA_TYPE_F64:        return "Types.F64";
-        case rt_DATA_TYPE_STR:        return "Types.STR";
-        case rt_DATA_TYPE_INTERP_STR: return "Types.INTERP_STR";
-        case rt_DATA_TYPE_LST:        return "Types.LST";
-        case rt_DATA_TYPE_MAP:        return "Types.MAP";
-        case rt_DATA_TYPE_ANY:        return var.data.any ? "Types.ANY" : "null";
-        case rt_DATA_TYPE_PROC:       return "Types.PROC";
-        case rt_DATA_TYPE_LAMBDA:     return "Types.LAMBDA";
-        case rt_DATA_TYPE_LIBHANDLE:  return "Types.LIBHANDLE";
+        case rt_DATA_TYPE_BUL:        return "bul";
+        case rt_DATA_TYPE_CHR:        return "chr";
+        case rt_DATA_TYPE_I64:        return "i64";
+        case rt_DATA_TYPE_F64:        return "f64";
+        case rt_DATA_TYPE_STR:        return "str";
+        case rt_DATA_TYPE_INTERP_STR: return "interp_str";
+        case rt_DATA_TYPE_LST:        return "lst";
+        case rt_DATA_TYPE_MAP:        return "map";
+        case rt_DATA_TYPE_ANY:        return var.data.any ? "any" : "null";
+        case rt_DATA_TYPE_PROC:       return "proc";
+        case rt_DATA_TYPE_LAMBDA:     return "lambda";
+        case rt_DATA_TYPE_LIBHANDLE:  return "libhandle";
     }
     return NULL;
 }
