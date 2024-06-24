@@ -821,33 +821,38 @@ Note that a lock ID of `0xDEAF` indicates that the map is locked and reserved. I
 ## Built-in Procedures
 The language supports the following built-in procedures (within built-in modules)
 
-| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
-|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|----------|
-| isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -        |
-| tostr  | equals  | refcnt   | println | clone | min     | min | min | compare | compare | -        |
-| type   | notnull | id       | input   | -     | isdigit | -   | -   | tolower | -       | -        |
-| cast   | -       | callproc | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
-| -      | -       | filename | fread   | -     | isalnum | -   | -   | append  | append  | set      |
-| -      | -       | lineno   | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
-| -      | -       | -        | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
-| -      | -       | -        | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
-| -      | -       | -        | libsym  | -     | -       | -   | -   | reverse | reverse | -        |
-| -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys     |
-| -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find     |
-| -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | lockonce |
-| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -        |
-| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -        |
-| -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -        |
+| -       | sys      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
+|---------|----------|---------|----------|---------|-------|---------|-----|-----|---------|---------|----------|
+| isnull  | exit     | type    | typename | print   | len   | max     | max | max | equals  | equals  | -        |
+| tostr   | platform | equals  | refcnt   | println | clone | min     | min | min | compare | compare | -        |
+| type    |          | notnull | id       | input   | -     | isdigit | -   | -   | tolower | -       | -        |
+| cast    |          | -       | callproc | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
+| errndie |          | -       | filename | fread   | -     | isalnum | -   | -   | append  | append  | set      |
+| max     |          | -       | lineno   | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
+| min     |          | -       | -        | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
+| -       |          | -       | -        | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
+| -       |          | -       | -        | libsym  | -     | -       | -   | -   | reverse | reverse | -        |
+| -       |          | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys     |
+| -       |          | -       | -        | -       | -     | -       | -   | -   | find    | find    | find     |
+| -       |          | -       | -        | -       | -     | -       | -   | -   | split   | join    | lockonce |
+| -       |          | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -        |
+| -       |          | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -        |
+| -       |          | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -        |
 
 #### Globally Available
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
 - `type(any)` returns one of items from [`Types`](#the-global-types-map) map
 - `cast(any, i64)` casts data to a type; the second argument is one of the items from [`Types`](#the-global-types-map)
+- `errndie(str, i64?)` prints the error message and exits the program (optional argument is the exit code)
 - `max(any, ...)` returns the greatest of the arguments; returns `null` if no arguments are passed
 - `max(lst)` returns the greatest of the items in the list; returns `null` if list is empty
 - `min(any, ...)` returns the smallest of the arguments; returns `null` if no arguments are passed
 - `min(lst)` returns the smallest of the items in the list; returns `null` if list is empty
+
+#### Module `sys`
+- `sys:exit(i64?)` exits the program with the specified exit code (0 by default)
+- `sys:platform()` returns the platform name. Platform values include `"WIN"`, `"APPLE"`, `"ANDROID"`, `"BSD"`, `"SOLARIS"`, `"LINUX"`.
 
 #### Module `assert`
 - `assert:type(any, i64)` returns true if data is of the specified type, else throws an error
