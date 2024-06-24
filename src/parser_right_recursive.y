@@ -369,6 +369,11 @@ assignment:
     | "var" identifier "=" "weak" expression             /* create weak ref */
     | "var" identifier "=" "const" "weak" expression     /* create const weak ref */
     | "var" identifier "=" "weak" "const" expression     /* create const weak ref */
+    | "var" fnargs_list "=" expression                   /* destructuring assignment */
+    | "var" fnargs_list "=" "const" expression           /* destructuring assignment */
+    | "var" fnargs_list "=" "weak" expression            /* destructuring assignment */
+    | "var" fnargs_list "=" "const" "weak" expression    /* destructuring assignment */
+    | "var" fnargs_list "=" "weak" "const" expression    /* destructuring assignment */
     | expression                                         /* assignment to void */
     ;
 

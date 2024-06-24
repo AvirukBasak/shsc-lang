@@ -309,6 +309,11 @@ assignment:
     | "var" identifier "=" "weak" expression             /* create weak ref */                     { $$ = ast_Assignment_create($2, $5, false, true); }
     | "var" identifier "=" "const" "weak" expression     /* create const weak ref */               { $$ = ast_Assignment_create($2, $6, true, true); }
     | "var" identifier "=" "weak" "const" expression     /* create const weak ref */               { $$ = ast_Assignment_create($2, $6, true, true); }
+    | "var" fnargs_list "=" expression                   /* destructuring assignment */            { $$ = ast_Assignment_destructure($2, $4, false, false); }
+    | "var" fnargs_list "=" "const" expression           /* destructuring assignment */            { $$ = ast_Assignment_destructure($2, $5, true, false); }
+    | "var" fnargs_list "=" "weak" expression            /* destructuring assignment */            { $$ = ast_Assignment_destructure($2, $5, false, true); }
+    | "var" fnargs_list "=" "const" "weak" expression    /* destructuring assignment */            { $$ = ast_Assignment_destructure($2, $6, true, true); }
+    | "var" fnargs_list "=" "weak" "const" expression    /* destructuring assignment */            { $$ = ast_Assignment_destructure($2, $6, true, true); }
     | expression                                         /* assignment to void */                  { $$ = ast_Assignment_tovoid($1); }
     ;
 
