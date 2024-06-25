@@ -1,0 +1,426 @@
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg -h
+USAGE:
+  shsc              [FILENAMES] execute files listed as args
+  shsc <flags>      [FILENAMES] provide with additional flags
+FLAGS:
+  -r    --run       [FILENAME]  run files listed in file
+  -t    --ast       [FILENAME]  save AST as JSON to file
+  -ldbg --lex-debug [FILENAME]  produce formatted JSON
+  -tf   --astf      [FILENAME]  produce formatted JSON
+  -h    --help                  view this message
+  -v    --version               version info
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg --help
+USAGE:
+  shsc              [FILENAMES] execute files listed as args
+  shsc <flags>      [FILENAMES] provide with additional flags
+FLAGS:
+  -r    --run       [FILENAME]  run files listed in file
+  -t    --ast       [FILENAME]  save AST as JSON to file
+  -ldbg --lex-debug [FILENAME]  produce formatted JSON
+  -tf   --astf      [FILENAME]  produce formatted JSON
+  -h    --help                  view this message
+  -v    --version               version info
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg -v
+Shsc Version 2.1 Beta
+License: GPL 3.0
+Authors: Aviruk Basak
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg --version
+Shsc Version 2.1 Beta
+License: GPL 3.0
+Authors: Aviruk Basak
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg -tf
+shsc: no json file provided for '--astf'
+make: *** [Makefile:115: run-sanitize] Error 5
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg --astf
+shsc: no json file provided for '--astf'
+make: *** [Makefile:115: run-sanitize] Error 5
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg -r
+List File Syntax:
+ - Each line of the list file has a single file path
+ - Spaces in file path is valid and quotes not required
+ - If shsc fails to read one file, it'll skip to next file
+ - If shsc fails to parse any file, it'll report error and exit
+shsc: no list file provided for '--run'
+make: *** [Makefile:115: run-sanitize] Error 5
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg --run
+List File Syntax:
+ - Each line of the list file has a single file path
+ - Spaces in file path is valid and quotes not required
+ - If shsc fails to read one file, it'll skip to next file
+ - If shsc fails to parse any file, it'll report error and exit
+shsc: no list file provided for '--run'
+make: *** [Makefile:115: run-sanitize] Error 5
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/bitwise.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/bitwise.shsc
+4
+6
+2
+-5
+3
+-3
+3
+-3
+1155806623118131200.000000
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/callproc.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/callproc.shsc
+enter a number: you entered: 0
+enter a number: you entered: 0
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/clone.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/clone.shsc
+[1, 2, 3, 4, 5, 6, 7, 8]
+[1, 2, 3, 4, 5, 6, 7, 8]
+[1, 2, 3, 4, 0, 6, 7, 8]
+[1, 2, 3, 4, 5, 6, 7, 8]
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/constval.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/constval.shsc
+shsc: /home/aviruk/git/shsc-lang/examples/constval.shsc:5: cannot modify const variable
+    at main:main (/home/aviruk/git/shsc-lang/examples/constval.shsc:5)
+Aborted (core dumped)
+make: *** [Makefile:115: run-sanitize] Error 134
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/destructuring.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/destructuring.shsc
+hello world
+1 2 3
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/error_handling.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/error_handling.shsc
+Enter true or false (1 or 0): success
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/factorial.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/factorial.shsc
+Enter a number: result = 1
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/fibonacci.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/fibonacci.shsc
+Enter a number: result = 0
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/fileio.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/fileio.shsc
+true
+false
+-Wall
+-Wno-self-assign
+-Wno-unused-but-set-variable
+-Wno-unused-label
+-Ofast
+-Iinclude
+-Ilib
+-Isrc
+
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/filenline.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/filenline.shsc
+/home/aviruk/git/shsc-lang/examples/filenline.shsc 3
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/fncalls.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/fncalls.shsc
+lst
+12
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/globalvars.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/globalvars.shsc
+x1 = 5
+x2 = 15
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/helloworld.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/helloworld.shsc
+Enter name 1: Hello ! It's a beautiful world!
+Printed: 32 Bytes
+
+Enter name 2: Hello ! It's a beautiful world!
+Printed: 32 Bytes
+
+Enter name 3: Hello ! It's a beautiful world!
+Printed: 32 Bytes
+
+Enter name 4: Hello ! It's a beautiful world!
+Printed: 32 Bytes
+
+Enter name 5: Hello ! It's a beautiful world!
+Printed: 32 Bytes
+
+Return val: 100
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/inbuiltfn.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/inbuiltfn.shsc
+lst i64 i64 chr null str
+/home/aviruk/git/shsc-lang/examples/inbuiltfn.shsc
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/indexing.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/indexing.shsc
+hello world
+{"a": 1, "b": 2, "hello": 3, "world": 4}
+h,e,l,x,o, ,w,o,r,l,d,
+1,2,3,42,5,
+1 2 100 null 200
+{"0": 100, "a": 1, "b": 2, "hello": 3, "1": null, "world": 4, "[1, 2, 3, 42, 5]": 200}
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/interop_with_c.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/interop_with_c.shsc
+shsc: io:-1: examples/add.so: cannot open shared object file: No such file or directory
+    at io:libopen (io:-1)
+    at main:main (/home/aviruk/git/shsc-lang/examples/interop_with_c.shsc:2)
+Aborted (core dumped)
+make: *** [Makefile:115: run-sanitize] Error 134
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/lambda.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/lambda.shsc
+6 6
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/linked_list.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/linked_list.shsc
+7 44 12 
+44 12 
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/lockonce.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/lockonce.shsc
+shsc: /home/aviruk/git/shsc-lang/examples/lockonce.shsc:15: map is locked from modification with lock id 0xDEAD
+    at main:main (/home/aviruk/git/shsc-lang/examples/lockonce.shsc:15)
+Aborted (core dumped)
+make: *** [Makefile:115: run-sanitize] Error 134
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/lvalue.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/lvalue.shsc
+shsc: /home/aviruk/git/shsc-lang/examples/lvalue.shsc:3: lhs of assignment is not an lvalue
+    at main:main (/home/aviruk/git/shsc-lang/examples/lvalue.shsc:3)
+Aborted (core dumped)
+make: *** [Makefile:115: run-sanitize] Error 134
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/mapnlist.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/mapnlist.shsc
+{"key1": true, "key2": 78, "key3": 1222, "key4": {"beta": 67, "alpha": "hi", "gamma": "\x05\n"}}
+["xyz", 'a', "\n", "001", 'A', "AA"]
+[[1, 2, 4, 5], [1, 2, 4, 5], [1, 2, 4, 5], [1, 2, 4, 5]]
+fn: io:print, a: 1, b: 2, c: 3, d: {"e": 4, "f": 5}, g: 6, 
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/passing_lambdas.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/passing_lambdas.shsc
+[1, 2, 3, 4, 5, 6]
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/shortckting.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/shortckting.shsc
+value is: c
+cond is false
+null
+default value
+default value and more
+cond1 is true
+cond2 is false
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/testassert.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/testassert.shsc
+shsc: assert:-1: assertion failed: arguments are not equal
+    at assert:equals (assert:-1)
+    at main:main (/home/aviruk/git/shsc-lang/examples/testassert.shsc:5)
+Aborted (core dumped)
+make: *** [Makefile:115: run-sanitize] Error 134
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/testlst.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/testlst.shsc
+false
+[1, 2, 3, '_']
+[1, 2, 3, '_', "power_"]
+[1, 2, 3, '_', {}, "power_"]
+[1, 2, 3, '_', "oo", {}, "power_"]
+[1, "oo", {}, "power_"]
+[1, "oo", {}, "power_", "b", "c", "a"]
+[1, "oo", {}, "power_", "b", "c", "a"]
+["power_", {}, "oo", 1]
+["oo", 1]
+-1
+1
+power_/{}/oo/1
+["a", "b", "c"]
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/testmap.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/testmap.shsc
+{"a": 1, "b": 2, "c": [1, 2, 3], "d": 4, "e": 5}
+1
+{"a": 1, "b": 2, "d": 4, "e": 5}
+true
+["a", "b", "c", "d", "e"]
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/testnum.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/testnum.shsc
+127 -128
+97 1
+true false
+false true
+true true
+true false
+false true
+true false
+9223372036854775807 -9223372036854775808
+a 1
+179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000 0.000000
+a a
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/teststr.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/teststr.shsc
+false
+20
+HELL
+there
+HELL_
+HELL_power_
+HELLo_power_
+HELLooo_power_
+Hooo_power_
+Hooo_power_there
+Hooo_power_there
+_rewop_oooH
+wo
+3
+-1
+["", "rewop", "oooH"]
+452
+56.900000
+H__eooooprw
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/testsys.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/testsys.shsc
+.:~/.bin:/home/aviruk/Android/Sdk/tools:/home/aviruk/Android/Sdk/emulator:/home/aviruk/Android/Sdk/platform-tools:.:~/.bin:/home/aviruk/Android/Sdk/tools:/home/aviruk/Android/Sdk/emulator:/home/aviruk/Android/Sdk/platform-tools:/home/aviruk/.nvm/versions/node/v20.13.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+LINUX
+make: *** [Makefile:115: run-sanitize] Error 5
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/time.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/time.shsc
+t1 = 1719307199116
+t2 = {"MINUTES": 19, "SECONDS": 59, "MONTHS": 3, "MILLISECONDS": 116, "YEARS": 55, "DAYS": 9, "HOURS": 9}
+t3 = {"MINUTES": 19, "SECONDS": 59, "MONTHS": 3, "MILLISECONDS": 117, "YEARS": 55, "DAYS": 9, "HOURS": 9}
+t4 = {"MINUTES": 0, "SECONDS": 2, "MONTHS": 0, "MILLISECONDS": 0, "YEARS": 0, "DAYS": 0, "HOURS": 0}
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/unary_fix.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/unary_fix.shsc
+Value of x = 55
+Value of x = 56, y = 56
+Value of x = 57, y = 56
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/weakref.shsc
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/weakref.shsc
+0x5070000002c0 0x507000000330 2 2
+["test", "list"]
+0x503000001000
+0x507000000b80
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/oop/
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/oop/*.shsc
+5.000000+i10.000000
+
+-----------------------------------------------------
+
+>> Running /home/aviruk/git/shsc-lang/examples/inheritance/
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg /home/aviruk/git/shsc-lang/examples/inheritance/*.shsc
+{"x": 1, "y": 2, "z": 3, "toStr": null, "_base_toStr": inher:Base:toStr}
+1, 2, 3
+
+-----------------------------------------------------
+
+>> Bulk running /home/aviruk/git/shsc-lang/tests/build.txt
+
+ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:strict_init_order=true:strict_string_checks=true:check_initialization_order=true:abort_on_error=1:symbolize=1:verbosity=0:halt_on_error=0 ./target/shsc-dbg -tf tests/SyntaxTree.json -r tests/build.txt
