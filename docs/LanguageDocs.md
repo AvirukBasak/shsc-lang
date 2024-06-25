@@ -70,6 +70,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
         - [One-time Map Lock](#one-time-map-lock)
 - [Built-in Procedures](#built-in-procedures)
     - [Globally Available](#globally-available)
+    - [Module `sys`](#module-sys)
     - [Module `assert`](#module-assert)
     - [Module `dbg`](#module-dbg)
     - [Module `io`](#module-io)
@@ -824,10 +825,10 @@ The language supports the following built-in procedures (within built-in modules
 | -       | sys      | assert  | dbg           | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
 |---------|----------|---------|---------------|---------|-------|---------|-----|-----|---------|---------|----------|
 | isnull  | exit     | type    | typename      | print   | len   | max     | max | max | equals  | equals  | -        |
-| tostr   | platform | equals  | refcnt        | println | clone | min     | min | min | compare | compare | -        |
-| type    |          | notnull | id            | input   | -     | isdigit | -   | -   | tolower | -       | -        |
-| cast    |          | -       | callproc      | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
-| errndie |          | -       | filename      | fread   | -     | isalnum | -   | -   | append  | append  | set      |
+| tostr   | getenv   | equals  | refcnt        | println | clone | min     | min | min | compare | compare | -        |
+| type    | platform | notnull | id            | input   | -     | isdigit | -   | -   | tolower | -       | -        |
+| cast    | system   | -       | callproc      | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
+| errndie | sleep    | -       | filename      | fread   | -     | isalnum | -   | -   | append  | append  | set      |
 | max     |          | -       | lineno        | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
 | min     |          | -       | timenow       | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
 | -       |          | -       | timenow_param | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
@@ -852,7 +853,15 @@ The language supports the following built-in procedures (within built-in modules
 
 #### Module `sys`
 - `sys:exit(i64?)` exits the program with the specified exit code (0 by default)
-- `sys:platform()` returns the platform name. Platform values include `"WIN"`, `"APPLE"`, `"ANDROID"`, `"BSD"`, `"SOLARIS"`, `"LINUX"`.
+- `sys:getenv(str)` returns the value of the environment variable, else `null`
+- `sys:platform()` returns the platform name. Platform values include:
+    - `WIN` for Windows
+    - `MAC` or `IOS` - `APPLE` if Apple platform is not recognized
+    - `ANDROID` for Android
+    - `BSD`, `SOLARIS` or `LINUX` - `UNIX` if Unix platform is not recognized
+    - `POSIX` for POSIX compliant systems not in the above list
+- `sys:system(str)` not yeat implemended; executes the command and `[stdout: str, stderr: str, exit_code: i64]` is returned
+- `sys:sleep(i64)` sleeps for the specified number of milliseconds
 
 #### Module `assert`
 - `assert:type(any, i64)` returns true if data is of the specified type, else throws an error
