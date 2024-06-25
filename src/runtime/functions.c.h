@@ -125,6 +125,7 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     return rt_fn_UNDEFINED;
 }
 
+#include "runtime/functions/module_sys.c.h"
 #include "runtime/functions/module_assert.c.h"
 #include "runtime/functions/module_chr.c.h"
 #include "runtime/functions/module_dbg.c.h"
