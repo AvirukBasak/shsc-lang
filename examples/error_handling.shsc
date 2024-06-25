@@ -10,8 +10,7 @@ proc main()
     var flag = io:input("Enter true or false (1 or 0): ", Types.BUL)
     var res, err = returns_error(flag)
     if err then
-        io:println(err)
-        return 1
+        errndie("error: something went wrong", 123)
     end
     io:println(res)
 end
