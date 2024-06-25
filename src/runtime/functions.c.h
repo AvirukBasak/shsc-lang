@@ -111,6 +111,7 @@ rt_fn_FunctionDescriptor_t rt_fn_FunctionsList_getfn(const char *module, const c
     if (!strcmp(fname, "tostr"))        return rt_fn_TOSTR;
     if (!strcmp(fname, "type"))         return rt_fn_TYPE;
     if (!strcmp(fname, "cast"))         return rt_fn_CAST;
+    if (!strcmp(fname, "errndie"))      return rt_fn_ERRNDIE;
     if (!strcmp(fname, "max"))          return rt_fn_MAX;
     if (!strcmp(fname, "min"))          return rt_fn_MIN;
 
@@ -136,6 +137,7 @@ rt_Data_t rt_fn_FunctionsList_call(rt_fn_FunctionDescriptor_t fn)
         case rt_fn_TOSTR:         return rt_fn_tostr();
         case rt_fn_TYPE:          return rt_fn_type();
         case rt_fn_CAST:          return rt_fn_cast();
+        case rt_fn_ERRNDIE:       return rt_fn_errndie();
         case rt_fn_MAX:           return rt_fn_max();
         case rt_fn_MIN:           return rt_fn_min();
 

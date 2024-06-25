@@ -23,6 +23,7 @@ typedef enum {
     rt_fn_TOSTR,         /* tostr */
     rt_fn_TYPE,          /* type */
     rt_fn_CAST,          /* cast */
+    rt_fn_ERRNDIE,       /* errndie */
     rt_fn_MAX,           /* max */
     rt_fn_MIN,           /* min */
 

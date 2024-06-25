@@ -9,5 +9,6 @@ rt_Data_t rt_fn_type();
 rt_Data_t rt_fn_cast();
 rt_Data_t rt_fn_max();
 rt_Data_t rt_fn_min();
+rt_Data_t rt_fn_errndie();
 
 #endif
