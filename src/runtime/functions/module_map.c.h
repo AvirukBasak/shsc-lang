@@ -23,7 +23,7 @@ rt_Data_t rt_fn_map_get()
     char *key_str = rt_Data_tostr(key);
     const rt_Data_t *val = rt_DataMap_getref_errnull(data.data.mp, key_str);
     free(key_str);
-    
+
     return val ? *val : rt_Data_null();
 }
 

@@ -9,6 +9,7 @@
 #include "runtime/data/DataList.h"
 #include "runtime/functions.h"
 #include "runtime/functions/nomodule.h"
+#include "runtime/io.h"
 #include "runtime/VarTable.h"
 
 rt_Data_t rt_fn_isnull()
@@ -128,6 +129,24 @@ rt_Data_t rt_fn_min()
     rt_Data_t min = rt_Data_null();
     rt_fn_MIN_MAX_HANDLER(args, min, <);
     return min;
+}
+
+rt_Data_t rt_fn_errndie()
+{
+    const rt_DataList_t *args = rt_fn_get_valid_args(1);
+
+    const rt_Data_t data = *rt_DataList_getref(args, 0);
+    rt_Data_assert_type(data, rt_DATA_TYPE_STR, "arg 1");
+
+    rt_Data_t exitcode = *rt_DataList_getref(args, 1);
+    if (rt_Data_isnull(exitcode)) exitcode = rt_Data_i64(1);
+    rt_Data_assert_type(exitcode, rt_DATA_TYPE_I64, "arg 2");
+
+    char *errmsg = rt_DataStr_tostr(data.data.str);
+    rt_throw_exitcode((int) exitcode.data.i64, "errndie: %s", errmsg);
+    free(errmsg);
+
+    return rt_Data_null();
 }
 
 #else

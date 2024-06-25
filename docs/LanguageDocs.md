@@ -70,6 +70,7 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
         - [One-time Map Lock](#one-time-map-lock)
 - [Built-in Procedures](#built-in-procedures)
     - [Globally Available](#globally-available)
+    - [Module `sys`](#module-sys)
     - [Module `assert`](#module-assert)
     - [Module `dbg`](#module-dbg)
     - [Module `io`](#module-io)
@@ -821,33 +822,46 @@ Note that a lock ID of `0xDEAF` indicates that the map is locked and reserved. I
 ## Built-in Procedures
 The language supports the following built-in procedures (within built-in modules)
 
-| -      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
-|--------|---------|----------|---------|-------|---------|-----|-----|---------|---------|----------|
-| isnull | type    | typename | print   | len   | max     | max | max | equals  | equals  | -        |
-| tostr  | equals  | refcnt   | println | clone | min     | min | min | compare | compare | -        |
-| type   | notnull | id       | input   | -     | isdigit | -   | -   | tolower | -       | -        |
-| cast   | -       | callproc | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
-| -      | -       | filename | fread   | -     | isalnum | -   | -   | append  | append  | set      |
-| -      | -       | lineno   | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
-| -      | -       | -        | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
-| -      | -       | -        | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
-| -      | -       | -        | libsym  | -     | -       | -   | -   | reverse | reverse | -        |
-| -      | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys     |
-| -      | -       | -        | -       | -     | -       | -   | -   | find    | find    | find     |
-| -      | -       | -        | -       | -     | -       | -   | -   | split   | join    | lockonce |
-| -      | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -        |
-| -      | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -        |
-| -      | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -        |
+| -       | sys      | assert  | dbg           | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
+|---------|----------|---------|---------------|---------|-------|---------|-----|-----|---------|---------|----------|
+| isnull  | exit     | type    | typename      | print   | len   | max     | max | max | equals  | equals  | -        |
+| tostr   | getenv   | equals  | refcnt        | println | clone | min     | min | min | compare | compare | -        |
+| type    | platform | notnull | id            | input   | -     | isdigit | -   | -   | tolower | -       | -        |
+| cast    | system   | -       | callproc      | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
+| errndie | sleep    | -       | filename      | fread   | -     | isalnum | -   | -   | append  | append  | set      |
+| max     |          | -       | lineno        | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
+| min     |          | -       | timenow       | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
+| -       |          | -       | timenow_param | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
+| -       |          | -       | -             | libsym  | -     | -       | -   | -   | reverse | reverse | -        |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | substr  | sublist | keys     |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | find    | find    | find     |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | split   | join    | lockonce |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | toi64   | -       | -        |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | tof64   | -       | -        |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | sort    | sort    | -        |
 
 #### Globally Available
 - `isnull(any)` returns true if data is `null`, else false
 - `tostr(any)` stringifies a built-in; for lists and maps, it's JSON-like stringification; for circular references, it'll most likely result in stack overflow or segmentation fault
 - `type(any)` returns one of items from [`Types`](#the-global-types-map) map
 - `cast(any, i64)` casts data to a type; the second argument is one of the items from [`Types`](#the-global-types-map)
+- `errndie(str, i64?)` prints the error message and exits the program (optional argument is the exit code)
 - `max(any, ...)` returns the greatest of the arguments; returns `null` if no arguments are passed
 - `max(lst)` returns the greatest of the items in the list; returns `null` if list is empty
 - `min(any, ...)` returns the smallest of the arguments; returns `null` if no arguments are passed
 - `min(lst)` returns the smallest of the items in the list; returns `null` if list is empty
+
+#### Module `sys`
+- `sys:exit(i64?)` exits the program with the specified exit code (0 by default)
+- `sys:getenv(str)` returns the value of the environment variable, else `null`
+- `sys:platform()` returns the platform name. Platform values include:
+    - `WIN` for Windows
+    - `MAC` or `IOS` - `APPLE` if Apple platform is not recognized
+    - `ANDROID` for Android
+    - `BSD`, `SOLARIS` or `LINUX` - `UNIX` if Unix platform is not recognized
+    - `POSIX` for POSIX compliant systems not in the above list
+- `sys:system(str)` not yeat implemended; executes the command and `[stdout: str, stderr: str, exit_code: i64]` is returned
+- `sys:sleep(i64)` sleeps for the specified number of milliseconds
 
 #### Module `assert`
 - `assert:type(any, i64)` returns true if data is of the specified type, else throws an error
@@ -862,6 +876,8 @@ The language supports the following built-in procedures (within built-in modules
 - `dbg:callproc(any, str, str, lst)` calls a procedure from a module; the first argument is the context object, the second argument is the module name, the third argument is the procedure name, and the fourth argument is the list of arguments to the procedure
 - `dbg:filename()` returns filename of the source file where called
 - `dbg:lineno()` returns line number of the source file where called
+- `dbg:timenow()` returns current time in milliseconds since epoch
+- `dbg:timenow_param(i64?)` returns time as a map with keys for each unit; optional argument is time in milliseconds
 
 #### Module `io`
 File I/O functions will not create a file if it doesn't exist.
