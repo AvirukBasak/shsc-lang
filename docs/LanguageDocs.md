@@ -821,23 +821,23 @@ Note that a lock ID of `0xDEAF` indicates that the map is locked and reserved. I
 ## Built-in Procedures
 The language supports the following built-in procedures (within built-in modules)
 
-| -       | sys      | assert  | dbg      | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
-|---------|----------|---------|----------|---------|-------|---------|-----|-----|---------|---------|----------|
-| isnull  | exit     | type    | typename | print   | len   | max     | max | max | equals  | equals  | -        |
-| tostr   | platform | equals  | refcnt   | println | clone | min     | min | min | compare | compare | -        |
-| type    |          | notnull | id       | input   | -     | isdigit | -   | -   | tolower | -       | -        |
-| cast    |          | -       | callproc | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
-| errndie |          | -       | filename | fread   | -     | isalnum | -   | -   | append  | append  | set      |
-| max     |          | -       | lineno   | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
-| min     |          | -       | -        | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
-| -       |          | -       | -        | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
-| -       |          | -       | -        | libsym  | -     | -       | -   | -   | reverse | reverse | -        |
-| -       |          | -       | -        | -       | -     | -       | -   | -   | substr  | sublist | keys     |
-| -       |          | -       | -        | -       | -     | -       | -   | -   | find    | find    | find     |
-| -       |          | -       | -        | -       | -     | -       | -   | -   | split   | join    | lockonce |
-| -       |          | -       | -        | -       | -     | -       | -   | -   | toi64   | -       | -        |
-| -       |          | -       | -        | -       | -     | -       | -   | -   | tof64   | -       | -        |
-| -       |          | -       | -        | -       | -     | -       | -   | -   | sort    | sort    | -        |
+| -       | sys      | assert  | dbg           | io      | it    | chr     | i64 | f64 | str     | lst     | map      |
+|---------|----------|---------|---------------|---------|-------|---------|-----|-----|---------|---------|----------|
+| isnull  | exit     | type    | typename      | print   | len   | max     | max | max | equals  | equals  | -        |
+| tostr   | platform | equals  | refcnt        | println | clone | min     | min | min | compare | compare | -        |
+| type    |          | notnull | id            | input   | -     | isdigit | -   | -   | tolower | -       | -        |
+| cast    |          | -       | callproc      | fexists | -     | isalpha | -   | -   | toupper | -       | -        |
+| errndie |          | -       | filename      | fread   | -     | isalnum | -   | -   | append  | append  | set      |
+| max     |          | -       | lineno        | fwrite  | -     | islower | -   | -   | insert  | insert  | get      |
+| min     |          | -       | timenow       | fappend | -     | isupper | -   | -   | erase   | erase   | erase    |
+| -       |          | -       | timenow_param | libopen | -     | isspace | -   | -   | concat  | concat  | concat   |
+| -       |          | -       | -             | libsym  | -     | -       | -   | -   | reverse | reverse | -        |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | substr  | sublist | keys     |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | find    | find    | find     |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | split   | join    | lockonce |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | toi64   | -       | -        |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | tof64   | -       | -        |
+| -       |          | -       | -             | -       | -     | -       | -   | -   | sort    | sort    | -        |
 
 #### Globally Available
 - `isnull(any)` returns true if data is `null`, else false
@@ -867,6 +867,8 @@ The language supports the following built-in procedures (within built-in modules
 - `dbg:callproc(any, str, str, lst)` calls a procedure from a module; the first argument is the context object, the second argument is the module name, the third argument is the procedure name, and the fourth argument is the list of arguments to the procedure
 - `dbg:filename()` returns filename of the source file where called
 - `dbg:lineno()` returns line number of the source file where called
+- `dbg:timenow()` returns current time in milliseconds since epoch
+- `dbg:timenow_param(i64?)` returns time as a map with keys for each unit; optional argument is time in milliseconds
 
 #### Module `io`
 File I/O functions will not create a file if it doesn't exist.
