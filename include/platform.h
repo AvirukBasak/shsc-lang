@@ -37,7 +37,7 @@
     #define rt_PLATFORM_APPLE
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(WIN32)
     #define rt_PLATFORM_WIN
 #endif
 
