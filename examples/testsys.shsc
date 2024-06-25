@@ -1,0 +1,8 @@
+proc main()
+    var path = sys:getenv("PATH")
+    io:println(path)
+    sys:sleep(2000)
+    var platform = sys:platform()
+    io:println(platform)
+    sys:exit(5)
+end
