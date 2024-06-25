@@ -2,6 +2,7 @@
 #define RT_FUNCTIONS_H
 
 #include "runtime/data/Data.h"
+#include "runtime/functions/module_sys.h"
 #include "runtime/functions/module_assert.h"
 #include "runtime/functions/module_chr.h"
 #include "runtime/functions/module_dbg.h"
@@ -26,6 +27,12 @@ typedef enum {
     rt_fn_ERRNDIE,       /* errndie */
     rt_fn_MAX,           /* max */
     rt_fn_MIN,           /* min */
+
+    rt_fn_SYS_EXIT,      /* sys:exit */
+    rt_fn_SYS_SLEEP,     /* sys:sleep */
+    rt_fn_SYS_GETENV,    /* sys:getenv */
+    rt_fn_SYS_PLATFORM,  /* sys:platform */
+    rt_fn_SYS_SYSTEM,    /* sys:system */
 
     rt_fn_ASSERT_TYPE,   /* assert:type */
     rt_fn_ASSERT_EQUALS, /* assert:equals */
