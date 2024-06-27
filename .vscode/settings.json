@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "ast.h": "c",
-        "string.h": "c",
-        "api.h": "c",
-        "moduleandproctable.h": "c",
-        "destructors.h": "c"
-    }
-}
