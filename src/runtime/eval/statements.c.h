@@ -12,7 +12,12 @@
 
 rt_ControlStatus_t rt_eval_Statements(const ast_Statements_t *code)
 {
-    if (!code) return rt_CTRL_PASS;
+    if (!code) {
+        /* if there is no statement, return null */
+        rt_VarTable_acc_setval(rt_Data_null());
+        return rt_CTRL_PASS;
+    }
+
     const ast_Statements_t *ptr = code;
     while (ptr) {
         /* during execution of last statement, if current proc is main:main
