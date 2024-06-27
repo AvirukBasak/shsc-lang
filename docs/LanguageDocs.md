@@ -48,6 +48,8 @@ Shsc is a dynamically and weakly typed language with coercion rules that make se
     - [Procedure Context](#procedure-context)
     - [Rudimentary OOP](#rudimentary-oop)
 - [Lambdas](#lambdas)
+- [Syntax Ambiguity](#syntax-ambiguity)
+    - [Empty Map v/s Empty Block](#empty-map-vs-empty-block)
 - [Interop with C](#interop-with-c)
 - [Expressions](#expressions)
     - [Ternary Expression](#ternary-expression)
@@ -555,6 +557,26 @@ var long_proc = (a, b) -> {
 io:print(add(5, 6), lf)
 io:print(long_proc(5, 6), lf)
 ```
+
+## Syntax Ambiguity
+
+It is recommended to avoid ambiguous code and they should be considered to result in undefined behaviour.
+This is because the following may be how the current parser behaves but the behaviour may change in the future.
+
+### Empty Map v/s Empty Block
+```lua
+var x = () -> {
+}
+```
+
+The above is in fact a lambda with no body. It returns `null`, much like any other procedure without a body.
+
+However, the following are empty maps.
+```lua
+var x = {}
+```
+
+This behaviour also exists for [Block Statement](#block-statement) that use `{}`.
 
 ## Interop with C
 Interoperability with C code via dynamic libraries is possible. For a better understanding see the repo [shsc-c-interop](https://github.com/AvirukBasak/shsc-c-interop).
