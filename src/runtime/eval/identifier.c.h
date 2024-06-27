@@ -30,11 +30,13 @@ void rt_eval_Identifier(const ast_Identifier_t *identifier)
         ));
         return;
     }
+
     /* get a descriptor to in-built function */
     const rt_fn_FunctionDescriptor_t fn = rt_fn_FunctionsList_getfn(
         rt_VarTable_top_proc()->module_name,
         identifier
     );
+
     /* if defined, return procedure type data */
     if (fn != rt_fn_UNDEFINED) {
         rt_VarTable_acc_setval(rt_Data_proc(
