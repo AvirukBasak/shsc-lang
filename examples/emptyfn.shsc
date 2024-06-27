@@ -7,5 +7,5 @@ proc main()
     var x = () -> {
     }
     io:println(dbg:typename(x), x())
-    io:println(dbg:typename(test()), test())
+    io:println(dbg:typename(test), test())
 end
