@@ -13,8 +13,11 @@
 
 int rt_exec(int argc, char **argv)
 {
-    const ast_Identifier_t *module = ast_util_ModuleAndProcTable_idfmain();
-    const ast_Identifier_t *proc = ast_util_ModuleAndProcTable_idfmain();
+    const ast_Identifier_t *module = ast_util_MODULEANDPROCTABLE_IDFMAIN;
+    const ast_Identifier_t *proc = ast_util_MODULEANDPROCTABLE_IDFMAIN;
+
+    ast_util_ModuleAndProcTable_erron_invalid(module, proc);
+
     const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
     const char *currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
 
