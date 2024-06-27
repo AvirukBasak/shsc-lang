@@ -1,0 +1,5 @@
+module main
+
+proc test()
+    return 0
+end

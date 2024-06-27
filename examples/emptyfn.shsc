@@ -1,0 +1,11 @@
+module main
+
+proc test()
+end
+
+proc main()
+    var x = () -> {
+    }
+    io:println(dbg:typename(x), x())
+    io:println(dbg:typename(test()), test())
+end
