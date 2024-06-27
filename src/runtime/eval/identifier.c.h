@@ -21,13 +21,9 @@ void rt_eval_Identifier(const ast_Identifier_t *identifier)
         rt_VarTable_acc_setadr(ref);
         return;
     }
-    /* get code as AST from user defined function */
-    const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(
-        rt_VarTable_top_proc()->module_name,
-        identifier
-    );
-    /* if not null, return procedure type data */
-    if (code) {
+
+    /* if user-defined procedure exists, return procedure type data */
+    if (ast_util_ModuleAndProcTable_exists(rt_VarTable_top_proc()->module_name, identifier)) {
         rt_VarTable_acc_setval(rt_Data_proc(
             rt_VarTable_top_proc()->module_name,
             identifier

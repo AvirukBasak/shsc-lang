@@ -277,7 +277,7 @@ rt_Data_t rt_fn_call_handler(
     const char *currfile = NULL;
 
     /* update metadata to new module and function */
-    if (code) {
+    if (ast_util_ModuleAndProcTable_exists(module, proc)) {
         currfile = ast_util_ModuleAndProcTable_get_filename(module, proc);
     } else if (fn != rt_fn_UNDEFINED) {
         currfile = module_name;
@@ -320,7 +320,9 @@ rt_Data_t rt_fn_call_handler(
         fnargs_list = fnargs_list->args_list;
     }
 
-    if (code) {
+    if (ast_util_ModuleAndProcTable_exists(module, proc)) {
+        /* get code as AST from user defined function */
+        const ast_Statements_t *code = ast_util_ModuleAndProcTable_get_code(module, proc);
         /* call user defined function */
         rt_ControlStatus_t ctrl = rt_eval_Statements(code);
         if (ctrl == rt_CTRL_BREAK)
