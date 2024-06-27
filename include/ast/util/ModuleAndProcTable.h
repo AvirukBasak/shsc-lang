@@ -6,6 +6,8 @@
 #include "ast.h"
 #include "tlib/khash/khash.h"
 
+#define ast_util_MODULEANDPROCTABLE_IDFMAIN "main"
+
 /** A wrapper for procedure (represents a procedure)
     Serves the purpose of storing the (ast_Identifier_t *)
     so that it may be later freed without causing a leak */
@@ -78,8 +80,6 @@ extern ast_util_ModuleAndProcTable_t ast_util_mptable;
 
 bool ast_util_ModuleAndProcTable_empty(void);
 
-const ast_Identifier_t *ast_util_ModuleAndProcTable_idfmain(void);
-
 /** Maps ( module_name, proc_name ) -> code */
 void ast_util_ModuleAndProcTable_add(
     const ast_Identifier_t *module_name,
@@ -96,6 +96,12 @@ const ast_FnArgsList_t *ast_util_ModuleAndProcTable_get_args(const ast_Identifie
 
 /** Get filename by a module and a procedure name */
 const char *ast_util_ModuleAndProcTable_get_filename(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name);
+
+/** Check if a module and a procedure name is defined */
+bool ast_util_ModuleAndProcTable_exists(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name);
+
+/** Throw an error if a module and a procedure name is invalid */
+void ast_util_ModuleAndProcTable_erron_invalid(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name);
 
 /** Clears the entire runtime representation of code,
     i.e. everything the parser generated */

@@ -28,14 +28,6 @@
 
 ast_util_ModuleAndProcTable_t ast_util_mptable = NULL;
 
-
-const ast_Identifier_t *ast_util_ModuleAndProcTable_main_idf = NULL;
-const ast_Identifier_t *ast_util_ModuleAndProcTable_idfmain(void)
-{
-    if (!ast_util_ModuleAndProcTable_main_idf) ast_util_ModuleAndProcTable_main_idf = ast_Identifier(strdup("main"));
-    return ast_util_ModuleAndProcTable_main_idf;
-}
-
 /* Function to create a new ast_util_ModuleAndProcTable_t object */
 void ast_util_ModuleAndProcTable_create(void)
 {
@@ -127,8 +119,6 @@ const ast_util_ModuleAndProcTable_procedure_t ast_util_ModuleAndProcTable_get(co
 const ast_Statements_t *ast_util_ModuleAndProcTable_get_code(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
     const ast_util_ModuleAndProcTable_procedure_t proc = ast_util_ModuleAndProcTable_get(module_name, proc_name);
-    /* if (!proc.proc_name)
-        rt_throw("undefined procedure '%s:%s'", module_name, proc_name); */
     return proc.code;
 }
 
@@ -136,8 +126,6 @@ const ast_Statements_t *ast_util_ModuleAndProcTable_get_code(const ast_Identifie
 const ast_FnArgsList_t *ast_util_ModuleAndProcTable_get_args(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
     const ast_util_ModuleAndProcTable_procedure_t proc = ast_util_ModuleAndProcTable_get(module_name, proc_name);
-    /* if (!proc.proc_name)
-        rt_throw("undefined procedure '%s:%s'", module_name, proc_name); */
     return proc.fnargs_list;
 }
 
@@ -145,11 +133,18 @@ const ast_FnArgsList_t *ast_util_ModuleAndProcTable_get_args(const ast_Identifie
 const char *ast_util_ModuleAndProcTable_get_filename(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
 {
     const ast_util_ModuleAndProcTable_procedure_t proc = ast_util_ModuleAndProcTable_get(module_name, proc_name);
-    if (!proc.proc_name)
-        /* not printing current fn name as this error is most likely to occur when
-           main:main is not defined */
-        io_errndie("undefined procedure '%s:%s'", module_name, proc_name);
     return proc.src_filename;
+}
+
+bool ast_util_ModuleAndProcTable_exists(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
+{
+    return ast_util_ModuleAndProcTable_get(module_name, proc_name).proc_name != NULL;
+}
+
+void ast_util_ModuleAndProcTable_erron_invalid(const ast_Identifier_t *module_name, const ast_Identifier_t *proc_name)
+{
+    if (!ast_util_ModuleAndProcTable_exists(module_name, proc_name))
+        io_errndie("undefined procedure '%s:%s'", module_name, proc_name);
 }
 
 /** Clears the entire runtime representation of code,
