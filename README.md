@@ -6,6 +6,12 @@ A scripting language inspired by C, Python and Javascript.
 
 To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDocs.md).
 
+### Online Interpreter
+Run your codes online at [shsc-online-repl.vercel.app](https://shsc-online-repl.vercel.app).
+
+#### Screenshot
+<img width="935" height="726" alt="image" src="https://github.com/user-attachments/assets/eef0a512-f817-4b21-b3a0-6a070924d924" />
+
 ### Build
 - Dependencies:
     - `make` To build
