@@ -72,12 +72,12 @@ ssize_t io_getline(char **lineptr, size_t *n, FILE *stream)
 
 char *io_readfile(FILE *fp)
 {
-    if (!fp) io_errndie("io_readfile: " ERR_MSG_NULLPTR);
+    if (!fp) io_errndie("io_readfile:" ERR_MSG_NULLPTR);
     char buffer[1024] = "";
     size_t buff_used = 0;
 
     char *strbuf = (char*) malloc(sizeof(char) * 1024);
-    if (!strbuf) io_errndie("io_readfile: " ERR_MSG_MALLOCFAIL);
+    if (!strbuf) io_errndie("io_readfile:" ERR_MSG_MALLOCFAIL);
     int idx = 0;
     int cap = 1024;
 

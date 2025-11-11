@@ -4,6 +4,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <time.h>
+#include <errno.h>
 
 #include "globals.h"
 #include "io.h"
@@ -62,8 +63,7 @@ int util_system(const char *command, char **outbuff, char **errbuff)
 {
     const char *outfile = ".outfile.tmp",
                *errfile = ".errfile.tmp";
-    FILE *out = fopen(outfile, "w"),
-         *err = fopen(errfile, "w");
+
     const char *outredirect = " > ",
                *errredirect = " 2> ";
     char *cmdbuffer = malloc(16
@@ -76,12 +76,7 @@ int util_system(const char *command, char **outbuff, char **errbuff)
 
     sprintf(cmdbuffer, "%s %s %s %s %s", command, outredirect, outfile, errredirect, errfile);
     int ret = system(cmdbuffer);
-
-    fclose(out);
-    fclose(err);
-
-    out = fopen(outfile, "r");
-    err = fopen(errfile, "r");
+    free(cmdbuffer);
 
     if (*outbuff) {
         io_errndie("util_system: 'outbuff' should be NULL");
@@ -90,14 +85,29 @@ int util_system(const char *command, char **outbuff, char **errbuff)
         io_errndie("util_system: 'errbuff' should be NULL");
     }
 
-    *outbuff = io_readfile(out);
-    *errbuff = io_readfile(err);
+    FILE *out = fopen(outfile, "r");
+    if (!out) {
+        io_errnexit("Error reading stdout: %s", strerror(errno));
+    }
+    else {
+        *outbuff = io_readfile(out);
+    }
+    fclose(out);
 
-    if ((*outbuff)[0] == '\0') {
+    FILE *err = fopen(errfile, "r");
+    if (!err) {
+        io_errnexit("Error reading stderr: %s", strerror(errno));
+    }
+    else {
+        *errbuff = io_readfile(err);
+    }
+    fclose(err);
+
+    if (*outbuff && (*outbuff)[0] == '\0') {
         free(*outbuff);
         *outbuff = NULL;
     }
-    if ((*errbuff)[0] == '\0') {
+    if (*errbuff && (*errbuff)[0] == '\0') {
         free(*errbuff);
         *errbuff = NULL;
     }
@@ -109,13 +119,8 @@ int util_system(const char *command, char **outbuff, char **errbuff)
         (*errbuff)[strlen(*errbuff) - 1] = '\0';
     }
 
-    fclose(out);
-    fclose(err);
-
     remove(outfile);
     remove(errfile);
-
-    free(cmdbuffer);
     return ret;
 }
 
