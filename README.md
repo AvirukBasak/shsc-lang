@@ -10,7 +10,7 @@ To learn more about the language, read [`docs/LanguageDocs.md`](docs/LanguageDoc
 Run your codes online at [shsc-online-repl.vercel.app](https://shsc-online-repl.vercel.app).
 
 #### Screenshot
-<img width="935" height="726" alt="image" src="https://github.com/user-attachments/assets/eef0a512-f817-4b21-b3a0-6a070924d924" />
+<img width="1128" height="838" alt="image" src="https://github.com/user-attachments/assets/557c189f-8cc2-4a15-b360-3f89200683cd" />
 
 ### Build
 - Dependencies:
