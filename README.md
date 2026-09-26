@@ -1,6 +1,6 @@
 # Shsc
 
-[![Beta](https://img.shields.io/badge/Version-2.5%20Beta-deepgreen.svg)](https://github.com/AvirukBasak/shsc-lang/releases/tag/v2.5)
+[![Beta](https://img.shields.io/badge/Version-2.6%20Beta-deepgreen.svg)](https://github.com/AvirukBasak/shsc-lang/releases/tag/v2.6)
 
 A scripting language inspired by C, Python and Javascript.
 
@@ -56,19 +56,21 @@ See [`Shsc Syntax Highlighting`](https://github.com/AvirukBasak/shsc-syntax-high
 ### Usage
 ```
 Usage:
-  shsc [options] file... -args args...
+  shsc [options] [files...] -args [args...]
+
 Options:
-  [-v    | --version]                   Show version
-  [-h    | --help   ]                   Show this help message
-  [-r    | --run    ]   listfile        Run scripts listed in the listfile
-  [-t    | --ast    ]   outfile file... Parse file and save AST as JSON in outfile
-  [-tf   | --astf   ]   outfile file... Parse file and save  formatted AST as JSON in outfile
-  [-ldbg | --lex-debug] file...         Scan file and print lexer debug output
+  -v,    --version                        Show version
+  -h,    --help                           Show this help message
+  -r,    --run       [listfile]           Run scripts listed in the listfile
+  -t,    --ast       [outfile] [files...] Parse file and save AST as JSON in outfile
+  -tf,   --astf      [outfile] [files...] Parse file and save formatted AST as JSON in outfile
+  -ldbg, --lex-debug [files...]           Scan file and print lexer debug output
+
 Notes:
-  > file... - one or more shsc code files
-  > args... - arguments passed to the main:main shsc method; are optional
-  > flag -args can be added after file... or after listfile in case of --run
-  > passing a dash (-) anywhere as filename will read from stdin or write to stdout
+  [files...] - One or more shsc code files
+  [args...]  - Arguments passed to the main:main shsc method (optional)
+  Flag -args can be added after [files...] or after [listfile] in case of --run
+  Passing a dash (-) anywhere as filename will read from stdin or write to stdout
 ```
 
 Examples at [`examples/`](examples/).

@@ -16,22 +16,24 @@ INCLUDE_DIR    := ../include
 EXEC_NAME      := shsc
 
 WRN_ERR_FLAGS  := -Wall\
-				  -Wno-unused-but-set-variable\
-				  -Wno-unused-label\
-				  -Wno-int-in-bool-context
-ASAN_FLAGS	   := -fsanitize=address
+                  -Wno-unused-but-set-variable\
+                  -Wno-unused-label\
+                  -Wno-int-in-bool-context
+
+ASAN_FLAGS     := -fsanitize=address
+
 ASAN_OPTIONS   := ASAN_OPTIONS=detect_leaks=1:$\
-				  fast_unwind_on_malloc=0:$\
-				  strict_init_order=true:$\
-				  strict_string_checks=true:$\
-				  check_initialization_order=true:$\
-				  abort_on_error=1:$\
-				  symbolize=1:$\
-				  verbosity=0:$\
-				  halt_on_error=0
+                  fast_unwind_on_malloc=0:$\
+                  strict_init_order=true:$\
+                  strict_string_checks=true:$\
+                  check_initialization_order=true:$\
+                  abort_on_error=1:$\
+                  symbolize=1:$\
+                  verbosity=0:$\
+                  halt_on_error=0
 
 CC             ?= clang
-CFLAGS         := $(WRN_ERR_FLAGS) -Ofast
+CFLAGS         := $(WRN_ERR_FLAGS) -O3
 CDBGFLAGS      := $(WRN_ERR_FLAGS) -g $(ASAN_FLAGS) -D DEBUG
 DBG            := gdb -q
 

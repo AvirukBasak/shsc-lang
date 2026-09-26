@@ -736,13 +736,13 @@ rt_Data_t rt_Data_cast(const rt_Data_t data, enum rt_DataType_t type)
         case rt_DATA_TYPE_ANY: {
             switch (data.type) {
                 case rt_DATA_TYPE_BUL:
-                    return rt_Data_any((void*) *(long long *) &data.data.bul);
+                    return rt_Data_any((void*) (long long) data.data.bul);
                 case rt_DATA_TYPE_CHR:
-                    return rt_Data_any((void*) *(long long *) &data.data.chr);
+                    return rt_Data_any((void*) (long long) data.data.chr);
                 case rt_DATA_TYPE_I64:
-                    return rt_Data_any((void*) *(long long *) &data.data.i64);
+                    return rt_Data_any((void*) (long long) data.data.i64);
                 case rt_DATA_TYPE_F64:
-                    return rt_Data_any((void*) *(long long *) &data.data.f64);
+                    return rt_Data_any((void*) (long long) data.data.f64);
                 case rt_DATA_TYPE_ANY:
                     return data;
                 case rt_DATA_TYPE_STR:

@@ -11,7 +11,7 @@ LIB_DIR        := lib
 EXEC_NAME      := scsh
 
 CC             ?= clang
-CFLAGS         := -Wall -Ofast
+CFLAGS         := -Wall -O3
 CDBGFLAGS      := -Wall -g -fsanitize=address -D DEBUG
 DBG            := gdb -q
 

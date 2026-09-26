@@ -16,7 +16,7 @@ int64_t parse_int(const char *str, int base)
         parse_throw("unsupported base", true);
 
     char *endptr;
-    char *exp_loc = NULL;
+    const char *exp_loc = NULL;
     int64_t result = 0;
 
     /* set errno to 0 before calling strtol */
