@@ -2,7 +2,7 @@
 -Wno-self-assign
 -Wno-unused-but-set-variable
 -Wno-unused-label
--Ofast
+-O3
 -Iinclude
 -Ilib
 -Isrc
